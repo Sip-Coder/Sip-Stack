@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sip-Stack · Experience Charts</title>
+<meta name="description" content="Sip Studies Ai Edu — Wine, Beer & Spirits experience charts under Water to Wine." />
+<style>
+  :root {
+    --clay: #914C2C;
+    --teal: #1A5552;
+    --mauve: #817985;
+    --mint: #D8E6DA;
+    --sand: #EDD4A8;
+    --ink: #1c1410;
+    --paper: #faf7f2;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    background: linear-gradient(180deg, var(--mint) 0%, var(--paper) 220px);
+    line-height: 1.5;
+  }
+  header {
+    padding: 2rem 1.25rem 1rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .eyebrow {
+    color: var(--teal);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    margin: 0 0 0.35rem;
+  }
+  h1 {
+    margin: 0 0 0.4rem;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    color: var(--clay);
+  }
+  .lede { margin: 0; max-width: 42rem; color: var(--mauve); }
+  .values { margin: 0.75rem 0 0; font-size: 0.9rem; color: var(--teal); }
+  nav.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.25rem 1rem;
+  }
+  .tab {
+    border: 1px solid var(--mauve);
+    background: white;
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 0.4rem 0.75rem;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.85rem;
+  }
+  .tab.active, .tab:hover {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: white;
+  }
+  main {
+    max-width: 1100px;
+    margin: 0 auto 3rem;
+    padding: 0 1.25rem;
+  }
+  .panel { display: none; background: white; border: 1px solid #e5ddd0; border-radius: 16px; padding: 1.25rem 1.4rem 1.5rem; box-shadow: 0 8px 24px rgba(28,20,16,0.06); }
+  .panel.active { display: block; }
+  .panel h2 { margin: 0 0 0.35rem; color: var(--clay); font-size: 1.35rem; }
+  .purpose { margin: 0 0 1rem; color: var(--mauve); }
+  .mermaid-wrap {
+    background: var(--mint);
+    border-radius: 12px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+  }
+  .meta {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+  .meta h3 { margin: 0 0 0.4rem; color: var(--teal); font-size: 1rem; }
+  .meta ul { margin: 0; padding-left: 1.1rem; }
+  .give { background: var(--sand); padding: 0.75rem 0.9rem; border-radius: 10px; }
+  .bridge { color: var(--teal); }
+  footer {
+    max-width: 1100px;
+    margin: 0 auto 2rem;
+    padding: 0 1.25rem;
+    font-size: 0.85rem;
+    color: var(--mauve);
+  }
+  footer a { color: var(--clay); }
+</style>
+</head>
+<body>
+  <header>
+    <p class="eyebrow">Sip Studios · Ai Edu · Sip-Stack</p>
+    <h1>Experience Charts · Wine · Beer · Spirits</h1>
+    <p class="lede">Walk each journey under “Water to Wine.” Original Sip Studies teaching material — not affiliated with any court, guild, or credentialing body.</p>
+    <p class="values">Culture · Credible · Catalyze · Legacy</p>
+  </header>
+  <nav class="tabs" aria-label="Charts"><button type="button" class="tab active" data-id="01" aria-pressed="true">01 · Vine Training &amp; Canopy Care</button>
+<button type="button" class="tab" data-id="02" aria-pressed="false">02 · Meeting White Grapes</button>
+<button type="button" class="tab" data-id="03" aria-pressed="false">03 · Meeting Red Grapes</button>
+<button type="button" class="tab" data-id="04" aria-pressed="false">04 · Harvest &amp; Field Gear</button>
+<button type="button" class="tab" data-id="05" aria-pressed="false">05 · Making Houses</button>
+<button type="button" class="tab" data-id="06" aria-pressed="false">06 · Aging Patterns &amp; Country Sty</button>
+<button type="button" class="tab" data-id="07" aria-pressed="false">07 · Bottle to Shelf</button>
+<button type="button" class="tab" data-id="08" aria-pressed="false">08 · Retail Floor</button>
+<button type="button" class="tab" data-id="09" aria-pressed="false">09 · Table &amp; Tap</button></nav>
+  <main>
+
+<section class="panel active" id="chart-01" data-id="01">
+  <h2>01 · Vine Training &amp; Canopy Care</h2>
+  <p class="purpose">Walk a vineyard row and see how people shape a vine to manage sun, air, and water.</p>
+  <div class="mermaid-wrap"><pre class="mermaid">flowchart LR
+  A[&quot;Arrive at the row&quot;] --&gt;|&quot;look at the trunk&quot;| B[&quot;Spot the vine&#x27;s frame&quot;]
+  B --&gt;|&quot;is it tall or low?&quot;| C[&quot;Head-trained vs trellised&quot;]
+  C --&gt;|&quot;follow the wires&quot;| D[&quot;Cane vs spur pruning&quot;]
+  D --&gt;|&quot;step into the leaves&quot;| E[&quot;Canopy: shade or sun?&quot;]
+  E --&gt;|&quot;feel the airflow&quot;| F[&quot;Disease and moisture risk&quot;]
+  F --&gt;|&quot;check the soil&quot;| G[&quot;Water: rain, dry-farm, or drip&quot;]
+  G --&gt;|&quot;ask the grower&quot;| H[&quot;Why this site chose this shape&quot;]
+  H --&gt;|&quot;taste the result&quot;| I[&quot;Link canopy to ripeness in the glass&quot;]
+  I --&gt; J[&quot;Give-Back: water stewardship in the vineyard&quot;]</pre></div>
+  <div class="meta">
+    <div>
+      <h3>What you practice</h3>
+      <ul><li>Naming two or three common vine shapes by sight</li><li>Explaining why leaf thinning or keeping shade changes ripeness</li><li>Connecting irrigation choices to climate and water scarcity</li><li>Asking a grower one good &quot;why&quot; question</li></ul>
+    </div>
+    <div>
+      <h3>Source vs Flow</h3>
+      <p>*Source* — recognize a trained vs untrained vine and say what a canopy does. *Flow* — connect a site&#x27;s water and sun to its training choice and predict the style effect.</p>
+      <p class="bridge"><strong>Bridge:</strong> Hops climb trellises too — barley and grain fields and hop yards face the same sun, air, and water trade-offs. Agave and grain for spirits are farmed crops with their own water footprint.</p>
+      <p class="give"><strong>Give-Back:</strong> Every vineyard decision is a water decision. Learners note one water-saving practice and how a similar idea could help a community well or garden.</p>
+    </div>
+  </div>
+</section>
+<section class="panel" id="chart-02" data-id="02">
+  <h2>02 · Meeting White Grapes</h2>
+  <p class="purpose">A guided meet-and-greet with white grapes — how to group them, taste them, and talk about them.</p>
+  <div class="mermaid-wrap"><pre class="mermaid">flowchart TD
+  A[&quot;Pour three whites side by side&quot;] --&gt;|&quot;notice color&quot;| B[&quot;Pale, golden, or deep?&quot;]
+  B --&gt;|&quot;smell first&quot;| C[&quot;Aromatic or quiet?&quot;]
+  C --&gt;|&quot;sort into families&quot;| D[&quot;Crisp and zesty&quot;]
+  C --&gt; E[&quot;Floral and perfumed&quot;]
+  C --&gt; F[&quot;Rich and round&quot;]
+  D --&gt;|&quot;meet one grape&quot;| G[&quot;Sauvignon Blanc-type lane&quot;]
+  E --&gt;|&quot;meet one grape&quot;| H[&quot;Riesling-type lane&quot;]
+  F --&gt;|&quot;meet one grape&quot;| I[&quot;Chardonnay-type lane&quot;]
+  G --&gt; J[&quot;Say it in your own words&quot;]
+  H --&gt; J
+  I --&gt; J
+  J --&gt;|&quot;match to food and guest&quot;| K[&quot;Recommend one bottle&quot;]
+  K --&gt; L[&quot;Give-Back: clean water for the table&quot;]</pre></div>
+  <div class="meta">
+    <div>
+      <h3>What you practice</h3>
+      <ul><li>Sorting whites into three Sip Studies families: Crisp, Floral, Rich</li><li>Describing one grape in plain words a guest would understand</li><li>Spotting how oak or no-oak shifts a white&#x27;s feel</li><li>Picking one white for one dish</li></ul>
+    </div>
+    <div>
+      <h3>Source vs Flow</h3>
+      <p>*Source* — name a grape and its family. *Flow* — compare two grapes, explain the climate link, and recommend one to a guest.</p>
+      <p class="bridge"><strong>Bridge:</strong> Grape spirits (brandies, pomace spirits) start from grapes like these — same fruit, a different house.</p>
+      <p class="give"><strong>Give-Back:</strong> Learners pair each white with a glass of water in the tasting and note how water resets the palate — the simplest hospitality act, and the one Somm Support funds.</p>
+    </div>
+  </div>
+</section>
+<section class="panel" id="chart-03" data-id="03">
+  <h2>03 · Meeting Red Grapes</h2>
+  <p class="purpose">Meet red grapes by feel — weight, grip, and fruit — then learn to speak about them.</p>
+  <div class="mermaid-wrap"><pre class="mermaid">flowchart TD
+  A[&quot;Pour three reds side by side&quot;] --&gt;|&quot;tilt the glass&quot;| B[&quot;See-through or inky?&quot;]
+  B --&gt;|&quot;sip and pause&quot;| C[&quot;Feel the grip&quot;]
+  C --&gt;|&quot;sort into families&quot;| D[&quot;Light and bright&quot;]
+  C --&gt; E[&quot;Medium and savory&quot;]
+  C --&gt; F[&quot;Bold and structured&quot;]
+  D --&gt;|&quot;meet one grape&quot;| G[&quot;Pinot Noir-type lane&quot;]
+  E --&gt;|&quot;meet one grape&quot;| H[&quot;Sangiovese-type lane&quot;]
+  F --&gt;|&quot;meet one grape&quot;| I[&quot;Cabernet Sauvignon-type lane&quot;]
+  G --&gt; J[&quot;Tell its story: place and people&quot;]
+  H --&gt; J
+  I --&gt; J
+  J --&gt;|&quot;match to a moment&quot;| K[&quot;Recommend for a guest&quot;]
+  K --&gt; L[&quot;Give-Back: water behind every red&quot;]</pre></div>
+  <div class="meta">
+    <div>
+      <h3>What you practice</h3>
+      <ul><li>Sorting reds into Sip Studies weight families: Light, Medium, Bold</li><li>Feeling grip (tannin) and explaining it simply</li><li>Linking grape skin thickness to color and grip</li><li>Telling a 30-second story about one grape&#x27;s home</li></ul>
+    </div>
+    <div>
+      <h3>Source vs Flow</h3>
+      <p>*Source* — recognize light vs bold and name one grape per family. *Flow* — explain why a grape feels the way it does and steer a guest from one family to another.</p>
+      <p class="bridge"><strong>Bridge:</strong> Bold reds and barrel-aged spirits share vocabulary for grip and wood — learners meet that bridge again in Chart 06.</p>
+      <p class="give"><strong>Give-Back:</strong> Red wine takes a lot of water to grow and make. Learners estimate one bottle&#x27;s water story and share one fact a guest might remember.</p>
+    </div>
+  </div>
+</section>
+<section class="panel" id="chart-04" data-id="04">
+  <h2>04 · Harvest &amp; Field Gear</h2>
+  <p class="purpose">Follow three crops — grapes, grain/hops, and spirit bases — from field to the making house door.</p>
+  <div class="mermaid-wrap"><pre class="mermaid">flowchart LR
+  A[&quot;Check the crop&quot;] --&gt;|&quot;is it ready?&quot;| B[&quot;Ripeness checks: taste, sugar, look&quot;]
+  B --&gt;|&quot;choose a lane&quot;| C[&quot;Grapes&quot;]
+  B --&gt; D[&quot;Grain and hops&quot;]
+  B --&gt; E[&quot;Spirit bases: agave, cane, grain, fruit&quot;]
+  C --&gt;|&quot;pick by hand or machine&quot;| F[&quot;Shears, bins, harvester&quot;]
+  D --&gt;|&quot;cut, dry, malt&quot;| G[&quot;Combines, kilns, hop dryers&quot;]
+  E --&gt;|&quot;cut, roast, press&quot;| H[&quot;Coa, ovens, mills&quot;]
+  F --&gt; I[&quot;Move fast and keep it cool&quot;]
+  G --&gt; I
+  H --&gt; I
+  I --&gt;|&quot;deliver&quot;| J[&quot;Arrive at the making house&quot;]
+  J --&gt; K[&quot;Give-Back: rinse water and reuse&quot;]</pre></div>
+  <div class="meta">
+    <div>
+      <h3>What you practice</h3>
+      <ul><li>Naming one ripeness signal per crop</li><li>Comparing hand harvest vs machine harvest trade-offs</li><li>Explaining why grain is malted and why agave is cooked</li><li>Tracking time-to-processing and why it matters</li></ul>
+    </div>
+    <div>
+      <h3>Source vs Flow</h3>
+      <p>*Source* — name the crop and its main harvest tool. *Flow* — compare how harvest choices change the final drink across all three lanes.</p>
+      
+      <p class="give"><strong>Give-Back:</strong> Harvest and cleanup use large volumes of water. Learners list one reuse or capture idea and connect it to Somm Support&#x27;s access projects.</p>
+    </div>
+  </div>
+</section>
+<section class="panel" id="chart-05" data-id="05">
+  <h2>05 · Making Houses: Cellar, Brew House, Still House</h2>
+  <p class="purpose">Tour three making houses and see how each turns sugar into drink.</p>
+  <div class="mermaid-wrap"><pre class="mermaid">flowchart TD
+  A[&quot;Raw material arrives&quot;] --&gt;|&quot;choose your house&quot;| B[&quot;Cellar: wine&quot;]
+  A --&gt; C[&quot;Brew House: beer&quot;]
+  A --&gt; D[&quot;Still House: spirits&quot;]
+  B --&gt;|&quot;crush and press&quot;| E[&quot;Ferment in tanks or barrels&quot;]
+  C --&gt;|&quot;mash, boil, add hops&quot;| F[&quot;Ferment in fermenters&quot;]
+  D --&gt;|&quot;ferment a wash&quot;| G[&quot;Distill in pot or column still&quot;]
+  E --&gt; H[&quot;Shared step: yeast turns sugar to alcohol&quot;]
+  F --&gt; H
+  G --&gt;|&quot;cut heads, hearts, tails&quot;| H
+  H --&gt;|&quot;rest or age&quot;| I[&quot;Decide: fresh or aged?&quot;]
+  I --&gt; J[&quot;Ready for Chart 06 or 07&quot;]
+  J --&gt; K[&quot;Give-Back: water in every recipe&quot;]</pre></div>
+  <div class="meta">
+    <div>
+      <h3>What you practice</h3>
+      <ul><li>Naming the key vessel in each house: press, mash tun, still</li><li>Explaining fermentation as the shared heart of all three</li><li>Telling pot still from column still in one sentence</li><li>Mapping where water enters each process</li></ul>
+    </div>
+    <div>
+      <h3>Source vs Flow</h3>
+      <p>*Source* — name each house&#x27;s main step and equipment. *Flow* — compare how the same idea (sugar → alcohol) creates different drinks, and recommend which house a guest&#x27;s favorite came from.</p>
+      
+      <p class="give"><strong>Give-Back:</strong> Beer is mostly water; spirits are cut with water; wineries clean with water. Learners pick one house and write its water-saving pledge.</p>
+    </div>
+  </div>
+</section>
+<section class="panel" id="chart-06" data-id="06">
+  <h2>06 · Aging Patterns &amp; Country Styles</h2>
+  <p class="purpose">Learn how time, wood, and local tradition shape style — using Sip Studies scaffolds, not rulebooks.</p>
+  <div class="mermaid-wrap"><pre class="mermaid">flowchart LR
+  A[&quot;Hold a young drink&quot;] --&gt;|&quot;ask: rest it or ship it?&quot;| B[&quot;Fresh lane: no aging&quot;]
+  A --&gt; C[&quot;Rested lane: tank or bottle time&quot;]
+  A --&gt; D[&quot;Wood lane: barrel time&quot;]
+  D --&gt;|&quot;new wood or used?&quot;| E[&quot;More wood flavor vs gentle shaping&quot;]
+  C --&gt; F[&quot;Country pattern cards&quot;]
+  E --&gt; F
+  B --&gt; F
+  F --&gt;|&quot;Old-World pattern&quot;| G[&quot;Tradition sets minimum time and style names&quot;]
+  F --&gt;|&quot;New-World pattern&quot;| H[&quot;Producer chooses; label tells the story&quot;]
+  F --&gt;|&quot;Spirit pattern&quot;| I[&quot;Age statements and blends&quot;]
+  F --&gt;|&quot;Beer pattern&quot;| J[&quot;Barrel-aged and sour styles&quot;]
+  G --&gt; K[&quot;Read a label for time clues&quot;]
+  H --&gt; K
+  I --&gt; K
+  J --&gt; K
+  K --&gt; L[&quot;Give-Back: patience and legacy&quot;]</pre></div>
+  <div class="meta">
+    <div>
+      <h3>What you practice</h3>
+      <ul><li>Sorting a drink into Fresh, Rested, or Wood lanes</li><li>Explaining what a barrel adds</li><li>Using four Sip Studies pattern cards to read a label for aging clues</li><li>Explaining why some places set aging rules and others don&#x27;t</li></ul>
+    </div>
+    <div>
+      <h3>Source vs Flow</h3>
+      <p>*Source* — recognize whether a drink was aged and in what. *Flow* — compare two country patterns and recommend a fresh or aged option for a guest. (Learners look up current local rules from official sources; Sip Studies teaches the pattern, not the numbers.)</p>
+      
+      <p class="give"><strong>Give-Back:</strong> Aging is legacy — something made now for people later. Learners connect that to building water access that lasts beyond one season.</p>
+    </div>
+  </div>
+</section>
+<section class="panel" id="chart-07" data-id="07">
+  <h2>07 · Bottle to Shelf: Packaging &amp; Distribution</h2>
+  <p class="purpose">Follow a finished drink from tank to the shop or restaurant door.</p>
+  <div class="mermaid-wrap"><pre class="mermaid">flowchart LR
+  A[&quot;Finished drink in tank&quot;] --&gt;|&quot;filter or not?&quot;| B[&quot;Clarify and stabilize&quot;]
+  B --&gt;|&quot;choose a package&quot;| C[&quot;Bottle, can, keg, or box&quot;]
+  C --&gt;|&quot;close it&quot;| D[&quot;Cork, screwcap, crown, or keg coupler&quot;]
+  D --&gt;|&quot;label it&quot;| E[&quot;Label and lot code&quot;]
+  E --&gt;|&quot;ship it&quot;| F[&quot;Producer to importer or distributor&quot;]
+  F --&gt;|&quot;store it right&quot;| G[&quot;Warehouse: cool, dark, rotated&quot;]
+  G --&gt;|&quot;deliver&quot;| H[&quot;Retailer or restaurant&quot;]
+  H --&gt; I[&quot;Track freshness: beer fast, wine and spirits slower&quot;]
+  I --&gt; J[&quot;Give-Back: lighter packaging, less waste&quot;]</pre></div>
+  <div class="meta">
+    <div>
+      <h3>What you practice</h3>
+      <ul><li>Matching package type to drink and use (can for beer, keg for draft, bottle for wine)</li><li>Explaining why closures matter</li><li>Drawing the producer → distributor → seller path in your area</li><li>Spotting freshness and storage risks</li></ul>
+    </div>
+    <div>
+      <h3>Source vs Flow</h3>
+      <p>*Source* — name the package, closure, and main hand-offs. *Flow* — explain why a package was chosen and how distribution affects price and freshness for a guest.</p>
+      
+      <p class="give"><strong>Give-Back:</strong> Lighter glass, cans, and kegs cut shipping weight and water use. Learners propose one swap a local shop or bar could make.</p>
+    </div>
+  </div>
+</section>
+<section class="panel" id="chart-08" data-id="08">
+  <h2>08 · Retail Floor: Selling, Layout, Receiving &amp; Stocking</h2>
+  <p class="purpose">Walk a shop from the back dock to the checkout and learn how wine, beer, and spirits move.</p>
+  <div class="mermaid-wrap"><pre class="mermaid">flowchart LR
+  A[&quot;Truck arrives at back dock&quot;] --&gt;|&quot;count and check&quot;| B[&quot;Receive: match invoice, check damage&quot;]
+  B --&gt;|&quot;date and rotate&quot;| C[&quot;Stock: first in, first out&quot;]
+  C --&gt;|&quot;place by plan&quot;| D[&quot;Store layout zones&quot;]
+  D --&gt; E[&quot;Wine walls by style or place&quot;]
+  D --&gt; F[&quot;Beer cooler: cold and fresh&quot;]
+  D --&gt; G[&quot;Spirits shelf: category and price ladder&quot;]
+  E --&gt; H[&quot;Greet and ask two questions&quot;]
+  F --&gt; H
+  G --&gt; H
+  H --&gt;|&quot;listen, then suggest&quot;| I[&quot;Offer good, better, best&quot;]
+  I --&gt;|&quot;close the sale&quot;| J[&quot;Checkout and invite back&quot;]
+  J --&gt; K[&quot;Give-Back: a round-up for water&quot;]</pre></div>
+  <div class="meta">
+    <div>
+      <h3>What you practice</h3>
+      <ul><li>Receiving a delivery and flagging a mistake</li><li>Rotating stock so the oldest sells first</li><li>Laying out a section so guests find things fast</li><li>Asking two discovery questions and offering three price points</li></ul>
+    </div>
+    <div>
+      <h3>Source vs Flow</h3>
+      <p>*Source* — name the steps from dock to shelf and the main zones. *Flow* — redesign a section for a store&#x27;s guests and recommend across wine, beer, and spirits.</p>
+      
+      <p class="give"><strong>Give-Back:</strong> A shop can host a &quot;Water to Wine&quot; round-up at checkout. Learners write the one-line ask they&#x27;d say to a guest.</p>
+    </div>
+  </div>
+</section>
+<section class="panel" id="chart-09" data-id="09">
+  <h2>09 · Table &amp; Tap: Restaurant Selling, Cellaring, Menus, Purchasing &amp; Host Steps</h2>
+  <p class="purpose">Run the beverage side of a restaurant — from buying and storing to guiding a guest at the table.</p>
+  <div class="mermaid-wrap"><pre class="mermaid">flowchart TD
+  A[&quot;Plan the program&quot;] --&gt;|&quot;buy smart&quot;| B[&quot;Purchasing: budget, reps, par levels&quot;]
+  B --&gt;|&quot;store it right&quot;| C[&quot;Cellar and cooler: temp, light, rotation&quot;]
+  C --&gt;|&quot;build the list&quot;| D[&quot;Menu design: wine, beer, spirits, zero-proof&quot;]
+  D --&gt;|&quot;open the doors&quot;| E[&quot;Table &amp; Tap host steps&quot;]
+  E --&gt; F[&quot;1. Welcome and read the table&quot;]
+  F --&gt; G[&quot;2. Ask, listen, guide&quot;]
+  G --&gt; H[&quot;3. Present and confirm the choice&quot;]
+  H --&gt; I[&quot;4. Open and pour with care&quot;]
+  I --&gt; J[&quot;5. Check in and pace the meal&quot;]
+  J --&gt; K[&quot;6. Thank and track what sold&quot;]
+  K --&gt;|&quot;loop back&quot;| B
+  K --&gt; L[&quot;Give-Back: water first at every table&quot;]</pre></div>
+  <div class="meta">
+    <div>
+      <h3>What you practice</h3>
+      <ul><li>Setting par levels and reading a sales report</li><li>Organizing a cellar or cooler for easy, safe service</li><li>Building a short, balanced list across wine, beer, spirits, and zero-proof</li><li>Walking the six Sip Studies Table &amp; Tap host steps in your own words</li></ul>
+    </div>
+    <div>
+      <h3>Source vs Flow</h3>
+      <p>*Source* — name the program parts and the six host steps. *Flow* — design a mini menu for a concept, buy for it, and guide a guest from question to pour.</p>
+      
+      <p class="give"><strong>Give-Back:</strong> Table &amp; Tap starts with water — every guest is offered a glass first. Programs can tag one menu item as a &quot;Water to Wine&quot; pour that funds Somm Support access.</p>
+    </div>
+  </div>
+</section>
+  </main>
+  <footer>
+    <p>Source: <a href="https://github.com/Sip-Coder/Sip-Stack">github.com/Sip-Coder/Sip-Stack</a> · Mermaid journeys render in-browser.</p>
+  </footer>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#D8E6DA',
+        primaryTextColor: '#1c1410',
+        primaryBorderColor: '#1A5552',
+        lineColor: '#914C2C',
+        secondaryColor: '#EDD4A8',
+        tertiaryColor: '#faf7f2',
+        fontFamily: 'Segoe UI, system-ui, sans-serif'
+      }
+    });
+    async function renderActive() {
+      const active = document.querySelector('.panel.active .mermaid');
+      if (!active || active.getAttribute('data-processed')) return;
+      await mermaid.run({ nodes: [active] });
+    }
+    document.querySelectorAll('.tab').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        document.querySelectorAll('.tab').forEach(b => {
+          b.classList.toggle('active', b === btn);
+          b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+        });
+        document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.dataset.id === id));
+        await renderActive();
+      });
+    });
+    await renderActive();
+  </script>
+</body>
+</html>
