@@ -2,139 +2,124 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Sip-Stack · Experience Charts</title>
-<meta name="description" content="Sip Studies Ai Edu — Wine, Beer & Spirits experience charts under Water to Wine." />
-<style>
-  :root {
-    --clay: #914C2C;
-    --teal: #1A5552;
-    --mauve: #817985;
-    --mint: #D8E6DA;
-    --sand: #EDD4A8;
-    --ink: #1c1410;
-    --paper: #faf7f2;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-    color: var(--ink);
-    background: linear-gradient(180deg, var(--mint) 0%, var(--paper) 220px);
-    line-height: 1.5;
-  }
-  header {
-    padding: 2rem 1.25rem 1rem;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-  .eyebrow {
-    color: var(--teal);
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    margin: 0 0 0.35rem;
-  }
-  h1 {
-    margin: 0 0 0.4rem;
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
-    color: var(--clay);
-  }
-  .lede { margin: 0; max-width: 42rem; color: var(--mauve); }
-  .values { margin: 0.75rem 0 0; font-size: 0.9rem; color: var(--teal); }
-  nav.tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 1.25rem 1rem;
-  }
-  .tab {
-    border: 1px solid var(--mauve);
-    background: white;
-    color: var(--ink);
-    border-radius: 999px;
-    padding: 0.4rem 0.75rem;
-    cursor: pointer;
-    font: inherit;
-    font-size: 0.85rem;
-  }
-  .tab.active, .tab:hover {
-    background: var(--teal);
-    border-color: var(--teal);
-    color: white;
-  }
-  main {
-    max-width: 1100px;
-    margin: 0 auto 3rem;
-    padding: 0 1.25rem;
-  }
-  .panel { display: none; background: white; border: 1px solid #e5ddd0; border-radius: 16px; padding: 1.25rem 1.4rem 1.5rem; box-shadow: 0 8px 24px rgba(28,20,16,0.06); }
-  .panel.active { display: block; }
-  .panel h2 { margin: 0 0 0.35rem; color: var(--clay); font-size: 1.35rem; }
-  .purpose { margin: 0 0 1rem; color: var(--mauve); }
-  .mermaid-wrap {
-    background: var(--mint);
-    border-radius: 12px;
-    padding: 1rem;
-    overflow-x: auto;
-    margin-bottom: 1.25rem;
-  }
-  .meta {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  }
-  .meta h3 { margin: 0 0 0.4rem; color: var(--teal); font-size: 1rem; }
-  .meta ul { margin: 0; padding-left: 1.1rem; }
-  .give { background: var(--sand); padding: 0.75rem 0.9rem; border-radius: 10px; }
-  .bridge { color: var(--teal); }
-  footer {
-    max-width: 1100px;
-    margin: 0 auto 2rem;
-    padding: 0 1.25rem;
-    font-size: 0.85rem;
-    color: var(--mauve);
-  }
-  footer a { color: var(--clay); }
-  .note { margin: 0 0 0.5rem; font-size: 0.8rem; color: var(--teal); background: var(--mint); display: inline-block; padding: 0.2rem 0.6rem; border-radius: 999px; }
-  .families { font-size: 0.9rem; margin: 0 0 1rem; }
-  h3.sub { color: var(--teal); font-size: 1.05rem; margin: 1.25rem 0 0.5rem; }
-  .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid #e5ddd0; }
-  table.analysis { border-collapse: collapse; width: 100%; min-width: 980px; font-size: 0.84rem; }
-  table.analysis thead th { background: var(--teal); color: white; text-align: left; padding: 0.55rem 0.6rem; position: sticky; top: 0; font-weight: 600; }
-  table.analysis td, table.analysis tbody th { padding: 0.5rem 0.6rem; border-top: 1px solid #eee4d6; vertical-align: top; text-align: left; }
-  table.analysis tbody th { color: var(--clay); white-space: nowrap; }
-  table.analysis tbody tr:nth-child(even) { background: var(--paper); }
-  table.analysis td:last-child { background: rgba(237,212,168,0.35); }
-  .fam { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.78rem; white-space: nowrap; }
-  .fam.f-a { background: var(--mint); color: var(--teal); }
-  .fam.f-b { background: #e7e3ea; color: #4d4652; }
-  .fam.f-c { background: var(--clay); color: white; }
-  .fine { font-size: 0.78rem; color: var(--mauve); margin: 0.4rem 0 0; }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Sip-Stack · Nine ways water becomes a drink</title>
+<meta name="description" content="Sip Studies Ai Edu — Wine, Beer &amp; Spirits experience charts under Water to Wine. World view (isometric map) and Outline view (Mermaid journeys)." />
+<meta name="theme-color" content="#f4ead8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&amp;family=Inter:wght@400;500;600&amp;display=swap" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath d=%27M12 3l8 4.5v9L12 21l-8-4.5v-9z%27 fill=%27%23914C2C%27/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="assets/sip-stack.css" />
 </head>
-<body>
-  <header>
-    <p class="eyebrow">Sip Studios · Ai Edu · Sip-Stack</p>
-    <h1>Experience Charts · Wine · Beer · Spirits</h1>
-    <p class="lede">Walk each journey under “Water to Wine.” Original Sip Studies teaching material — not affiliated with any court, guild, or credentialing body.</p>
+<body data-mode="world">
+  <div class="topbar">
+    <div class="brand"><span class="mark">Sip-Stack</span><span class="sub">Sip Studios · Ai Edu · Water to Wine</span></div>
+    <div class="seg" role="tablist" aria-label="View" data-mode="world">
+      <span class="thumb" aria-hidden="true"></span>
+      <button type="button" role="tab" data-mode="world" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>World</button>
+      <button type="button" role="tab" data-mode="outline" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h4v4H4zM16 14h4v4h-4zM8 8h5a3 3 0 0 1 3 3v3"/></svg>Outline</button>
+    </div>
+  </div>
+
+  <header class="hero">
+    <p class="eyebrow">Experience Charts · Wine · Beer · Spirits</p>
+    <h1>Sip Studies · <em>Water to Wine</em></h1>
+    <p class="lede">Walk the World map to see each journey as a small place, then step into the Outline for the full Mermaid chart, practice list, and Give-Back note. Same nine charts, two ways to read them. Original Sip Studies teaching material, not affiliated with any court, guild, or credentialing body.</p>
     <p class="values">Culture · Credible · Catalyze · Legacy</p>
   </header>
-  <nav class="tabs" aria-label="Charts"><button type="button" class="tab active" data-id="01" aria-pressed="true">01 · Vine Training &amp; Canopy Care</button>
-<button type="button" class="tab" data-id="02" aria-pressed="false">02 · White Grape Varieties</button>
-<button type="button" class="tab" data-id="03" aria-pressed="false">03 · Red Grape Varieties</button>
-<button type="button" class="tab" data-id="04" aria-pressed="false">04 · Harvest &amp; Field Gear</button>
-<button type="button" class="tab" data-id="05" aria-pressed="false">05 · Making Houses</button>
-<button type="button" class="tab" data-id="06" aria-pressed="false">06 · Aging Patterns &amp; Country Sty</button>
-<button type="button" class="tab" data-id="07" aria-pressed="false">07 · Bottle to Shelf</button>
-<button type="button" class="tab" data-id="08" aria-pressed="false">08 · Retail Floor</button>
-<button type="button" class="tab" data-id="09" aria-pressed="false">09 · Table &amp; Tap</button></nav>
-  <main>
 
-<section class="panel active" id="chart-01" data-id="01">
+  <section id="world" class="view active" aria-label="World view">
+    <div class="world-wrap">
+      <div class="canvas">
+        <div class="canvas-head"><h2>Nine ways <em>water</em> becomes a drink</h2><span class="hint">Click a panel to open its Outline chart</span></div>
+        <div class="grid">
+      <a class="card" href="#outline/01" data-id="01" aria-label="01 of 9: Vine Training &amp; Canopy Care. Open the Outline chart.">
+        <div class="card-top"><span class="num"><b>01</b> / 09</span><svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg></div>
+        <span class="scene-slot"></span>
+        <h3>Vine Training &amp; Canopy Care</h3>
+        <p class="tag">Shape a vine for sun, air, and water.</p>
+        <div class="foot"><span class="give-chip">water stewardship in the row</span><span class="open">Outline →</span></div>
+      </a>
+      <a class="card" href="#outline/02" data-id="02" aria-label="02 of 9: White Grape Varieties — Species Analysis. Open the Outline chart.">
+        <div class="card-top"><span class="num"><b>02</b> / 09</span><svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg></div>
+        <span class="scene-slot"></span>
+        <h3>White Grape Varieties — Species Analysis</h3>
+        <p class="tag">Species analysis · 11 whites · Crisp, Floral, Rich.</p>
+        <div class="foot"><span class="give-chip">each white&#x27;s water story</span><span class="open">Outline →</span></div>
+      </a>
+      <a class="card" href="#outline/03" data-id="03" aria-label="03 of 9: Red Grape Varieties — Species Analysis. Open the Outline chart.">
+        <div class="card-top"><span class="num"><b>03</b> / 09</span><svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg></div>
+        <span class="scene-slot"></span>
+        <h3>Red Grape Varieties — Species Analysis</h3>
+        <p class="tag">Species analysis · 14 reds · Light, Medium, Bold.</p>
+        <div class="foot"><span class="give-chip">water-wise reds</span><span class="open">Outline →</span></div>
+      </a>
+      <a class="card" href="#outline/04" data-id="04" aria-label="04 of 9: Harvest &amp; Field Gear. Open the Outline chart.">
+        <div class="card-top"><span class="num"><b>04</b> / 09</span><svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg></div>
+        <span class="scene-slot"></span>
+        <h3>Harvest &amp; Field Gear</h3>
+        <p class="tag">Grapes, grain &amp; hops, spirit bases — field to door.</p>
+        <div class="foot"><span class="give-chip">rinse water and reuse</span><span class="open">Outline →</span></div>
+      </a>
+      <a class="card" href="#outline/05" data-id="05" aria-label="05 of 9: Making Houses. Open the Outline chart.">
+        <div class="card-top"><span class="num"><b>05</b> / 09</span><svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg></div>
+        <span class="scene-slot"></span>
+        <h3>Making Houses</h3>
+        <p class="tag">Cellar, Brew House, Still House.</p>
+        <div class="foot"><span class="give-chip">water in every recipe</span><span class="open">Outline →</span></div>
+      </a>
+      <a class="card" href="#outline/06" data-id="06" aria-label="06 of 9: Aging Patterns &amp; Country Styles. Open the Outline chart.">
+        <div class="card-top"><span class="num"><b>06</b> / 09</span><svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg></div>
+        <span class="scene-slot"></span>
+        <h3>Aging Patterns &amp; Country Styles</h3>
+        <p class="tag">Fresh, Rested, or Wood — read the label.</p>
+        <div class="foot"><span class="give-chip">patience and legacy</span><span class="open">Outline →</span></div>
+      </a>
+      <a class="card" href="#outline/07" data-id="07" aria-label="07 of 9: Bottle to Shelf. Open the Outline chart.">
+        <div class="card-top"><span class="num"><b>07</b> / 09</span><svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg></div>
+        <span class="scene-slot"></span>
+        <h3>Bottle to Shelf</h3>
+        <p class="tag">Tank to package to the shop door.</p>
+        <div class="foot"><span class="give-chip">lighter packaging, less waste</span><span class="open">Outline →</span></div>
+      </a>
+      <a class="card" href="#outline/08" data-id="08" aria-label="08 of 9: Retail Floor. Open the Outline chart.">
+        <div class="card-top"><span class="num"><b>08</b> / 09</span><svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg></div>
+        <span class="scene-slot"></span>
+        <h3>Retail Floor</h3>
+        <p class="tag">Back dock, layout, and checkout.</p>
+        <div class="foot"><span class="give-chip">a round-up for water</span><span class="open">Outline →</span></div>
+      </a>
+      <a class="card" href="#outline/09" data-id="09" aria-label="09 of 9: Table &amp; Tap. Open the Outline chart.">
+        <div class="card-top"><span class="num"><b>09</b> / 09</span><svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg></div>
+        <span class="scene-slot"></span>
+        <h3>Table &amp; Tap</h3>
+        <p class="tag">Buy, cellar, build the list, host the table.</p>
+        <div class="foot"><span class="give-chip">water first at every table</span><span class="open">Outline →</span></div>
+      </a>
+        </div>
+      </div>
+      <p class="world-legend" aria-label="Palette">
+        <span style="--c:#914C2C">Clay · making</span><span style="--c:#1A5552">Deep Teal · people &amp; service</span><span style="--c:#817985">Mauve-Grey · structure</span><span style="--c:#D8E6DA">Mint Mist · fresh &amp; water</span><span style="--c:#EDD4A8">Sand · land &amp; Give-Back</span>
+      </p>
+    </div>
+  </section>
+
+  <section id="outline" class="view" aria-label="Outline view">
+    <div class="outline-wrap">
+      <nav class="tabs" role="tablist" aria-label="Charts">
+      <button type="button" role="tab" class="tab active" data-id="01" aria-controls="chart-01" aria-selected="true"><span class="n">01</span>Vine Training</button>
+      <button type="button" role="tab" class="tab" data-id="02" aria-controls="chart-02" aria-selected="false"><span class="n">02</span>White Grapes</button>
+      <button type="button" role="tab" class="tab" data-id="03" aria-controls="chart-03" aria-selected="false"><span class="n">03</span>Red Grapes</button>
+      <button type="button" role="tab" class="tab" data-id="04" aria-controls="chart-04" aria-selected="false"><span class="n">04</span>Harvest &amp; Gear</button>
+      <button type="button" role="tab" class="tab" data-id="05" aria-controls="chart-05" aria-selected="false"><span class="n">05</span>Making Houses</button>
+      <button type="button" role="tab" class="tab" data-id="06" aria-controls="chart-06" aria-selected="false"><span class="n">06</span>Aging &amp; Styles</button>
+      <button type="button" role="tab" class="tab" data-id="07" aria-controls="chart-07" aria-selected="false"><span class="n">07</span>Bottle to Shelf</button>
+      <button type="button" role="tab" class="tab" data-id="08" aria-controls="chart-08" aria-selected="false"><span class="n">08</span>Retail Floor</button>
+      <button type="button" role="tab" class="tab" data-id="09" aria-controls="chart-09" aria-selected="false"><span class="n">09</span>Table &amp; Tap</button>
+      </nav>
+      <main class="panels">
+<section class="panel" id="chart-01" data-id="01" role="tabpanel">
   <h2>01 · Vine Training &amp; Canopy Care</h2>
   <p class="purpose">Walk a vineyard row and see how people shape a vine to manage sun, air, and water.</p>
   <div class="mermaid-wrap"><pre class="mermaid">flowchart LR
@@ -160,7 +145,7 @@
     </div>
   </div>
 </section>
-<section class="panel" id="chart-02" data-id="02">
+<section class="panel" id="chart-02" data-id="02" role="tabpanel">
   <h2>02 · White Grape Varieties — Species Analysis</h2>
   <p class="note">Original Sip Studies teaching. Public variety names. Not affiliated with any court, guild, or credentialing body.</p>
   <p class="purpose">Analyze the core white wine grapes as plants and as styles: who each variety is, where it grows best, how its structure reads, and how to explain it to a guest.</p>
@@ -199,7 +184,7 @@
     </div>
   </div>
 </section>
-<section class="panel" id="chart-03" data-id="03">
+<section class="panel" id="chart-03" data-id="03" role="tabpanel">
   <h2>03 · Red Grape Varieties — Species Analysis</h2>
   <p class="note">Original Sip Studies teaching. Public variety names. Not affiliated with any court, guild, or credentialing body.</p>
   <p class="purpose">Analyze the core red wine grapes as plants and as styles: skin, ripening, structure, place, and how to explain each one to a guest.</p>
@@ -238,7 +223,7 @@
     </div>
   </div>
 </section>
-<section class="panel" id="chart-04" data-id="04">
+<section class="panel" id="chart-04" data-id="04" role="tabpanel">
   <h2>04 · Harvest &amp; Field Gear</h2>
   <p class="purpose">Follow three crops — grapes, grain/hops, and spirit bases — from field to the making house door.</p>
   <div class="mermaid-wrap"><pre class="mermaid">flowchart LR
@@ -267,7 +252,7 @@
     </div>
   </div>
 </section>
-<section class="panel" id="chart-05" data-id="05">
+<section class="panel" id="chart-05" data-id="05" role="tabpanel">
   <h2>05 · Making Houses: Cellar, Brew House, Still House</h2>
   <p class="purpose">Tour three making houses and see how each turns sugar into drink.</p>
   <div class="mermaid-wrap"><pre class="mermaid">flowchart TD
@@ -296,7 +281,7 @@
     </div>
   </div>
 </section>
-<section class="panel" id="chart-06" data-id="06">
+<section class="panel" id="chart-06" data-id="06" role="tabpanel">
   <h2>06 · Aging Patterns &amp; Country Styles</h2>
   <p class="purpose">Learn how time, wood, and local tradition shape style — using Sip Studies scaffolds, not rulebooks.</p>
   <div class="mermaid-wrap"><pre class="mermaid">flowchart LR
@@ -329,7 +314,7 @@
     </div>
   </div>
 </section>
-<section class="panel" id="chart-07" data-id="07">
+<section class="panel" id="chart-07" data-id="07" role="tabpanel">
   <h2>07 · Bottle to Shelf: Packaging &amp; Distribution</h2>
   <p class="purpose">Follow a finished drink from tank to the shop or restaurant door.</p>
   <div class="mermaid-wrap"><pre class="mermaid">flowchart LR
@@ -355,7 +340,7 @@
     </div>
   </div>
 </section>
-<section class="panel" id="chart-08" data-id="08">
+<section class="panel" id="chart-08" data-id="08" role="tabpanel">
   <h2>08 · Retail Floor: Selling, Layout, Receiving &amp; Stocking</h2>
   <p class="purpose">Walk a shop from the back dock to the checkout and learn how wine, beer, and spirits move.</p>
   <div class="mermaid-wrap"><pre class="mermaid">flowchart LR
@@ -384,7 +369,7 @@
     </div>
   </div>
 </section>
-<section class="panel" id="chart-09" data-id="09">
+<section class="panel" id="chart-09" data-id="09" role="tabpanel">
   <h2>09 · Table &amp; Tap: Restaurant Selling, Cellaring, Menus, Purchasing &amp; Host Steps</h2>
   <p class="purpose">Run the beverage side of a restaurant — from buying and storing to guiding a guest at the table.</p>
   <div class="mermaid-wrap"><pre class="mermaid">flowchart TD
@@ -413,42 +398,14 @@
     </div>
   </div>
 </section>
-  </main>
+
+      </main>
+    </div>
+  </section>
+
   <footer>
-    <p>Source: <a href="https://github.com/Sip-Coder/Sip-Stack">github.com/Sip-Coder/Sip-Stack</a> · Mermaid journeys render in-browser.</p>
+    <p>Source: <a href="https://github.com/Sip-Coder/Sip-Stack">github.com/Sip-Coder/Sip-Stack</a> · World scenes are hand-built SVG; Outline journeys render with Mermaid. Deep links: <code>#world/03</code>, <code>#outline/03</code>.</p>
   </footer>
-  <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: 'base',
-      themeVariables: {
-        primaryColor: '#D8E6DA',
-        primaryTextColor: '#1c1410',
-        primaryBorderColor: '#1A5552',
-        lineColor: '#914C2C',
-        secondaryColor: '#EDD4A8',
-        tertiaryColor: '#faf7f2',
-        fontFamily: 'Segoe UI, system-ui, sans-serif'
-      }
-    });
-    async function renderActive() {
-      const active = document.querySelector('.panel.active .mermaid');
-      if (!active || active.getAttribute('data-processed')) return;
-      await mermaid.run({ nodes: [active] });
-    }
-    document.querySelectorAll('.tab').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const id = btn.dataset.id;
-        document.querySelectorAll('.tab').forEach(b => {
-          b.classList.toggle('active', b === btn);
-          b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
-        });
-        document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.dataset.id === id));
-        await renderActive();
-      });
-    });
-    await renderActive();
-  </script>
+  <script type="module" src="assets/sip-app.js"></script>
 </body>
 </html>
