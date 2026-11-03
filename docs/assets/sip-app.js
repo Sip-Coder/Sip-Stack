@@ -1,4 +1,4 @@
-// Sip-Stack dual view router: World (isometric grid) <-> Outline (Mermaid charts).
+// Sip-Stack view router: World (isometric grid) <-> Outline (Mermaid charts) <-> Village (3D diorama, lazy).
 // Deep links: #world  #world/03  #outline  #outline/03  (legacy #world-03, #outline-03, #chart-03 also work)
 import { sceneSVG, ICONS, HOTSPOTS } from './sip-world.js';
 
@@ -186,7 +186,23 @@ function setMode(mode) {
   $$('.seg button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.mode === mode)));
   $('#world').classList.toggle('active', mode === 'world');
   $('#outline').classList.toggle('active', mode === 'outline');
+  $('#village').classList.toggle('active', mode === 'village');
   document.body.dataset.mode = mode;
+  if (mode !== 'village') village?.hide();
+}
+/* ---- Village: Three.js loads only the first time this tab opens ---- */
+let village = null, villageP = null;
+function showVillage(pin) {
+  setMode('village');
+  document.title = 'Village · Sip-Stack · wine-coast diorama';
+  villageP ??= import('./sip-village.js').then(m => (village = m.mountVillage($('#village'), {
+    onPin: id => history.replaceState(null, '', id ? `#village/${id}` : '#village'),
+  }))).catch(err => {
+    console.warn('Village failed to load', err);
+    $('#village .vl-loading').textContent = 'The 3D village could not load. Check your connection and refresh.';
+    villageP = null;
+  });
+  villageP.then(v => { if (v && document.body.dataset.mode === 'village') v.show(pin); });
 }
 let lastOutline = '01';
 function showOutline(id) {
@@ -218,14 +234,16 @@ function route() {
   if ((m = h.match(/^(?:outline|chart)[-/](0[1-9])$/))) return showOutline(m[1]);
   if (h === 'outline') return showOutline(lastOutline);
   if ((m = h.match(/^world[-/](0[1-9])$/))) return showWorld(m[1]);
+  if ((m = h.match(/^village(?:\/([a-z-]+))?$/))) return showVillage(m[1]);
   const wasOutline = document.body.dataset.mode === 'outline';
   showWorld(wasOutline && h === 'world' ? lastOutline : null);
 }
 addEventListener('hashchange', route);
 
 $$('.seg button').forEach(b => b.addEventListener('click', () => {
-  location.hash = b.dataset.mode === 'world' ? `world/${lastOutline}` : `outline/${lastOutline}`;
-  if (b.dataset.mode === 'outline') scrollTo({ top: 0 });
+  const mode = b.dataset.mode;
+  location.hash = mode === 'village' ? 'village' : mode === 'world' ? `world/${lastOutline}` : `outline/${lastOutline}`;
+  if (mode !== 'world') scrollTo({ top: 0 });
 }));
 $$('.tab').forEach(t => t.addEventListener('click', () => { location.hash = `outline/${t.dataset.id}`; }));
 

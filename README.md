@@ -17,12 +17,13 @@ Home: Sip Studios › Ai Edu · Through-line: Somm Support water accessibility
 
 ## Dual view (GitHub Pages)
 
-`docs/index.html` is the Pages home, with two views of the same nine charts:
+`docs/index.html` is the Pages home, with three views:
 
 - **World** (default): a 3×3 isometric paper card grid, *Nine ways water becomes a drink*. Each card has a small animated SVG scene. Click a card to open its chart.
 - **Outline**: the Mermaid journey tabs, plus the White and Red Grape Varieties species analysis tables (02, 03).
+- **Village**: a 3D wine-coast teaching diorama built in code with Three.js (loaded from a CDN only when the tab opens; no build step). Drag to orbit, scroll or pinch to zoom, switch Day / Golden / Night, and tap 11 numbered pins: terraces, drip line, soil cut, five separate making-lane doors (white, rosé, red, Champagne, fortified), rinse-water loop, boat cases, and a table that pours water before wine. Keyboard: arrows orbit, +/- zoom, R resets, Tab reaches pins, Esc closes the note. Deep link a pin with `#village/drip`. Files: `docs/assets/sip-village.js`, `docs/assets/sip-village-content.js`.
 
-Use the World | Outline switch to change views. Each Outline chart has an **Open in World** button that goes back to its card. You can link to a view directly with `#world/02` or `#outline/02`. Files: `docs/index.html`, `docs/assets/sip-stack.css`, `docs/assets/sip-app.js`, `docs/assets/sip-world.js`.
+Use the World | Outline | Village switch to change views. Each Outline chart has an **Open in World** button that goes back to its card. You can link to a view directly with `#world/02` or `#outline/02`. Files: `docs/index.html`, `docs/assets/sip-stack.css`, `docs/assets/sip-app.js`, `docs/assets/sip-world.js`.
 
 ## Lanes
 

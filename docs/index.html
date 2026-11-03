@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&amp;family=Inter:wght@400;500;600&amp;display=swap" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath d=%27M12 3l8 4.5v9L12 21l-8-4.5v-9z%27 fill=%27%23914C2C%27/%3E%3C/svg%3E" />
 <link rel="stylesheet" href="assets/sip-stack.css" />
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
 <body data-mode="world">
   <div class="topbar">
@@ -19,13 +20,14 @@
       <span class="thumb" aria-hidden="true"></span>
       <button type="button" role="tab" data-mode="world" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>World</button>
       <button type="button" role="tab" data-mode="outline" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h4v4H4zM16 14h4v4h-4zM8 8h5a3 3 0 0 1 3 3v3"/></svg>Outline</button>
+      <button type="button" role="tab" data-mode="village" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 20h18M5 20v-7l4-3 4 3v7M13 20v-9l3-2.5 3 2.5v9M8 16h2M16 13h1"/></svg>Village</button>
     </div>
   </div>
 
   <header class="hero">
     <p class="eyebrow">Experience Charts · Wine · Vineyard to Table</p>
     <h1>Sip Studies · <em>Water to Wine</em></h1>
-    <p class="lede">Walk the World map to see each journey as a small place, then step into the Outline for the full Mermaid chart, practice list, and Give-Back note. Nine wine charts from vineyard to table, with red, white, rosé, Champagne, and fortified each made on its own path. Same nine charts, two ways to read them. Original Sip Studies teaching material, not affiliated with any court, guild, or credentialing body.</p>
+    <p class="lede">Walk the World map to see each journey as a small place, then step into the Outline for the full Mermaid chart, practice list, and Give-Back note. Nine wine charts from vineyard to table, with red, white, rosé, Champagne, and fortified each made on its own path. Same nine charts, two ways to read them, plus a 3D wine-coast Village you can turn in your hands. Original Sip Studies teaching material, not affiliated with any court, guild, or credentialing body.</p>
     <p class="values">Culture · Credible · Catalyze · Legacy</p>
   </header>
 
@@ -542,8 +544,37 @@
     </div>
   </section>
 
+  <section id="village" class="view" aria-label="Village view">
+    <div class="village-wrap">
+      <div class="vl-card">
+        <div class="canvas-head"><h2>The <em>wine-coast</em> village</h2><span class="hint">Drag to orbit · scroll or pinch to zoom · tap a pin or a place</span></div>
+        <div class="vl-stage" tabindex="0" role="application" aria-label="3D wine-coast village. Arrow keys orbit, plus and minus zoom, R resets the view, Tab moves through the numbered pins." data-light="golden">
+          <div class="vl-pins"></div>
+          <p class="vl-loading">Building the village…</p>
+          <div class="vl-hud" role="toolbar" aria-label="View controls">
+            <div class="vl-light" role="group" aria-label="Light">
+              <button type="button" data-light="day" aria-pressed="false">Day</button><button type="button" data-light="golden" aria-pressed="true">Golden</button><button type="button" data-light="night" aria-pressed="false">Night</button>
+            </div>
+            <button type="button" data-act="orbit" aria-pressed="false" title="Slow auto-orbit">⟳<span> Orbit</span></button>
+            <button type="button" data-act="reset" title="Reset view (R)">⌂<span> Reset</span></button>
+          </div>
+        </div>
+        <div class="vl-toggles" role="group" aria-label="Change the village">
+          <button type="button" data-t="drip" aria-pressed="false">💧 <span>Drip line</span></button>
+          <button type="button" data-t="cut" aria-pressed="false">⛰ <span>Soil cut</span></button>
+          <button type="button" data-t="reuse" aria-pressed="false">♻ <span>Rinse loop</span></button>
+          <button type="button" data-t="cases" aria-pressed="false">📦 <span>Load boat</span></button>
+          <button type="button" data-t="pour" aria-pressed="false">🥂 <span>Pour water</span></button>
+        </div>
+        <div class="vl-note" aria-live="polite" hidden></div>
+        <ol class="vl-list" aria-label="Village pins"></ol>
+        <p class="vl-foot">An imaginary Sip Studies harbor, built in code: vines on the terraces, five making lanes behind five separate doors, a working dock, and a table that pours water before wine.</p>
+      </div>
+    </div>
+  </section>
+
   <footer>
-    <p>Source: <a href="https://github.com/Sip-Coder/Sip-Stack">github.com/Sip-Coder/Sip-Stack</a> · World scenes are hand-built SVG; Outline journeys render with Mermaid. Deep links: <code>#world/03</code>, <code>#outline/03</code>.</p>
+    <p>Source: <a href="https://github.com/Sip-Coder/Sip-Stack">github.com/Sip-Coder/Sip-Stack</a> · World scenes are hand-built SVG; Outline journeys render with Mermaid; the Village is procedural Three.js. Deep links: <code>#world/03</code>, <code>#outline/03</code>, <code>#village/drip</code>.</p>
   </footer>
   <script type="module" src="assets/sip-app.js"></script>
 </body>
