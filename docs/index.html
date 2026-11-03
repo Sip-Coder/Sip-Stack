@@ -99,6 +99,21 @@
     color: var(--mauve);
   }
   footer a { color: var(--clay); }
+  .note { margin: 0 0 0.5rem; font-size: 0.8rem; color: var(--teal); background: var(--mint); display: inline-block; padding: 0.2rem 0.6rem; border-radius: 999px; }
+  .families { font-size: 0.9rem; margin: 0 0 1rem; }
+  h3.sub { color: var(--teal); font-size: 1.05rem; margin: 1.25rem 0 0.5rem; }
+  .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid #e5ddd0; }
+  table.analysis { border-collapse: collapse; width: 100%; min-width: 980px; font-size: 0.84rem; }
+  table.analysis thead th { background: var(--teal); color: white; text-align: left; padding: 0.55rem 0.6rem; position: sticky; top: 0; font-weight: 600; }
+  table.analysis td, table.analysis tbody th { padding: 0.5rem 0.6rem; border-top: 1px solid #eee4d6; vertical-align: top; text-align: left; }
+  table.analysis tbody th { color: var(--clay); white-space: nowrap; }
+  table.analysis tbody tr:nth-child(even) { background: var(--paper); }
+  table.analysis td:last-child { background: rgba(237,212,168,0.35); }
+  .fam { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.78rem; white-space: nowrap; }
+  .fam.f-a { background: var(--mint); color: var(--teal); }
+  .fam.f-b { background: #e7e3ea; color: #4d4652; }
+  .fam.f-c { background: var(--clay); color: white; }
+  .fine { font-size: 0.78rem; color: var(--mauve); margin: 0.4rem 0 0; }
 </style>
 </head>
 <body>
@@ -109,8 +124,8 @@
     <p class="values">Culture · Credible · Catalyze · Legacy</p>
   </header>
   <nav class="tabs" aria-label="Charts"><button type="button" class="tab active" data-id="01" aria-pressed="true">01 · Vine Training &amp; Canopy Care</button>
-<button type="button" class="tab" data-id="02" aria-pressed="false">02 · Meeting White Grapes</button>
-<button type="button" class="tab" data-id="03" aria-pressed="false">03 · Meeting Red Grapes</button>
+<button type="button" class="tab" data-id="02" aria-pressed="false">02 · White Grape Varieties</button>
+<button type="button" class="tab" data-id="03" aria-pressed="false">03 · Red Grape Varieties</button>
 <button type="button" class="tab" data-id="04" aria-pressed="false">04 · Harvest &amp; Field Gear</button>
 <button type="button" class="tab" data-id="05" aria-pressed="false">05 · Making Houses</button>
 <button type="button" class="tab" data-id="06" aria-pressed="false">06 · Aging Patterns &amp; Country Sty</button>
@@ -146,62 +161,80 @@
   </div>
 </section>
 <section class="panel" id="chart-02" data-id="02">
-  <h2>02 · Meeting White Grapes</h2>
-  <p class="purpose">A guided meet-and-greet with white grapes — how to group them, taste them, and talk about them.</p>
+  <h2>02 · White Grape Varieties — Species Analysis</h2>
+  <p class="note">Original Sip Studies teaching. Public variety names. Not affiliated with any court, guild, or credentialing body.</p>
+  <p class="purpose">Analyze the core white wine grapes as plants and as styles: who each variety is, where it grows best, how its structure reads, and how to explain it to a guest.</p>
+  <p class="families"><strong>Sip Families (white):</strong> <em>Crisp</em> = high acid, light body, little or no oak · <em>Floral</em> = aromatic, perfumed, often lower acid or with sweetness · <em>Rich</em> = fuller body, often oak, ripeness, or lees texture. A variety can move between families depending on climate and winemaking (shown with →).</p>
+  <h3 class="sub">Variety analysis table · 11 varieties</h3>
+  <div class="table-wrap"><table class="analysis">
+    <thead><tr><th scope="col">Variety</th><th scope="col">Sip Family</th><th scope="col">Vine traits</th><th scope="col">Climate fit</th><th scope="col">Structure (acidity · body · grip)</th><th scope="col">Style cues</th><th scope="col">Place patterns</th><th scope="col">Water / Give-Back note</th></tr></thead>
+    <tbody><tr><th scope="row">Albariño</th><td><span class="fam f-a">Crisp</span></td><td>Thick-skinned, holds up to damp sea air; often grown on high pergolas</td><td>Cool, wet, coastal</td><td>High · light–medium · none</td><td>Mostly steel tank, no oak; dry; sometimes rests on its yeast for texture</td><td>Atlantic Iberia (Galicia, northern Portugal as Alvarinho); a few US coastal sites</td><td>Rain-fed coastal vineyards: compare to drought-stressed inland sites</td></tr><tr><th scope="row">Chardonnay</th><td><span class="fam f-c">Rich (can be Crisp)</span></td><td>Early budding, frost-prone; very adaptable, a winemaker&#x27;s blank canvas</td><td>Cool to warm; style follows climate</td><td>Medium–high · medium–full · none</td><td>Widest range: steel and lean, or barrel-fermented, buttery, and round; also a core sparkling grape</td><td>Burgundy and Champagne home; California, Australia, Chile, Oregon, many more</td><td>Same grape, many climates: a lesson in how water and heat shape one plant</td></tr><tr><th scope="row">Chenin Blanc</th><td><span class="fam f-a">Crisp → Rich</span></td><td>Vigorous, buds early, ripens late; prone to noble rot in misty sites</td><td>Cool-moderate to warm</td><td>Very high · light–full · none</td><td>Every sweetness level from bone dry to dessert; still or sparkling; oak optional</td><td>Loire Valley home; South Africa&#x27;s most planted white; some California</td><td>South African old bush vines are often dry-farmed: a water-wise model</td></tr><tr><th scope="row">Gewürztraminer</th><td><span class="fam f-b">Floral</span></td><td>Pink-skinned, low-yielding, buds early; sensitive to frost and disease</td><td>Cool, sunny, dry autumns</td><td>Low · full · slight phenolic grip</td><td>Dry to sweet; usually no oak; perfumed and oily-textured</td><td>Alsace, northern Italy (Alto Adige), Germany; cool US/NZ sites</td><td>Low-acid grape: teach why cool nights (and water in the soil) keep it balanced</td></tr><tr><th scope="row">Pinot Grigio / Pinot Gris</th><td><span class="fam f-a">Crisp (Grigio) · Rich (Gris)</span></td><td>Grey-pink skin, a color mutation of Pinot Noir; early ripening</td><td>Cool to moderate</td><td>Medium · light–full · none</td><td>Two names, two styles: light and zippy (Grigio) or riper and rounder (Gris); rarely oaked</td><td>Northeast Italy, Alsace, Oregon, New Zealand</td><td>Mutation story: one vine family, many faces, same water needs</td></tr><tr><th scope="row">Riesling</th><td><span class="fam f-b">Floral (and Crisp)</span></td><td>Hard wood resists winter cold; late ripening; reflects soil strongly</td><td>Cool, long seasons, steep slopes</td><td>Very high · light–medium · none</td><td>Bone dry to very sweet; almost never oaked; ages for decades</td><td>Germany home; Alsace, Austria, Australia&#x27;s cool valleys, New York Finger Lakes, Washington</td><td>Steep river slopes: how rivers temper climate and support growers</td></tr><tr><th scope="row">Sauvignon Blanc</th><td><span class="fam f-a">Crisp</span></td><td>Vigorous vine; needs canopy control to keep grassy vs ripe balance</td><td>Cool to moderate</td><td>High · light–medium · none</td><td>Mostly steel and fresh; some barrel-aged and blended with Sémillon</td><td>Loire Valley and Bordeaux home; New Zealand, Chile, South Africa, California</td><td>Irrigation and vigor: more water = more leaves = greener style</td></tr><tr><th scope="row">Torrontés</th><td><span class="fam f-b">Floral</span></td><td>Argentine crossing (Muscat parent); thrives at extreme altitude</td><td>High-altitude desert: hot days, cold nights</td><td>Medium · medium · slight</td><td>Dry, unoaked, aromatic</td><td>Argentina&#x27;s high north (Salta) and Mendoza/La Rioja</td><td>Desert vineyards rely on snowmelt irrigation: a direct water-access story</td></tr><tr><th scope="row">Grüner Veltliner</th><td><span class="fam f-a">Crisp</span></td><td>Native Austrian; high-yielding unless restrained; loves loess soils</td><td>Cool continental</td><td>High · light–full · none</td><td>Mostly dry, unoaked; light everyday to rich reserve styles</td><td>Austria (Danube valleys); small plantings in US, NZ, Australia</td><td>Danube terraces: river water and stone walls that store heat</td></tr><tr><th scope="row">Viognier</th><td><span class="fam f-b">Floral → Rich</span></td><td>Low, irregular yields; needs full ripeness to show its character</td><td>Warm, sunny</td><td>Low · full · slight</td><td>Dry, often lightly oaked; sometimes co-fermented with Syrah</td><td>Northern Rhône home; California, Australia, Virginia</td><td>Heat-loving grape: discuss water stress in warming climates</td></tr><tr><th scope="row">Sémillon</th><td><span class="fam f-c">Rich</span></td><td>Thin skin, prone to noble rot; ages into honeyed richness</td><td>Moderate; misty autumns for sweet styles</td><td>Low–medium · medium–full · none</td><td>Dry blends with Sauvignon Blanc, or sweet botrytis wines; ages well</td><td>Bordeaux (including sweet Sauternes); Australia (Hunter Valley)</td><td>Morning river mist creates sweet wines: water as a winemaking ingredient</td></tr></tbody>
+  </table></div>
+  <p class="fine">Place patterns are high-level teaching anchors, not a complete or official list.</p>
+  <h3 class="sub">How to analyze a grape · Sip Studies nine steps</h3>
   <div class="mermaid-wrap"><pre class="mermaid">flowchart TD
-  A[&quot;Pour three whites side by side&quot;] --&gt;|&quot;notice color&quot;| B[&quot;Pale, golden, or deep?&quot;]
-  B --&gt;|&quot;smell first&quot;| C[&quot;Aromatic or quiet?&quot;]
-  C --&gt;|&quot;sort into families&quot;| D[&quot;Crisp and zesty&quot;]
-  C --&gt; E[&quot;Floral and perfumed&quot;]
-  C --&gt; F[&quot;Rich and round&quot;]
-  D --&gt;|&quot;meet one grape&quot;| G[&quot;Sauvignon Blanc-type lane&quot;]
-  E --&gt;|&quot;meet one grape&quot;| H[&quot;Riesling-type lane&quot;]
-  F --&gt;|&quot;meet one grape&quot;| I[&quot;Chardonnay-type lane&quot;]
-  G --&gt; J[&quot;Say it in your own words&quot;]
-  H --&gt; J
-  I --&gt; J
-  J --&gt;|&quot;match to food and guest&quot;| K[&quot;Recommend one bottle&quot;]
-  K --&gt; L[&quot;Give-Back: clean water for the table&quot;]</pre></div>
+  A[&quot;1 · Identity: name, synonyms, parents&quot;] --&gt; B[&quot;2 · Vine traits: budding, ripening, skin&quot;]
+  B --&gt; C[&quot;3 · Climate fit: cool, moderate, warm&quot;]
+  C --&gt; D[&quot;4 · Structural fingerprint: acidity, body, grip&quot;]
+  D --&gt; E[&quot;5 · Sip Family&quot;]
+  E --&gt; F1[&quot;Crisp&quot;]
+  E --&gt; F2[&quot;Floral&quot;]
+  E --&gt; F3[&quot;Rich&quot;]
+  F1 --&gt; G[&quot;6 · Style outcomes: oak, sweetness, production&quot;]
+  F2 --&gt; G
+  F3 --&gt; G
+  G --&gt; H[&quot;7 · Place patterns: home region and where it travelled&quot;]
+  H --&gt; I[&quot;8 · Guest talk: one sentence, plain words&quot;]
+  I --&gt; J[&quot;9 · Give-Back: the grape&#x27;s water story&quot;]</pre></div>
   <div class="meta">
     <div>
       <h3>What you practice</h3>
-      <ul><li>Sorting whites into three Sip Studies families: Crisp, Floral, Rich</li><li>Describing one grape in plain words a guest would understand</li><li>Spotting how oak or no-oak shifts a white&#x27;s feel</li><li>Picking one white for one dish</li></ul>
+      <ul><li>Run the nine-step analysis on one variety and fill one table row from memory</li><li>Explain how climate moves a grape between Crisp and Rich (Chardonnay, Chenin Blanc)</li><li>Name a variety&#x27;s home region and one place it travelled to</li><li>Say one guest-ready sentence per variety</li></ul>
     </div>
     <div>
       <h3>Source vs Flow</h3>
-      <p>*Source* — name a grape and its family. *Flow* — compare two grapes, explain the climate link, and recommend one to a guest.</p>
-      <p class="bridge"><strong>Bridge:</strong> Grape spirits (brandies, pomace spirits) start from grapes like these — same fruit, a different house.</p>
-      <p class="give"><strong>Give-Back:</strong> Learners pair each white with a glass of water in the tasting and note how water resets the palate — the simplest hospitality act, and the one Somm Support funds.</p>
+      <p><em>Source:</em> name each variety, place it in its Sip Family, and give its climate fit and one home region. <em>Flow:</em> compare two varieties step by step (for example Riesling vs Gewürztraminer), predict style from climate and winemaking, and recommend one to a guest with a reason.</p>
+      <p class="bridge"><strong>Bridge:</strong> Grape spirits (brandies, pomace spirits) start from white grapes like Ugni Blanc, Folle Blanche, and Muscat relatives: same fruit, a different house.</p>
+      <p class="give"><strong>Give-Back:</strong> Each variety row ends with a water note. Learners pick one white and write its water story in two sentences: how the vine gets its water and one way a grower saves it. Somm Support uses these stories at Water to Wine events.</p>
     </div>
   </div>
 </section>
 <section class="panel" id="chart-03" data-id="03">
-  <h2>03 · Meeting Red Grapes</h2>
-  <p class="purpose">Meet red grapes by feel — weight, grip, and fruit — then learn to speak about them.</p>
+  <h2>03 · Red Grape Varieties — Species Analysis</h2>
+  <p class="note">Original Sip Studies teaching. Public variety names. Not affiliated with any court, guild, or credentialing body.</p>
+  <p class="purpose">Analyze the core red wine grapes as plants and as styles: skin, ripening, structure, place, and how to explain each one to a guest.</p>
+  <p class="families"><strong>Sip Families (red):</strong> <em>Light</em> = pale, high acid, low grip · <em>Medium</em> = balanced fruit, acid, and grip; often savory · <em>Bold</em> = deep color or high tannin, full body, often oak. Skin thickness and climate decide most of the move between families (shown with →).</p>
+  <h3 class="sub">Variety analysis table · 14 varieties</h3>
+  <div class="table-wrap"><table class="analysis">
+    <thead><tr><th scope="col">Variety</th><th scope="col">Sip Family</th><th scope="col">Vine traits</th><th scope="col">Climate fit</th><th scope="col">Structure (acidity · body · grip)</th><th scope="col">Style cues</th><th scope="col">Place patterns</th><th scope="col">Water / Give-Back note</th></tr></thead>
+    <tbody><tr><th scope="row">Cabernet Franc</th><td><span class="fam f-b">Medium</span></td><td>Buds and ripens earlier than Cabernet Sauvignon; hardy in cooler sites</td><td>Cool to moderate</td><td>Medium–high · medium · medium</td><td>Unoaked and fresh or barrel-aged; key blending partner</td><td>Loire Valley and Bordeaux; Finger Lakes, Virginia, Argentina</td><td>Cooler-site grape: lower irrigation needs than many bold reds</td></tr><tr><th scope="row">Cabernet Sauvignon</th><td><span class="fam f-c">Bold</span></td><td>Small, thick-skinned berries; late ripening; offspring of Cabernet Franc × Sauvignon Blanc</td><td>Warm, long seasons; gravelly, well-drained soils</td><td>Medium–high · full · high</td><td>Usually oak-aged; blended or single variety; long aging</td><td>Bordeaux (Left Bank) home; Napa, Washington, Chile, Australia, South Africa</td><td>Well-drained gravel: how soil holds or sheds water</td></tr><tr><th scope="row">Gamay</th><td><span class="fam f-a">Light</span></td><td>Early budding and ripening; high yielding</td><td>Cool to moderate</td><td>High · light · low</td><td>Often whole-cluster fermented for juicy freshness; rarely oaked; served slightly cool</td><td>Beaujolais home; Loire, Switzerland, Oregon</td><td>Granite hillside vineyards rely on rain: a dry-farming story</td></tr><tr><th scope="row">Grenache / Garnacha</th><td><span class="fam f-b">Medium → Bold</span></td><td>Drought-tolerant bush vine; high sugar; thin-ish skin</td><td>Hot, dry, windy</td><td>Low–medium · full · medium</td><td>Often blended (with Syrah, Mourvèdre); also rosé and fortified</td><td>Southern Rhône, Spain (Priorat, Navarra, Aragón), Sardinia (Cannonau), Australia</td><td>Drought-tolerant bush vines: the model for water-wise vineyards</td></tr><tr><th scope="row">Malbec</th><td><span class="fam f-c">Bold</span></td><td>Thick skins; benefits from strong sunlight at altitude</td><td>High-altitude sun with cool nights; or warm southwest France</td><td>Medium · full · medium–high</td><td>Often oak-aged; deep color; single variety in Argentina</td><td>Argentina (Mendoza) and Cahors, France</td><td>Andean snowmelt irrigation: water access shapes a whole region</td></tr><tr><th scope="row">Merlot</th><td><span class="fam f-b">Medium → Bold</span></td><td>Early ripening, thinner skin than Cabernet; loves clay</td><td>Moderate to warm</td><td>Medium · medium–full · medium</td><td>Often oak-aged; soft structure; major blending grape</td><td>Bordeaux (Right Bank) home; Italy, Washington, California, Chile</td><td>Clay soils hold water: compare to gravel sites for Cabernet</td></tr><tr><th scope="row">Nebbiolo</th><td><span class="fam f-c">Bold (light color)</span></td><td>Buds early, ripens very late; thin color but high tannin</td><td>Cool-moderate, foggy autumns</td><td>High · medium–full · high</td><td>Long barrel and bottle aging; pale color fools the eye</td><td>Piedmont (Barolo, Barbaresco) home; Valtellina; tiny New World plantings</td><td>Named for fog (nebbia): water in the air is part of the identity</td></tr><tr><th scope="row">Pinot Noir</th><td><span class="fam f-a">Light</span></td><td>Thin-skinned, disease-prone, genetically unstable (many clones)</td><td>Cool</td><td>High · light–medium · low–medium</td><td>Often aged in barrel gently; core sparkling grape</td><td>Burgundy and Champagne home; Oregon, California coast, New Zealand, Germany (Spätburgunder)</td><td>Fragile grape: canopy and moisture control as care, tie back to Chart 01</td></tr><tr><th scope="row">Sangiovese</th><td><span class="fam f-b">Medium</span></td><td>Many local clones; slow, late ripening</td><td>Warm days, hillsides</td><td>High · medium · medium–high</td><td>Traditional large casks or small new oak; single variety or blended</td><td>Tuscany (Chianti, Montalcino, Montepulciano) home; Romagna; some California, Australia</td><td>Hill-town agriculture: shared water systems in rural communities</td></tr><tr><th scope="row">Syrah / Shiraz</th><td><span class="fam f-c">Bold</span></td><td>Vigorous; shows site strongly; two names signal two styles</td><td>Moderate (Syrah) to hot (Shiraz)</td><td>Medium · full · medium–high</td><td>Oak-aged; sometimes co-fermented with Viognier; blend or solo</td><td>Northern Rhône home; Australia (Barossa, McLaren Vale), Washington, Chile, South Africa</td><td>Same grape, two names: how climate and water change a style</td></tr><tr><th scope="row">Tempranillo</th><td><span class="fam f-b">Medium → Bold</span></td><td>Thick-skinned; ripens early (&#x27;temprano&#x27; = early)</td><td>Continental: hot days, cold nights</td><td>Medium · medium–full · medium</td><td>Classic long oak aging tiers from young to long-aged; also unoaked young styles</td><td>Spain (Rioja, Ribera del Duero, Toro); Portugal (Tinta Roriz); some Texas, Oregon</td><td>High dry plateaus: irrigation was restricted for decades in Spain</td></tr><tr><th scope="row">Zinfandel / Primitivo</th><td><span class="fam f-c">Bold</span></td><td>Uneven ripening in the same cluster; very old vines survive</td><td>Warm to hot</td><td>Medium · full · medium</td><td>Oak-aged, high alcohol, jammy; also off-dry blush versions</td><td>California (Lodi, Sonoma, Paso Robles); southern Italy (Puglia, as Primitivo); Croatian ancestor</td><td>Century-old dry-farmed vines: heritage and water thrift together</td></tr><tr><th scope="row">Barbera</th><td><span class="fam f-b">Medium</span></td><td>Vigorous; keeps acidity even in heat</td><td>Moderate to warm</td><td>Very high · medium · low</td><td>Unoaked and juicy or barrel-aged and richer</td><td>Piedmont (Asti, Alba); California Sierra Foothills; Argentina</td><td>Everyday table wine: affordable pours that can fund a Give-Back round-up</td></tr><tr><th scope="row">Mourvèdre / Monastrell</th><td><span class="fam f-c">Bold</span></td><td>Late budding and ripening; needs heat and water at the root</td><td>Hot, coastal-Mediterranean</td><td>Medium · full · high</td><td>Often blended (GSM); can age long</td><td>Bandol (Provence), Southern Rhône, Spain (Jumilla, Monastrell), Australia (Mataro)</td><td>Needs warmth plus some water: a balance lesson for hot regions</td></tr></tbody>
+  </table></div>
+  <p class="fine">Place patterns are high-level teaching anchors, not a complete or official list.</p>
+  <h3 class="sub">How to analyze a grape · Sip Studies nine steps</h3>
   <div class="mermaid-wrap"><pre class="mermaid">flowchart TD
-  A[&quot;Pour three reds side by side&quot;] --&gt;|&quot;tilt the glass&quot;| B[&quot;See-through or inky?&quot;]
-  B --&gt;|&quot;sip and pause&quot;| C[&quot;Feel the grip&quot;]
-  C --&gt;|&quot;sort into families&quot;| D[&quot;Light and bright&quot;]
-  C --&gt; E[&quot;Medium and savory&quot;]
-  C --&gt; F[&quot;Bold and structured&quot;]
-  D --&gt;|&quot;meet one grape&quot;| G[&quot;Pinot Noir-type lane&quot;]
-  E --&gt;|&quot;meet one grape&quot;| H[&quot;Sangiovese-type lane&quot;]
-  F --&gt;|&quot;meet one grape&quot;| I[&quot;Cabernet Sauvignon-type lane&quot;]
-  G --&gt; J[&quot;Tell its story: place and people&quot;]
-  H --&gt; J
-  I --&gt; J
-  J --&gt;|&quot;match to a moment&quot;| K[&quot;Recommend for a guest&quot;]
-  K --&gt; L[&quot;Give-Back: water behind every red&quot;]</pre></div>
+  A[&quot;1 · Identity: name, synonyms, parents&quot;] --&gt; B[&quot;2 · Vine traits: budding, ripening, skin&quot;]
+  B --&gt; C[&quot;3 · Climate fit: cool, moderate, warm&quot;]
+  C --&gt; D[&quot;4 · Structural fingerprint: acidity, body, grip&quot;]
+  D --&gt; E[&quot;5 · Sip Family&quot;]
+  E --&gt; F1[&quot;Light&quot;]
+  E --&gt; F2[&quot;Medium&quot;]
+  E --&gt; F3[&quot;Bold&quot;]
+  F1 --&gt; G[&quot;6 · Style outcomes: oak, sweetness, production&quot;]
+  F2 --&gt; G
+  F3 --&gt; G
+  G --&gt; H[&quot;7 · Place patterns: home region and where it travelled&quot;]
+  H --&gt; I[&quot;8 · Guest talk: one sentence, plain words&quot;]
+  I --&gt; J[&quot;9 · Give-Back: the grape&#x27;s water story&quot;]</pre></div>
   <div class="meta">
     <div>
       <h3>What you practice</h3>
-      <ul><li>Sorting reds into Sip Studies weight families: Light, Medium, Bold</li><li>Feeling grip (tannin) and explaining it simply</li><li>Linking grape skin thickness to color and grip</li><li>Telling a 30-second story about one grape&#x27;s home</li></ul>
+      <ul><li>Run the nine-step analysis on one variety and fill one table row from memory</li><li>Link skin thickness and ripening time to color and grip</li><li>Explain synonym pairs (Syrah/Shiraz, Grenache/Garnacha, Zinfandel/Primitivo, Mourvèdre/Monastrell)</li><li>Say one guest-ready sentence per variety</li></ul>
     </div>
     <div>
       <h3>Source vs Flow</h3>
-      <p>*Source* — recognize light vs bold and name one grape per family. *Flow* — explain why a grape feels the way it does and steer a guest from one family to another.</p>
-      <p class="bridge"><strong>Bridge:</strong> Bold reds and barrel-aged spirits share vocabulary for grip and wood — learners meet that bridge again in Chart 06.</p>
-      <p class="give"><strong>Give-Back:</strong> Red wine takes a lot of water to grow and make. Learners estimate one bottle&#x27;s water story and share one fact a guest might remember.</p>
+      <p><em>Source:</em> name each variety, place it in its Sip Family, and give its climate fit and one home region. <em>Flow:</em> compare two varieties step by step (for example Nebbiolo vs Pinot Noir: both pale, very different grip), predict style from site and winemaking, and guide a guest from one family to another.</p>
+      <p class="bridge"><strong>Bridge:</strong> Bold, oak-aged reds and barrel-aged spirits share vocabulary for grip and wood. Learners meet that bridge again in Chart 06.</p>
+      <p class="give"><strong>Give-Back:</strong> Red grapes need long seasons and often irrigation. Learners pick one dry-farmed or water-wise red (old-vine Zinfandel, bush-vine Grenache) and share one fact a guest might remember. Each story can headline a Water to Wine pour.</p>
     </div>
   </div>
 </section>
