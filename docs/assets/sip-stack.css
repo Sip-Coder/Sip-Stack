@@ -412,3 +412,133 @@ body[data-mode="village"] .hero h1 { font-size: clamp(1.4rem, 3vw, 2rem); }
   .seg button { padding: .5rem .7rem; }
 }
 @media (max-width: 420px) { .seg button svg { display: none; } .seg button { padding: .5rem .6rem; font-size: .78rem; } .brand .sub { display: none; } }
+
+/* ---------- v4 elevate: option groups, far layer, mood ---------- */
+.scene .op { display: none; }
+.scene .op.on { display: inline; }
+.scene .mood { opacity: 0; mix-blend-mode: multiply; transition: opacity .6s ease; }
+.scene .far .sun { transition: opacity .6s ease; }
+[data-light="golden"] .scene .mood { opacity: 1; }
+[data-light="golden"] .scene .far .sun { opacity: .55; }
+[data-light="golden"] .scene .glow { opacity: .4; }
+
+/* ---------- v4 shared chrome: chips, segments, light switch, note dock (World + Village) ---------- */
+.sip-tools { display: flex; flex-wrap: wrap; gap: .3rem .35rem; align-items: center; }
+.card .sip-tools { position: relative; z-index: 3; margin: -.1rem 0 .55rem; }
+.sip-chip {
+  display: inline-flex; align-items: center; gap: .32rem; cursor: pointer;
+  border: 1.2px solid var(--line); background: #fffaf1; color: var(--ink); border-radius: 999px;
+  padding: .36rem .62rem; font: 600 .72rem/1 var(--sans); letter-spacing: .01em;
+  box-shadow: 0 1px 0 rgba(46,37,32,.35); transition: background .2s, color .2s, border-color .2s, transform .15s, box-shadow .15s;
+}
+.sip-chip i { font-style: normal; font-size: .85em; line-height: 1; }
+.sip-chip:hover { background: #f6e9d2; }
+.sip-chip:active { transform: translateY(1px); box-shadow: none; }
+.sip-chip[aria-pressed="true"] { background: var(--clay); border-color: var(--clay); color: #fff; box-shadow: 0 1px 0 rgba(46,37,32,.55), inset 0 1px 0 rgba(255,255,255,.18); }
+.sip-chip:focus-visible, .sip-light button:focus-visible, .tab:focus-visible, .modes a:focus-visible, .btn-world:focus-visible, .pager a:focus-visible, .card .open:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.sip-seg { display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 2px; border: 1.2px solid var(--line); border-radius: 14px; background: #fffaf1; box-shadow: 0 1px 0 rgba(46,37,32,.35); }
+.sip-seg .sip-chip { border-color: transparent; box-shadow: none; background: transparent; padding: .32rem .55rem; }
+.sip-seg .sip-chip:hover { background: #f3e4c8; }
+.sip-seg .sip-chip[aria-pressed="true"] { background: var(--teal); border-color: var(--teal); color: #fff; }
+.vl-toggles.sip-tools { margin: .7rem 0 .2rem; gap: .4rem; }
+.vl-toggles .sip-chip { font-size: .78rem; padding: .45rem .75rem; }
+.sip-light { display: inline-flex; border: 1.2px solid var(--line); border-radius: 999px; overflow: hidden; background: #fffaf1; flex-shrink: 0; }
+.sip-light button { border: 0; background: transparent; cursor: pointer; font: 600 .72rem/1 var(--sans); color: var(--ink); padding: .38rem .7rem; transition: background .2s, color .2s; }
+.sip-light button[aria-pressed="true"] { background: var(--teal); color: #fff; }
+.canvas-head { align-items: center; flex-wrap: wrap; }
+.canvas-head .hint { margin-left: auto; }
+.canvas[data-light="golden"] { background-image: var(--grain), var(--fibers), radial-gradient(120% 90% at 30% 0%, #f9dcb2 0%, #ecc993 70%, #e2b880 100%); }
+.canvas[data-light="golden"] .card .scene { background: radial-gradient(90% 80% at 40% 30%, #fff0d6 0%, #f6dcb4 70%, #eccb9a 100%); }
+
+/* note dock: same card for World pins/buttons and the Village */
+.sip-note { background: #fffaf1; border: 1.4px solid var(--line); border-radius: 8px; box-shadow: 4px 5px 0 -1px rgba(46,37,32,.6), 0 14px 28px -18px rgba(46,37,32,.5); color: var(--ink); }
+.sip-note .k { font: 700 .62rem var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--clay); }
+.sip-note h4 { font-family: var(--serif); font-weight: 600; letter-spacing: -.005em; }
+.sip-note .row { border-top: 1px dotted rgba(58,49,43,.45); }
+.sip-note .act { color: var(--teal); font-weight: 600; }
+.sip-note .act b { display: inline-block; margin-right: .35rem; padding: .08rem .4rem; border-radius: 999px; background: var(--mint); color: var(--teal); font: 700 .58rem/1.4 var(--sans); letter-spacing: .08em; text-transform: uppercase; vertical-align: 1px; }
+.sip-note .x { border-radius: 50%; }
+.sip-note .x:hover { background: #f3e4c8; color: var(--ink); }
+.sip-note .x:focus-visible { outline: 2px solid var(--teal); }
+.hs-pop.sip-note { width: min(300px, calc(100% - 12px)); padding: .65rem .8rem .6rem; font-size: .8rem; line-height: 1.42; }
+.hs-pop.sip-note .row { flex-wrap: wrap; gap: .35rem .6rem; }
+
+/* cards: real link for Outline, toolbar sits between scene and title */
+.card { cursor: pointer; }
+.card .open { text-decoration: none; }
+.card .scene { margin-bottom: .45rem; }
+.card .scene .far { pointer-events: none; }
+.scene .flick { animation: flick 1.2s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 50% 100%; }
+@keyframes flick { from { transform: scaleY(1) rotate(-3deg); } to { transform: scaleY(1.15) rotate(3deg); } }
+
+/* ---------- v4 page chrome: top bar, mode switch, hero modes, footer ---------- */
+.topbar { box-shadow: 0 6px 18px -14px rgba(42,34,29,.45); }
+.seg { box-shadow: inset 0 1px 0 #fff, 0 1px 0 rgba(46,37,32,.3); }
+.seg .thumb { box-shadow: 0 1px 0 rgba(0,0,0,.25), 0 4px 10px -4px rgba(26,85,82,.7); }
+.seg button:hover:not([aria-selected="true"]) { color: var(--clay); }
+.seg button:focus-visible { outline: 2px solid var(--clay); outline-offset: 1px; }
+.hero .lede { font-size: 1.04rem; color: #4a424d; max-width: 44rem; }
+.modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; margin: .95rem 0 .2rem; max-width: 60rem; }
+.modes a {
+  display: flex; flex-direction: column; gap: .15rem; text-decoration: none; color: var(--ink);
+  background: var(--card); background-image: var(--grain); border: 1.3px solid var(--line); border-radius: 8px;
+  padding: .6rem .75rem .65rem; box-shadow: 3px 4px 0 -1px rgba(46,37,32,.5); transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+.modes a b { font: 600 1.02rem/1.2 var(--serif); color: var(--clay); }
+.modes a b::after { content: " →"; color: var(--mauve); font-family: var(--sans); font-size: .8rem; }
+.modes a span { font-size: .8rem; line-height: 1.35; color: #5d5560; }
+.modes a:hover { transform: translateY(-2px); box-shadow: 5px 6px 0 -1px var(--line); }
+body[data-mode="world"] .modes a[data-mode="world"] { border-color: var(--teal); box-shadow: 3px 4px 0 -1px var(--teal); }
+body[data-mode="world"] .modes a[data-mode="world"] b::after { content: " · you are here"; color: var(--teal); }
+.fine-print { margin: .6rem 0 0; font-size: .72rem; color: var(--mauve); }
+body[data-mode="outline"] .modes, body[data-mode="village"] .modes, body[data-mode="outline"] .fine-print, body[data-mode="village"] .fine-print { display: none; }
+footer { border-top: 1px dotted rgba(58,49,43,.4); padding-top: 1rem; line-height: 1.55; }
+footer p { margin: 0 0 .35rem; max-width: 62rem; }
+footer b { font-family: var(--serif); color: var(--clay); font-weight: 600; }
+footer code { font-size: .74rem; background: rgba(237,212,168,.45); padding: .05rem .3rem; border-radius: 4px; color: var(--ink); }
+
+/* ---------- v4 Outline: same card craft as the Village HUD ---------- */
+nav.tabs { gap: .35rem; padding-bottom: 1rem; }
+.tab { box-shadow: 0 1px 0 rgba(46,37,32,.35); padding: .45rem .85rem; }
+.tab.active { box-shadow: 0 1px 0 rgba(0,0,0,.25), 0 4px 10px -5px rgba(26,85,82,.8); }
+.panel { border-radius: 10px; border-width: 1.4px; box-shadow: 5px 6px 0 -1px rgba(46,37,32,.55); padding: 1.15rem clamp(.95rem, 2.6vw, 1.7rem) 1.5rem; }
+.panel-k { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0 0 .45rem; font: 700 .62rem/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; }
+.panel-k span { padding: .32rem .55rem; border-radius: 999px; border: 1px solid rgba(58,49,43,.35); background: #fffaf1; color: var(--clay); }
+.panel-k .pk-give { color: var(--teal); background: var(--mint); border-color: rgba(26,85,82,.35); }
+.panel-k .pk-lanes { color: #fff; background: var(--clay); border-color: var(--clay); }
+.panel h2 { font-size: clamp(1.35rem, 2.8vw, 1.8rem); letter-spacing: -.01em; }
+.purpose { color: #4a424d; font-size: 1rem; max-width: 52rem; }
+.bridgebar { border-radius: 8px; background: rgba(237,212,168,.3); }
+.mermaid-wrap { border-radius: 10px; box-shadow: inset 0 1px 0 rgba(255,255,255,.6); }
+.mermaid-wrap pre.mermaid:not([data-processed])::before {
+  content: "Drawing the chart…"; display: block; color: var(--teal); font: 600 .85rem var(--sans); padding: 1rem 0;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse { 50% { opacity: .45; } }
+.meta { gap: 1.1rem 1.4rem; }
+.meta ul { line-height: 1.5; }
+.meta li { margin-bottom: .2rem; }
+.give { border-radius: 6px; }
+.pager a { padding: .4rem .7rem; border-radius: 999px; border: 1px solid rgba(58,49,43,.3); background: #fffaf1; }
+.pager a:hover { text-decoration: none; background: #f6e9d2; }
+.vl-loading { gap: .6rem; display: flex; align-items: center; justify-content: center; }
+.spin-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--mint); border-top-color: var(--teal); animation: spin 0.9s linear infinite; display: inline-block; }
+
+@media (max-width: 640px) {
+  .card .sip-tools { gap: .25rem; }
+  .sip-chip { font-size: .7rem; padding: .4rem .55rem; }
+  .sip-seg .sip-chip { padding: .38rem .5rem; }
+  .canvas-head { gap: .5rem; }
+  .modes { grid-template-columns: 1fr; gap: .4rem; }
+  .modes a { flex-direction: row; align-items: baseline; gap: .5rem; padding: .5rem .65rem; }
+  .modes a b { flex: 0 0 4.6rem; }
+  body[data-mode="world"] .modes a[data-mode="world"] b::after { content: " →"; }
+  .mermaid-wrap { padding: .75rem .4rem; }
+  .panel { padding: 1rem .9rem 1.3rem; box-shadow: 3px 4px 0 -1px rgba(46,37,32,.55); }
+  .purpose { font-size: .98rem; }
+  .meta { font-size: .95rem; }
+  .pager { flex-direction: column; }
+  .hs-pop.sip-note { font-size: .84rem; }
+}
+@media (prefers-reduced-motion: reduce) { .spin-dot { border-top-color: var(--teal); } }
+.card .sip-seg.many i { display: none; }

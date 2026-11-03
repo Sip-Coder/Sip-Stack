@@ -1,6 +1,8 @@
 // Sip-Stack · World (isometric 3x3) + Outline (Mermaid) dual view.
 // Original Sip Studies teaching graphics. Plain SVG, no build step.
 // v2 "diorama" pass: cel-banded faces, ink silhouettes, soft cast shadows, grain.
+// v4 "elevate" pass: denser props, far backdrop + mood layer, per-chart toolbar toggles (opt groups)
+// that redraw geometry, shared note dock with the Village.
 
 const NS = 'http://www.w3.org/2000/svg';
 const LINE = '#2e2520';           // silhouette ink
@@ -56,6 +58,8 @@ function defs() {
   return `<defs>${g}` +
     `<pattern id="${CUR.k}h" patternUnits="userSpaceOnUse" width="2" height="2" patternTransform="rotate(-32)"><path d="M0,0V2" stroke="${LINE}" stroke-width=".28" opacity=".5"/></pattern>` +
     `<filter id="${CUR.k}b" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.15"/></filter>` +
+    `<filter id="${CUR.k}s" x="-30%" y="-80%" width="160%" height="260%"><feGaussianBlur stdDeviation="5"/></filter>` +
+    `<linearGradient id="${CUR.k}m" x1="0" y1="0" x2=".6" y2="1"><stop offset="0" stop-color="#ffb35c" stop-opacity=".46"/><stop offset=".55" stop-color="#f3a46a" stop-opacity=".12"/><stop offset="1" stop-color="#7a3d22" stop-opacity=".2"/></linearGradient>` +
     `<filter id="${CUR.k}n" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.25" numOctaves="2" seed="${SEQ % 97}" result="t"/>` +
     `<feColorMatrix in="t" values="0 0 0 0 .16  0 0 0 0 .12  0 0 0 0 .09  1.5 0 0 0 -.62" result="m"/>` +
     `<feComposite in="m" in2="SourceGraphic" operator="in" result="s"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="s"/></feMerge></filter>` +
@@ -440,6 +444,14 @@ function cases(x, y, z, nx, ny, nz, c = PAL.sand, s = 0.42) {
 const when = (state, item, on = false) => ({ d: item.d, s: `<g class="st${on ? ' on' : ''}" data-when="${state}">${item.s}</g>` });
 const Z = (key, item) => ({ d: item.d, s: `<g class="zone hs" data-zone="${key}" data-hs="${key}">${item.s}</g>` });
 const group = (d, items) => ({ d, s: items.slice().sort((a, b) => a.d - b.d).map(i => i.s).join('') });
+// toolbar option groups: <g class="op" data-k data-v> shown when the scene's option k === v (driven by sip-app.js).
+// Shadows cast inside travel with the group so hidden props never leave a ghost shadow.
+function optG(k, v, fn, on = false, d) {
+  const n = CUR.shadows.length, r = fn(), sh = CUR.shadows.splice(n);
+  const arr = (Array.isArray(r) ? r : [r]).slice().sort((a, b) => a.d - b.d);
+  const shG = sh.length ? `<g fill="${LINE}" opacity=".2" filter="url(#${CUR.k}b)">${sh.join('')}</g>` : '';
+  return { d: d ?? arr[arr.length - 1].d, s: `<g class="op${on ? ' on' : ''}" data-k="${k}" data-v="${v}">${shG}${arr.map(i => i.s).join('')}</g>` };
+}
 // conversational leader tag with a numbered, clickable pin
 function tag(at, key, n, title, sub, dx, dy) {
   const [x, y] = P(...at), ex = x + dx, ey = y + dy, L = dx < 0, tx = ex + (L ? -8 : 8), an = L ? 'end' : 'start';
@@ -463,6 +475,84 @@ function cave(o = {}) {
   it.push({ d: -300, s });
   it.push({ d: 15.6, s: box(7.62, 7.62, zf, 0.38, 0.38, h, dark(wall, .15), { noShadow: true, thin: true }).s });
   return { it, zf, top, h };
+}
+/* ---------- v4 prop kit (denser scenes) ---------- */
+function chair(x, y, c = PAL.wood, back = 'n') { // little bistro chair; back on the n/e/s/w side
+  const it = [box(x, y, 0.42, 0.42, 0.42, 0.06, light(c, .1), { thin: true, noShadow: true })];
+  for (const [dx, dy] of [[0, 0], [0.36, 0], [0, 0.36], [0.36, 0.36]]) it.push(box(x + dx, y + dy, 0, 0.06, 0.06, 0.42, dark(c, .2), { thin: true, noShadow: true }));
+  const bk = { n: [x, y, 0.42, 0.06], s: [x, y + 0.36, 0.42, 0.06], w: [x, y, 0.06, 0.42], e: [x + 0.36, y, 0.06, 0.42] }[back];
+  it.push(box(bk[0], bk[1], 0.48, bk[2], bk[3], 0.5, c, { thin: true, noShadow: true }));
+  castShadow(rectFoot(x, y, 0.42, 0.42), 0.5);
+  return group(x + y + 0.42, it);
+}
+function plate(x, y, z, food = PAL.sage) {
+  const [px, py] = P(x, y, z);
+  return { d: x + y + z * 0.01 + 0.15, s: `<ellipse cx="${f(px)}" cy="${f(py)}" rx="4.4" ry="2.2" fill="#fffaf1" stroke="${LINE}" stroke-width=".5"/><ellipse cx="${f(px)}" cy="${f(py)}" rx="2.8" ry="1.3" fill="none" stroke="${FINE}" stroke-width=".35"/>` +
+    (food ? `<ellipse cx="${f(px - .4)}" cy="${f(py - .4)}" rx="1.7" ry=".9" fill="${food}" stroke="${LINE}" stroke-width=".35"/><circle cx="${f(px + 1.1)}" cy="${f(py - .2)}" r=".7" fill="${PAL.terra}" stroke="${LINE}" stroke-width=".3"/>` : '') };
+}
+function candle(x, y, z) {
+  const [px, py] = P(x, y, z);
+  return { d: x + y + z * 0.01 + 0.3, s: `<rect x="${f(px - .8)}" y="${f(py - 3.6)}" width="1.6" height="3.6" fill="${PAL.cream}" stroke="${LINE}" stroke-width=".4"/><path class="flick" d="M${pp(px, py - 6.2)}q1,1.4 0,2.4q-1,-1 0,-2.4z" fill="${PAL.mustard}" stroke="${LINE}" stroke-width=".3"/><circle class="glow" cx="${f(px)}" cy="${f(py - 5)}" r="4" fill="${PAL.mustard}" opacity=".2"/>` };
+}
+function jar(x, y, z, c = PAL.soil, h = 0.34) { const k = cyl(x, y, z, 0.13, h, 'rgba(240,236,224,1)', { lid: false, noShadow: z !== 0 }); const [bx, by] = P(x, y, z), [, ty] = P(x, y, z + h * 0.6); return { d: k.d, s: k.s + `<rect x="${f(bx - 1.6)}" y="${f(ty)}" width="3.2" height="${f(by - ty)}" fill="${c}" opacity=".85"/>` }; }
+function tent(x, y, w, d, h, c = PAL.teal) { // pop-up shade canopy
+  const it = [];
+  for (const [dx, dy] of [[0, 0], [w, 0], [0, d], [w, d]]) it.push(box(x + dx - 0.04, y + dy - 0.04, 0, 0.08, 0.08, h, dark(PAL.steel, .3), { thin: true, noShadow: true }));
+  const T = [[x - 0.1, y - 0.1, h], [x + w + 0.1, y - 0.1, h], [x + w + 0.1, y + d + 0.1, h], [x - 0.1, y + d + 0.1, h]];
+  let s = fill(T, light(c, .15)) + ink(T, .8);
+  for (let i = 1; i < 4; i++) s += seg3([x - 0.1 + (w + 0.2) * i / 4, y - 0.1, h], [x - 0.1 + (w + 0.2) * i / 4, y + d + 0.1, h], .4, 'rgba(255,255,255,.45)');
+  const V = [[x - 0.1, y + d + 0.1, h], [x + w + 0.1, y + d + 0.1, h], [x + w + 0.1, y + d + 0.1, h - 0.22], [x - 0.1, y + d + 0.1, h - 0.22]];
+  s += fill(V, c) + ink(V, .6);
+  castShadow(rectFoot(x, y, w, d), 0.6);
+  it.push({ d: x + y + w + d + 0.2, s });
+  return it;
+}
+function wheelbarrow(x, y, c = PAL.teal, load = PAL.soil) {
+  const tray = box(x, y, 0.3, 0.75, 0.45, 0.28, c, { thin: true, noShadow: true });
+  const [lx, ly] = P(x + 0.38, y + 0.22, 0.58);
+  const wheel = cyl(x + 0.85, y + 0.22, 0, 0.16, 0.08, '#3b332e', { noShadow: true, lid: false });
+  castShadow(rectFoot(x, y, 0.9, 0.45), 0.5);
+  return { d: x + y + 0.7, s: tray.s + `<ellipse cx="${f(lx)}" cy="${f(ly)}" rx="4.6" ry="1.7" fill="${load}" stroke="${LINE}" stroke-width=".4"/>` + wheel.s + seg3([x, y + 0.05, 0.45], [x - 0.45, y + 0.05, 0.6], .9, PAL.wood) + seg3([x, y + 0.4, 0.45], [x - 0.45, y + 0.4, 0.6], .9, PAL.wood) };
+}
+function station(x, y) { // vineyard weather station: mast, cups, rain gauge
+  const m = box(x - 0.05, y - 0.05, 0, 0.1, 0.1, 2.5, dark(PAL.steel, .25), { thin: true });
+  const [cx0, cy0] = P(x, y, 2.55);
+  let s = m.s + `<g class="spin" style="transform-origin:${f(cx0)}px ${f(cy0)}px">` + [0, 1, 2].map(i => { const a = i * 2.094; return `<path d="M${pp(cx0, cy0)}L${pp(cx0 + Math.cos(a) * 4, cy0 + Math.sin(a) * 1.6)}" stroke="${LINE}" stroke-width=".5"/><circle cx="${f(cx0 + Math.cos(a) * 4)}" cy="${f(cy0 + Math.sin(a) * 1.6)}" r="1" fill="${PAL.cream}" stroke="${LINE}" stroke-width=".4"/>`; }).join('') + `</g>`;
+  s += box(x + 0.05, y - 0.15, 1.5, 0.3, 0.12, 0.38, PAL.cream, { thin: true, noShadow: true }).s;
+  const [rx, ry] = P(x + 0.2, y - 0.09, 1.7);
+  s += `<rect x="${f(rx - .7)}" y="${f(ry - 1)}" width="1.4" height="2" fill="${PAL.water}"/>`;
+  return { d: x + y + 0.2, s };
+}
+function bareVine(x, y, o = {}) { // winter: trunk + cordon arms + short spurs, no leaves
+  const cz = o.cz ?? 1.45;
+  const t = box(x - 0.06, y - 0.06, 0, 0.12, 0.12, cz - 0.1, dark(PAL.wood, .15), { thin: true });
+  let s = t.s + seg3([x - 0.5, y, cz - 0.05], [x + 0.5, y, cz - 0.05], 1.5, dark(PAL.wood, .2));
+  for (const dx of [-0.42, -0.16, 0.16, 0.42]) { const [a, b] = P(x + dx, y, cz - 0.05); s += `<path d="M${pp(a, b)}l${f(dx * 2)},-3.6" stroke="${dark(PAL.wood, .05)}" stroke-width=".9" stroke-linecap="round"/><circle cx="${f(a + dx * 2)}" cy="${f(b - 3.6)}" r=".55" fill="${PAL.terra}"/>`; }
+  return { d: x + y + 0.45, s };
+}
+function canes(x, y) { // cut canes bundled on the ground after pruning
+  const [px, py] = P(x, y, 0); let s = '';
+  for (let i = 0; i < 6; i++) s += `<path d="M${pp(px - 6 + i * .4, py - i * .5)}l11,-3.4" stroke="${i % 2 ? PAL.wood : dark(PAL.wood, .2)}" stroke-width=".9" stroke-linecap="round"/>`;
+  return { d: x + y + 0.1, s: s + `<path d="M${pp(px - .6, py - 3.4)}l.8,3.2" stroke="${PAL.mustard}" stroke-width="1"/>` };
+}
+function thermo(x, y, z, level, c = PAL.clay) { // small thermometer on a post (cool → warm)
+  const [px, py] = P(x, y, z);
+  return { d: x + y + z * 0.01 + 0.5, s: `<rect x="${f(px - 1.3)}" y="${f(py - 9)}" width="2.6" height="9" rx="1.3" fill="#fffaf1" stroke="${LINE}" stroke-width=".45"/><rect x="${f(px - .5)}" y="${f(py - 1.2 - 6.4 * level)}" width="1" height="${f(6.4 * level)}" fill="${c}"/><circle cx="${f(px)}" cy="${f(py - .9)}" r="1.4" fill="${c}" stroke="${LINE}" stroke-width=".35"/>` };
+}
+function hoseLine(pts, c = PAL.teal) { // a hose snaking across a floor
+  const d = pts.map((p, i) => { const [x, y] = P(...p); return (i ? 'L' : 'M') + pp(x, y); }).join('');
+  return { d: -38, s: `<path d="${d}" stroke="${LINE}" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" stroke="${c}" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>` };
+}
+function crowd(x, y, c, o = {}) { return figure(x, y, c, { cls: o.cls ?? 'bob', style: `--delay:${o.delay ?? 0}s`, hat: o.hat, hair: o.hair, z: o.z }); }
+// far layer: soft hills / sea line behind the block, clipped to the backdrop disc
+function backdrop(kind, c) {
+  const k = CUR.k, tint = c || PAL.sage;
+  const hills = kind === 'sea'
+    ? `<path d="M30,58 Q80,50 120,54 T210,52 V170 H30 Z" fill="${mix(PAL.water, '#ffffff', .3)}" opacity=".6"/><path d="M30,62 Q90,58 140,61 T212,59M40,70 Q90,66 140,69 T212,67" stroke="#fff" stroke-width=".8" fill="none" opacity=".7"/>`
+    : `<path d="M28,70 Q60,30 98,52 Q136,18 172,46 Q196,34 214,52 V170 H28 Z" fill="${mix(tint, '#ffffff', .35)}" opacity=".55"/><path d="M28,82 Q74,52 122,70 Q168,50 214,66 V170 H28 Z" fill="${mix(tint, '#ffffff', .15)}" opacity=".5"/>` +
+      Array.from({ length: 9 }, (_, i) => `<path d="M${40 + i * 20},${70 - (i % 3) * 6 - (i > 3 && i < 6 ? 6 : 0)} l2.2,-7 l2.2,7z" fill="${mix(tint, LINE, .4)}" opacity=".4"/>`).join('');
+  return `<clipPath id="${k}c"><circle cx="120" cy="84" r="80"/></clipPath><g clip-path="url(#${k}c)" class="far">${hills}` +
+    `<circle class="sun" cx="170" cy="32" r="9" fill="${PAL.mustard}" opacity=".0"/></g>`;
 }
 /* ---------- the nine scenes (v3: stacked layers, people with jobs, pins) ---------- */
 function roots(face, u, z0, z1, seed, c = dark(PAL.wood, .1)) { // root strands on a cut face (y=8 front or x=8 right)
@@ -498,7 +588,8 @@ const SCENES = {
       it.push(box(6.85, y - 0.04, 0.88, 0.22, 0.12, 0.14, PAL.mustard, { thin: true, noShadow: true }));
       it.push(line3([0.6, y + 0.12, 0.28], [7.3, y + 0.12, 0.28], 1.1, dark(PAL.teal, .3)));
       vx.forEach((x, i) => {
-        it.push(vine(x, y, { cz: 1.6, grape: PAL.red }));
+        it.push(optG('season', 'summer', () => vine(x, y, { cz: 1.6, grape: PAL.red }), true));
+        it.push(optG('season', 'winter', () => bareVine(x, y, { cz: 1.6 })));
         it.push(when('wet', drop(x + 0.12, y + 0.16, 0.28, (i * .6 + y * .3) % 2.4), true));
       });
     }
@@ -508,8 +599,19 @@ const SCENES = {
     const [fx, fy] = P(5.9, 6.3, 1.4);
     it.push({ d: 12.5, s: `<g class="drip" style="--delay:1.2s;--ty:16px">${leafG(fx, fy, .7, light(PAL.leaf, .2), 20)}</g>` });
     it.push(walk(worker(0.7, 4.95, PAL.mauve, 'clip', { cls: 'walker' }), [[0.7, 4.95, 0], [7.2, 4.95, 0], [7.2, 2.55, 0], [0.7, 2.55, 0]], 20));
-    it.push(hoseReel(7.45, 7.3)); it.push(bucket(0.9, 7.35)); it.push(crate(6.55, 7.05, 0, 0.45)); it.push(crate(6.6, 7.1, 0.45, 0.36, PAL.terra));
+    it.push(hoseReel(7.45, 7.3)); it.push(bucket(1.5, 7.45)); it.push(crate(6.55, 7.05, 0, 0.45)); it.push(crate(6.6, 7.1, 0.45, 0.36, PAL.terra));
     it.push(sign(7.55, 0.4, 'block 3'));
+    // v4 density: rain tank feeding the drip, weather mast, row-end roses, barrow, winter canes
+    it.push(Z('tank', cyl(0.6, 7.3, 0, 0.42, 1.05, mix(PAL.water, PAL.steel, .4), { hoops: [0.35, 0.7] })));
+    it.push(Z('tank', chip(0.6, 7.3, 1.3, 'rain', PAL.mint)));
+    it.push(line3([0.95, 7.2, 0.25], [0.6, 6.25, 0.28], 1.1, dark(PAL.teal, .3)));
+    it.push(Z('station', station(7.72, 4.9)));
+    for (const y of rows) it.push(bush(7.72, y + 0.06, 0, mix(PAL.leaf, PAL.sage, .3), { berries: '#d9607a' }));
+    it.push(wheelbarrow(2.05, 7.1));
+    it.push(crate(4.5, 7.25, 0, 0.42, PAL.wood));
+    for (const y of rows) it.push(optG('season', 'winter', () => [canes(2.1, y + 0.45), canes(5.6, y + 0.45)]));
+    let frost = ''; for (let i = 0; i < 46; i++) { const [px, py] = P(0.3 + r() * 7.4, 0.3 + r() * 7.4, 0); frost += `<circle cx="${f(px)}" cy="${f(py)}" r="${f(.4 + r() * .5)}" fill="#fff" opacity=".85"/>`; }
+    it.push(optG('season', 'winter', () => ({ d: -42, s: frost })));
     it.push(birds(3, 1, 0, 22));
     // soil-cut faces on the top slab: roots + wetting bulbs
     let face = ''; for (const x of vx) face += roots('y', x, 0, -0.9, x * 10);
@@ -524,11 +626,11 @@ const SCENES = {
     for (const x of vx) us += roots('y', x, -1.1, -2.5, x * 7 + 1);
     for (const y of rows) us += roots('x', y, -1.1, -2.4, y * 7 + 5);
     und.push({ d: -300, s: us });
-    return { bg: PAL.mint, it, state: 'wet', under: { it: und, open: 16 }, labels: [
+    return { bg: PAL.mint, it, state: 'wet', opts: { season: 'summer' }, under: { it: und, open: 16 }, labels: [
       tag([3.85, 1.3, 2.05], 'trellis', 1, 'trellis wires', 'shoots up, air through', -12, -12),
       tag([6.2, 6.1, 2.3], 'canopy', 2, 'leaf pulling', 'sun on the fruit zone', 26, 8),
       tag([3.3, 6.8, 1.2], 'prune', 3, 'pruner', 'two buds a spur', -36, 2),
-      tag([7.3, 1.3, 2.3], 'post', 4, 'end post', 'keeps the wire tight', 16, -12),
+      tag([7.3, 1.3, 2.3], 'post', 4, 'end post', 'keeps the wire tight', 10, -16),
       tag([1.5, 6.1, 0.28], 'drip', 5, 'drip line', 'roots, not leaves', -26, 22),
     ], ulabels: [tag([6.2, 8, -1.9], 'soil', 6, 'soil cut', 'tap · unfold layers', 26, 8)] };
   },
@@ -582,8 +684,28 @@ const SCENES = {
     it.push(worker(4.9, 7.5, PAL.teal, 'none', { apron: PAL.cream, delay: .3 }));
     it.push(hoseReel(7.5, 4.9)); it.push(bucket(7.0, 4.95));
     it.push(tree(7.3, 3.4, '#7fa37a', 2.4));
+    // v4 density: beehives in the cover crop, crew shade + water cooler, stacked empty bins, catch tank
+    for (const [x, y] of [[6.6, 0.5], [7.2, 0.7]]) { it.push(box(x, y, 0, 0.42, 0.42, 0.22, PAL.cream, { thin: true })); it.push(box(x, y, 0.22, 0.42, 0.42, 0.2, PAL.mustard, { thin: true, noShadow: true })); it.push(box(x - 0.03, y - 0.03, 0.42, 0.48, 0.48, 0.06, PAL.wood, { thin: true, noShadow: true, flat: true })); }
+    const [bhx, bhy] = P(6.9, 0.4, 0.9);
+    it.push({ d: 7.6, s: [0, 1, 2].map(i => `<circle class="blink" style="--delay:${i * .4}s" cx="${f(bhx + i * 4 - 4)}" cy="${f(bhy - (i % 2) * 3)}" r=".8" fill="${PAL.mustard}" stroke="${LINE}" stroke-width=".3"/>`).join('') });
+    it.push(...tent(4.7, 2.45, 0.95, 0.85, 1.25, PAL.teal).map(q => Z('crewwater', q)));
+    it.push(Z('crewwater', cyl(5.15, 2.85, 0, 0.22, 0.55, PAL.teal, { hoops: [0.6] })));
+    it.push(Z('crewwater', box(4.8, 2.6, 0, 0.3, 0.3, 0.3, PAL.cream, { thin: true })));
+    for (let k = 0; k < 3; k++) it.push(box(0.15, 3.05, k * 0.18, 0.5, 0.45, 0.17, PAL.clay, { thin: true, noShadow: k > 0 }));
+    it.push(Z('crush', cyl(3.85, 5.75, 0, 0.34, 0.85, mix(PAL.water, PAL.steel, .45), { hoops: [0.4] })));
+    it.push(optG('rinse', 'on', () => [
+      flow([[4.3, 6.85, 0.02], [3.9, 6.5, 0.02], [3.85, 6.1, 0.02]], dark(PAL.water, .25), { packets: 3, dur: 3.5, pc: PAL.water, r: 1.1, d: 9.6 }),
+      flow([[4.0, 5.55, 0.75], [4.5, 5.45, 0.75]], PAL.teal, { packets: 2, dur: 2.4, pc: PAL.mint, r: 1, d: 10.1 }),
+      chip(3.85, 5.75, 1.1, 'reuse', PAL.mint)]));
+    it.push(optG('rinse', 'off', () => chip(3.85, 5.75, 1.1, 'catch', PAL.cream), true));
+    // dawn pick: indigo wash, stars, headlights + headlamps on
+    let stars = ''; for (let i = 0; i < 18; i++) stars += `<circle class="blink" style="--delay:${f(r() * 1.5)}s" cx="${f(40 + r() * 160)}" cy="${f(6 + r() * 38)}" r="${f(.5 + r() * .5)}" fill="#fff8e0"/>`;
+    const lampAt = (x, y, z, rr = 6) => { const [lx2, ly2] = P(x, y, z); return `<circle cx="${f(lx2)}" cy="${f(ly2)}" r="${rr}" fill="#ffe7a0" opacity=".42"/><circle cx="${f(lx2)}" cy="${f(ly2)}" r="1.1" fill="#fff6d0"/>`; };
+    it.push(optG('dawn', 'on', () => ({ d: 1990, s: `<linearGradient id="${CUR.k}dw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f2a4f" stop-opacity=".55"/><stop offset=".6" stop-color="#4b4a72" stop-opacity=".28"/><stop offset="1" stop-color="#f0a46a" stop-opacity=".22"/></linearGradient>` +
+      `<rect x="-12" y="-4" width="264" height="198" fill="url(#${CUR.k}dw)" style="mix-blend-mode:multiply" pointer-events="none"/>` + stars +
+      lampAt(0.7 + 1.7, 5.0 + 0.75, 0.75, 12) + lampAt(1.5, 1.5, 1.25) + lampAt(2.6, 3.0, 1.25) + lampAt(0.6, 4.25, 1.25) + lampAt(4.9, 7.5, 1.25) + lampAt(6.0, 6.3, 1.9, 9) })));
     it.push(birds(4, 4, 0, 24));
-    return { bg: mix(PAL.mustard, '#ffffff', .6), it, state: 'ripe', labels: [
+    return { bg: mix(PAL.mustard, '#ffffff', .6), it, state: 'ripe', opts: { dawn: 'off', rinse: 'off' }, labels: [
       tag([2.0, 0.8, 1.6], 'pick', 1, 'pick date', 'tap · early vs ripe', -10, -16),
       tag([1.5, 1.5, 1.1], 'crew', 2, 'pickers', 'whole clusters, small bins', -34, -10),
       tag([6.0, 1.6, 0.3], 'cover', 3, 'cover crop', 'flowers hold the soil', 18, -14),
@@ -601,6 +723,11 @@ const SCENES = {
     it.push(flow([[4.0, 0.3, 0], [4.0, 7.7, 0]], dark(PAL.water, .2), { packets: 4, dur: 7, pc: PAL.water, r: 1.1, d: -35 }));
     it.push(flow([[0.3, 4.0, 0], [7.7, 4.0, 0]], dark(PAL.water, .2), { packets: 4, dur: 7, pc: PAL.water, r: 1.1, d: -35 }));
     it.push(lamp(4.25, 4.25));
+    // rinse loop: channel water caught, filtered, and sent back to the hoses (toolbar switch)
+    it.push(Z('water', cyl(7.55, 3.6, 0, 0.32, 0.9, mix(PAL.water, PAL.steel, .4), { hoops: [0.5] })));
+    it.push(optG('loop', 'on', () => [flow([[7.7, 4.0, 0.02], [7.55, 3.95, 0.3]], dark(PAL.water, .25), { packets: 2, dur: 2, pc: PAL.water, r: 1, d: 11.3 }),
+      flow([[7.6, 3.25, 0.05], [7.75, 0.3, 0.05], [4.3, 0.28, 0.05]], PAL.teal, { packets: 4, dur: 6, pc: PAL.mint, r: 1.1, d: -20 }), chip(7.55, 3.6, 1.2, 'reused', PAL.mint)]));
+    it.push(optG('loop', 'off', () => chip(7.55, 3.6, 1.2, 'to drain', PAL.cream), true));
     // WHITE (back): basket press, juice tray, cool steel tank
     const W = [];
     W.push(box(0.7, 1.0, 0, 1.3, 1.3, 0.2, PAL.steel, { thin: true }));
@@ -611,6 +738,13 @@ const SCENES = {
     W.push(cyl(2.9, 1.0, 0, 0.45, 1.7, PAL.steel, { hoops: [0.3, 0.7] }));
     W.push(chip(2.9, 1.0, 1.2, '12°C', PAL.mint));
     W.push(worker(1.0, 2.9, PAL.teal, 'none', { apron: PAL.cream }));
+    W.push(cyl(2.2, 0.55, 0, 0.3, 1.15, PAL.steel, { hoops: [0.5] }));
+    for (let k = 0; k < 2; k++) W.push(box(0.4, 0.4, k * 0.3, 0.6, 0.5, 0.28, PAL.mint, { thin: true, noShadow: k > 0 }));
+    { const [gx, gy] = P(0.7, 0.65, 0.6); W.push({ d: 1.3, s: [0, 1, 2, 3].map(i => `<circle cx="${f(gx - 2 + i * 1.4)}" cy="${f(gy - (i % 2))}" r="1.1" fill="${PAL.white}" stroke="${LINE}" stroke-width=".3"/>`).join('') }); }
+    W.push(optG('style', 'white', () => { const [mx, my] = P(3.2, 2.9, 0); return [
+      { d: 6.1, s: `<path d="M${pp(mx - 6, my)}q6,-6.5 12,0z" fill="${mix(PAL.soil, PAL.white, .3)}" stroke="${LINE}" stroke-width=".5"/><circle cx="${f(mx - 2)}" cy="${f(my - 2)}" r=".7" fill="${dark(PAL.white, .3)}"/><circle cx="${f(mx + 1.5)}" cy="${f(my - 2.6)}" r=".7" fill="${dark(PAL.white, .3)}"/>` },
+      drop(1.95, 2.3, 0.2, 0.6), drop(1.95, 2.3, 0.2, 1.2), chip(3.2, 2.9, 0.6, 'skins out first', PAL.mint),
+      flow([[2.15, 2.4, 0.3], [2.9, 1.6, 0.6]], dark(PAL.white, .3), { packets: 2, dur: 2.6, pc: PAL.white, r: 1, d: 3.6 })]; }));
     it.push(...W.map(i => Z('white', i)));
     // ROSÉ (right): pink sight-glass tanks + skin-contact timer
     const R = [];
@@ -619,8 +753,13 @@ const SCENES = {
       const [gx, gy] = P(x, y + 0.45, h * 0.5);
       R.push({ d: x + y + 0.5, s: `<rect x="${f(gx - .8)}" y="${f(gy - 6)}" width="1.6" height="9" rx=".8" fill="${mix(PAL.terra, '#ffffff', .45)}" stroke="${LINE}" stroke-width=".45"/>` });
     }
-    R.push(chip(5.1, 2.6, 0.9, '4 hrs', mix(PAL.terra, '#ffffff', .5)));
+    R.push(chip(6.9, 3.25, 0.25, '4 hrs', mix(PAL.terra, '#ffffff', .5)));
     R.push(worker(5.3, 3.2, PAL.mauve, 'clip', { delay: .5 }));
+    R.push(box(7.0, 0.45, 0.12, 0.55, 0.35, 0.3, PAL.teal, { thin: true, noShadow: true }));
+    R.push(cyl(7.1, 0.85, 0, 0.12, 0.12, '#3b332e', { noShadow: true, lid: false })); R.push(cyl(7.45, 0.85, 0, 0.12, 0.12, '#3b332e', { noShadow: true, lid: false }));
+    R.push(hoseLine([[7.0, 0.7, 0.2], [6.2, 1.6, 0], [5.4, 1.5, 0]], PAL.terra));
+    R.push(optG('style', 'rose', () => [chip(5.1, 2.6, 1.35, 'pink · press off', mix(PAL.terra, '#ffffff', .3)), bucket(5.9, 2.9, 0, PAL.steel, mix(PAL.terra, '#ffffff', .25)), drop(6.3, 1.4, 0.3, 0.2),
+      ...[[5.0, 1.0, 1.6], [6.3, 0.9, 1.9], [6.8, 2.3, 1.4]].map(([x, y, h]) => { const [gx, gy] = P(x, y + 0.45, h * 0.5); return { d: x + y + 0.55, s: `<rect x="${f(gx - .55)}" y="${f(gy - 2.5)}" width="1.1" height="5.4" rx=".55" fill="${PAL.terra}"/>` }; })]));
     it.push(...R.map(i => Z('rose', i)));
     // RED (left): open-top fermenters, catwalk, punch-down
     const Rd = [];
@@ -634,6 +773,11 @@ const SCENES = {
     Rd.push(worker(1.6, 6.15, PAL.clay, 'paddle', { z: 0.75, delay: .2 }));
     Rd.push(ladder(2.75, 6.5, 0, 0.75, .2));
     Rd.push(cases(0.5, 7.0, 0, 2, 1, 2, PAL.clay, .4)[0]);
+    Rd.push(cyl(3.05, 6.85, 0, 0.38, 0.6, light(PAL.wood, .15), { staves: true, hoops: [0.2, 0.8] }));
+    Rd.push(box(2.98, 6.78, 0.6, 0.14, 0.14, 0.55, dark(PAL.steel, .3), { thin: true, noShadow: true }));
+    Rd.push(hoseLine([[0.4, 4.5, 0], [1.6, 4.6, 0], [2.0, 5.6, 0]], PAL.clay));
+    Rd.push(optG('style', 'red', () => { const out = [chip(1.7, 4.6, 1.55, 'days on skins', mix(PAL.clay, '#ffffff', .5)), steam(1.0, 5.2, 1.2, 3, '#c78b9c'), chip(3.45, 7.1, 0.75, 'press after', PAL.cream)];
+      const [mx, my] = P(3.05, 6.85, 0.62); out.push({ d: 9.95, s: `<ellipse cx="${f(mx)}" cy="${f(my)}" rx="4.6" ry="2.6" fill="#4a1d2c"/>` }); return out; }));
     it.push(...Rd.map(i => Z('red', i)));
     // CHAMPAGNE (front): tirage table + crown caps, stair hatch to the cave
     const C = [];
@@ -643,6 +787,12 @@ const SCENES = {
     C.push(box(6.5, 6.4, 0, 1.0, 1.1, 0.05, dark(PAL.mauve, .45), { flat: true, thin: true, noShadow: true }));
     for (let i = 0; i < 4; i++) C.push({ d: 14, s: seg3([6.55, 6.5 + i * 0.25, 0.06], [7.45, 6.5 + i * 0.25, 0.06], .6, light(PAL.mauve, .4)) });
     C.push(chip(7.0, 6.9, 0.5, 'down to cave', PAL.cream));
+    C.push(...cases(4.55, 6.55, 0, 2, 2, 2, mix(PAL.mauve, '#ffffff', .4), .4));
+    C.push(box(6.6, 4.5, 0, 0.9, 0.7, 0.5, PAL.steel, { planks: 2 }));
+    C.push(optG('style', 'champ', () => { const out = []; for (let i = 0; i < 5; i++) { const [cx2, cy2] = P(4.95 + i * 0.3, 5.1, 1.55); out.push({ d: 10.5 + i * .01, s: `<rect x="${f(cx2 - 1.1)}" y="${f(cy2 - 1.2)}" width="2.2" height="1.2" fill="${PAL.mustard}" stroke="${LINE}" stroke-width=".3"/>` }); }
+      out.push(chip(7.05, 4.85, 0.75, 'cap · rest on lees', PAL.cream));
+      out.push(mover(crate(6.6, 6.5, 0.06, 0.4, mix(PAL.mauve, '#ffffff', .3)), [6.6, 6.5, 0.06], [7.1, 7.0, -0.6], 3.2, 0, ''));
+      return out; }));
     it.push(...C.map(i => Z('champ', i)));
     it.push(birds(2, 5, 0, 16));
     // CAVE (under): riddling racks + solera; cool, lamp-lit
@@ -661,10 +811,16 @@ const SCENES = {
     S.push(cyl(5.6, 7.1, zf, 0.25, 0.6, mix(PAL.sand, '#ffffff', .2), { noShadow: true }));
     S.push(chip(5.6, 7.1, zf + 1.0, 'grape spirit', PAL.sand));
     S.push(walk(worker(0.6, 7.6, PAL.clay, 'thief', { z: zf, cls: 'walker' }), [[0.6, 7.6, zf], [5.0, 7.6, zf]], 12));
+    S.push(optG('style', 'fort', () => [flow([[5.6, 7.1, zf + 0.6], [5.1, 7.0, zf + 1.3], [3.9, 6.75, zf + 1.6]], PAL.mustard, { packets: 3, dur: 3, pc: PAL.gold, r: 1.1, d: 14.5 }), chip(5.6, 7.1, zf + 1.65, 'early = sweet', PAL.sand)]));
+    S.push(box(5.2, 7.4, zf, 0.6, 0.4, 0.5, PAL.wood, { planks: 2, noShadow: true }));
     und.push(...S.map(i => Z('fort', i)));
+    // bottles resting on their lees (sur lattes stack) + chalk board
+    { const [sx0, sy0] = P(3.0, 1.4, zf); let st = ''; for (let rr = 0; rr < 4; rr++) for (let k = 0; k < 7 - rr; k++) st += `<circle cx="${f(sx0 + k * 3.4 + rr * 1.7)}" cy="${f(sy0 - 2 - rr * 2.8)}" r="1.4" fill="${dark(PAL.teal, .3)}" stroke="${LINE}" stroke-width=".35"/>`; und.push(Z('champ', { d: 5, s: st })); }
+    und.push(Z('champ', optG('style', 'champ', () => chip(3.6, 1.4, zf + 1.4, 'bottles on lees', PAL.cream))));
+    und.push({ d: 1, s: fill([[0.02, 2.4, zf + 0.8], [0.02, 3.6, zf + 0.8], [0.02, 3.6, zf + 1.6], [0.02, 2.4, zf + 1.6]], '#2f3a36', `stroke="${PAL.wood}" stroke-width="1"`) + seg3([0.02, 2.6, zf + 1.35], [0.02, 3.3, zf + 1.35], .5, '#fff') + seg3([0.02, 2.6, zf + 1.1], [0.02, 3.1, zf + 1.1], .5, '#fff') });
     const [lx, ly] = P(3.5, 0.05, zf + 1.9);
     und.push({ d: -250, s: `<circle cx="${f(lx)}" cy="${f(ly)}" r="10" fill="${PAL.mustard}" opacity=".18" class="glow"/><circle cx="${f(lx)}" cy="${f(ly)}" r="1.6" fill="#fff3c4" stroke="${LINE}" stroke-width=".5"/>` });
-    return { bg: mix(PAL.terra, '#ffffff', .72), it, under: { it: und, open: 20 }, labels: [
+    return { bg: mix(PAL.terra, '#ffffff', .72), it, opts: { style: 'none', loop: 'off' }, under: { it: und, open: 20 }, labels: [
       tag([1.35, 1.65, 1.6], 'white', 1, 'White', 'press first, juice only', -14, -16),
       tag([6.3, 0.9, 1.9], 'rose', 2, 'Rosé', 'hours on skins', 14, -14),
       tag([1.0, 5.2, 1.15], 'red', 3, 'Red', 'ferment on skins', -30, -6),
@@ -719,9 +875,28 @@ const SCENES = {
     for (let i = 0; i < 4; i++) L.push(bottle(3.6 + i * 0.22, 7.1, 0.7, PAL.teal, 0.4));
     L.push(worker(4.0, 7.75, PAL.teal, 'glass', { tc: PAL.white, delay: .9 }));
     it.push(...L.map(i => Z('lees', i)));
+    // v4 density: floor drain + hose, cellar hygrometer, humidifier mist, empty-glass pallet, mop bucket
+    it.push({ d: -39, s: fill([[1.75, 4.45, 0.01], [2.2, 4.45, 0.01], [2.2, 4.8, 0.01], [1.75, 4.8, 0.01]], dark(PAL.steel, .45), `stroke="${LINE}" stroke-width=".5"`) + [0, 1, 2].map(i => seg3([1.8, 4.53 + i * 0.1, 0.02], [2.15, 4.53 + i * 0.1, 0.02], .4, '#ddd')).join('') });
+    it.push(hoseLine([[0.35, 6.3, 0], [1.2, 6.15, 0], [1.9, 4.7, 0]], PAL.teal));
+    it.push(box(2.66, 0.32, 0, 0.08, 0.08, 1.3, PAL.wood, { thin: true }));
+    it.push(thermo(2.7, 0.36, 1.3, 0.72, PAL.teal)); it.push(chip(2.7, 0.36, 1.95, '75% rh', PAL.mint));
+    it.push(Z('oak', cyl(5.75, 6.0, 0, 0.2, 0.42, PAL.cream, { hoops: [0.5] }))); it.push(Z('oak', steam(5.75, 6.0, 0.5, 3, '#f4f8f6')));
+    it.push(pallet(0.45, 6.85, 1.3, 0.8));
+    { const [px0, py0] = P(0.55, 7.55, 0.16); let gl = ''; for (let rr = 0; rr < 3; rr++) for (let k = 0; k < 6 - rr; k++) gl += `<ellipse cx="${f(px0 + 2.2 + k * 2.6 + rr * 1.3)}" cy="${f(py0 - 2 - rr * 2.2 - k * 1.3)}" rx="1.3" ry="1.1" fill="${mix(PAL.teal, '#ffffff', .25)}" stroke="${LINE}" stroke-width=".35"/>`; it.push({ d: 8.6, s: gl }); }
+    it.push(bucket(5.25, 7.35, 0, PAL.mustard, PAL.water)); it.push(line3([5.25, 7.35, 0.3], [5.05, 7.1, 1.3], .9, PAL.wood));
+    // one year on (toolbar): tallies, top-up chips, sealed amphorae, thicker lees, a cobweb
+    it.push(optG('age', 'old', () => { const out = [];
+      for (const y of [1.0, 3.4]) for (const x of [6.15, 7.15]) { const [tx, ty] = P(x, y + 1.3, 0.54); out.push({ d: x + y + 1.95, s: `<text x="${f(tx)}" y="${f(ty + 1)}" text-anchor="middle" class="chip" fill="#fff">IIII I</text>` }); }
+      out.push(chip(6.65, 3.25, 2.05, 'top up · it evaporates', PAL.sand));
+      for (const [x, y, k] of [[3.4, 1.3, 1], [4.6, 1.8, .9], [3.6, 3.0, 1.05], [4.7, 3.6, .95], [3.7, 4.9, .9]]) { const [bx, by] = P(x, y, 0); out.push({ d: x + y + 0.25, s: `<ellipse cx="${f(bx)}" cy="${f(by - 14 * k - .4)}" rx="${f(2.6 * k)}" ry="${f(1.1 * k)}" fill="${dark(PAL.terra, .25)}" stroke="${LINE}" stroke-width=".5"/>` }); }
+      out.push(chip(4.1, 2.4, 1.45, 'sealed · 8 months', PAL.cream));
+      out.push(chip(1.5, 3.4, 2.3, 'still fresh', PAL.mint));
+      const [jx2, jy2] = P(3.0, 7.15, 0.7); out.push({ d: 10.3, s: `<rect x="${f(jx2 - 3.4)}" y="${f(jy2 - 4.4)}" width="6.8" height="1.9" fill="${mix(PAL.sand, PAL.wood, .3)}" opacity=".95"/>` });
+      return out; }));
+    it.push(optG('age', 'young', () => chip(6.65, 3.25, 2.05, 'new oak · toasty', PAL.sand), true));
     it.push(flow([[0.6, 6.4, 0], [7.5, 6.4, 0]], PAL.clay, { packets: 4, dur: 9, d: -30, packet: `<circle r="1.6" fill="#fff" stroke="${PAL.teal}" stroke-width=".5"/><text y="1" text-anchor="middle" class="chip" fill="${PAL.teal}">O₂</text>` }));
     it.push(birds(2, 6, 0, 14));
-    return { bg: mix(PAL.mauve, '#ffffff', .62), it, labels: [
+    return { bg: mix(PAL.mauve, '#ffffff', .62), it, opts: { age: 'young' }, labels: [
       tag([1.1, 1.3, 2.3], 'steel', 1, 'Steel', 'sealed · fresh', -14, -14),
       tag([3.4, 1.3, 1.0], 'clay', 2, 'Clay', 'breathes, no wood', 6, -36),
       tag([6.65, 1.1, 1.8], 'oak', 3, 'Oak', 'slow breath, spice', 8, -26),
@@ -750,16 +925,30 @@ const SCENES = {
     it.push(box(2.35, 2.95, 2.0, 0.24, 1.1, 0.3, PAL.teal, { thin: true, noShadow: true }));
     const [kx, ky] = P(2.47, 3.5, 2.0);
     it.push({ d: 6.1, s: `<g class="press"><rect x="${f(kx - 1)}" y="${f(ky)}" width="2" height="5" fill="${PAL.steel}" stroke="${LINE}" stroke-width=".4"/></g>` });
-    it.push(when('cork', chip(2.6, 3.4, 2.7, 'cork', PAL.sand), true));
-    it.push(when('screw', chip(2.6, 3.4, 2.7, 'screwcap', PAL.steel)));
+    it.push(when('cork', chip(2.55, 4.15, 1.45, 'cork', PAL.sand), true));
+    it.push(when('screw', chip(2.55, 4.15, 1.45, 'screwcap', PAL.steel)));
+    // v4 density: empty glass in, QC light box, label rolls, stretch wrap on the finished stack
+    it.push(Z('filler', pallet(2.35, 0.35, 1.25, 1.05)));
+    for (let a = 0; a < 3; a++) for (let b = 0; b < 3; b++) it.push(Z('filler', bottle(2.6 + a * 0.38, 0.6 + b * 0.33, 0.16, mix(PAL.teal, '#ffffff', .35), 0.36)));
+    it.push(Z('filler', chip(2.95, 0.9, 1.05, 'empty glass in', PAL.cream)));
+    it.push(box(2.55, 1.75, 0, 0.95, 0.5, 0.72, PAL.wood, { planks: 2 }));
+    it.push(box(2.65, 1.8, 0.72, 0.4, 0.34, 0.4, '#fff6d8', { thin: true, noShadow: true }));
+    { const [qx, qy] = P(2.85, 1.97, 0.95); it.push({ d: 4.6, s: `<circle class="glow" cx="${f(qx)}" cy="${f(qy)}" r="6" fill="#fff3c4" opacity=".3"/>` }); }
+    it.push(bottle(3.3, 2.05, 0.72, PAL.red, 0.42));
+    it.push(worker(3.25, 2.6, PAL.mauve, 'clip', { delay: .9 }));
+    it.push(Z('label', group(4.9, [box(3.85, 2.05, 1.4, 0.55, 0.3, 0.06, PAL.wood, { thin: true, noShadow: true, flat: true }), cyl(3.98, 2.2, 1.46, 0.12, 0.18, '#fff', { noShadow: true }), cyl(4.27, 2.2, 1.46, 0.12, 0.18, PAL.cream, { noShadow: true })])));
     // labeler
     it.push(box(3.7, 2.4, 0, 0.8, 0.6, 1.4, PAL.cream, { planks: 2 }));
     const [rx, ry] = P(4.1, 3.0, 1.0);
     it.push({ d: 6.9, s: `<g class="spin" style="transform-origin:${f(rx)}px ${f(ry)}px"><circle cx="${f(rx)}" cy="${f(ry)}" r="3.4" fill="#fff" stroke="${LINE}" stroke-width=".6"/><path d="M${pp(rx - 3.4, ry)}h6.8M${pp(rx, ry - 3.4)}v6.8" stroke="${PAL.clay}" stroke-width=".6"/></g>` });
     // bottles riding the line (two closure states)
-    for (let i = 0; i < 5; i++) {
-      const b = bottle(0.6, 3.5, 0.7, [PAL.teal, PAL.clay, PAL.teal, mix(PAL.terra, '#fff', .3), PAL.red][i], 0.8);
-      it.push({ ...mover(b, [0.6, 3.5, 0.7], [5.4, 3.5, 0.7], 7.5, i * 1.5), d: 7.0 });
+    for (const [g, k] of [['standard', 0.8], ['light', 0.62]]) {
+      const movers = [];
+      for (let i = 0; i < 5; i++) {
+        const b = bottle(0.6, 3.5, 0.7, [PAL.teal, PAL.clay, PAL.teal, mix(PAL.terra, '#fff', .3), PAL.red][i], k);
+        movers.push({ ...mover(b, [0.6, 3.5, 0.7], [5.4, 3.5, 0.7], 7.5, i * 1.5), d: 7.0 });
+      }
+      it.push(optG('glass', g, () => movers, g === 'standard', 7.0));
     }
     it.push(worker(3.3, 4.5, PAL.teal, 'none', { delay: .2 }));
     it.push(worker(5.6, 2.6, PAL.clay, 'case', { flip: true, delay: .5 }));
@@ -767,17 +956,23 @@ const SCENES = {
     const jack = group(6, [pallet(3.8, 5.6, 1.3, 1.0), ...cases(3.85, 5.65, 0.16, 3, 2, 2, PAL.sand, .42), worker(3.5, 6.2, PAL.mauve, 'none', { cls: 'walker' })]);
     it.push(noShadow(() => walk(jack, [[3.6, 5.6, 0], [3.6, 5.6, 0], [4.6, 5.6, 0], [4.6, 5.6, 0]], 9)));
     it.push(...cases(0.6, 5.4, 0, 3, 2, 3, PAL.sand, .42));
-    it.push(chip(1.2, 6.2, 1.5, 'lighter glass', PAL.mint));
-    // truck at the shop door
-    it.push(box(5.9, 0.6, 0.35, 1.7, 2.8, 1.6, PAL.cream, { noShadow: true }));
-    it.push({ d: 6.9, s: fill([[7.6, 0.9, 0.9], [7.6, 3.1, 0.9], [7.6, 3.1, 1.45], [7.6, 0.9, 1.45]], PAL.clay) });
+    it.push({ d: 7.2, s: fill([[0.58, 6.26, 0], [1.88, 6.26, 0], [1.88, 6.26, 0.98], [0.58, 6.26, 0.98]], 'rgba(255,255,255,.35)', `stroke="rgba(255,255,255,.8)" stroke-width=".5"`) + fill([[1.88, 5.38, 0], [1.88, 6.26, 0], [1.88, 6.26, 0.98], [1.88, 5.38, 0.98]], 'rgba(255,255,255,.25)', `stroke="rgba(255,255,255,.8)" stroke-width=".5"`) });
+    it.push(optG('glass', 'standard', () => chip(1.2, 6.2, 1.5, 'standard glass', PAL.cream), true));
+    it.push(optG('glass', 'light', () => chip(1.2, 6.2, 1.5, 'light glass · less carbon', PAL.mint)));
+    // truck at the shop door: closed with cases waiting on the dock, or cut away and loaded (toolbar)
+    it.push(optG('load', 'dock', () => [box(5.9, 0.6, 0.35, 1.7, 2.8, 1.6, PAL.cream, { noShadow: true }),
+      { d: 6.9, s: fill([[7.6, 0.9, 0.9], [7.6, 3.1, 0.9], [7.6, 3.1, 1.45], [7.6, 0.9, 1.45]], PAL.clay) }], true));
+    it.push(optG('load', 'dock', () => [pallet(4.65, 4.35, 1.1, 0.9), ...cases(4.7, 4.4, 0.16, 2, 2, 2, PAL.sand, .42), chip(5.2, 4.8, 1.15, 'waiting on the dock', PAL.cream)], true));
+    it.push(optG('load', 'truck', () => [box(5.9, 0.6, 0.35, 1.7, 2.8, 0.1, dark(PAL.cream, .1), { noShadow: true, thin: true }),
+      box(5.9, 0.6, 0.45, 0.08, 2.8, 1.5, dark(PAL.cream, .18), { noShadow: true, thin: true }), box(5.9, 0.6, 0.45, 1.7, 0.08, 1.5, dark(PAL.cream, .12), { noShadow: true, thin: true }),
+      ...cases(6.05, 0.75, 0.45, 3, 5, 3, PAL.sand, .45), chip(6.75, 2.0, 2.05, 'loaded · cool · shaded', PAL.mint)]));
     it.push(box(5.9, 3.4, 0.35, 1.7, 1.0, 1.1, PAL.clay, { noShadow: true }));
     it.push({ d: 8.0, s: fill([[7.6, 3.55, 0.95], [7.6, 4.25, 0.95], [7.6, 4.25, 1.35], [7.6, 3.55, 1.35]], mix(PAL.water, '#fff', .3), `stroke="${LINE}" stroke-width=".55"`) });
     castShadow(rectFoot(5.9, 0.6, 1.7, 3.8), 1.8);
     it.push(cyl(7.65, 1.3, 0, 0.34, 0.16, '#3b332e', { noShadow: true, lid: false })); it.push(cyl(7.65, 3.9, 0, 0.34, 0.16, '#3b332e', { noShadow: true, lid: false }));
     it.push(house(6.2, 5.6, 1.6, 1.9, 1.3, 0.7, PAL.sand, PAL.teal));
         it.push(birds(3, 7, 0, 20));
-    return { bg: mix(PAL.water, '#ffffff', .55), it, state: 'cork', labels: [
+    return { bg: mix(PAL.water, '#ffffff', .55), it, state: 'cork', opts: { load: 'dock', glass: 'standard' }, labels: [
       tag([1.1, 1.2, 2.2], 'tank', 1, 'settled tank', 'clear before glass', -14, -12),
       tag([1.2, 3.5, 1.6], 'filler', 2, 'filler', 'same level, little air', -30, 8),
       tag([2.47, 3.5, 2.3], 'close', 3, 'cork or screwcap', 'tap to switch', 6, -34),
@@ -795,7 +990,10 @@ const SCENES = {
       const x = 0.35 + i * 1.28, W = [];
       W.push(box(x, 0.4, 0, 1.15, 0.6, 2.0, PAL.wood, { planks: 3 }));
       W.push(box(x, 0.4, 2.0, 1.15, 0.6, 0.16, c, { thin: true, noShadow: true }));
-      for (let s = 0; s < 3; s++) for (let b = 0; b < 3; b++) W.push(bottle(x + 0.22 + b * 0.36, 1.05, 0.22 + s * 0.6, bc[(b + s) % bc.length], 0.38));
+      for (let s = 0; s < 3; s++) for (let b = 0; b < 3; b++) {
+        const bt = bottle(x + 0.22 + b * 0.36, 1.05, 0.22 + s * 0.6, bc[(b + s) % bc.length], 0.38);
+        W.push(i === 2 && s === 1 ? optG('restock', 'off', () => bt, true) : bt);
+      }
       W.push(chip(x + 0.6, 1.0, i % 2 ? 2.4 : 2.85, name, light(c, .25)));
       it.push(...W.map(q => Z('walls', q)));
     });
@@ -824,12 +1022,27 @@ const SCENES = {
     for (let i = 0; i < 5; i++) it.push({ d: 13, s: seg3([6.35, 6.0 + i * 0.3, 0.05], [7.55, 6.0 + i * 0.3, 0.05], .7, light(PAL.wood, .3)) });
     it.push(chip(6.95, 6.7, 0.5, 'stock ↓', PAL.cream));
     it.push(bush(7.4, 4.9, 0, PAL.leaf));
+    // v4 density: staff-picks island, basket stack, browsing guests, door mat, gift bags
+    const Is = [box(0.45, 6.75, 0, 1.0, 0.85, 0.7, mix(PAL.sand, PAL.wood, .35), { planks: 2 })];
+    for (const [a, b, z] of [[0, 0, 0], [1, 0, 0], [0, 1, 0], [1, 1, 0], [0.5, 0.5, 0.42]]) Is.push(bottle(0.7 + a * 0.45, 6.92 + b * 0.38, 0.7 + z, [PAL.red, PAL.white, PAL.teal, mix(PAL.terra, '#fff', .3), PAL.wood][Math.floor(a + b * 2 + (z ? 4 : 0)) % 5], 0.42));
+    Is.push(chip(0.95, 7.6, 0.45, 'staff picks', PAL.mint));
+    it.push(...Is.map(q => Z('walls', q)));
+    for (let k = 0; k < 3; k++) it.push(box(0.35, 3.3, k * 0.14, 0.5, 0.4, 0.13, k % 2 ? PAL.teal : light(PAL.teal, .15), { thin: true, noShadow: k > 0 }));
+    it.push(crowd(1.9, 1.8, PAL.mustard, { delay: .3 })); it.push(crowd(4.6, 1.9, PAL.sage, { delay: 1.1 }));
+    it.push(stripe(2.6, 7.3, 1.4, 0.45, PAL.teal, { cols: 4 }));
+    for (const [x, c] of [[1.7, PAL.clay], [1.95, PAL.mint]]) it.push(box(x, 4.45, 1.0, 0.2, 0.14, 0.3, c, { thin: true, noShadow: true }));
+    // restock (toolbar): a gap on the rosé wall, the oldest case comes up the stair
+    it.push(optG('restock', 'on', () => [chip(3.2, 0.9, 1.0, 'gap · bring up 1st', PAL.mint), worker(6.95, 6.3, PAL.mauve, 'case', { flip: true, delay: .2 })]));
+    // round-up jar at checkout (toolbar)
+    it.push(optG('roundup', 'on', () => { const j = cyl(0.95, 4.95, 1.0, 0.16, 0.32, 'rgba(235,245,244,1)', { noShadow: true, lid: false }); const [jx, jy] = P(0.95, 4.95, 1.12);
+      return [{ d: j.d, s: j.s + [[-1, 0], [1, -.6], [0, -1.6]].map(([dx, dy]) => `<ellipse cx="${f(jx + dx)}" cy="${f(jy + dy)}" rx="1.2" ry=".6" fill="${PAL.mustard}" stroke="${LINE}" stroke-width=".3"/>`).join('') + `<path d="M${pp(jx, jy - 7)}q1.6,2.4 0,3.4q-1.6,-1 0,-3.4z" fill="${PAL.water}" stroke="${LINE}" stroke-width=".35"/>` }, chip(0.6, 4.6, 1.75, 'round up · water', PAL.mint)]; }));
     // STOCKROOM (under)
     const cv = cave({ top: -0.42, h: 2.2, wall: mix(PAL.sand, PAL.wood, .3) }), zf = cv.zf, und = cv.it;
     const fifo = [['1st', 1.0], ['2nd', 2.8], ['3rd', 4.6]];
     for (const [n, x] of fifo) {
       const P1 = [pallet(x, 6.4, 1.3, 1.1)].map(p => ({ d: p.d, s: box(x, 6.4, zf, 1.3, 1.1, 0.16, light(PAL.wood, .25), { thin: true, planks: 2, noShadow: true }).s }));
       und.push(Z('stock', group(x + 7, [...P1, ...cases(x + 0.05, 6.45, zf + 0.16, 3, 2, n === '1st' ? 2 : 3, PAL.sand, .42), chip(x + 0.65, 7.5, zf + 1.5, n, n === '1st' ? PAL.mint : PAL.cream)])));
+      if (n === '1st') und.push(optG('restock', 'on', () => ({ d: x + 7.1, s: fill([[x - 0.08, 6.32, zf + 0.01], [x + 1.38, 6.32, zf + 0.01], [x + 1.38, 7.58, zf + 0.01], [x - 0.08, 7.58, zf + 0.01]], 'none', `stroke="${PAL.teal}" stroke-width="1.4" stroke-dasharray="3 2"`) })));
     }
     und.push(flow([[6.4, 7.6, zf + 0.05], [0.6, 7.6, zf + 0.05]], PAL.clay, { packets: 3, dur: 8, d: 20, r: 1.2 }));
     und.push(Z('stock', walk(worker(6.2, 7.5, PAL.mauve, 'case', { z: zf, cls: 'walker', flip: true }), [[6.2, 7.5, zf], [0.8, 7.5, zf]], 10)));
@@ -839,13 +1052,13 @@ const SCENES = {
     und.push(ladder(7.3, 5.4, zf, 2.2, .35));
     const [lx, ly] = P(3.5, 0.05, zf + 1.8);
     und.push({ d: -250, s: `<circle cx="${f(lx)}" cy="${f(ly)}" r="9" fill="${PAL.mustard}" opacity=".18" class="glow"/><circle cx="${f(lx)}" cy="${f(ly)}" r="1.5" fill="#fff3c4" stroke="${LINE}" stroke-width=".5"/>` });
-    return { bg: mix(PAL.sand, '#ffffff', .45), it, under: { it: und, open: 20 }, labels: [
+    return { bg: mix(PAL.sand, '#ffffff', .45), it, opts: { restock: 'off', roundup: 'off' }, under: { it: und, open: 20 }, labels: [
       tag([2.2, 0.7, 2.2], 'walls', 1, 'style walls', 'shop by taste', -16, -12),
       tag([7.3, 2.9, 2.3], 'chill', 2, 'chilled case', 'whites · rosé · bubbles', 22, 2),
       tag([3.6, 3.6, 1.5], 'counter', 3, 'tasting counter', 'one step from what you like', -34, -30),
       tag([1.0, 5.3, 1.0], 'checkout', 4, 'checkout', 'wrap · temp tip · ID', -30, 6),
     ], ulabels: [
-      tag([3.4, 7.0, zf + 1.3], 'stock', 5, 'stockroom · FIFO', 'tap · unfold floors', -30, 22),
+      tag([3.4, 7.0, zf + 1.3], 'stock', 5, 'stockroom · FIFO', 'tap · unfold floors', -14, 30),
       tag([7.2, 1.6, zf + 1.2], 'dock', 6, 'back dock', 'check the invoice', 22, 4)] };
   },
   '09'() { // Table service: water first, then wine
@@ -858,12 +1071,14 @@ const SCENES = {
     const B = [box(0.5, 0.8, 0, 6.8, 1.0, 1.3, PAL.wood, { planks: 3 })];
     B.push(box(0.4, 0.7, 1.3, 7.0, 1.2, 0.1, dark(PAL.wood, .25), { flat: true, thin: true, noShadow: true }));
     for (let i = 0; i < 6; i++) B.push(bottle(2.7 + i * 0.62, 1.15, 1.4, [PAL.red, PAL.clay, PAL.teal, PAL.mustard, mix(PAL.terra, '#ffffff', .4), PAL.red][i], 0.55));
-    it.push(...B.map(q => Z('btg', q)));
+    it.push(...B.map((q, i) => Z('btg', i > 1 ? { ...q, d: 5.3 + i * 0.01 } : q)));
     const I = [cyl(1.5, 1.3, 1.4, 0.4, 0.55, PAL.steel, { hoops: [0.4], noShadow: true }), bottle(1.5, 1.3, 1.75, PAL.teal, 0.5)];
     const [ix, iy] = P(1.5, 1.3, 1.95);
     I.push({ d: 3.4, s: [[-3, 0], [2.6, .4], [-.4, 1.2], [3.6, -.6]].map(([dx, dy]) => `<rect x="${f(ix + dx - 1)}" y="${f(iy + dy - 1)}" width="2" height="2" fill="#f4fbfb" stroke="${LINE}" stroke-width=".3" transform="rotate(20 ${f(ix + dx)} ${f(iy + dy)})"/>`).join('') });
     I.push(drop(1.85, 1.65, 1.6, 0.4));
-    it.push(...I.map(q => Z('ice', q)));
+    I.push(optG('ice', 'water', () => ({ d: 3.45, s: `<ellipse cx="${f(ix)}" cy="${f(iy + 1)}" rx="5.4" ry="2.4" fill="${PAL.water}" opacity=".75"/>` + chip(2.05, 1.75, 1.42, 'ice + water', PAL.mint).s })));
+    I.push(optG('ice', 'dry', () => chip(2.05, 1.75, 1.42, 'ice only', PAL.cream), true));
+    it.push(...I.map(q => Z('ice', { ...q, d: 5.25 + q.d * 0.001 })));
     for (const x of [1.4, 3.6, 5.8]) { it.push(cyl(x, 2.3, 0.75, 0.3, 0.1, PAL.clay, { noShadow: true })); it.push(box(x - 0.05, 2.25, 0, 0.1, 0.1, 0.75, LINE, { thin: true })); }
     for (const x of [2.2, 4.4, 6.4]) { const [px, py] = P(x, 3.0, 3.5), [, qy] = P(x, 3.0, 2.4); it.push({ d: 30, s: `<path d="M${pp(px, py - 18)}V${f(qy)}" stroke="${LINE}" stroke-width=".5"/><path d="M${pp(px - 3, qy + 2)}q3,-5 6,0z" fill="${PAL.mustard}" stroke="${LINE}" stroke-width=".5"/><circle cx="${f(px)}" cy="${f(qy + 4)}" r="5" fill="${PAL.mustard}" opacity=".2" class="glow"/>` }); }
     // table with water + wine states
@@ -871,11 +1086,23 @@ const SCENES = {
     castShadow(rectFoot(2.6, 4.3, 2.8, 2.0), 0.9);
     for (const [x, y] of [[2.7, 4.4], [5.2, 4.4], [2.7, 6.1], [5.2, 6.1]]) it.push(box(x, y, 0, 0.12, 0.12, 1.0, PAL.wood, { thin: true, noShadow: true }));
     it.push(Z('water', cyl(3.15, 5.0, 1.18, 0.28, 0.75, mix(PAL.water, '#ffffff', .35))));
+    // chairs behind the table, candle, service in three states: water → wine → clear
+    for (const x of [3.1, 4.4]) it.push(chair(x, 3.75, PAL.wood, 'n'));
+    it.push(candle(4.3, 5.35, 1.18));
     for (const [x, y] of [[3.8, 4.75], [4.9, 4.9], [3.7, 5.9], [4.8, 6.0]]) {
-      it.push(Z('water', glass(x - 0.3, y + 0.1, 1.18, PAL.water)));
+      for (const st of ['water', 'wine']) { it.push(Z('water', when(st, glass(x - 0.3, y + 0.1, 1.18, PAL.water), st === 'water'))); it.push(when(st, plate(x - 0.15, y + 0.45, 1.18), st === 'water')); }
       it.push(when('water', glass(x, y, 1.18, 'rgba(251,245,234,.2)'), true));
       it.push(when('wine', glass(x, y, 1.18, PAL.red)));
+      const [nx, ny] = P(x - 0.1, y + 0.4, 1.18);
+      it.push(when('clear', { d: x + y + 0.2, s: `<path d="M${pp(nx - 3, ny)}l3,-1.6l3,1.6l-3,1.6z" fill="#fffaf1" stroke="${LINE}" stroke-width=".45"/><path d="M${pp(nx, ny - 1.6)}v3.2" stroke="${PAL.clay}" stroke-width=".5"/>` }));
     }
+    it.push(when('clear', chip(4.0, 5.3, 1.75, 'reset for the next table', PAL.mint)));
+    it.push(when('clear', walk(worker(5.6, 6.9, PAL.teal, 'tray', { cls: 'walker', apron: PAL.cream }), [[5.6, 6.9, 0], [6.3, 6.9, 0], [6.3, 2.6, 0], [6.3, 6.9, 0]], 9)));
+    // v4 density: service station with decanter + napkins, a two-top with guests
+    it.push(box(0.3, 4.0, 0, 0.85, 0.55, 0.85, dark(PAL.wood, .05), { planks: 2 }));
+    { const dc = cyl(0.55, 4.25, 0.85, 0.2, 0.22, 'rgba(240,236,224,1)', { noShadow: true, lid: false }); const [dx2, dy2] = P(0.55, 4.25, 0.95); it.push({ d: dc.d + 0.1, s: dc.s + `<rect x="${f(dx2 - .7)}" y="${f(dy2 - 9)}" width="1.4" height="6" fill="rgba(240,236,224,.95)" stroke="${LINE}" stroke-width=".4"/><ellipse cx="${f(dx2)}" cy="${f(dy2 + .6)}" rx="2.6" ry="1.1" fill="${PAL.red}" opacity=".85"/>` }); }
+    for (let k = 0; k < 3; k++) it.push(box(0.85, 4.15, 0.85 + k * 0.07, 0.25, 0.3, 0.06, k % 2 ? PAL.cream : '#fff', { thin: true, noShadow: true, flat: true }));
+    it.push(bush(7.3, 5.4, 0, mix(PAL.leaf, PAL.sage, .3), { berries: PAL.terra }));
     it.push(figure(2.2, 5.3, PAL.mauve, { cls: 'bob' })); it.push(figure(5.9, 5.6, PAL.clay, { cls: 'bob', style: '--delay:.8s' }));
     // pour: server at the table (jug first, then bottle)
     it.push(when('water', worker(4.3, 6.9, PAL.teal, 'jug', { apron: PAL.cream }), true));
@@ -893,12 +1120,12 @@ const SCENES = {
     it.push(...M.map(q => Z('menu', q)));
     for (const [x, y] of [[1.0, 5.0], [7.2, 7.3]]) it.push(bush(x, y, 0, PAL.leaf));
     it.push(lamp(7.3, 3.2));
-    return { bg: mix(PAL.terra, '#ffffff', .7), it, state: 'water', labels: [
+    return { bg: mix(PAL.terra, '#ffffff', .7), it, state: 'water', opts: { ice: 'dry' }, labels: [
       tag([3.15, 5.0, 1.95], 'water', 1, 'water first', 'tap · then pour wine', -44, 8),
       tag([4.6, 1.15, 2.3], 'btg', 2, 'by the glass', 'open bottles, fresh pours', 14, -22),
       tag([1.5, 1.3, 2.1], 'ice', 3, 'ice bucket', 'ice + water, faster', -18, -12),
       tag([4.3, 6.9, 1.3], 'pour', 4, 'the pour', 'taste for the host', 26, 16),
-      tag([0.9, 6.65, 1.3], 'host', 5, 'host steps', 'greet · seat · list', -16, 24),
+      tag([0.9, 6.65, 1.3], 'host', 5, 'host steps', 'greet & seat', -4, 30),
       tag([1.66, 3.26, 1.6], 'menu', 6, 'menu stand', 'sorted by style', -30, -8)] };
   },
 };
@@ -912,6 +1139,10 @@ function familyScene(seed, c) {
     it.push(Z('pads', stripe(x, y, w, 0.7, mix(PAL.soil, c.groundC, .45), { rows: 2 })));
     const [px, py] = P(x + w / 2, y + 0.35, 0), fc = c.leafC[k % 3];
     it.push(Z('pads', { d: x + y + 0.7, s: `<path d="M${pp(px, py)}v-6" stroke="${PAL.wood}" stroke-width=".7"/>` + leafG(px - 1.8, py - 5.6, .55, fc, -30) + leafG(px + 1.8, py - 6.2, .5, dark(fc, .1), 30) + `<circle cx="${f(px - .8)}" cy="${f(py - 3)}" r="1" fill="${c.grape}" stroke="${LINE}" stroke-width=".3"/><circle cx="${f(px + .6)}" cy="${f(py - 2.6)}" r="1" fill="${c.grape}" stroke="${LINE}" stroke-width=".3"/>` }));
+    // trait-pad mode: each pad flags its family (colour + initial) so the eleven/fourteen sort into three
+    const fam = c.fams[k % 3], [qx, qy] = P(x + w * 0.85, y + 0.12, 0);
+    it.push(optG('traits', 'on', () => ({ d: x + y + 0.75, s: fill([[x + 0.04, y + 0.04, 0.01], [x + w - 0.04, y + 0.04, 0.01], [x + w - 0.04, y + 0.66, 0.01], [x + 0.04, y + 0.66, 0.01]], fam[2], `opacity=".7" stroke="${dark(fam[2], .4)}" stroke-width=".6"`) +
+      `<path d="M${pp(qx, qy)}v-9" stroke="${LINE}" stroke-width=".55"/><path d="M${pp(qx, qy - 9)}h5.4l-1.2,1.8l1.2,1.8h-5.4z" fill="${dark(fam[2], .15)}" stroke="${LINE}" stroke-width=".4"/><text x="${f(qx + 2.2)}" y="${f(qy - 6.3)}" text-anchor="middle" class="chip" fill="${LINE}">${fam[1][0]}</text>` })));
   }
   // family platforms with mini vines + leaf chips; selected family glows
   c.fams.forEach(([key, name, col, h, glassC], i) => {
@@ -921,6 +1152,10 @@ function familyScene(seed, c) {
     F.push(vine(x + 0.45, y + 0.5, { cz: h + 0.7, grape: c.grape, br: 0.95, leaf: c.leafC[i] }));
     F.push(vine(x + 1.1, y + 1.05, { cz: h + 0.6, grape: c.grape, br: 0.95, leaf: c.leafC[i] }));
     F.push(chip(x + 0.8, y + 1.55, h * 0.45, c.subs[i], light(col, .35)));
+    F.push(box(x + 0.02, y + 2.02, 0, 0.08, 0.08, 0.55, PAL.wood, { thin: true, noShadow: true }));
+    F.push(thermo(x + 0.06, y + 2.06, 0.55, [0.28, 0.55, 0.86][i], [PAL.teal, PAL.mustard, PAL.clay][i]));
+    F.push(crate(x + 1.62, y + 0.2, 0, 0.4, light(PAL.wood, .1)));
+    F.push({ d: x + y + 2.3, s: [0, 1, 2].map(j => { const [bx2, by2] = P(x + 1.74 + j * 0.1, y + 0.34, 0.42); return `<circle cx="${f(bx2)}" cy="${f(by2)}" r="1.1" fill="${c.grape}" stroke="${LINE}" stroke-width=".3"/>`; }).join('') });
     it.push(...F.map(q => Z(key, q)));
   });
   // corner: tasting bench (whites) or barrel corner (reds)
@@ -929,7 +1164,10 @@ function familyScene(seed, c) {
     K.push(box(5.6, 0.6, 0, 2.0, 0.9, 0.85, PAL.wood, { planks: 2 }));
     K.push(box(5.6, 0.4, 0.85, 2.0, 0.12, 0.7, PAL.cream, { thin: true, noShadow: true }));
     c.fams.forEach(([key, , , , glassC], i) => { K.push(when(key, glass(6.0 + i * 0.55, 1.05, 0.85, glassC), i === 0)); });
-    c.fams.forEach(([key], i) => K.push(glass(6.0 + i * 0.55, 1.35, 0.85, 'rgba(251,245,234,.25)')));
+    c.fams.forEach(([key], i) => K.push(optG('compare', 'off', () => glass(6.0 + i * 0.55, 1.35, 0.85, 'rgba(251,245,234,.25)'), true)));
+    c.fams.forEach(([key, , , , glassC], i) => K.push(optG('compare', 'on', () => glass(6.0 + i * 0.55, 1.35, 0.85, glassC))));
+    K.push(optG('compare', 'on', () => chip(6.55, 1.75, 0.85, 'side by side', PAL.mint)));
+    K.push(jar(5.75, 1.25, 0.85, PAL.soil)); K.push(jar(7.35, 0.95, 0.85, mix(PAL.soil, PAL.sand, .5)));
     K.push(bucket(7.4, 1.8, 0, PAL.steel, PAL.white));
     K.push(worker(6.6, 2.1, PAL.clay, 'glass', { tc: c.fams[0][4], delay: .4 }));
   } else {
@@ -940,18 +1178,26 @@ function familyScene(seed, c) {
     const [nx, ny] = P(7.3, 2.3, 1.1);
     K.push({ d: 9.9, s: `<path d="M${pp(nx - 2.4, ny - 4)}h3M${pp(nx - 2.4, ny - 2.4)}h2.2M${pp(nx - 2.4, ny - .8)}h3" stroke="${PAL.clay}" stroke-width=".5"/>` });
     K.push(worker(6.3, 2.3, PAL.teal, 'glass', { tc: c.fams[2][4], delay: .4 }));
+    K.push(cyl(5.55, 2.85, 0, 0.42, 0.85, PAL.wood, { staves: true, hoops: [0.2, 0.8] }));
+    K.push(optG('compare', 'on', () => c.fams.map(([key, , , , glassC], i) => glass(5.3 + i * 0.25, 2.7 + i * 0.12, 0.85, glassC))));
   }
   it.push(...K.map(q => Z(c.corner, q)));
   it.push(stripe(0.3, 6.5, 7.4, 1.2, mix(c.groundC, PAL.soil, .3), { cols: 8 }));
   it.push(walk(worker(0.6, 7.0, PAL.teal, 'basket', { cls: 'walker', tc: c.grape }), [[0.6, 7.0, 0], [7.2, 7.0, 0], [7.2, 3.3, 0], [7.2, 7.0, 0]], 16));
   it.push(Z('notes', worker(1.8, 6.4, PAL.mauve, 'clip', { hat: PAL.sand, delay: .8 })));
   it.push(bush(7.4, 6.0, 0, PAL.sage, { berries: c.grape }));
+  // v4 density: site board (cool → warm), sample jars shelf, picking bin, posts along the pads
+  it.push(box(4.0, 6.65, 0, 1.0, 0.4, 0.55, PAL.wood, { planks: 2 }));
+  for (let j = 0; j < 4; j++) it.push(jar(4.15 + j * 0.24, 6.85, 0.55, [PAL.soil, mix(PAL.soil, PAL.sand, .5), dark(PAL.soil, .2), PAL.sand][j], 0.28));
+  it.push(box(5.6, 7.05, 0, 0.7, 0.5, 0.42, PAL.clay, { planks: 2 }));
+  for (const x of [0.22, 5.42]) it.push(box(x, 0.3, 0, 0.08, 0.08, 1.0, PAL.wood, { thin: true }));
+  it.push(line3([0.26, 0.34, 0.85], [5.46, 0.34, 0.85], .45, dark(PAL.steel, .35)));
   it.push(birds(2, seed, 0, 18));
-  const labels = c.fams.map(([key, name, , h], i) => tag([0.7 + i * 2.35 + 0.78, 4.0 - i * 0.15 + 1.55, h * 0.2], key, i + 1, name, 'tap · taste it', [-20, 2, 22][i], [26, 34, 26][i]));
+  const labels = c.fams.map(([key, name, , h], i) => tag([0.7 + i * 2.35 + 0.78, 4.0 - i * 0.15 + 1.55, h * 0.2], key, i + 1, name, 'tap · taste it', [-26, 2, 22][i], [44, 34, 26][i]));
   labels.push(tag([2.4, 0.7, 0.4], 'pads', 4, `${c.count}`, 'leaf + berry clues', -12, -18));
-  labels.push(tag([6.6, 1.0, 1.6], c.corner, 5, c.corner === 'bench' ? 'tasting bench' : 'barrel corner', c.corner === 'bench' ? 'same pour, white card' : 'oak frames bold', 4, -30));
+  labels.push(tag([6.6, 1.0, 1.6], c.corner, 5, c.corner === 'bench' ? 'tasting bench' : 'barrel corner', c.corner === 'bench' ? 'same pour, white card' : 'oak frames bold', -2, -38));
   labels.push(tag([1.8, 6.4, 1.4], 'notes', 6, 'field notes', 'patterns, not a list', -12, 30));
-  return { bg: c.bg, it, state: c.fams[0][0], labels };
+  return { bg: c.bg, it, state: c.fams[0][0], opts: { traits: 'off', compare: 'off' }, labels };
 }
 
 /* ---------- in-place teaching notes for World pins + zones (original Sip Studies copy) ----------
@@ -965,6 +1211,9 @@ export const HOTSPOTS = {
     post: { t: 'End post & tensioner', b: 'The braced end post anchors the row; the small ratchet keeps wires tight so the canopy does not sag when the fruit gets heavy.' },
     drip: { t: 'Drip line', b: 'Emitters water the root zone, not the leaves. Tap again to switch the line off and on and watch the wet bulbs in the soil cut. A little stress keeps berries small and flavorful.', cycle: ['wet', 'dry'] },
     soil: { t: 'Soil cut', b: 'The layers unfold: topsoil, then clay, then rock. Roots chase water downward; a vine that works for water gives smaller berries with more concentration. Tap again to fold it back.', explode: true },
+    season: { t: 'Winter pruning view', b: 'Leaves gone, canes cut back to short spurs, trimmings bundled in the row, frost on the ground. Winter is when the grower decides how much fruit the vine can carry next year.' },
+    station: { t: 'Weather mast', b: 'Wind cups and a rain gauge tell the crew when mildew pressure is high and how long the drip should run. Measure first, water second.' },
+    tank: { t: 'Rain tank', b: 'Rain off the shed roof is stored for the drip line. Every liter caught here is a liter not pumped from the ground.' },
   },
   '02': {
     crisp: { t: 'Crisp whites', b: 'High acid, citrus and green apple, usually fermented cool in steel and served cold. Cool sites push grapes this way. The bench now pours a Crisp glass.', state: 'crisp', focus: 'crisp' },
@@ -973,6 +1222,8 @@ export const HOTSPOTS = {
     pads: { t: 'Catalogue pads', b: 'Eleven whites, one pad each. Leaf shape and berry color help you name a vine in the field. Group them by family and you learn patterns, not a list.' },
     bench: { t: 'Tasting bench', b: 'Same pour size, same temperature, white card behind the glass. Read color first (pale lemon to gold), then nose, then how the acid feels.' },
     notes: { t: 'Field notes', b: 'The analyst walks the platforms logging site, ripeness, and family for each white. Tap a family pin to pour it at the bench.' },
+    traits: { t: 'Trait pads', b: 'Every catalogue pad now flags its family (C, F, R). Eleven names sort into three patterns you can taste. The thermometers show why: cooler sites lean Crisp, warmer sites lean Rich.' },
+    compare: { t: 'Compare pour', b: 'All three families side by side, same pour, same temperature, white card behind. Read color first, then the nose, then how the acid feels.' },
   },
   '03': {
     light: { t: 'Light reds', b: 'Thin skins, bright red fruit, gentle tannin. Short skin contact and a slight chill show them best.', state: 'light', focus: 'light' },
@@ -981,6 +1232,8 @@ export const HOTSPOTS = {
     pads: { t: 'Catalogue pads', b: 'Fourteen reds, one pad each, grouped by weight. Skin thickness is the clue: thicker skin, more color and tannin in the glass.' },
     barrel: { t: 'Barrel corner', b: 'Oak adds spice and lets a trickle of air in, softening tannin over months. The note board tracks punch-downs per day during fermentation.' },
     notes: { t: 'Field notes', b: 'The analyst walks the platforms logging skin, color, and family for each red. Tap a family pin to see it lift.' },
+    traits: { t: 'Trait pads', b: 'Every catalogue pad now flags its weight (L, M, B). Fourteen reds sort into three patterns. Skin thickness is the thread: thin skins stay Light, thick skins go Bold.' },
+    compare: { t: 'Compare pour', b: 'Light, Medium, and Bold side by side on the barrel head. Tilt each glass over a white card: light reds let the card show through the rim, bold reds hide it.' },
   },
   '04': {
     pick: { t: 'Pick date', b: 'Sugar, acid, and the taste of skins and seeds decide the day. Tap again to swap early and ripe fruit: early keeps acid for sparkling and crisp whites, ripe builds body for bold reds.', cycle: ['ripe', 'early'] },
@@ -989,16 +1242,20 @@ export const HOTSPOTS = {
     tractor: { t: 'Tractor & trailer', b: 'Headlights for pre-dawn picks when fruit is cool; a hitch for the bin trailer. Cool fruit arrives fresher and needs less chilling.' },
     crush: { t: 'Crush pad', b: 'Receiving bin, then the sorting table where the crew pulls leaves and bad berries before destemming. Rinse water from the hose reel is caught for reuse.' },
     bins: { t: 'Bins on the path', b: 'Bins ride the path straight to the pad. Speed matters: warm, split grapes start fermenting on their own.' },
+    dawn: { t: 'Dawn pick', b: 'The crew starts in the dark with headlamps and tractor lights so fruit reaches the pad cool. Cool grapes stay fresh and need less energy to chill.' },
+    rinse: { t: 'Rinse catch', b: 'Rinse water from the sorting table runs to a catch tank, settles, and goes back to wash the next bins instead of running off the pad.' },
+    crewwater: { t: 'Crew shade & water', b: 'Shade and cold water at the row end. Harvest days start early and run hot; drinking water for the pickers is part of the plan.' },
   },
   '05': {
-    white: { t: 'White · press first', b: 'White grapes are pressed right away and only the juice ferments, cool and clean, usually in steel. No skins means very little tannin.', focus: 'white' },
-    rose: { t: 'Rosé · hours on skins', b: 'Red grapes rest on their skins for hours, not days, until the juice turns pink. Then it is pressed and fermented like a white.', focus: 'rose' },
-    red: { t: 'Red · ferment on skins', b: 'Crushed red grapes ferment with their skins in open-top tanks. Punch-downs push the floating cap back in to pull color and tannin, then the wine is pressed.', focus: 'red' },
-    champ: { t: 'Champagne · second ferment', b: 'Traditional method: dry base wine plus a little sugar and yeast, capped in bottle. The bubbles form inside, then bottles rest on their lees down in the cool cave.', focus: 'champ' },
+    white: { t: 'White · press first', b: 'White grapes are pressed right away and only the juice ferments, cool and clean, usually in steel. No skins means very little tannin.', opt: { style: 'white' }, focus: 'white' },
+    rose: { t: 'Rosé · hours on skins', b: 'Red grapes rest on their skins for hours, not days, until the juice turns pink. Then it is pressed and fermented like a white.', opt: { style: 'rose' }, focus: 'rose' },
+    red: { t: 'Red · ferment on skins', b: 'Crushed red grapes ferment with their skins in open-top tanks. Punch-downs push the floating cap back in to pull color and tannin, then the wine is pressed.', opt: { style: 'red' }, focus: 'red' },
+    champ: { t: 'Champagne · second ferment', b: 'Traditional method: dry base wine plus a little sugar and yeast, capped in bottle. The bubbles form inside, then bottles rest on their lees down in the cool cave.', opt: { style: 'champ' }, focus: 'champ' },
     riddle: { t: 'Riddling racks', b: 'Bottles are turned and tipped a little each day until the spent yeast slides into the neck. The neck is frozen and the plug popped out (disgorging), then topped and corked.', focus: 'champ', explode: 'open' },
-    fort: { t: 'Fortified · add grape spirit', b: 'Grape spirit goes in during or after fermentation. Added early it stops the ferment and keeps the wine sweet; added after, the wine stays dry. Many age in a solera, young barrels topping up old.', focus: 'fort', explode: 'open' },
+    fort: { t: 'Fortified · add grape spirit', b: 'Grape spirit goes in during or after fermentation. Added early it stops the ferment and keeps the wine sweet; added after, the wine stays dry. Many age in a solera, young barrels topping up old.', opt: { style: 'fort' }, focus: 'fort', explode: 'open' },
     water: { t: 'Water channel', b: 'Every yard rinses into one channel. A cellar can use several liters of water per liter of wine, so catching and reusing it is the Give-Back here.' },
     cellar: { t: 'Cave level', b: 'Floors unfold: the four making yards on top, the cool cave below where bubbles and fortified wines take their time. Tap again to fold it back.', explode: true },
+    loop: { t: 'Rinse loop', b: 'With the loop on, channel water is caught in the corner tank, filtered, and piped back along the wall to the hoses instead of going down the drain.' },
   },
   '06': {
     steel: { t: 'Steel · sealed', b: 'Closed, temperature-controlled, almost no oxygen. Fruit stays fresh and crisp. Tanks are kept topped up so there is no air gap (ullage) on top.', focus: 'steel' },
@@ -1006,6 +1263,7 @@ export const HOTSPOTS = {
     oak: { t: 'Oak · slow breath', b: 'Air trickles in through the staves; tannin softens and toasted wood adds vanilla and spice. Wine evaporates, so the bung comes out for topping up.', focus: 'oak' },
     thief: { t: 'Wine thief', b: 'The cellar hand draws a sample through the bung hole and tastes before deciding: more time, blend, or bottle.', focus: 'oak' },
     lees: { t: 'Lees', b: 'Lees are spent yeast. Resting on them, and stirring now and then, gives a creamy, bready texture. Think sparkling wines and rich whites.', focus: 'lees' },
+    age: { t: 'One year on', b: 'A year later: chalk tallies on the barrels, a top-up because oak lets wine evaporate, amphorae sealed with clay, a thicker lees layer in the jar. The steel tank looks the same, and that is the point.' },
     scale: { t: 'Reductive → oxidative', b: 'Left lane keeps air out, right lane lets more in, and the O₂ dots show the drift. Most wines live somewhere between. Tap a lane to focus it; tap again to clear.' },
   },
   '07': {
@@ -1015,6 +1273,8 @@ export const HOTSPOTS = {
     label: { t: 'Labeler', b: 'Front and back labels tell who made it, where, the vintage, and alcohol. The roll spins on as bottles pass.' },
     case: { t: 'Cases & pallet', b: 'Twelve bottles to a case, cases stacked on a pallet, and the pallet jack rolls it to the dock. Lighter glass means lower shipping carbon.' },
     door: { t: 'Shop door', b: 'The truck carries wine to distributors and shops. Keep it cool and out of the sun the whole way.' },
+    load: { t: 'Dock or truck', b: 'Cases wait on the dock until the truck is ready, then load in one go: cool, shaded, stacked tight. Switch to see the truck cut away with its load.' },
+    glass: { t: 'Lighter glass', b: 'A lighter bottle holds the same wine and weighs less on every pallet and truck. Less weight per case means less fuel from cellar to shelf.' },
   },
   '08': {
     walls: { t: 'Style walls', b: 'Shelves are grouped by style (whites, reds, rosé, bubbles, fortified) so a guest finds wine by taste, not by alphabet.', focus: 'walls' },
@@ -1023,9 +1283,12 @@ export const HOTSPOTS = {
     checkout: { t: 'Checkout', b: 'Ring it up, wrap the bottle, give a serving-temperature tip, and check ID.', focus: 'checkout' },
     stock: { t: 'Stockroom · FIFO', b: 'First in, first out: the oldest pallet goes up to the floor before newer ones. The floors unfold so you can see the back stock. Tap again to fold.', explode: true, focus: 'stock' },
     dock: { t: 'Back dock', b: 'Deliveries arrive here and get checked against the invoice before they join the FIFO line.', explode: 'open', focus: 'dock' },
+    restock: { t: 'Restock from the 1st pallet', b: 'A gap opens on the rosé wall. The floors unfold and the oldest pallet (marked 1st) supplies the case, so nothing sits in the back too long.' },
+    roundup: { t: 'Round-up jar', b: 'Guests can round up at checkout. The jar funds clean-water work, the Give-Back for this chart.' },
   },
   '09': {
-    water: { t: 'Water first', b: 'Seat guests, pour water, then wine. Tap again to run the service and watch the glasses fill.', cycle: ['water', 'wine'] },
+    water: { t: 'Water first', b: 'Seat guests, pour water, then wine, then clear and reset. Tap again to run the service and watch the table change.', cycle: ['water', 'wine', 'clear'] },
+    clear: { t: 'Clear & reset', b: 'Plates and glasses leave on a tray, napkins are refolded, and the table is reset before the next guests sit down.' },
     btg: { t: 'By the glass', b: 'Open bottles for single pours. Whites and bubbles sit in ice, reds at cellar temperature.', focus: 'btg' },
     ice: { t: 'Ice bucket', b: 'Ice plus water chills a bottle much faster than ice alone, because water touches the whole bottle.', focus: 'ice' },
     pour: { t: 'The pour', b: 'Present the bottle, pour a small taste for the host, then fill guests about a third of the glass so the wine can breathe.', cycle: ['water', 'wine'] },
@@ -1036,12 +1299,63 @@ export const HOTSPOTS = {
 // key aliases for zones that share a note
 for (const id of ['02', '03']) HOTSPOTS[id].notes ??= HOTSPOTS[id].pads;
 
+/* ---------- per-chart toolbar (Village-style state toggles that redraw the scene) ----------
+   Switch: { icon, label, on, off, note, act: [onText, offText] }. Radio: { label, options: [{ icon, label, set, note, act }], clear? }.
+   Effects: state (scene state), opt { key: value } (option groups), explode (unfold layers), focus (dim other zones). */
+const fam = (keys, names, icons, verb) => ({ label: 'Family', options: keys.map((k, i) => ({ icon: icons[i], label: names[i], set: { state: k, focus: k }, note: k, act: `${names[i]} ${verb} · others dimmed` })), clear: { focus: '' } });
+export const TOGGLES = {
+  '01': [
+    { icon: '💧', label: 'Drip line', on: { state: 'wet' }, off: { state: 'dry' }, note: 'drip', act: ['Drip on · wet bulbs in the soil cut', 'Drip off · the vine works for water'] },
+    { icon: '⛰', label: 'Soil cut', on: { explode: true }, off: { explode: false }, note: 'soil', act: ['Layers unfolded · roots chase water', 'Layers folded back'] },
+    { icon: '✂', label: 'Winter prune', on: { opt: { season: 'winter' } }, off: { opt: { season: 'summer' } }, note: 'season', act: ['Winter · bare spurs, cut canes, frost', 'Summer · canopy and fruit are back'] },
+  ],
+  '02': [fam(['crisp', 'floral', 'rich'], ['Crisp', 'Floral', 'Rich'], ['🍋', '🌼', '🧈'], 'poured at the bench'),
+    { icon: '🏷', label: 'Trait pads', on: { opt: { traits: 'on' } }, off: { opt: { traits: 'off' } }, note: 'traits', act: ['Pads flagged by family', 'Pad flags off'] },
+    { icon: '🥂', label: 'Compare', on: { opt: { compare: 'on' }, focus: '' }, off: { opt: { compare: 'off' } }, note: 'compare', act: ['All three poured side by side', 'Back to one pour'] }],
+  '03': [fam(['light', 'medium', 'bold'], ['Light', 'Medium', 'Bold'], ['🍒', '🍇', '🫐'], 'lifted'),
+    { icon: '🏷', label: 'Trait pads', on: { opt: { traits: 'on' } }, off: { opt: { traits: 'off' } }, note: 'traits', act: ['Pads flagged by weight', 'Pad flags off'] },
+    { icon: '🥂', label: 'Compare', on: { opt: { compare: 'on' }, focus: '' }, off: { opt: { compare: 'off' } }, note: 'compare', act: ['Three weights on the barrel head', 'Back to one pour'] }],
+  '04': [
+    { label: 'Pick date', options: [{ icon: '🟢', label: 'Early', set: { state: 'early' }, note: 'pick', act: 'Early pick · acid kept for crisp and sparkling' }, { icon: '🍇', label: 'Ripe', set: { state: 'ripe' }, note: 'pick', act: 'Ripe pick · body for bold reds' }] },
+    { icon: '🌙', label: 'Dawn pick', on: { opt: { dawn: 'on' } }, off: { opt: { dawn: 'off' } }, note: 'dawn', act: ['Before sunrise · lamps on, fruit stays cool', 'Daylight'] },
+    { icon: '♻', label: 'Rinse catch', on: { opt: { rinse: 'on' } }, off: { opt: { rinse: 'off' } }, note: 'rinse', act: ['Rinse water caught and reused', 'Catch tank idle'] },
+  ],
+  '05': [
+    { label: 'Making style', options: [
+      { icon: '🥂', label: 'White', set: { focus: 'white', opt: { style: 'white' }, explode: false }, note: 'white', act: 'White lane · skins out, juice to cool steel' },
+      { icon: '🌸', label: 'Rosé', set: { focus: 'rose', opt: { style: 'rose' }, explode: false }, note: 'rose', act: 'Rosé lane · hours on skins, then press off' },
+      { icon: '🍷', label: 'Red', set: { focus: 'red', opt: { style: 'red' }, explode: false }, note: 'red', act: 'Red lane · cap punched down, days on skins' },
+      { icon: '🍾', label: 'Champagne', set: { focus: 'champ', opt: { style: 'champ' }, explode: true }, note: 'champ', act: 'Champagne lane · capped bottles go down to the cave' },
+      { icon: '🥃', label: 'Fortified', set: { focus: 'fort', opt: { style: 'fort' }, explode: true }, note: 'fort', act: 'Fortified lane · grape spirit into the solera' }],
+      clear: { focus: '', opt: { style: 'none' }, explode: false } },
+    { icon: '♻', label: 'Rinse loop', on: { opt: { loop: 'on' } }, off: { opt: { loop: 'off' } }, note: 'loop', act: ['Loop on · channel water reused', 'Loop off · water to drain'] },
+  ],
+  '06': [
+    { label: 'Vessel', options: [{ icon: '🛢', label: 'Steel', set: { focus: 'steel' }, note: 'steel', act: 'Steel lane · sealed and fresh' }, { icon: '🏺', label: 'Clay', set: { focus: 'clay' }, note: 'clay', act: 'Clay lane · breathes, no wood' }, { icon: '🪵', label: 'Oak', set: { focus: 'oak' }, note: 'oak', act: 'Oak lane · slow breath, spice' }], clear: { focus: '' } },
+    { icon: '⏳', label: 'One year on', on: { opt: { age: 'old' } }, off: { opt: { age: 'young' } }, note: 'age', act: ['A year later · tallies, top-ups, seals', 'Fresh fill'] },
+  ],
+  '07': [
+    { label: 'Closure', options: [{ icon: '🍾', label: 'Cork', set: { state: 'cork' }, note: 'close', act: 'Cork · a tiny breath over the years' }, { icon: '🔩', label: 'Screwcap', set: { state: 'screw' }, note: 'close', act: 'Screwcap · tight seal, fresh fruit' }] },
+    { icon: '🚚', label: 'Load truck', on: { opt: { load: 'truck' } }, off: { opt: { load: 'dock' } }, note: 'load', act: ['Loaded · truck cut away to show the cases', 'Cases waiting on the dock'] },
+    { icon: '🍃', label: 'Light glass', on: { opt: { glass: 'light' } }, off: { opt: { glass: 'standard' } }, note: 'glass', act: ['Lighter bottles on the line', 'Standard bottles on the line'] },
+  ],
+  '08': [
+    { icon: '⬇', label: 'Stockroom', on: { explode: true }, off: { explode: false }, note: 'stock', act: ['Floors unfolded · FIFO pallets below', 'Floors folded'] },
+    { icon: '📦', label: 'Restock', on: { opt: { restock: 'on' }, explode: true }, off: { opt: { restock: 'off' } }, note: 'restock', act: ['Gap on the wall · the 1st pallet supplies it', 'Walls full'] },
+    { icon: '💧', label: 'Round-up', on: { opt: { roundup: 'on' } }, off: { opt: { roundup: 'off' } }, note: 'roundup', act: ['Round-up jar on the counter', 'Jar put away'] },
+  ],
+  '09': [
+    { label: 'Service', options: [{ icon: '💧', label: 'Water', set: { state: 'water' }, note: 'water', act: 'Water poured first' }, { icon: '🍷', label: 'Wine', set: { state: 'wine' }, note: 'pour', act: 'Wine poured · a third of the glass' }, { icon: '🧺', label: 'Clear', set: { state: 'clear' }, note: 'clear', act: 'Cleared · reset for the next table' }] },
+    { icon: '🧊', label: 'Ice + water', on: { opt: { ice: 'water' } }, off: { opt: { ice: 'dry' } }, note: 'ice', act: ['Ice and water · chills faster', 'Ice only · slower chill'] },
+  ],
+};
+
 const CAM = { '01': { U: 12.2, OY: 28 }, '05': { U: 12.2, OY: 30 }, '08': { U: 12.2, OY: 30 } };
 export function sceneSVG(id, { labels = true, title = '' } = {}) {
   beginScene();
   const cam = CAM[id] || {};
   U = cam.U ?? 14; OY = cam.OY ?? 46;
-  const { it, labels: lb = [], ulabels = [], bg = PAL.mint, under, state } = SCENES[id]();
+  const { it, labels: lb = [], ulabels = [], bg = PAL.mint, under, state, far = 'hills', farC, opts = {} } = SCENES[id]();
   it.sort((a, b) => a.d - b.d);
   const base = it.filter(i => i.d <= -50), rest = it.filter(i => i.d > -50);
   const [, gy] = P(8, 8, under ? -3.2 : -0.95);
@@ -1053,13 +1367,16 @@ export function sceneSVG(id, { labels = true, title = '' } = {}) {
     under.it.sort((a, b) => a.d - b.d);
     lower = `<g class="layer lo">${under.it.map(i => i.s).join('')}</g>`;
   }
-  const out = `<svg xmlns="${NS}" class="scene${under ? ' stacked' : ''}" data-scene="${id}"${state ? ` data-state="${state}"` : ''} viewBox="-12 -4 264 198" role="img" aria-label="${title}" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">` +
+  const out = `<svg xmlns="${NS}" class="scene${under ? ' stacked' : ''}" data-scene="${id}"${state ? ` data-state="${state}"` : ''}${Object.entries(opts).map(([k, v]) => ` data-o-${k}="${v}"`).join('')} viewBox="-12 -4 264 198" role="img" aria-label="${title}" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">` +
     defs() +
     `<circle cx="120" cy="84" r="80" fill="${bg}" opacity=".55"/>` +
     `<circle cx="120" cy="84" r="80" fill="url(#${CUR.k}v)" opacity=".5"/>` +
-    `<ellipse cx="128" cy="${f(gy + 8)}" rx="100" ry="9" fill="${LINE}" opacity=".12" filter="url(#${CUR.k}b)"/>` +
+    backdrop(far, farC) +
+    `<ellipse cx="128" cy="${f(gy + 10)}" rx="112" ry="12" fill="${LINE}" opacity=".07" filter="url(#${CUR.k}s)"/>` +
+    `<ellipse cx="126" cy="${f(gy + 6)}" rx="86" ry="6.5" fill="${LINE}" opacity=".1" filter="url(#${CUR.k}b)"/>` +
     lower +
     (under ? `<g class="layer hi" style="--lift:-3px;--open:-${under.open}px">${top}</g>` : top) +
+    `<rect class="mood" x="-12" y="-4" width="264" height="198" fill="url(#${CUR.k}m)" pointer-events="none"/>` +
     (under && labels ? `<g class="labels lo">${ulabels.join('')}</g>` : '') + `</svg>`;  // lower pins stay on top so they remain clickable
   CUR = null; U = 14; OY = 46;
   return out;

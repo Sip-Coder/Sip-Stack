@@ -1,6 +1,6 @@
 // Sip-Stack view router: World (isometric grid) <-> Outline (Mermaid charts) <-> Village (3D diorama, lazy).
-// Deep links: #world  #world/03  #outline  #outline/03  (legacy #world-03, #outline-03, #chart-03 also work)
-import { sceneSVG, ICONS, HOTSPOTS } from './sip-world.js';
+// Deep links: #world  #world/03  #world/05/red  #outline  #outline/03  #village/drip  (legacy #world-03, #outline-03, #chart-03 also work)
+import { sceneSVG, ICONS, HOTSPOTS, TOGGLES } from './sip-world.js';
 
 const IDS = ['01', '02', '03', '04', '05', '06', '07', '08', '09'];
 const $ = (s, r = document) => r.querySelector(s);
@@ -8,24 +8,100 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const titleOf = id => $(`.card[data-id="${id}"] h3`)?.textContent || `Chart ${id}`;
 
-/* ---- paint World scenes + icons ---- */
+/* ---- scene state: one state axis, option groups, unfold, focus (shared by pins + toolbar) ---- */
+const STATE_NAMES = { wet: 'drip on', dry: 'drip off', ripe: 'ripe fruit', early: 'early pick', cork: 'cork', screw: 'screwcap', water: 'water poured', wine: 'wine poured', clear: 'table cleared' };
+const applyState = (svg, st) => { svg.dataset.state = st; $$('.st', svg).forEach(g => g.classList.toggle('on', g.dataset.when === st)); };
+const applyFocus = (svg, z) => { svg.dataset.focus = z || ''; $$('.zone', svg).forEach(g => g.classList.toggle('dim', !!z && g.dataset.zone !== z)); };
+const getOpt = (svg, k) => svg.getAttribute(`data-o-${k}`);
+const applyOpt = (svg, k, v) => { svg.setAttribute(`data-o-${k}`, v); $$(`.op[data-k="${k}"]`, svg).forEach(g => g.classList.toggle('on', g.dataset.v === v)); };
+function applyFx(svg, fx = {}) {
+  if (fx.state) applyState(svg, fx.state);
+  if (fx.opt) for (const [k, v] of Object.entries(fx.opt)) applyOpt(svg, k, v);
+  if ('explode' in fx) svg.classList.toggle('exploded', !!fx.explode);
+  if ('focus' in fx) applyFocus(svg, fx.focus);
+}
+// a toolbar button reads as pressed when the scene already shows its effect (explode only counts when it is the whole effect)
+function fxMatch(svg, fx = {}) {
+  const keys = Object.keys(fx).filter(k => k !== 'explode');
+  if (!keys.length) return svg.classList.contains('exploded') === !!fx.explode;
+  return keys.every(k => k === 'state' ? svg.dataset.state === fx.state : k === 'focus' ? (svg.dataset.focus || '') === fx.focus
+    : Object.entries(fx.opt).every(([a, b]) => getOpt(svg, a) === b));
+}
+
+/* ---- paint World scenes, icons, and per-chart toolbars ---- */
+const ico = i => i ? `<i aria-hidden="true">${i}</i>` : '';
 for (const card of $$('.card')) {
   const id = card.dataset.id;
   $('.scene-slot', card).outerHTML = sceneSVG(id, { title: `Isometric scene: ${titleOf(id)}` });
   $('.card-icon', card).innerHTML = ICONS[id];
   const n = $$('.scene .tag', card).length;
-  if (n) $('.card-icon', card).insertAdjacentHTML('beforebegin', `<span class="hs-hint" title="Tap a numbered pin or a place in the scene">${n} pins · tap to explore</span>`);
+  if (n) $('.card-icon', card).insertAdjacentHTML('beforebegin', `<span class="hs-hint" title="Tap a numbered pin, a place, or a toolbar button">${n} pins · tap to explore</span>`);
+  const spec = TOGGLES[id];
+  if (spec) {
+    const bar = document.createElement('div');
+    bar.className = 'sip-tools'; bar.setAttribute('role', 'toolbar'); bar.setAttribute('aria-label', `Change scene ${id}`);
+    bar.innerHTML = spec.map((t, ti) => t.options
+      ? `<span class="sip-seg${t.options.length > 4 ? ' many' : ''}" role="group" aria-label="${t.label}">${t.options.map((o, oi) => `<button type="button" class="sip-chip" data-t="${ti}" data-o="${oi}" aria-pressed="false">${ico(o.icon)}<span>${o.label}</span></button>`).join('')}</span>`
+      : `<button type="button" class="sip-chip sw" data-t="${ti}" aria-pressed="false">${ico(t.icon)}<span>${t.label}</span></button>`).join('');
+    $('svg.scene', card).after(bar);
+  }
+  syncTools(card);
 }
 if (reduced) $$('svg.scene').forEach(s => s.pauseAnimations?.());
+function syncTools(card) {
+  const spec = TOGGLES[card.dataset.id], svg = $('svg.scene', card);
+  if (!spec) return;
+  $$('.sip-tools button', card).forEach(b => {
+    const t = spec[b.dataset.t];
+    b.setAttribute('aria-pressed', String(fxMatch(svg, b.dataset.o != null ? t.options[b.dataset.o].set : t.on)));
+  });
+}
 
-/* ---- World pins: teach in place (state changes, focus, unfolding layers) ---- */
-const STATE_NAMES = { wet: 'drip on', dry: 'drip off', ripe: 'ripe fruit', early: 'early pick', cork: 'cork', screw: 'screwcap', water: 'water poured', wine: 'wine poured' };
-const applyState = (svg, st) => { svg.dataset.state = st; $$('.st', svg).forEach(g => g.classList.toggle('on', g.dataset.when === st)); };
-const applyFocus = (svg, z) => { svg.dataset.focus = z || ''; $$('.zone', svg).forEach(g => g.classList.toggle('dim', !!z && g.dataset.zone !== z)); };
+/* ---- World mood: day or golden light over every scene (remembered) ---- */
+const canvasEl = $('.canvas');
+function setLight(l) {
+  canvasEl.dataset.light = l;
+  $$('.world-light button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.light === l)));
+  try { localStorage.setItem('sip-world-light', l); } catch { /* private mode */ }
+}
+let savedLight = 'day';
+try { savedLight = localStorage.getItem('sip-world-light') || 'day'; } catch { /* private mode */ }
+setLight(savedLight === 'golden' ? 'golden' : 'day');
+$$('.world-light button').forEach(b => b.addEventListener('click', () => setLight(b.dataset.light)));
+
+/* ---- World notes: one dock pattern for pins, places, and toolbar buttons ---- */
 function closePop(card) {
   $('.hs-pop', card)?.remove();
   card.classList.remove('has-pop');
+  delete card.dataset.pin;
   $$('.tag.active', card).forEach(t => t.classList.remove('active'));
+  if (document.body.dataset.mode === 'world' && /^#world\/\d\d\//.test(location.hash)) history.replaceState(null, '', `#world/${card.dataset.id}`);
+}
+function showNote(card, key, act, anchor) {
+  const id = card.dataset.id, note = HOTSPOTS[id]?.[key];
+  if (!note) return;
+  const svg = $('svg.scene', card);
+  closePop(card);
+  card.dataset.pin = key;
+  const tagEl = $(`.tag[data-hs="${key}"]`, svg);
+  tagEl?.classList.add('active');
+  const pinN = tagEl ? $('.pn', tagEl).textContent : '';
+  const at = anchor || (tagEl ? $('.pin', tagEl) : svg);
+  const pop = document.createElement('div');
+  pop.className = 'hs-pop sip-note'; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', note.t);
+  pop.innerHTML = `<button class="x" type="button" aria-label="Close note">×</button><div class="k">${id} / 09${pinN ? ` · pin ${pinN}` : ' · scene'}</div><h4>${note.t}</h4><p>${note.b}</p>` +
+    `<div class="row"><span class="act"><b>What changed</b> ${act || 'Tap another pin, place, or button'}</span><a class="to-outline" href="#outline/${id}">Outline chart →</a></div>`;
+  card.append(pop); card.classList.add('has-pop');
+  const place = () => {
+    const cr = card.getBoundingClientRect(), r = at.getBoundingClientRect();
+    const left = Math.max(6, Math.min(r.left - cr.left + r.width / 2 - pop.offsetWidth / 2, cr.width - pop.offsetWidth - 6));
+    // dock under the toolbar so the change it teaches (focus, unfold, pour) stays in view and the buttons stay reachable
+    const under = $('.sip-tools', card) || svg;
+    pop.style.left = `${left}px`; pop.style.top = `${under.getBoundingClientRect().bottom - cr.top + 6}px`;
+  };
+  place();
+  if (!reduced) setTimeout(place, 760);
+  if (document.body.dataset.mode === 'world') history.replaceState(null, '', `#world/${id}/${key}`);
 }
 function openPin(card, el) {
   const id = card.dataset.id, key = el.dataset.hs, note = HOTSPOTS[id]?.[key];
@@ -37,30 +113,24 @@ function openPin(card, el) {
     const next = reopen || !note.cycle.includes(svg.dataset.state) ? note.cycle[(note.cycle.indexOf(svg.dataset.state) + 1) % note.cycle.length] : svg.dataset.state;
     applyState(svg, next); act = `Showing: ${STATE_NAMES[next] || next} · tap again`;
   } else if (note.state) applyState(svg, note.state);
+  if (note.opt) applyFx(svg, { opt: note.opt });
   if (note.explode === 'open') svg.classList.add('exploded');
   else if (note.explode) svg.classList.toggle('exploded', !(reopen && svg.classList.contains('exploded')));
   if (note.explode) act ||= svg.classList.contains('exploded') ? 'Layers unfolded' : 'Layers folded';
   if (note.focus) { const off = reopen && svg.dataset.focus === note.focus; applyFocus(svg, off ? '' : note.focus); act ||= off ? 'Focus cleared' : 'Focused · tap again to clear'; }
-  closePop(card);
-  card.dataset.pin = key;
-  const tagEl = el.classList.contains('tag') ? el : $(`.tag[data-hs="${key}"]`, svg);
-  tagEl?.classList.add('active');
-  const pin = tagEl ? $('.pin', tagEl) : el;
-  const pinN = tagEl ? $('.pn', tagEl).textContent : '';
-  const pop = document.createElement('div');
-  pop.className = 'hs-pop'; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', note.t);
-  pop.innerHTML = `<button class="x" type="button" aria-label="Close note">×</button><div class="k">${id} / 09${pinN ? ` · pin ${pinN}` : ''}</div><h4>${note.t}</h4><p>${note.b}</p>` +
-    `<div class="row"><span class="act">${act || 'Tap another pin or place'}</span><a class="to-outline" href="#outline/${id}">Outline chart →</a></div>`;
-  card.append(pop); card.classList.add('has-pop');
-  const place = () => {
-    const cr = card.getBoundingClientRect(), r = pin.getBoundingClientRect();
-    const left = Math.max(6, Math.min(r.left - cr.left + r.width / 2 - pop.offsetWidth / 2, cr.width - pop.offsetWidth - 6));
-    // dock the note under the scene so the change it teaches (focus, unfold, pour) stays in view
-    const top = svg.getBoundingClientRect().bottom - cr.top - 18;
-    pop.style.left = `${left}px`; pop.style.top = `${top}px`;
-  };
-  place();
-  if (note.explode && !reduced) setTimeout(place, 760);
+  syncTools(card);
+  showNote(card, key, act);
+}
+function toolClick(card, b) {
+  const t = TOGGLES[card.dataset.id][b.dataset.t], svg = $('svg.scene', card);
+  if (b.dataset.o != null) {
+    const o = t.options[b.dataset.o];
+    if (t.clear && fxMatch(svg, o.set)) { applyFx(svg, t.clear); syncTools(card); closePop(card); return; }
+    applyFx(svg, o.set); syncTools(card); showNote(card, o.note, o.act, b);
+  } else {
+    const on = !fxMatch(svg, t.on);
+    applyFx(svg, on ? t.on : t.off); syncTools(card); showNote(card, t.note, t.act[on ? 0 : 1], b);
+  }
 }
 document.addEventListener('click', e => {
   if (!e.target.closest('.card')) $$('.card.has-pop').forEach(closePop);
@@ -78,6 +148,10 @@ for (const panel of $$('.panel')) {
     `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>Open in World</a>`;
   const h2 = $('h2', panel);
   h2.after(bar);
+  const kick = document.createElement('p');
+  kick.className = 'panel-k';
+  kick.innerHTML = `<span class="pk-n">Outline · ${id} / 09</span><span class="pk-give">Give-Back · ${give}</span>` + (id === '05' ? '<span class="pk-lanes">five separate lanes</span>' : '');
+  h2.before(kick);
   const prev = IDS[i - 1], next = IDS[i + 1];
   const pager = document.createElement('nav');
   pager.className = 'pager';
@@ -214,7 +288,7 @@ function showOutline(id) {
   renderPanel($(`#chart-${id}`));
   document.title = `${id} · ${titleOf(id)} · Sip-Stack Outline`;
 }
-function showWorld(id) {
+function showWorld(id, pin) {
   const canvas = $('.canvas');
   canvas.classList.remove('zooming'); canvas.style.transform = ''; canvas.style.transformOrigin = '';
   setMode('world');
@@ -225,6 +299,10 @@ function showWorld(id) {
       card.scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' });
       card.classList.remove('spotlight'); void card.offsetWidth; card.classList.add('spotlight');
       card.focus({ preventScroll: true });
+      if (pin) {
+        const tagEl = $(`svg.scene .tag[data-hs="${pin}"]`, card);
+        if (tagEl) openPin(card, tagEl); else if (HOTSPOTS[id]?.[pin]) showNote(card, pin, 'Linked note');
+      }
     });
   }
 }
@@ -233,7 +311,11 @@ function route() {
   let m;
   if ((m = h.match(/^(?:outline|chart)[-/](0[1-9])$/))) return showOutline(m[1]);
   if (h === 'outline') return showOutline(lastOutline);
-  if ((m = h.match(/^world[-/](0[1-9])$/))) return showWorld(m[1]);
+  if ((m = h.match(/^world[-/](0[1-9])(?:\/([a-z]+))?$/))) {
+    const card = $(`.card[data-id="${m[1]}"]`);
+    if (m[2] && document.body.dataset.mode === 'world' && card?.dataset.pin === m[2]) return; // our own replaceState echo
+    return showWorld(m[1], m[2]);
+  }
   if ((m = h.match(/^village(?:\/([a-z-]+))?$/))) return showVillage(m[1]);
   const wasOutline = document.body.dataset.mode === 'outline';
   showWorld(wasOutline && h === 'world' ? lastOutline : null);
@@ -248,17 +330,7 @@ $$('.seg button').forEach(b => b.addEventListener('click', () => {
 $$('.tab').forEach(t => t.addEventListener('click', () => { location.hash = `outline/${t.dataset.id}`; }));
 
 // camera-style zoom into a card, then open its Outline chart
-$$('.card').forEach(card => card.addEventListener('click', e => {
-  if (e.metaKey || e.ctrlKey || e.shiftKey) return; // let modified clicks open a new tab
-  e.preventDefault();
-  const pop = e.target.closest('.hs-pop');
-  if (pop) { // clicks inside a note never zoom away, except its own Outline link
-    if (e.target.closest('.x')) closePop(card);
-    if (!e.target.closest('.to-outline')) return;
-  } else {
-    const hs = e.target.closest('svg.scene .hs');
-    if (hs) return openPin(card, hs);
-  }
+function zoomTo(card) {
   const id = card.dataset.id, canvas = $('.canvas');
   const go = () => { location.hash = `outline/${id}`; scrollTo({ top: 0 }); };
   if (reduced) return go();
@@ -267,15 +339,34 @@ $$('.card').forEach(card => card.addEventListener('click', e => {
   canvas.style.transform = 'scale(2.4)';
   canvas.classList.add('zooming');
   setTimeout(go, 420);
+}
+$$('.card').forEach(card => card.addEventListener('click', e => {
+  const link = e.target.closest('a');
+  if (link && (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) return; // let modified clicks open a new tab
+  if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+  e.preventDefault();
+  const tb = e.target.closest('.sip-tools button');
+  if (tb) return toolClick(card, tb);
+  if (e.target.closest('.sip-tools')) return;
+  const pop = e.target.closest('.hs-pop');
+  if (pop) { // clicks inside a note never zoom away, except its own Outline link
+    if (e.target.closest('.x')) { closePop(card); card.focus({ preventScroll: true }); }
+    if (!e.target.closest('.to-outline')) return;
+  } else {
+    const hs = e.target.closest('svg.scene .hs');
+    if (hs) return openPin(card, hs);
+  }
+  zoomTo(card);
 }));
 
-// keyboard: arrow keys move between cards in World
+// keyboard: Tab reaches pins + toolbar; Enter/Space opens a pin; Esc closes; arrows move between cards; Enter on a card opens its Outline
 $('.grid').addEventListener('keydown', e => {
   const t = document.activeElement;
   if (t?.classList?.contains('tag') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); e.stopPropagation(); return openPin(t.closest('.card'), t); }
   if (e.key === 'Escape') { const c = t?.closest?.('.card'); if (c) { closePop(c); c.focus(); } return; }
-  const cards = $$('.card'), i = cards.indexOf(document.activeElement);
+  const cards = $$('.card'), i = cards.indexOf(t);
   if (i < 0) return;
+  if (e.key === 'Enter') { e.preventDefault(); return zoomTo(t); }
   const cols = getComputedStyle($('.grid')).gridTemplateColumns.split(' ').length;
   const d = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: cols, ArrowUp: -cols }[e.key];
   if (d && cards[i + d]) { e.preventDefault(); cards[i + d].focus(); }

@@ -19,7 +19,9 @@ Home: Sip Studios › Ai Edu · Through-line: Somm Support water accessibility
 
 `docs/index.html` is the Pages home, with three views:
 
-- **World** (default): a 3×3 isometric paper card grid, *Nine ways water becomes a drink*. Each card has a small animated SVG scene. Click a card to open its chart.
+- **World** (default): a 3×3 isometric paper card grid, *Nine ways water becomes wine*. Each card is a dense animated SVG scene with numbered pins, a Village-style toolbar of scene toggles that redraw it (drip, soil cut, winter prune, the five making styles, cork or screwcap, load the truck, water → wine → clear, and more), and a shared Day / Golden light. Deep link a note with `#world/05/red`. Click a card's Outline link (or press Enter on it) to open its chart.
+
+**Elevation pass (v4):** World scenes, Outline, and page chrome now share the Village's craft: same note dock, chips, light switch, focus rings, and three equal modes in the hero.
 - **Outline**: the Mermaid journey tabs, plus the White and Red Grape Varieties species analysis tables (02, 03).
 - **Village**: a 3D wine-coast teaching diorama built in code with Three.js (loaded from a CDN only when the tab opens; no build step). Drag to orbit, scroll or pinch to zoom, switch Day / Golden / Night, and tap 11 numbered pins: terraces, drip line, soil cut, five separate making-lane doors (white, rosé, red, Champagne, fortified), rinse-water loop, boat cases, and a table that pours water before wine. Keyboard: arrows orbit, +/- zoom, R resets, Tab reaches pins, Esc closes the note. Deep link a pin with `#village/drip`. Files: `docs/assets/sip-village.js`, `docs/assets/sip-village-content.js`.
 
