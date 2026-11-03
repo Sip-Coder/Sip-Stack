@@ -36,33 +36,97 @@ for (const panel of $$('.panel')) {
   panel.append(pager);
 }
 
-/* ---- Mermaid (lazy, per visible panel) ---- */
-let mermaidP = null;
+/* ---- Mermaid (lazy, per visible panel) ----
+   Readability rules: charts always flow top-to-bottom (long LR chains shrink to unreadable
+   text), render at natural size (no shrink-to-fit), 16px+ labels, generous spacing.
+   Narrow screens get tighter label wrapping; anything still wider than the card scrolls
+   sideways with a visible "swipe" hint instead of being scaled down. */
+const narrowMQ = matchMedia('(max-width: 640px)');
+let mermaidP = null, mermaidNarrow = null;
+function mermaidConfig(narrow) {
+  return {
+    startOnLoad: false, theme: 'base', securityLevel: 'strict',
+    themeVariables: {
+      primaryColor: '#fffaf1', primaryTextColor: '#1f1914', primaryBorderColor: '#2f2721',
+      lineColor: '#7a3d22', secondaryColor: '#EDD4A8', tertiaryColor: '#D8E6DA',
+      edgeLabelBackground: '#f3e6cc', textColor: '#1f1914',
+      fontFamily: 'Inter, Segoe UI, system-ui, sans-serif', fontSize: narrow ? '15px' : '17px',
+    },
+    flowchart: {
+      curve: 'basis', htmlLabels: true, useMaxWidth: false,
+      nodeSpacing: narrow ? 10 : 46, rankSpacing: narrow ? 38 : 54, padding: narrow ? 8 : 16,
+      wrappingWidth: narrow ? 86 : 280, diagramPadding: narrow ? 2 : 8,
+    },
+  };
+}
 function getMermaid() {
-  mermaidP ??= import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs').then(({ default: m }) => {
-    m.initialize({
-      startOnLoad: false, theme: 'base', securityLevel: 'strict',
-      themeVariables: {
-        primaryColor: '#fbf5ea', primaryTextColor: '#2a221d', primaryBorderColor: '#3a312b',
-        lineColor: '#914C2C', secondaryColor: '#EDD4A8', tertiaryColor: '#D8E6DA',
-        fontFamily: 'Inter, Segoe UI, system-ui, sans-serif', fontSize: '14px',
-      },
-      flowchart: { curve: 'basis', htmlLabels: true },
-    });
+  mermaidP ??= import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs').then(({ default: m }) => m);
+  return mermaidP.then(m => {
+    if (mermaidNarrow !== narrowMQ.matches) { mermaidNarrow = narrowMQ.matches; m.initialize(mermaidConfig(mermaidNarrow)); }
     return m;
   });
-  return mermaidP;
 }
-async function renderPanel(panel) {
-  const nodes = $$('pre.mermaid:not([data-processed])', panel);
-  if (!nodes.length) return;
-  try { await (await getMermaid()).run({ nodes }); }
-  catch (e) {
-    // Keep the original journey readable if the diagram CDN is unavailable.
-    nodes.forEach(node => { node.style.color = 'var(--ink)'; });
-    console.warn('Mermaid failed', e);
+// break long edge labels onto two lines on phones so side-by-side lanes stay narrow
+const wrapEdge = t => {
+  if (t.length < 14) return t;
+  const w = t.split(' '), half = t.length / 2;
+  let n = 0, i = 0;
+  while (i < w.length - 1 && n + w[i].length < half) n += w[i++].length + 1;
+  return i ? `${w.slice(0, i).join(' ')}<br>${w.slice(i).join(' ')}` : t;
+};
+const NARROW_STEPS = [[210, 24], [130, 16], [86, 10]];
+const prepSource = (src, narrow, step = 0) => {
+  let out = src.replace(/^(\s*(?:flowchart|graph))\s+(LR|RL)\b/, '$1 TD');
+  if (!narrow) return out;
+  out = out.replace(/\|"([^"|]+)"\|/g, (_, t) => `|"${wrapEdge(t)}"|`);
+  // phones: start with roomy boxes; renderPanel steps down to tighter wrapping only if it won't fit
+  const [ww, ns] = NARROW_STEPS[step];
+  return `%%{init: {"flowchart": {"wrappingWidth": ${ww}, "nodeSpacing": ${ns}}}}%%\n` + out;
+};
+// Natural size first. If a chart is only slightly wider than the card (>= 92% fits),
+// shrink it to fit (labels stay ~14px). Otherwise keep full size and show a swipe hint.
+function markOverflow(wrap) {
+  const svg = $('svg', wrap);
+  if (!svg) return;
+  const natural = svg.dataset.w ??= String(svg.getBoundingClientRect().width);
+  const avail = wrap.clientWidth - parseFloat(getComputedStyle(wrap).paddingLeft) - parseFloat(getComputedStyle(wrap).paddingRight);
+  const scale = avail / Number(natural);
+  svg.style.marginInline = 'auto';
+  svg.style.width = scale < 1 && scale >= 0.92 ? `${avail}px` : '';
+  wrap.classList.toggle('scrolls', scale < 0.92);
+}
+const rendering = new WeakMap();
+function renderPanel(panel, force = false) {
+  const prev = rendering.get(panel) || Promise.resolve();
+  const job = prev.then(() => renderPanelNow(panel, force));
+  rendering.set(panel, job.catch(() => {}));
+  return job;
+}
+async function renderPanelNow(panel, force) {
+  const pres = $$('pre.mermaid', panel);
+  const narrow = narrowMQ.matches;
+  panel.dataset.mmNarrow = String(narrow);
+  for (const pre of pres) {
+    pre.dataset.src ??= pre.textContent;
+    if (pre.dataset.processed && !force) continue;
+    const wrap = pre.closest('.mermaid-wrap');
+    for (let step = 0; step < (narrow ? NARROW_STEPS.length : 1); step++) {
+      pre.removeAttribute('data-processed');
+      pre.textContent = prepSource(pre.dataset.src, narrow, step);
+      try { await (await getMermaid()).run({ nodes: [pre] }); } catch (e) { console.warn('Mermaid failed', e); break; }
+      const svg = $('svg', pre);
+      if (!narrow || !svg || svg.getBoundingClientRect().width * 0.92 <= wrap.clientWidth) break;
+    }
+    markOverflow(wrap);
   }
 }
+// re-render the visible chart when crossing the phone breakpoint (rotation, resize)
+narrowMQ.addEventListener('change', () => {
+  const active = $('.panel.active');
+  if (active) renderPanel(active, true);
+  $$('.panel:not(.active) pre.mermaid[data-processed]').forEach(pre => { pre.removeAttribute('data-processed'); pre.textContent = pre.dataset.src; });
+});
+addEventListener('resize', () => $$('.panel.active .mermaid-wrap').forEach(markOverflow));
 
 /* ---- view switching ---- */
 const seg = $('.seg');
