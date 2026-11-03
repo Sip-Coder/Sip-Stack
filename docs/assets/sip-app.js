@@ -1,6 +1,6 @@
 // Sip-Stack dual view router: World (isometric grid) <-> Outline (Mermaid charts).
 // Deep links: #world  #world/03  #outline  #outline/03  (legacy #world-03, #outline-03, #chart-03 also work)
-import { sceneSVG, ICONS } from './sip-world.js';
+import { sceneSVG, ICONS, HOTSPOTS } from './sip-world.js';
 
 const IDS = ['01', '02', '03', '04', '05', '06', '07', '08', '09'];
 const $ = (s, r = document) => r.querySelector(s);
@@ -13,7 +13,58 @@ for (const card of $$('.card')) {
   const id = card.dataset.id;
   $('.scene-slot', card).outerHTML = sceneSVG(id, { title: `Isometric scene: ${titleOf(id)}` });
   $('.card-icon', card).innerHTML = ICONS[id];
+  const n = $$('.scene .tag', card).length;
+  if (n) $('.card-icon', card).insertAdjacentHTML('beforebegin', `<span class="hs-hint" title="Tap a numbered pin or a place in the scene">${n} pins · tap to explore</span>`);
 }
+if (reduced) $$('svg.scene').forEach(s => s.pauseAnimations?.());
+
+/* ---- World pins: teach in place (state changes, focus, unfolding layers) ---- */
+const STATE_NAMES = { wet: 'drip on', dry: 'drip off', ripe: 'ripe fruit', early: 'early pick', cork: 'cork', screw: 'screwcap', water: 'water poured', wine: 'wine poured' };
+const applyState = (svg, st) => { svg.dataset.state = st; $$('.st', svg).forEach(g => g.classList.toggle('on', g.dataset.when === st)); };
+const applyFocus = (svg, z) => { svg.dataset.focus = z || ''; $$('.zone', svg).forEach(g => g.classList.toggle('dim', !!z && g.dataset.zone !== z)); };
+function closePop(card) {
+  $('.hs-pop', card)?.remove();
+  card.classList.remove('has-pop');
+  $$('.tag.active', card).forEach(t => t.classList.remove('active'));
+}
+function openPin(card, el) {
+  const id = card.dataset.id, key = el.dataset.hs, note = HOTSPOTS[id]?.[key];
+  if (!note) return;
+  const svg = el.closest('svg.scene');
+  const reopen = card.dataset.pin === key && $('.hs-pop', card);
+  let act = '';
+  if (note.cycle) {
+    const next = reopen || !note.cycle.includes(svg.dataset.state) ? note.cycle[(note.cycle.indexOf(svg.dataset.state) + 1) % note.cycle.length] : svg.dataset.state;
+    applyState(svg, next); act = `Showing: ${STATE_NAMES[next] || next} · tap again`;
+  } else if (note.state) applyState(svg, note.state);
+  if (note.explode === 'open') svg.classList.add('exploded');
+  else if (note.explode) svg.classList.toggle('exploded', !(reopen && svg.classList.contains('exploded')));
+  if (note.explode) act ||= svg.classList.contains('exploded') ? 'Layers unfolded' : 'Layers folded';
+  if (note.focus) { const off = reopen && svg.dataset.focus === note.focus; applyFocus(svg, off ? '' : note.focus); act ||= off ? 'Focus cleared' : 'Focused · tap again to clear'; }
+  closePop(card);
+  card.dataset.pin = key;
+  const tagEl = el.classList.contains('tag') ? el : $(`.tag[data-hs="${key}"]`, svg);
+  tagEl?.classList.add('active');
+  const pin = tagEl ? $('.pin', tagEl) : el;
+  const pinN = tagEl ? $('.pn', tagEl).textContent : '';
+  const pop = document.createElement('div');
+  pop.className = 'hs-pop'; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', note.t);
+  pop.innerHTML = `<button class="x" type="button" aria-label="Close note">×</button><div class="k">${id} / 09${pinN ? ` · pin ${pinN}` : ''}</div><h4>${note.t}</h4><p>${note.b}</p>` +
+    `<div class="row"><span class="act">${act || 'Tap another pin or place'}</span><a class="to-outline" href="#outline/${id}">Outline chart →</a></div>`;
+  card.append(pop); card.classList.add('has-pop');
+  const place = () => {
+    const cr = card.getBoundingClientRect(), r = pin.getBoundingClientRect();
+    const left = Math.max(6, Math.min(r.left - cr.left + r.width / 2 - pop.offsetWidth / 2, cr.width - pop.offsetWidth - 6));
+    // dock the note under the scene so the change it teaches (focus, unfold, pour) stays in view
+    const top = svg.getBoundingClientRect().bottom - cr.top - 18;
+    pop.style.left = `${left}px`; pop.style.top = `${top}px`;
+  };
+  place();
+  if (note.explode && !reduced) setTimeout(place, 760);
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.card')) $$('.card.has-pop').forEach(closePop);
+});
 
 /* ---- Outline: bridge bar + pager per panel ---- */
 for (const panel of $$('.panel')) {
@@ -182,6 +233,14 @@ $$('.tab').forEach(t => t.addEventListener('click', () => { location.hash = `out
 $$('.card').forEach(card => card.addEventListener('click', e => {
   if (e.metaKey || e.ctrlKey || e.shiftKey) return; // let modified clicks open a new tab
   e.preventDefault();
+  const pop = e.target.closest('.hs-pop');
+  if (pop) { // clicks inside a note never zoom away, except its own Outline link
+    if (e.target.closest('.x')) closePop(card);
+    if (!e.target.closest('.to-outline')) return;
+  } else {
+    const hs = e.target.closest('svg.scene .hs');
+    if (hs) return openPin(card, hs);
+  }
   const id = card.dataset.id, canvas = $('.canvas');
   const go = () => { location.hash = `outline/${id}`; scrollTo({ top: 0 }); };
   if (reduced) return go();
@@ -194,6 +253,9 @@ $$('.card').forEach(card => card.addEventListener('click', e => {
 
 // keyboard: arrow keys move between cards in World
 $('.grid').addEventListener('keydown', e => {
+  const t = document.activeElement;
+  if (t?.classList?.contains('tag') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); e.stopPropagation(); return openPin(t.closest('.card'), t); }
+  if (e.key === 'Escape') { const c = t?.closest?.('.card'); if (c) { closePop(c); c.focus(); } return; }
   const cards = $$('.card'), i = cards.indexOf(document.activeElement);
   if (i < 0) return;
   const cols = getComputedStyle($('.grid')).gridTemplateColumns.split(' ').length;
