@@ -56,7 +56,12 @@ function getMermaid() {
 async function renderPanel(panel) {
   const nodes = $$('pre.mermaid:not([data-processed])', panel);
   if (!nodes.length) return;
-  try { (await getMermaid()).run({ nodes }); } catch (e) { console.warn('Mermaid failed', e); }
+  try { await (await getMermaid()).run({ nodes }); }
+  catch (e) {
+    // Keep the original journey readable if the diagram CDN is unavailable.
+    nodes.forEach(node => { node.style.color = 'var(--ink)'; });
+    console.warn('Mermaid failed', e);
+  }
 }
 
 /* ---- view switching ---- */

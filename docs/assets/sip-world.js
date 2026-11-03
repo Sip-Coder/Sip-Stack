@@ -2,7 +2,7 @@
 // Original Sip Studies teaching graphics. Plain SVG, no build step.
 
 const NS = 'http://www.w3.org/2000/svg';
-const LINE = '#3a312b';
+const LINE = '#49443b';
 const PAL = {
   clay: '#914C2C', teal: '#1A5552', mauve: '#817985', mint: '#D8E6DA', sand: '#EDD4A8',
   paper: '#f4ead8', wood: '#8a5a3c', sage: '#a9bfa6', leaf: '#5f8a6e', gold: '#d9c27a',
@@ -28,19 +28,37 @@ const poly = (arr, fill, extra = '') =>
 
 /* ---------- primitives (each returns {d: depth, s: svg}) ---------- */
 function box(x, y, z, w, d, h, c, extra = '') {
-  const s =
+  const shadow = z === 0 ? poly([[x,y,0],[x+w,y,0],[x+w+h*.65,y+d+h*.35,.01],[x+h*.65,y+d+h*.35,.01]],LINE,'opacity=".10" stroke="none"') : '';
+  const s = shadow +
     poly([[x, y + d, z], [x + w, y + d, z], [x + w, y + d, z + h], [x, y + d, z + h]], c, extra) +
     poly([[x + w, y, z], [x + w, y + d, z], [x + w, y + d, z + h], [x + w, y, z + h]], dark(c), extra) +
     poly([[x, y, z + h], [x + w, y, z + h], [x + w, y + d, z + h], [x, y + d, z + h]], light(c), extra);
   return { d: x + w / 2 + y + d / 2 + z * 0.01, s };
 }
-function slab(c, x = 0, y = 0, w = 8, d = 8, h = 0.55) {
-  return { d: -100, s: box(x, y, -h, w, d, h, c).s };
+function slab(c, x = 0, y = 0, w = 8, d = 8, h = 0.45) {
+  let s = poly([[x+.45,y+.25,-h-.12],[x+w+1,y+.25,-h-.12],[x+w+1,y+d+.65,-h-.12],[x+.45,y+d+.65,-h-.12]], LINE, 'opacity=".10" stroke="none"');
+  s += box(x,y,-h,w,d,h,c).s;
+  s += poly([[x+.13,y+.13,.01],[x+w-.13,y+.13,.01],[x+w-.13,y+d-.13,.01],[x+.13,y+d-.13,.01]], 'none', 'opacity=".3"');
+  // Deterministic flecks keep the ground tactile at every pixel density.
+  for(let i=0;i<95;i++) {
+    const px=.25+((i*37)%97)/97*7.5, py=.25+((i*53)%89)/89*7.5;
+    s += line3([px,py,.015],[px+.06,py+.025,.015],.32,dark(c,.3),'opacity=".35"').s;
+  }
+  return {d:-100,s};
 }
 function house(x, y, w, d, h, roofH, wall, roof, opts = {}) {
   let s = box(x, y, 0, w, d, h, wall).s;
   s += poly([[x, y + d, h], [x + w, y + d, h], [x + w, y + d / 2, h + roofH], [x, y + d / 2, h + roofH]], roof);
   s += poly([[x + w, y, h], [x + w, y + d, h], [x + w, y + d / 2, h + roofH]], dark(wall, 0.08));
+  // Fine roof seams, eaves and glazed windows follow the isometric planes.
+  for(let t=.25;t<w;t+=.32) s += line3([x+t,y+d,h+.03],[x+t,y+d/2,h+roofH+.03],.35,light(roof,.4)).s;
+  s += line3([x-.08,y+d+.06,h],[x+w+.1,y+d+.06,h],1,dark(roof)).s;
+  for(const t of [.18,.72]) {
+    const wx=x+w*t, wy=y+d+.015;
+    s += poly([[wx,wy,h*.55],[wx+.32,wy,h*.55],[wx+.32,wy,h*.83],[wx,wy,h*.83]],PAL.sand);
+    s += line3([wx+.16,wy,h*.55],[wx+.16,wy,h*.83],.4).s;
+  }
+  s += box(x+w*.35,y+d,0,w*.3,.4,.12,PAL.sand).s;
   // door on front (y+d) face
   const dw = Math.min(0.7, w * 0.25), dx = x + w * 0.5 - dw / 2;
   s += poly([[dx, y + d, 0], [dx + dw, y + d, 0], [dx + dw, y + d, h * 0.55], [dx, y + d, h * 0.55]], dark(wall, 0.45));
@@ -59,6 +77,8 @@ function cyl(cx, cy, z, r, h, c, opts = {}) {
   const [bx, by] = P(cx, cy, z), [, ty] = P(cx, cy, z + h);
   const rx = r * U * 1.2247, ry = r * U * 0.7071;
   let s = `<path d="M${bx - rx},${by} L${bx - rx},${ty} A${rx},${ry} 0 0 0 ${bx + rx},${ty} L${bx + rx},${by} A${rx},${ry} 0 0 1 ${bx - rx},${by} Z" fill="${c}" stroke="${LINE}" stroke-width=".7"/>`;
+  // Soft highlight band and a narrow rim give vessels a rounded volume.
+  s += `<path d="M${bx-rx*.65},${by} V${ty}" fill="none" stroke="${light(c,.5)}" stroke-width="${rx*.2}" opacity=".55"/>`;
   // right-side shading
   s += `<path d="M${bx + rx * 0.35},${by + ry * 0.94} L${bx + rx * 0.35},${ty + ry * 0.94} A${rx},${ry} 0 0 0 ${bx + rx},${ty} L${bx + rx},${by} A${rx},${ry} 0 0 1 ${bx + rx * 0.35},${by + ry * 0.94} Z" fill="${dark(c, 0.14)}" stroke="none"/>`;
   if (opts.hoops) for (const t of opts.hoops) {
@@ -71,7 +91,9 @@ function cyl(cx, cy, z, r, h, c, opts = {}) {
 function bottle(cx, cy, z, c, scale = 1) {
   const a = cyl(cx, cy, z, 0.22 * scale, 0.9 * scale, c);
   const b = cyl(cx, cy, z + 0.9 * scale, 0.08 * scale, 0.45 * scale, c);
-  return { d: a.d, s: a.s + b.s };
+  const [lx,ly]=P(cx,cy,z+.47*scale);
+  const label = `<path d="M${lx-2.9*scale},${ly} q${2.9*scale},${1.6*scale} ${5.8*scale},0 v${3.8*scale} q${-2.9*scale},${1.6*scale} ${-5.8*scale},0Z" fill="${PAL.cream}" stroke="${LINE}" stroke-width=".3"/>`;
+  return { d: a.d, s: a.s + b.s + label };
 }
 function glass(cx, cy, z, fill) {
   const [bx, by] = P(cx, cy, z);
@@ -96,16 +118,20 @@ function cluster(cx, cy, z, c, r = 1.7) {
   for (const [off, dy, n] of rows)
     for (let i = 0; i < n; i++) {
       const x = bx + (i - (n - 1) / 2) * r * 2 + off * 0;
-      s += `<circle cx="${x.toFixed(1)}" cy="${(by + dy).toFixed(1)}" r="${r}" fill="${c}" stroke="${LINE}" stroke-width=".5"/>`;
+      s += `<circle cx="${x.toFixed(1)}" cy="${(by + dy).toFixed(1)}" r="${r}" fill="${light(c,(i%3)*.1)}" stroke="${LINE}" stroke-width=".45"/><circle cx="${(x-r*.3).toFixed(1)}" cy="${(by+dy-r*.35).toFixed(1)}" r="${r*.25}" fill="${PAL.cream}" opacity=".55"/>`;
     }
   return { d: cx + cy + z * 0.01 + 0.5, s };
 }
 function bush(cx, cy, z, c) {
-  const [bx, by] = P(cx, cy, z);
-  return { d: cx + cy + z * 0.01 + 0.2, s:
-    `<g class="sway"><circle cx="${bx - 4}" cy="${by - 3}" r="4.4" fill="${c}" stroke="${LINE}" stroke-width=".6"/>` +
-    `<circle cx="${bx + 3.5}" cy="${by - 3.5}" r="4.2" fill="${dark(c, 0.08)}" stroke="${LINE}" stroke-width=".6"/>` +
-    `<circle cx="${bx}" cy="${by - 7}" r="4.6" fill="${light(c, 0.12)}" stroke="${LINE}" stroke-width=".6"/></g>` };
+  const [bx,by]=P(cx,cy,z);
+  let s=line3([cx,cy,z-.55],[cx,cy,z+.15],1.1,PAL.wood).s;
+  s += `<g class="sway">`;
+  for(let i=0;i<11;i++) {
+    const x=bx+Math.cos(i*2.4)*(i%3+1)*2.1,y=by-5+Math.sin(i*2.4)*3.5;
+    s += `<path d="M${x-3.2},${y+1} Q${x-4.5},${y-4} ${x},${y-5} Q${x+4.5},${y-3} ${x+3},${y+1} Q${x},${y+4} ${x-3.2},${y+1}Z" fill="${i%3===0?light(c,.25):i%3===1?c:dark(c,.12)}" stroke="${LINE}" stroke-width=".4"/>`;
+    s += `<path d="M${x-1},${y+1} l2,-4" stroke="${light(c,.5)}" stroke-width=".4"/>`;
+  }
+  return {d:cx+cy+z*.01+.2,s:s+'</g>'};
 }
 function line3(a, b, w = 0.6, c = LINE, extra = '') {
   const [x1, y1] = P(...a), [x2, y2] = P(...b);
@@ -241,13 +267,13 @@ const SCENES = {
     it.push(box(4.0, 3.6, 0, 2.2, 0.9, 1.0, mix(PAL.sand, PAL.wood, 0.25)));
     for (let b = 0; b < 5; b++) it.push(bottle(4.25 + b * 0.42, 4.05, 1.0, [PAL.clay, PAL.teal, PAL.gold, PAL.red, PAL.teal][b], 0.5));
     it.push(box(6.8, 1.0, 0, 1.0, 2.8, 2.4, PAL.teal));
-    it.push(poly([[6.8, 1.2, 0.3], [6.8, 3.6, 0.3], [6.8, 3.6, 2.1], [6.8, 1.2, 2.1]], 'rgba(216,230,218,.55)'));
+    it.push({ d: 10, s: poly([[6.8, 1.2, 0.3], [6.8, 3.6, 0.3], [6.8, 3.6, 2.1], [6.8, 1.2, 2.1]], 'rgba(216,230,218,.55)') });
     it.push(box(1.0, 4.4, 0, 2.6, 1.0, 1.0, PAL.clay));
     it.push(box(2.8, 4.5, 1.0, 0.6, 0.5, 0.4, PAL.mint));
     it.push(figure(2.0, 3.8, PAL.teal, { cls: 'bob' }));
     it.push(mover(figure(7.6, 6.2, PAL.mauve), [7.6, 6.2, 0], [4.2, 6.2, 0], 7));
     for (let i = 0; i < 3; i++) it.push(mover(box(0.6, 6.7, 0, 0.6, 0.6, 0.5, PAL.sand), [0.6, 6.7, 0], [0.6, 4.0, 0], 5, i * 1.7));
-    return { it, labels: [label([1.0, 4.9, 0.8], 'checkout', -12, -16, true), label([7.3, 1.0, 2.4], 'beer cooler', 10, -14, true), label([1.2, 6.9, 0.3], 'back dock · FIFO', -10, 22, true)] };
+    return { it, labels: [label([1.0, 4.9, 0.8], 'checkout', -12, -16, true), label([7.3, 1.0, 2.4], 'beer cooler', 10, -14, true), label([1.2, 6.9, 0.3], 'back dock · FIFO', 10, 31, true)] };
   },
   '09'() { // Table & Tap
     const it = [slab(mix(PAL.sand, PAL.clay, 0.12))];
@@ -269,12 +295,70 @@ const SCENES = {
   },
 };
 
+function wheel(x,y,z,r) {
+  const [cx,cy]=P(x,y,z);
+  return {d:x+y+.5,s:`<ellipse cx="${cx}" cy="${cy}" rx="${r*.75}" ry="${r}" fill="${LINE}" stroke="${LINE}" stroke-width=".6"/><ellipse cx="${cx}" cy="${cy}" rx="${r*.35}" ry="${r*.48}" fill="${PAL.sand}" stroke="${LINE}" stroke-width=".5"/>`};
+}
+function furnishings(id) {
+  const it=[];
+  if(id==='04') {
+    it.push(wheel(1.35,6.05,.3,4.4),wheel(2.6,6.05,.3,3));
+    it.push(box(1,5,1.8,.8,1,.12,PAL.teal));
+    it.push(box(2.4,5.2,.9,.1,.1,.9,LINE));
+    for(let j=0;j<4;j++) for(let i=0;i<7;i++) {
+      const x=4.6+i*.43,y=.6+j*.8;
+      it.push(line3([x,y,0],[x,y,.35],.4,PAL.wood));
+      it.push(line3([x-.09,y,.2],[x,y,.35],.55,PAL.cream));
+    }
+  }
+  if(id==='07') {
+    it.push(wheel(7.65,1.3,.3,4),wheel(7.65,3.9,.3,4));
+    it.push({d:12,s:poly([[7.62,3.5,.9],[7.62,4.25,.9],[7.62,4.25,1.35],[7.62,3.5,1.35]],PAL.water)});
+  }
+  if(['02','03'].includes(id)) {
+    it.push(box(.7,1.1,0,3.3,1.65,.12,PAL.wood));
+    for(const [x,y] of [[.85,1.2],[3.7,1.2],[.85,2.5],[3.7,2.5]]) it.push(box(x,y,0,.12,.12,.95,PAL.wood));
+    it.push(box(.7,1.1,.95,3.3,1.65,.13,PAL.cream));
+    for(let i=0;i<3;i++) {
+      it.push(box(1+i*.85,1.3,1.08,.65,.95,.025,i===1?PAL.mint:PAL.sand));
+      it.push(cluster(1.3+i*.85,1.8,1.2,id==='02'?PAL.white:PAL.red,1.05));
+      for(let j=0;j<3;j++) it.push(line3([1+i*.85,2.05+j*.12,1.11],[1.5+i*.85,2.05+j*.12,1.11],.3,PAL.mauve));
+    }
+    it.push(glass(3.6,2.35,1.08,id==='02'?PAL.gold:PAL.red));
+  }
+  if(['05','06','08','09'].includes(id)) {
+    // Paved or boarded floors, drawn below furnishings.
+    for(let i=1;i<16;i++) it.push({d:-60,s:line3([0,i*.5,.02],[8,i*.5,.02],.35,PAL.wood,'opacity=".22"').s});
+  }
+  if(['01','04','05'].includes(id)) {
+    for(const [x,y] of [[.3,.4],[7.6,.4],[.4,7.4]]) {
+      it.push(cyl(x,y,0,.32,.4,PAL.clay));it.push(bush(x,y,.65,PAL.sage));
+    }
+  }
+  if(id==='07') {
+    for(let i=0;i<16;i++) it.push(line3([.6+i*.3,3,.74],[.6+i*.3,4,.74],.4,PAL.cream));
+    it.push(box(2,2.6,.7,.25,1.7,1.8,PAL.sand));
+    it.push(box(2,2.6,2.5,1.4,1.7,.2,PAL.sand));
+    it.push(box(3.15,2.6,.7,.25,.25,1.8,PAL.sand));
+  }
+  if(id==='09') {
+    for(const x of [1.4,3.9,6.5]) {
+      it.push(box(x,2.2,0,.14,.14,.75,PAL.wood));
+      it.push(cyl(x,2.2,.75,.35,.12,PAL.clay));
+    }
+    for(const x of [3.15,4.8]) it.push(box(x,5.9,1.2,.65,.5,.02,PAL.sand));
+  }
+  return it;
+}
+const escapeXML = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
+
 export function sceneSVG(id, { labels = true, title = '' } = {}) {
   const { it, labels: lb } = SCENES[id]();
+  it.push(...furnishings(id));
   it.sort((a, b) => a.d - b.d);
-  return `<svg xmlns="${NS}" class="scene" viewBox="0 0 240 180" role="img" aria-label="${title}">` +
+  return `<svg xmlns="${NS}" class="scene" viewBox="-14 -8 268 196" role="img" aria-label="${escapeXML(title)}">` +
     `<ellipse cx="120" cy="166" rx="108" ry="10" fill="${LINE}" opacity=".08"/>` +
-    it.map(i => i.s).join('') + (labels ? lb.join('') : '') + `</svg>`;
+    `<g class="scene-art">` + it.map(i => i.s).join('') + '</g>'  + (labels ? lb.join('') : '') + `</svg>`;
 }
 
 /* ---------- card icons (Clay line icons) ---------- */
