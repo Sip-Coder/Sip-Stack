@@ -362,7 +362,7 @@ const SCENES = {
       label([1.75, 6.1, 0.3], 'Light', -14, 16), label([4.15, 5.9, 0.3], 'Medium', 4, 22), label([7.3, 5.15, 1.0], 'Bold', 14, 14),
       label([6.3, 1.6, 1.1], '14 varieties', 14, -18, true)] };
   },
-  '04'() { // Harvest & Field Gear
+  '04'() { // Harvest & Field Gear (wine grapes; mustard = flowering cover crop between rows)
     const it = [ground(PAL.sage, 4)];
     it.push(stripe(4.2, 0.2, 3.6, 3.6, PAL.mustard, { rows: 6 }));
     for (let r = 0; r < 6; r++) for (let c = 0; c < 6; c++) {
@@ -382,22 +382,26 @@ const SCENES = {
     for (let i = 0; i < 3; i++)
       it.push(noShadow(() => mover(crate(2.4, 4.3, 0, 0.55, PAL.clay), [2.4, 4.3, 0], [6.6, 4.3, 0], 6, i * 2)));
     it.push(house(5.6, 6.0, 2.0, 1.8, 1.2, 0.8, PAL.cream, PAL.clay));
-    return { bg: mix(PAL.mustard, '#ffffff', .6), it, labels: [label([6.1, 2.0, 0], 'grain & hops', 18, -26, true), label([1.6, 1.6, 0.9], 'grapes', -10, -14, true), label([7.6, 6.9, 1.0], 'making house', 14, 14, true)] };
+    return { bg: mix(PAL.mustard, '#ffffff', .6), it, labels: [label([6.1, 2.0, 0], 'cover crop', 18, -26, true), label([1.6, 1.6, 0.9], 'grapes', -10, -14, true), label([7.6, 6.9, 1.0], 'crush pad', 14, 14, true)] };
   },
-  '05'() { // Making Houses
+  '05'() { // Wine Making Styles: five separate lanes (Red · White · Rosé · Champagne · Fortified)
     const it = [ground(PAL.sand, 5, { tufts: 10, tuft: mix(PAL.sage, LINE, .3) })];
     it.push(stripe(0.3, 6.9, 7.4, 0.6, mix(PAL.sand, LINE, 0.12), { cols: 12 }));
+    // Red cellar (clay) · White cellar (mint) · Champagne house (mauve)
     it.push(house(0.4, 3.8, 2.2, 2.4, 1.3, 0.9, mix(PAL.clay, '#ffffff', 0.35), PAL.clay));
-    it.push(house(3.0, 2.2, 2.1, 2.4, 1.8, 0.9, mix(PAL.teal, '#ffffff', 0.45), PAL.teal, { chimney: [3.4, 2.6, 1.0] }));
-    it.push(house(5.6, 0.4, 2.0, 2.3, 2.2, 0.9, mix(PAL.mauve, '#ffffff', 0.4), PAL.mauve, { chimney: [6.2, 0.8, 1.4] }));
-    it.push(cyl(7.0, 4.0, 0, 0.55, 1.0, PAL.terra, { hoops: [0.5], hoopC: PAL.clay }));
-    it.push(cyl(7.0, 4.0, 1.0, 0.22, 0.6, PAL.terra, { noShadow: true }));
-    it.push(line3([7.0, 4.0, 1.6], [7.7, 4.6, 1.2], 1.1, dark(PAL.terra, .3)));
-    it.push(lamp(5.2, 6.3)); it.push(bush(0.6, 1.2, 0, PAL.leaf)); it.push(bush(1.8, 0.6, 0, PAL.sage));
+    it.push(house(3.0, 2.2, 2.1, 2.4, 1.5, 0.9, mix(PAL.mint, '#ffffff', 0.2), PAL.teal));
+    it.push(house(5.6, 0.4, 2.0, 2.3, 1.9, 0.9, mix(PAL.mauve, '#ffffff', 0.4), PAL.mauve));
+    // Rosé: short-skin-contact steel tank, blush band
+    it.push(cyl(7.0, 4.0, 0, 0.55, 1.3, PAL.steel, { hoops: [0.4, 0.9] }));
+    it.push(cyl(7.0, 4.0, 1.3, 0.2, 0.18, mix(PAL.terra, '#ffffff', 0.45), { noShadow: true }));
+    // Fortified: barrel stack (solera-style rows)
+    for (const [x, y] of [[0.7, 1.0], [1.8, 1.0]]) it.push(cyl(x, y, 0, 0.5, 0.95, PAL.wood, { hoops: [0.2, 0.7], staves: true }));
+    it.push(cyl(1.25, 1.0, 0.95, 0.45, 0.85, PAL.wood, { hoops: [0.2, 0.6], staves: true }));
+    it.push(lamp(5.2, 6.3));
     for (let i = 0; i < 3; i++) it.push(noShadow(() => mover(cyl(0.2, 7.2, 0, 0.18, 0.3, PAL.water), [0.2, 7.2, 0], [7.6, 7.2, 0], 7, i * 2.3)));
-    return { bg: mix(PAL.terra, '#ffffff', .72), it, labels: [label([1.5, 6.2, 1.0], 'Cellar', -14, 12), label([4.05, 4.6, 0.6], 'Brew House', -10, 40), label([6.6, 2.7, 2.0], 'Still House', 20, 6), label([7.5, 4.0, 0.6], 'pot still', 12, 14, true)] };
+    return { bg: mix(PAL.terra, '#ffffff', .72), it, labels: [label([1.5, 6.2, 1.0], 'Red', -14, 12), label([4.05, 4.6, 0.6], 'White', -10, 40), label([6.6, 2.7, 2.0], 'Champagne', 20, 6), label([7.5, 4.0, 0.6], 'Rosé', 12, 14), label([1.25, 1.0, 1.8], 'Fortified', -10, -14)] };
   },
-  '06'() { // Aging Patterns & Country Styles
+  '06'() { // Aging & Vessel Patterns (wine styles)
     const it = [ground(mix(PAL.sand, PAL.mauve, 0.15), 6, { tufts: 6 })];
     const lanes = [PAL.mint, PAL.sand, mix(PAL.clay, '#ffffff', 0.6)];
     lanes.forEach((c, i) => it.push(stripe(0.3 + i * 2.6, 0.3, 2.2, 7.4, c, { rows: 8 })));
@@ -412,7 +416,7 @@ const SCENES = {
     it.push(bottle(3.7, 5.7, 0.2, PAL.teal, 0.55)); it.push(bottle(4.2, 5.8, 0.2, PAL.clay, 0.55));
     for (const [x, y] of [[6.0, 2.0], [7.2, 2.0], [6.0, 4.6], [7.2, 4.6]]) it.push(cyl(x, y, 0, 0.55, 1.1, PAL.wood, { hoops: [0.2, 0.8], staves: true }));
     it.push(cyl(6.6, 3.3, 1.1, 0.55, 1.1, PAL.wood, { hoops: [0.2, 0.8], staves: true }));
-    return { bg: mix(PAL.mauve, '#ffffff', .62), it, labels: [label([1.4, 3.0, 2.2], 'Fresh', -12, -14), label([4.0, 2.7, 1.6], 'Rested', -4, -26), label([6.6, 3.3, 2.2], 'Wood', 14, -16), label([4.0, 5.9, 0.2], 'label clues', 8, 30, true)] };
+    return { bg: mix(PAL.mauve, '#ffffff', .62), it, labels: [label([1.4, 3.0, 2.2], 'Steel', -12, -14), label([4.0, 2.7, 1.6], 'Lees & bottle', 8, -30), label([6.6, 3.3, 2.2], 'Oak', 14, -16), label([4.0, 5.9, 0.2], 'reductive ↔ oxidative', 8, 30, true)] };
   },
   '07'() { // Bottle to Shelf
     const it = [ground(PAL.mint, 7, { tuft: mix(PAL.leaf, LINE, .2) })];
@@ -430,9 +434,9 @@ const SCENES = {
     it.push({ d: 8.0, s: fill([[7.6, 3.55, 0.95], [7.6, 4.25, 0.95], [7.6, 4.25, 1.35], [7.6, 3.55, 1.35]], mix(PAL.water, '#fff', .3), `stroke="${LINE}" stroke-width=".55"`) });
     castShadow(rectFoot(5.9, 0.6, 1.7, 3.8), 1.8);
     it.push(cyl(7.65, 1.3, 0, 0.34, 0.16, '#3b332e', { noShadow: true, lid: false })); it.push(cyl(7.65, 3.9, 0, 0.34, 0.16, '#3b332e', { noShadow: true, lid: false }));
-    return { bg: mix(PAL.water, '#ffffff', .55), it, labels: [label([1.1, 1.2, 2.2], 'tank', -10, -12, true), label([3.0, 3.5, 1.4], 'bottle · can · keg', -14, 34, true), label([6.75, 2.0, 1.95], 'shop door', 12, -14, true)] };
+    return { bg: mix(PAL.water, '#ffffff', .55), it, labels: [label([1.1, 1.2, 2.2], 'tank', -10, -12, true), label([3.0, 3.5, 1.4], 'glass · cork · screwcap', -14, 34, true), label([6.75, 2.0, 1.95], 'shop door', 12, -14, true)] };
   },
-  '08'() { // Retail Floor
+  '08'() { // Wine Shop Floor
     const it = [ground(PAL.cream, 8, { tufts: 0, soil: mix(PAL.wood, PAL.sand, .35) })];
     it.push(stripe(0.2, 0.2, 7.6, 7.6, mix(PAL.cream, PAL.sand, .35), { rows: 8, cols: 8 }));
     it.push(stripe(0.3, 6.4, 2.2, 1.3, mix(PAL.sand, LINE, 0.12), { cols: 4 }));
@@ -453,18 +457,17 @@ const SCENES = {
     it.push(figure(2.0, 3.8, PAL.teal, { cls: 'bob' }));
     it.push(mover(figure(7.6, 6.2, PAL.mauve), [7.6, 6.2, 0], [4.2, 6.2, 0], 7, 0, 'walker'));
     for (let i = 0; i < 3; i++) it.push(noShadow(() => mover(crate(0.6, 6.7, 0, 0.6, PAL.sand), [0.6, 6.7, 0], [0.6, 4.0, 0], 5, i * 1.7)));
-    return { bg: mix(PAL.sand, '#ffffff', .45), it, labels: [label([1.0, 4.9, 0.8], 'checkout', -12, -16, true), label([7.8, 3.0, 1.2], 'beer cooler', 14, 20, true), label([1.2, 6.9, 0.3], 'back dock · FIFO', 10, 30, true)] };
+    return { bg: mix(PAL.sand, '#ffffff', .45), it, labels: [label([1.0, 4.9, 0.8], 'checkout', -12, -16, true), label([7.8, 3.0, 1.2], 'chilled case', 6, 20, true), label([1.2, 6.9, 0.3], 'back dock · FIFO', 10, 30, true)] };
   },
-  '09'() { // Table & Tap
+  '09'() { // Table Service
     const it = [ground(mix(PAL.sand, PAL.clay, 0.12), 9, { tufts: 4, soil: mix(PAL.wood, PAL.sand, .3) })];
     it.push(stripe(0.2, 2.2, 7.6, 5.6, mix(PAL.sand, PAL.clay, .2), { rows: 7 }));
-    // bar + taps
+    // wine bar: by-the-glass bottles + ice bucket for whites & bubbles
     it.push(box(0.5, 0.6, 0, 6.8, 1.1, 1.3, PAL.wood, { planks: 3 }));
     it.push(box(0.4, 0.5, 1.3, 7.0, 1.3, 0.1, dark(PAL.wood, .25), { flat: true, thin: true, noShadow: true }));
-    it.push(box(2.6, 0.9, 1.4, 0.25, 0.25, 0.9, PAL.steel, { thin: true }));
-    it.push(box(2.0, 0.85, 2.2, 1.4, 0.35, 0.25, PAL.steel, { thin: true }));
-    for (const x of [2.2, 2.7, 3.2]) it.push(box(x, 1.0, 1.7, 0.12, 0.12, 0.5, [PAL.clay, PAL.mustard, PAL.teal][Math.round((x - 2.2) * 2)], { thin: true }));
-    for (let i = 0; i < 4; i++) it.push(bottle(4.6 + i * 0.5, 0.9, 1.4, [PAL.teal, PAL.clay, PAL.mustard, PAL.red][i], 0.55));
+    it.push(cyl(1.6, 1.1, 1.4, 0.4, 0.55, PAL.steel, { hoops: [0.4], noShadow: true }));
+    it.push(bottle(1.6, 1.1, 1.75, PAL.teal, 0.5));
+    for (let i = 0; i < 7; i++) it.push(bottle(2.6 + i * 0.6, 0.9, 1.4, [PAL.red, PAL.clay, PAL.teal, PAL.mustard, mix(PAL.terra, '#ffffff', .4), PAL.red, PAL.wood][i], 0.55));
     for (const x of [1.4, 3.6, 5.8]) { it.push(cyl(x, 2.3, 0.75, 0.3, 0.1, PAL.clay, { noShadow: true })); it.push(box(x - 0.05, 2.25, 0, 0.1, 0.1, 0.75, LINE, { thin: true })); }
     // table
     it.push(box(2.6, 4.3, 1.0, 2.8, 2.0, 0.18, PAL.cream, { flat: true }));
@@ -476,7 +479,7 @@ const SCENES = {
     it.push(figure(1.9, 6.6, PAL.mauve)); it.push(figure(4.2, 7.4, PAL.clay));
     for (const [x, y] of [[1.0, 5.0], [7.0, 7.2]]) it.push(bush(x, y, 0, PAL.leaf));
     it.push(lamp(7.2, 3.2));
-    return { bg: mix(PAL.terra, '#ffffff', .7), it, labels: [label([3.2, 5.0, 1.95], 'water first', -16, -16), label([2.7, 1.0, 2.4], 'tap', -8, -12, true), label([6.2, 5.4, 1.2], 'host steps', 16, 18, true)] };
+    return { bg: mix(PAL.terra, '#ffffff', .7), it, labels: [label([3.2, 5.0, 1.95], 'water first', -16, -16), label([3.8, 1.0, 2.4], 'by the glass', -8, -12, true), label([6.2, 5.4, 1.2], 'host steps', 16, 18, true)] };
   },
 };
 
@@ -503,7 +506,7 @@ export const ICONS = {
   '02': '<circle cx="9" cy="9" r="2.3"/><circle cx="14" cy="9" r="2.3"/><circle cx="11.5" cy="13" r="2.3"/><circle cx="11.5" cy="17.4" r="2"/><path d="M11.5 6.5V3m0 0c2 0 4 1 4 2"/>',
   '03': '<g fill="currentColor"><circle cx="9" cy="9" r="2.3"/><circle cx="14" cy="9" r="2.3"/><circle cx="11.5" cy="13" r="2.3"/><circle cx="11.5" cy="17.4" r="2"/></g><path d="M11.5 6.5V3m0 0c2 0 4 1 4 2"/>',
   '04': '<path d="M4 10h16l-2 9H6zM8 10l2-5m6 5l-2-5"/>',
-  '05': '<path d="M3 20V10l9-6 9 6v10zM10 20v-5h4v5M16 7V3h2v5.5"/>',
+  '05': '<path d="M12 3v5M12 8L4 20M12 8l-4 12M12 8v12M12 8l4 12M12 8l8 12"/><circle cx="12" cy="8" r="1.4"/>',
   '06': '<ellipse cx="12" cy="5" rx="6" ry="2"/><path d="M6 5c-1 4-1 10 0 14m12-14c1 4 1 10 0 14M6 19c0 1 3 2 6 2s6-1 6-2M5.5 9.5h13M5.5 14.5h13"/>',
   '07': '<path d="M10 3h4v4l2 3v11H8V10l2-3zM8 13h8"/>',
   '08': '<path d="M4 4v16M20 4v16M4 8h16M4 13h16M4 18h16M8 8v-2m4 7v-2m4 7v-2"/>',

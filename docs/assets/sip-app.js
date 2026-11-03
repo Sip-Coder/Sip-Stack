@@ -151,7 +151,7 @@ function showWorld(id) {
   const canvas = $('.canvas');
   canvas.classList.remove('zooming'); canvas.style.transform = ''; canvas.style.transformOrigin = '';
   setMode('world');
-  document.title = 'Sip-Stack · Nine ways water becomes a drink';
+  document.title = 'Sip-Stack · Nine ways water becomes wine';
   if (id) {
     const card = $(`.card[data-id="${id}"]`);
     requestAnimationFrame(() => {
