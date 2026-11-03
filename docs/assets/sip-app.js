@@ -1,6 +1,7 @@
-// Sip-Stack view router: World (isometric grid) <-> Outline (Mermaid charts) <-> Village (3D diorama, lazy).
-// Deep links: #world  #world/03  #world/05/red  #outline  #outline/03  #village/drip  (legacy #world-03, #outline-03, #chart-03 also work)
+// Sip-Stack view router: World <-> Outline <-> Village <-> Academy.
+// Deep links: #world/05/red  #world/05/arc-crossroads.white  #outline/05/crossroads  #village/auger  #academy/wine/9
 import { sceneSVG, ICONS, HOTSPOTS, TOGGLES } from './sip-world.js';
+import { WINE_STOPS, WINE_BY_ID, DIVES, tasteHTML, tasteLine } from './sip-depth-data.js';
 
 const IDS = ['01', '02', '03', '04', '05', '06', '07', '08', '09'];
 const $ = (s, r = document) => r.querySelector(s);
@@ -35,7 +36,8 @@ for (const card of $$('.card')) {
   $('.scene-slot', card).outerHTML = sceneSVG(id, { title: `Isometric scene: ${titleOf(id)}` });
   $('.card-icon', card).innerHTML = ICONS[id];
   const n = $$('.scene .tag', card).length;
-  if (n) $('.card-icon', card).insertAdjacentHTML('beforebegin', `<span class="hs-hint" title="Tap a numbered pin, a place, or a toolbar button">${n} pins · tap to explore</span>`);
+  const stopN = WINE_STOPS.filter(s => s.chart === id).length;
+  if (n) $('.card-icon', card).insertAdjacentHTML('beforebegin', `<span class="hs-hint" title="Tap a numbered pin, an adventure stop, or a toolbar button">${n} pins · ${stopN} stops</span>`);
   const spec = TOGGLES[id];
   if (spec) {
     const bar = document.createElement('div');
@@ -44,6 +46,22 @@ for (const card of $$('.card')) {
       ? `<span class="sip-seg${t.options.length > 4 ? ' many' : ''}" role="group" aria-label="${t.label}">${t.options.map((o, oi) => `<button type="button" class="sip-chip" data-t="${ti}" data-o="${oi}" aria-pressed="false">${ico(o.icon)}<span>${o.label}</span></button>`).join('')}</span>`
       : `<button type="button" class="sip-chip sw" data-t="${ti}" aria-pressed="false">${ico(t.icon)}<span>${t.label}</span></button>`).join('');
     $('svg.scene', card).after(bar);
+  }
+  const stops = WINE_STOPS.filter(s => s.chart === id);
+  if (stops.length) {
+    const rail = document.createElement('div');
+    rail.className = 'arc-rail';
+    rail.setAttribute('role', 'group');
+    rail.setAttribute('aria-label', `Adventure stops on chart ${id}`);
+    rail.innerHTML = stops.map(s => `<button type="button" data-stop="${s.id}" aria-pressed="false"><b>${s.n}</b> ${s.title}</button>`).join('') +
+      stops.filter(s => s.subs).map(s => `<span class="arc-subs" role="group" aria-label="${s.id === 'crossroads' ? 'Five making styles, kept apart' : s.title}">${s.subs.map(sub => `<button type="button" data-stop="${s.id}" data-sub="${sub.id}" aria-pressed="false">${sub.label}</button>`).join('')}</span>`).join('');
+    ($('.sip-tools', card) || $('svg.scene', card)).after(rail);
+  }
+  if (['02', '03', '08', '09'].includes(id)) {
+    const fold = document.createElement('details');
+    fold.className = 'taste-fold';
+    fold.innerHTML = `<summary>Taste tools</summary>${tasteHTML()}`;
+    ($('.arc-rail', card) || $('svg.scene', card)).after(fold);
   }
   syncTools(card);
 }
@@ -75,7 +93,56 @@ function closePop(card) {
   card.classList.remove('has-pop');
   delete card.dataset.pin;
   $$('.tag.active', card).forEach(t => t.classList.remove('active'));
+  $$('.arc-rail button[aria-pressed="true"]', card).forEach(b => b.setAttribute('aria-pressed', 'false'));
   if (document.body.dataset.mode === 'world' && /^#world\/\d\d\//.test(location.hash)) history.replaceState(null, '', `#world/${card.dataset.id}`);
+}
+function showArcNote(card, stop, sub) {
+  const id = card.dataset.id;
+  const svg = $('svg.scene', card);
+  closePop(card);
+  const key = `arc-${stop.id}${sub ? '.' + sub.id : ''}`;
+  card.dataset.pin = key;
+  if (stop.tag) $(`.tag[data-hs="${stop.tag}"]`, svg)?.classList.add('active');
+  $$('.arc-rail button', card).forEach(b => {
+    const stopOn = b.dataset.stop === stop.id && !b.dataset.sub;
+    const subOn = !!sub && b.dataset.sub === sub.id && b.dataset.stop === stop.id;
+    b.setAttribute('aria-pressed', String(sub ? (stopOn || subOn) : stopOn));
+  });
+  const pop = document.createElement('div');
+  pop.className = 'hs-pop sip-note';
+  pop.setAttribute('role', 'dialog');
+  pop.setAttribute('aria-label', stop.title);
+  const changed = sub?.changed || stop.changed;
+  pop.innerHTML = `<button class="x" type="button" aria-label="Close note">×</button>` +
+    `<div class="k">${id} / 09 · stop ${stop.n} of 22 · ${stop.guide}</div><h4>${stop.title}</h4><p>${stop.note}</p>` +
+    (sub ? `<p><b>${sub.label}.</b></p>` : '') +
+    `<div class="row"><span class="act"><b>What changed</b> ${changed}</span>` +
+    `<a class="to-outline" href="#outline/${id}/${stop.id}">Outline →</a>` +
+    `<a class="to-academy" href="#academy/wine/${stop.n}">Academy →</a>` +
+    (stop.dive ? `<button type="button" class="to-dive" data-open-dive="${stop.dive}">Deep dive</button>` : '') +
+    `</div>`;
+  card.append(pop);
+  card.classList.add('has-pop');
+  const under = $('.arc-rail', card) || $('.sip-tools', card) || svg;
+  const place = () => {
+    const cr = card.getBoundingClientRect();
+    pop.style.left = '8px';
+    pop.style.right = '8px';
+    pop.style.width = 'auto';
+    pop.style.top = `${under.getBoundingClientRect().bottom - cr.top + 6}px`;
+  };
+  place();
+  if (document.body.dataset.mode === 'world') history.replaceState(null, '', `#world/${id}/${key}`);
+}
+function openArc(card, stopId, subId) {
+  const stop = WINE_BY_ID[stopId];
+  if (!stop || stop.chart !== card.dataset.id) return;
+  const sub = subId ? stop.subs?.find(s => s.id === subId) : null;
+  const fx = sub?.fx || stop.fx;
+  const svg = $('svg.scene', card);
+  if (fx) applyFx(svg, fx);
+  syncTools(card);
+  showArcNote(card, stop, sub);
 }
 function showNote(card, key, act, anchor) {
   const id = card.dataset.id, note = HOTSPOTS[id]?.[key];
@@ -152,6 +219,22 @@ for (const panel of $$('.panel')) {
   kick.className = 'panel-k';
   kick.innerHTML = `<span class="pk-n">Outline · ${id} / 09</span><span class="pk-give">Give-Back · ${give}</span>` + (id === '05' ? '<span class="pk-lanes">five separate lanes</span>' : '');
   h2.before(kick);
+  const arcStops = WINE_STOPS.filter(s => s.chart === id);
+  if (arcStops.length) {
+    const block = document.createElement('div');
+    block.className = 'arc-outline';
+    const lines = ['flowchart TB'];
+    arcStops.forEach((s, idx) => {
+      lines.push(`  S${s.n}["${s.n} · ${s.title}"]`);
+      if (idx) lines.push(`  S${arcStops[idx - 1].n} --> S${s.n}`);
+    });
+    if (id === '05') {
+      const cross = arcStops.find(s => s.id === 'crossroads');
+      cross?.subs.forEach(sub => lines.push(`  S${cross.n} --> ${sub.id}["${sub.label}"]`));
+    }
+    block.innerHTML = `<h3 class="sub">Adventure stops on this chart</h3><ol class="arc-cards">${arcStops.map(s => `<li data-stop="${s.id}"><div class="arc-card-top"><b>${s.n}</b><a href="#academy/wine/${s.n}">${s.title}</a><span>${s.guide}</span></div><p>${s.note}</p><p class="arc-links"><a href="#world/${id}/arc-${s.id}">World scene</a>${s.dive ? ` · <button type="button" data-open-dive="${s.dive}">Deep dive</button>` : ''}${s.subs ? `<span class="arc-subs-inline">${s.subs.map(sub => `<a href="#world/${id}/arc-${s.id}.${sub.id}">${sub.label}</a>`).join('')}</span>` : ''}</p></li>`).join('')}</ol><div class="mermaid-wrap"><pre class="mermaid">${lines.join('\n')}</pre></div>${['02', '03', '08', '09'].includes(id) ? tasteHTML() : ''}`;
+    ($('.purpose', panel) || $('h2', panel)).after(block);
+  }
   const prev = IDS[i - 1], next = IDS[i + 1];
   const pager = document.createElement('nav');
   pager.className = 'pager';
@@ -261,6 +344,7 @@ function setMode(mode) {
   $('#world').classList.toggle('active', mode === 'world');
   $('#outline').classList.toggle('active', mode === 'outline');
   $('#village').classList.toggle('active', mode === 'village');
+  $('#academy').classList.toggle('active', mode === 'academy');
   document.body.dataset.mode = mode;
   if (mode !== 'village') village?.hide();
 }
@@ -279,7 +363,7 @@ function showVillage(pin) {
   villageP.then(v => { if (v && document.body.dataset.mode === 'village') v.show(pin); });
 }
 let lastOutline = '01';
-function showOutline(id) {
+function showOutline(id, stop) {
   lastOutline = id;
   setMode('outline');
   $$('.tab').forEach(t => { const on = t.dataset.id === id; t.classList.toggle('active', on); t.setAttribute('aria-selected', String(on)); });
@@ -287,6 +371,12 @@ function showOutline(id) {
   $(`.tab[data-id="${id}"]`)?.scrollIntoView({ block: 'nearest', inline: 'center' });
   renderPanel($(`#chart-${id}`));
   document.title = `${id} · ${titleOf(id)} · Sip-Stack Outline`;
+  if (stop) requestAnimationFrame(() => {
+    $$('.arc-cards li.on').forEach(n => n.classList.remove('on'));
+    const el = $(`#chart-${id} [data-stop="${stop}"]`);
+    el?.classList.add('on');
+    el?.scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' });
+  });
 }
 function showWorld(id, pin) {
   const canvas = $('.canvas');
@@ -299,19 +389,36 @@ function showWorld(id, pin) {
       card.scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' });
       card.classList.remove('spotlight'); void card.offsetWidth; card.classList.add('spotlight');
       card.focus({ preventScroll: true });
-      if (pin) {
+      if (pin?.startsWith('arc-')) {
+        const [stopId, subId] = pin.slice(4).split('.');
+        openArc(card, stopId, subId || null);
+      } else if (pin) {
         const tagEl = $(`svg.scene .tag[data-hs="${pin}"]`, card);
         if (tagEl) openPin(card, tagEl); else if (HOTSPOTS[id]?.[pin]) showNote(card, pin, 'Linked note');
       }
     });
   }
 }
+let academy = null, academyP = null;
+function showAcademy(id, n) {
+  setMode('academy');
+  const label = id ? id[0].toUpperCase() + id.slice(1) : 'Campuses';
+  document.title = `${label} · Academy · Sip-Stack`;
+  academyP ??= import('./sip-academy.js').then(m => (academy = m.mountAcademy($('#ac-root')))).catch(err => {
+    console.warn('Academy failed to load', err);
+    const host = $('#ac-root');
+    if (host) host.textContent = 'Academy could not load. Check your connection and refresh.';
+    academyP = null;
+  });
+  academyP.then(a => { if (a && document.body.dataset.mode === 'academy') a.show(id, n); });
+}
 function route() {
   const h = location.hash.slice(1);
   let m;
-  if ((m = h.match(/^(?:outline|chart)[-/](0[1-9])$/))) return showOutline(m[1]);
+  if ((m = h.match(/^academy(?:\/(guild-[a-z]+|[a-z]+)(?:\/(\d+))?)?$/))) return showAcademy(m[1] || null, m[2] ? Number(m[2]) : null);
+  if ((m = h.match(/^(?:outline|chart)[-/](0[1-9])(?:\/([a-z0-9-]+))?$/))) return showOutline(m[1], m[2]);
   if (h === 'outline') return showOutline(lastOutline);
-  if ((m = h.match(/^world[-/](0[1-9])(?:\/([a-z]+))?$/))) {
+  if ((m = h.match(/^world[-/](0[1-9])(?:\/([a-z0-9.-]+))?$/))) {
     const card = $(`.card[data-id="${m[1]}"]`);
     if (m[2] && document.body.dataset.mode === 'world' && card?.dataset.pin === m[2]) return; // our own replaceState echo
     return showWorld(m[1], m[2]);
@@ -320,11 +427,14 @@ function route() {
   const wasOutline = document.body.dataset.mode === 'outline';
   showWorld(wasOutline && h === 'world' ? lastOutline : null);
 }
-addEventListener('hashchange', route);
+addEventListener('hashchange', () => { closeDive(); route(); });
 
 $$('.seg button').forEach(b => b.addEventListener('click', () => {
   const mode = b.dataset.mode;
-  location.hash = mode === 'village' ? 'village' : mode === 'world' ? `world/${lastOutline}` : `outline/${lastOutline}`;
+  if (mode === 'village') location.hash = 'village';
+  else if (mode === 'academy') location.hash = location.hash.startsWith('#academy') ? location.hash.slice(1) : 'academy';
+  else if (mode === 'world') location.hash = `world/${lastOutline}`;
+  else location.hash = `outline/${lastOutline}`;
   if (mode !== 'world') scrollTo({ top: 0 });
 }));
 $$('.tab').forEach(t => t.addEventListener('click', () => { location.hash = `outline/${t.dataset.id}`; }));
@@ -342,20 +452,23 @@ function zoomTo(card) {
 }
 $$('.card').forEach(card => card.addEventListener('click', e => {
   const link = e.target.closest('a');
-  if (link && (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) return; // let modified clicks open a new tab
+  if (link && (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) return;
   if (e.metaKey || e.ctrlKey || e.shiftKey) return;
-  e.preventDefault();
   const tb = e.target.closest('.sip-tools button');
-  if (tb) return toolClick(card, tb);
-  if (e.target.closest('.sip-tools')) return;
+  if (tb) { e.preventDefault(); return toolClick(card, tb); }
+  const arc = e.target.closest('.arc-rail button');
+  if (arc) { e.preventDefault(); return openArc(card, arc.dataset.stop, arc.dataset.sub || null); }
+  if (e.target.closest('.sip-tools, .taste, .taste-fold')) return;
   const pop = e.target.closest('.hs-pop');
-  if (pop) { // clicks inside a note never zoom away, except its own Outline link
+  if (pop) {
     if (e.target.closest('.x')) { closePop(card); card.focus({ preventScroll: true }); }
-    if (!e.target.closest('.to-outline')) return;
-  } else {
-    const hs = e.target.closest('svg.scene .hs');
-    if (hs) return openPin(card, hs);
+    if (e.target.closest('a[href^="#"]')) return;
+    e.preventDefault();
+    return;
   }
+  const hs = e.target.closest('svg.scene .hs');
+  if (hs) { e.preventDefault(); return openPin(card, hs); }
+  e.preventDefault();
   zoomTo(card);
 }));
 
@@ -371,5 +484,59 @@ $('.grid').addEventListener('keydown', e => {
   const d = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: cols, ArrowUp: -cols }[e.key];
   if (d && cards[i + d]) { e.preventDefault(); cards[i + d].focus(); }
 });
+
+function closeDive() {
+  const host = $('#dive');
+  if (host) host.hidden = true;
+  document.body.classList.remove('dive-open');
+}
+function paintDive(n, tabId) {
+  const d = DIVES[n];
+  if (!d) return;
+  let host = $('#dive');
+  if (!host) {
+    host = document.createElement('div');
+    host.id = 'dive';
+    host.hidden = true;
+    document.body.append(host);
+  }
+  const tab = d.tabs.find(t => t.id === tabId) || d.tabs[0];
+  host.dataset.n = String(n);
+  host.hidden = false;
+  document.body.classList.add('dive-open');
+  host.innerHTML = `<div class="dive-card" role="dialog" aria-modal="true" aria-labelledby="dive-title">
+    <button type="button" class="x" data-dive-x aria-label="Close deep dive">×</button>
+    <p class="k">Deep dive · stop ${n} of 22 · ${d.guide}</p>
+    <h3 id="dive-title">${d.title}</h3>
+    <p>${d.lede}</p>
+    <div class="dive-tabs" role="tablist">${d.tabs.map(t => `<button type="button" role="tab" data-dive-tab="${t.id}" aria-selected="${t.id === tab.id}">${t.label}</button>`).join('')}</div>
+    <p class="dive-body">${tab.body}</p>
+  </div>`;
+}
+document.addEventListener('click', e => {
+  const opener = e.target.closest('[data-open-dive]');
+  if (opener) { paintDive(Number(opener.dataset.openDive)); return; }
+  const host = $('#dive');
+  if (!host || host.hidden) return;
+  if (e.target === host || e.target.closest('[data-dive-x]')) closeDive();
+  const tab = e.target.closest('[data-dive-tab]');
+  if (tab && host.contains(tab)) paintDive(Number(host.dataset.n), tab.dataset.diveTab);
+});
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-taste]');
+  if (!b) return;
+  const box = b.closest('.taste');
+  if (!box) return;
+  box.querySelectorAll(`[data-taste="${b.dataset.taste}"]`).forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  const line = box.querySelector(`[data-line="${b.dataset.taste}"]`);
+  if (line) line.textContent = tasteLine(b.dataset.taste, b.dataset.id);
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.body.classList.contains('dive-open')) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    closeDive();
+  }
+}, true);
 
 route();

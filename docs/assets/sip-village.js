@@ -338,6 +338,19 @@ function buildWorld(scene) {
   dripA.visible = dripB.visible = false; scene.add(dripA); slab.add(dripB);
   dyn.drip = [dripA, dripB];
 
+  // Equip-grade cues: auger on the soil terrace, picking bins, lab bench, barrel workbench.
+  k.cyl(7.25, 7.48, -8.25, .028, .95, '#3e4246', null, 'metal');
+  k.box(6.95, 7.55, 7.9, 7.98, -8.32, -8.18, '#914C2C');
+  k.box(3.15, 3.55, 5.05, 5.32, -5.55, -5.2, '#b88a55');
+  k.box(3.6, 4.0, 5.05, 5.28, -6.3, -5.95, '#a97a47');
+  k.box(7.5, 8.75, 3.04, 3.5, -2.15, -1.58, '#efe6d4');
+  k.cyl(7.75, 3.64, -1.85, .07, .24, '#d8e6da', null, 'metal');
+  k.cyl(8.05, 3.62, -1.78, .055, .18, '#f3e0d8', null, 'metal');
+  k.box(8.3, 8.58, 3.5, 3.58, -2.05, -1.7, '#fffaf1');
+  k.box(3.2, 4.45, 3.04, 3.46, -2.2, -1.58, '#8a5a36');
+  k.cyl(3.55, 3.66, -1.88, .16, .46, '#7b4a2a', [PI / 2, 0, 0]);
+  k.box(3.95, 4.28, 3.46, 3.54, -2.05, -1.72, '#c4a574');
+
   k.build(scene); ks.build(slab); scene.add(slab); dyn.slab = slab;
 
   // water: glass-like box + a moving surface
@@ -584,12 +597,23 @@ export function mountVillage(root, { onPin } = {}) {
     if (id === 'rinse') act = setReuse(again ? !state.reuse : true);
     if (id === 'cases') act = setLoaded(again ? !state.loaded : !state.loaded);
     if (id === 'table') act = setPour(again ? (state.pour + 1) % 3 : Math.max(1, state.pour));
+    if (id === 'auger') act = setCut(again ? !state.cut : true);
+    if (id === 'press') act = setDoor(again && state.door === 'white' ? null : 'white');
+    if (id === 'tanks') act = setDoor(again && state.door === 'red' ? null : 'red');
+    if (id === 'barrels') act = 'Quay barrels · the cellar row, not a making-style door';
+    if (id === 'lab') act = 'Lab bench in view · jars and a clipboard';
+    if (id === 'bench') act = 'Workbench in view · stave, hoop, and a barrel on its side';
+    if (id === 'berry') act = 'Vine terrace · skin, pulp, and seed';
     state.pin = id;
     Object.values(pinBtns).forEach(b => b.classList.toggle('active', b.dataset.pin === id));
     list.querySelectorAll('button').forEach(b => b.setAttribute('aria-current', String(b.dataset.pin === id)));
     note.hidden = false;
-    note.innerHTML = `<button class="x" type="button" aria-label="Close note">×</button><div class="k">Village · pin ${p.n} of ${PINS.length} · chart ${p.chart}</div><h4>${p.t}</h4><p>${p.b}</p>` +
-      `<div class="row"><span class="act">${act}</span><a class="to-outline" href="#outline/${p.chart}">Outline ${p.chart} · ${CHART_NAMES[p.chart]} →</a></div>`;
+    note.innerHTML = `<button class="x" type="button" aria-label="Close note">×</button><div class="k">Village · pin ${p.n} of ${PINS.length}${p.ac ? ` · stop ${p.ac} of 22` : ''}</div><h4>${p.t}</h4><p>${p.b}</p>` +
+      `<div class="row"><span class="act"><b>What changed</b> ${act}</span>` +
+      `<a class="to-outline" href="#outline/${p.chart}${p.stop ? '/' + p.stop : ''}">Outline →</a>` +
+      (p.ac ? `<a href="#academy/wine/${p.ac}">Academy →</a>` : '') +
+      (p.dive ? `<button type="button" data-open-dive="${p.dive}">Deep dive</button>` : '') +
+      `</div>`;
     $('.x', note).addEventListener('click', close);
     if (!quiet) focusOn(anchor(p).toArray(), p.zoom || 1.45);
     onPin?.(id);
@@ -612,7 +636,16 @@ export function mountVillage(root, { onPin } = {}) {
       (p.slab ? dyn.slab : scene).add(m); hits.push(m);
     }
     const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
-    const pick = e => { const r = renderer.domElement.getBoundingClientRect(); ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1); ray.setFromCamera(ndc, camera); return ray.intersectObjects(hits, false)[0]?.object.userData.pin; };
+    const vol = o => Math.abs(o.scale.x * o.scale.y * o.scale.z);
+    const pick = e => {
+      const r = renderer.domElement.getBoundingClientRect();
+      ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+      ray.setFromCamera(ndc, camera);
+      const found = ray.intersectObjects(hits, false);
+      if (!found.length) return;
+      found.sort((a, b) => vol(a.object) - vol(b.object));
+      return found[0].object.userData.pin;
+    };
     let down = null;
     renderer.domElement.addEventListener('pointerdown', e => { down = { x: e.clientX, y: e.clientY, t: performance.now() }; });
     renderer.domElement.addEventListener('pointerup', e => {
@@ -625,7 +658,11 @@ export function mountVillage(root, { onPin } = {}) {
 
   /* ---- keyboard ---- */
   root.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { if (state.pin) { const id = state.pin; close(); pinBtns[id]?.focus(); } return; }
+    if (e.key === 'Escape') {
+      if (document.body.classList.contains('dive-open')) return;
+      if (state.pin) { const id = state.pin; close(); pinBtns[id]?.focus(); }
+      return;
+    }
     if (!controls || !stage.contains(e.target) || e.target.closest('.vl-hud')) return;
     const off = camera.position.clone().sub(controls.target), sph = new THREE.Spherical().setFromVector3(off);
     let used = true;
