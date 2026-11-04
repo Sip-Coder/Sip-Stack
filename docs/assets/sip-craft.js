@@ -108,13 +108,14 @@ export function mountCraft(root) {
   box(.035,1.7,.035,teal,0,.9,0,boat);
   const sailGeo=new THREE.BufferGeometry();sailGeo.setAttribute('position',new THREE.Float32BufferAttribute([.02,1.65,0,.02,.4,0,.02,.45,.77],3));sailGeo.computeVertexNormals();mesh(sailGeo,new THREE.MeshStandardMaterial({color:'#edd4a8',side:THREE.DoubleSide}),0,0,0,boat);
   // Ocean: analytic wave normals, Fresnel reflection, bent seabed caustics, crest foam.
-  const waterUniforms={time:{value:0},storm:{value:.15}};
+  const refraction=new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType});
+  const waterUniforms={time:{value:0},storm:{value:.15},refractTex:{value:refraction.texture},viewport:{value:new THREE.Vector2(1,1)}};
   const water=new THREE.ShaderMaterial({uniforms:waterUniforms,side:THREE.DoubleSide,vertexShader:`
     uniform float time,storm; varying vec3 vP; varying vec3 vN;
     float wave(vec2 p){return sin(p.x*1.7+time*1.4)*cos(p.y*1.3+time*.8)*(.035+storm*.15)+sin(p.x*3.6+p.y*2.8-time*2.)*(.02+storm*.065);}
     void main(){vec3 p=position;p.z+=wave(p.xy);float e=.03;vec3 n=normalize(vec3((wave(p.xy-vec2(e,0.))-wave(p.xy+vec2(e,0.)))/(2.*e),(wave(p.xy-vec2(0.,e))-wave(p.xy+vec2(0.,e)))/(2.*e),1.));vec4 world=modelMatrix*vec4(p,1.);vP=world.xyz;vN=normalize(mat3(modelMatrix)*n);gl_Position=projectionMatrix*viewMatrix*world;}`,
-    fragmentShader:`uniform float time,storm;varying vec3 vP;varying vec3 vN;
-    void main(){vec3 n=normalize(vN),v=normalize(cameraPosition-vP);float f=pow(1.-max(dot(n,v),0.),3.);vec2 q=vP.xz+n.xz*.7;float c=pow(.5+.5*sin(q.x*4.+sin(q.y*3.+time)) ,8.)*pow(.5+.5*cos(q.y*5.-time*.6),3.);vec3 sea=mix(vec3(.025,.18,.17),vec3(.022,.075,.105),storm);sea+=vec3(.18,.25,.16)*c*(1.-storm)*.35;sea=mix(sea,mix(vec3(.35,.54,.48),vec3(.20,.26,.32),storm),f*.8);float lace=pow(.5+.5*sin(q.x*31.+sin(q.y*23.-time*2.)),3.)*(.5+.5*sin(q.y*37.+q.x*17.+time));float foam=smoothstep(.10,.23,vP.y)*storm*lace*.85;float edge=smoothstep(7.65,8.,abs(vP.x))+smoothstep(5.65,6.,abs(vP.z));sea=mix(sea,vec3(.77,.86,.79),clamp(foam+edge*.24,0.,.72));float spec=pow(max(dot(reflect(-normalize(vec3(-.7,1.,.4)),n),v),0.),150.);sea+=vec3(1.,.76,.4)*spec*(1.-storm)*2.;gl_FragColor=vec4(sea,1.);#include <tonemapping_fragment>\n#include <colorspace_fragment>}`.replace(';#include',';\n#include')});
+    fragmentShader:`uniform float time,storm;uniform sampler2D refractTex;uniform vec2 viewport;varying vec3 vP;varying vec3 vN;
+    void main(){vec3 n=normalize(vN),v=normalize(cameraPosition-vP);float f=pow(1.-max(dot(n,v),0.),3.);vec2 q=vP.xz+n.xz*.7;float c=pow(.5+.5*sin(q.x*4.+sin(q.y*3.+time)) ,8.)*pow(.5+.5*cos(q.y*5.-time*.6),3.);vec3 sea=mix(vec3(.025,.18,.17),vec3(.022,.075,.105),storm);sea+=vec3(.18,.25,.16)*c*(1.-storm)*.35;sea=mix(sea,mix(vec3(.35,.54,.48),vec3(.20,.26,.32),storm),f*.8);float lace=pow(.5+.5*sin(q.x*31.+sin(q.y*23.-time*2.)),3.)*(.5+.5*sin(q.y*37.+q.x*17.+time));float foam=smoothstep(.10,.23,vP.y)*storm*lace*.85;float edge=smoothstep(7.65,8.,abs(vP.x))+smoothstep(5.65,6.,abs(vP.z));sea=mix(sea,vec3(.77,.86,.79),clamp(foam+edge*.24,0.,.72));float spec=pow(max(dot(reflect(-normalize(vec3(-.7,1.,.4)),n),v),0.),150.);sea+=vec3(1.,.76,.4)*spec*(1.-storm)*2.;vec2 screenUV=gl_FragCoord.xy/viewport;vec3 below=texture2D(refractTex,clamp(screenUV+n.xz*.012*(1.-storm),vec2(.001),vec2(.999))).rgb;sea=mix(sea,below*vec3(.45,.85,.76),.28*(1.-storm)*(1.-f));gl_FragColor=vec4(sea,1.);#include <tonemapping_fragment>\n#include <colorspace_fragment>}`.replace(';#include',';\n#include')});
   const ocean=mesh(new THREE.PlaneGeometry(16,12,160,120),water,0,0,0);ocean.rotation.x=-Math.PI/2;ocean.castShadow=false;
   // Continuous ribbons spill off all four cut edges, fading into mist below the slab.
   const spillMat=new THREE.ShaderMaterial({uniforms:waterUniforms,transparent:true,side:THREE.DoubleSide,depthWrite:false,vertexShader:`varying vec2 vUv;uniform float time,storm;void main(){vUv=uv;vec3 p=position;p.z+=sin(p.x*4.+time*3.)*.025*(1.+storm);gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,fragmentShader:`varying vec2 vUv;uniform float time,storm;void main(){float streak=pow(.5+.5*sin(vUv.x*180.+sin(vUv.y*12.-time*5.)),5.);float a=pow(vUv.y,1.6)*(.17+streak*.55);gl_FragColor=vec4(mix(vec3(.24,.61,.55),vec3(.78,.86,.8),streak),a);}`});
@@ -138,7 +139,8 @@ export function mountCraft(root) {
   const disc=mesh(new THREE.SphereGeometry(1.6,32,24),new THREE.MeshBasicMaterial({color:'#edd4a8'}),-9,5,-16);disc.castShadow=false;
   const slider=root.querySelector('.craft-weather'),cycleButton=root.querySelector('.craft-cycle'),pauseButton=root.querySelector('.craft-pause');
   let weather=.15,target=.15,t=0,visible=false,paused=reduced.matches,cycle=false,last=0,lost=false;
-  function pauseUI(){pauseButton.setAttribute('aria-pressed',String(paused));pauseButton.textContent=paused?'Resume motion':'Pause motion';}
+  function syncLoop(){last=performance.now();renderer.setAnimationLoop(visible&&!lost&&!paused?frame:null);}
+  function pauseUI(){syncLoop();pauseButton.setAttribute('aria-pressed',String(paused));pauseButton.textContent=paused?'Resume motion':'Pause motion';}
   pauseUI();
   function paint(dt=0){
     if(!paused){t+=dt; if(cycle){target=(1-Math.cos(t*.14))/2;slider.value=Math.round(target*100);}weather=THREE.MathUtils.damp(weather,target,1.7,dt);}else weather=target;
@@ -151,11 +153,15 @@ export function mountCraft(root) {
     rainMat.opacity=Math.max(0,weather-.25)*.4;
     rainBase.forEach(([x,y,z],i)=>{const h=((y-t*(9+weather*5))%12+12)%12;rainPos.set([x,h,z,x-.14-weather*.23,h+.4,z+.05],i*6);});rainGeo.attributes.position.needsUpdate=true;
     birds.forEach((b,i)=>{const a=t*.15+i*1.3;b.position.set(Math.cos(a)*5,6+i*.25+Math.sin(t+i)*.15,Math.sin(a)*3-2);b.rotation.y=-a;b.children.forEach((w,j)=>w.rotation.z=(j?1:-1)*(.2+Math.sin(t*5+i)*.35));b.scale.setScalar(1-weather*.6);});
-    controls.update();composer.render();
+    controls.update();
+    // Half-resolution scene-color pass supplies real, normal-distorted refraction.
+    ocean.visible=false;renderer.setRenderTarget(refraction);renderer.render(scene,camera);renderer.setRenderTarget(null);ocean.visible=true;
+    composer.render();
   }
   function frame(now){if(!visible||lost)return;const dt=Math.min((now-last)/1000||0,.05);last=now;paint(dt);}
-  function fit(){const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);composer.setSize(w,h);camera.aspect=w/h;camera.fov=THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(THREE.MathUtils.degToRad(37)/2)*Math.max(1,1.18/camera.aspect)));camera.updateProjectionMatrix();if(visible&&!lost)paint();}
+  function fit(){const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);composer.setSize(w,h);renderer.getDrawingBufferSize(waterUniforms.viewport.value);refraction.setSize(Math.max(1,Math.round(w*.65)),Math.max(1,Math.round(h*.65)));camera.aspect=w/h;camera.fov=THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(THREE.MathUtils.degToRad(37)/2)*Math.max(1,1.18/camera.aspect)));camera.updateProjectionMatrix();if(visible&&!lost)paint();}
   const ro=new ResizeObserver(fit);ro.observe(stage);
+  controls.addEventListener('change',()=>{if(paused&&visible&&!lost)requestAnimationFrame(()=>paint());});
   slider.addEventListener('input',()=>{target=Number(slider.value)/100;cycle=false;cycleButton.setAttribute('aria-pressed','false');if(paused)paint();});
   cycleButton.addEventListener('click',()=>{cycle=!cycle;cycleButton.setAttribute('aria-pressed',String(cycle));if(cycle){paused=false;pauseUI();}});
   pauseButton.addEventListener('click',()=>{paused=!paused;pauseUI();});
@@ -164,5 +170,5 @@ export function mountCraft(root) {
   renderer.domElement.addEventListener('keydown',e=>{const offset=camera.position.clone().sub(controls.target),s=new THREE.Spherical().setFromVector3(offset);if(e.key==='ArrowLeft')s.theta-=.12;else if(e.key==='ArrowRight')s.theta+=.12;else if(e.key==='ArrowUp')s.phi=Math.max(.48,s.phi-.1);else if(e.key==='ArrowDown')s.phi=Math.min(1.35,s.phi+.1);else if(e.key==='+'||e.key==='=')s.radius=Math.max(19,s.radius-1);else if(e.key==='-')s.radius=Math.min(38,s.radius+1);else return;e.preventDefault();camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(s));controls.update();});
   renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();lost=true;renderer.setAnimationLoop(null);status.hidden=false;status.textContent='Graphics paused. Refresh to restore the coast.';});
   fit();paint();status.hidden=true;
-  return {setVisible(value){visible=value;last=performance.now();renderer.setAnimationLoop(value&&!lost?frame:null);if(value&&!lost)fit();}};
+  return {setVisible(value){visible=value;last=performance.now();syncLoop();if(value&&!lost)fit();}};
 }
