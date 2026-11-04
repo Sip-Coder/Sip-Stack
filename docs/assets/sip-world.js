@@ -1350,12 +1350,108 @@ export const TOGGLES = {
   ],
 };
 
+/* Academy-only props. World calls sceneSVG without `story`, so these never appear on World cards. */
+function gWrap(item) {
+  return { d: item.d, s: `<g class="ac-iso">${item.s}</g>` };
+}
+function guide(x, y, shirt, hat) {
+  return gWrap(figure(x, y, shirt, { hat: hat || PAL.sand }));
+}
+function shears(x, y) {
+  return [
+    gWrap(line3([x, y, 0.85], [x + 0.42, y + 0.12, 1.2], 0.9, LINE)),
+    gWrap(line3([x + 0.02, y, 0.85], [x + 0.34, y - 0.16, 1.2], 0.9, LINE)),
+  ];
+}
+function caneBundle(x, y) {
+  return [0, 1, 2, 3].map(i => gWrap(box(x + i * 0.07, y, 0.02, 0.05, 0.62, 0.05, i % 2 ? PAL.wood : light(PAL.wood, .2), { thin: true })));
+}
+function pathSVG(stage) {
+  const names = ['Vine', 'Pick', 'Make', 'Cave', 'Bottle', 'Glass'];
+  return `<g class="ac-path" pointer-events="none">${names.map((n, i) => {
+    const x = 14 + i * 40, on = i === stage;
+    return `<rect x="${x}" y="181" width="36" height="11" rx="5.5" fill="${on ? '#1A5552' : '#fffaf1'}" stroke="#2e2520" stroke-width=".65"/><text x="${x + 18}" y="188.6" text-anchor="middle" font-size="5.4" font-weight="700" fill="${on ? '#fff' : '#2a221d'}" font-family="Inter, sans-serif">${n}</text>`;
+  }).join('')}</g>`;
+}
+function storyStage(key) {
+  const id = key.split(':').find(p => p !== 'dive') || '';
+  if (['campus', 'team', 'regions', 'rain', 'berry'].includes(id)) return 0;
+  if (id === 'harvest') return 1;
+  if (['crush', 'ferment', 'crossroads'].includes(id)) return 2;
+  if (['lab', 'barrels', 'bench', 'finish'].includes(id)) return 3;
+  if (['give', 'bottle', 'passport', 'journey'].includes(id)) return 4;
+  return 5;
+}
+function academyProps(story) {
+  const dive = story.startsWith('dive:');
+  const parts = story.split(':').filter(p => p !== 'dive');
+  const stop = parts[0];
+  const beat = parts[1] || '';
+  const hi = [];
+  const lo = [];
+  const sippy = (x, y) => guide(x, y, PAL.teal, PAL.sand);
+  const roma = (x, y) => guide(x, y, PAL.clay, PAL.cream);
+  const hummin = (x, y) => guide(x, y, PAL.mauve, PAL.mauve);
+  if (stop === 'campus' && beat === 'frame') {
+    hi.push(sippy(1.15, 6.35), ...shears(1.45, 6.15), ...caneBundle(0.35, 6.7), gWrap(sign(2.3, 6.2, 'FRAME')));
+  } else if (stop === 'campus' && beat === 'tank') {
+    hi.push(hummin(1.1, 6.5), gWrap(cyl(6.55, 6.15, 0, 0.42, 0.78, PAL.steel)), gWrap(cyl(6.55, 6.15, 0.42, 0.36, 0.28, PAL.water)), gWrap(sign(5.9, 5.7, 'ROOF')));
+  } else if (stop === 'campus') {
+    hi.push(sippy(1.05, 6.45), roma(2.15, 6.7), hummin(3.2, 6.4));
+  } else if (stop === 'team') {
+    hi.push(sippy(1.2, 6.4), roma(2.4, 6.65), hummin(3.5, 6.35));
+    if (beat === 'on') hi.push(gWrap(sign(4.4, 6.2, 'ROOTS')));
+    if (beat === 'leaf') hi.push(gWrap(sign(4.6, 5.4, 'LEAVES')));
+  } else if (stop === 'rain' || (dive && (beat === 'drip' || beat === 'soil' || beat === 'leaf' || beat === 'save' || beat === 'cloud'))) {
+    hi.push(hummin(1.0, 6.45), sippy(2.15, 6.6), gWrap(box(5.7, 6.3, 0, 0.08, 0.08, 0.85, PAL.steel, { thin: true })), gWrap(box(5.5, 6.22, 0.82, 0.48, 0.08, 0.06, PAL.clay)));
+    for (let i = 0; i < (dive ? 5 : 3); i++) lo.push(gWrap(cyl(2.2 + i * 0.7, 5.4, -0.15, 0.22, 0.06, beat === 'shut' ? PAL.sand : PAL.water)));
+    if (dive) lo.push(gWrap(sign(1.2, 5.2, 'BULB')), gWrap(sign(4.8, 5.0, 'ROCK')));
+  } else if (stop === 'berry' && dive) {
+    lo.push(roma(3.3, 4.6), gWrap(box(4.05, 4.15, -0.2, 0.28, 0.28, 1.15, dark(PAL.wood, .25))), gWrap(box(3.92, 4.02, 0.9, 0.54, 0.54, 0.14, PAL.clay)), gWrap(box(4.12, 4.22, 1.04, 0.16, 0.16, 0.95, PAL.wood, { thin: true })), gWrap(sign(2.7, 4.0, 'ROOT')), gWrap(sign(5.05, 4.35, 'SCION')));
+  } else if (stop === 'berry') {
+    const fat = beat === 'thick' || beat === 'vinifera';
+    hi.push(roma(1.15, 6.55), hummin(2.35, 6.85), gWrap(cluster(3.5, 6.55, 0.15, fat ? PAL.red : light(PAL.red, .35), fat ? 2.35 : 1.15)), gWrap(sign(4.5, 6.15, fat ? 'THICK' : 'THIN')));
+  } else if (stop === 'harvest') {
+    hi.push(sippy(1.1, 6.4), roma(2.3, 6.65), hummin(3.4, 6.35), gWrap(crate(5.5, 6.1, 0, 0.62)), gWrap(cluster(5.7, 6.25, 0.62, beat === 'early' ? PAL.sage : PAL.red, 1.15)));
+    if (beat === 'early' || beat === 'crew') hi.push(gWrap(lamp(6.6, 5.6)), gWrap(sign(4.6, 6.0, 'ACID')));
+    if (beat === 'ripe') hi.push(gWrap(sign(4.6, 6.0, 'BODY')));
+  } else if (stop === 'ferment') {
+    hi.push(roma(1.3, 6.3), sippy(2.5, 6.55), ...shears(2.7, 6.2), gWrap(sign(3.6, 6.1, 'CAP')));
+  } else if (stop === 'crossroads') {
+    hi.push(sippy(0.8, 6.5), gWrap(sign(2.2, 6.2, (beat || 'DOOR').slice(0, 6).toUpperCase())));
+  } else if (stop === 'crush') {
+    hi.push(sippy(1.1, 6.4), hummin(2.4, 6.6), gWrap(crate(4.8, 6.2, 0, 0.5)), gWrap(sign(5.6, 6.0, 'SORT')));
+  } else if ((dive && (beat === 'ullage' || beat === 'time' || beat === 'species' || beat === 'toast' || beat === 'care')) || (stop === 'barrels' && (beat === 'year' || beat === 'taste'))) {
+    hi.push(hummin(0.85, 6.55), gWrap(hbarrel(1.7, 6.15, 0, 0.52, 1.25, PAL.wood, { chalk: true })), gWrap(cyl(3.5, 6.55, 0, 0.18, 0.48, PAL.clay)), gWrap(sign(3.9, 6.15, 'TOP UP')));
+    if (dive) hi.push(gWrap(cyl(5.15, 6.35, 0, 0.36, 0.62, PAL.red)), gWrap(cyl(5.15, 6.35, 0.62, 0.36, 0.22, PAL.cream)), gWrap(sign(5.85, 5.9, 'GAP')));
+  } else if (stop === 'barrels' || stop === 'bench') {
+    hi.push(hummin(1.1, 6.4), sippy(2.3, 6.6), gWrap(hbarrel(4.2, 5.6, 0, 0.4, 1.05, PAL.wood, { chalk: beat === 'marks' || beat === 'smell' })));
+  } else if (stop === 'lab' || stop === 'finish' || dive) {
+    hi.push(roma(1.2, 6.35), hummin(2.5, 6.6), gWrap(box(4.4, 6.0, 0, 1.6, 0.7, 0.45, PAL.wood, { planks: 2 })));
+    for (let i = 0; i < (dive ? 3 : 2); i++) hi.push(gWrap(cyl(4.6 + i * 0.42, 6.15, 0.45, 0.1, 0.28, i === 1 ? PAL.red : PAL.cream)));
+    if (dive) hi.push(gWrap(sign(6.2, 5.8, 'LOT')));
+  } else if (stop === 'handoff' || stop === 'sip') {
+    hi.push(sippy(1.2, 6.4), roma(2.5, 6.6), gWrap(sign(3.8, 6.1, beat === 'water' || stop === 'handoff' ? 'WATER' : 'SIP')));
+  } else {
+    hi.push(sippy(1.2, 6.45), roma(2.5, 6.65));
+  }
+  return { hi, lo };
+}
+
 const CAM = { '01': { U: 12.2, OY: 28 }, '05': { U: 12.2, OY: 30 }, '08': { U: 12.2, OY: 30 } };
-export function sceneSVG(id, { labels = true, title = '' } = {}) {
+export function sceneSVG(id, { labels = true, title = '', story = null } = {}) {
   beginScene();
   const cam = CAM[id] || {};
   U = cam.U ?? 14; OY = cam.OY ?? 46;
-  const { it, labels: lb = [], ulabels = [], bg = PAL.mint, under, state, far = 'hills', farC, opts = {} } = SCENES[id]();
+  const built = SCENES[id]();
+  const { labels: lb = [], ulabels = [], bg = PAL.mint, under, state, far = 'hills', farC, opts = {} } = built;
+  const it = built.it;
+  if (story) {
+    const extra = academyProps(story);
+    it.push(...extra.hi);
+    if (extra.lo.length && under) under.it.push(...extra.lo);
+    else it.push(...extra.lo);
+  }
   it.sort((a, b) => a.d - b.d);
   const base = it.filter(i => i.d <= -50), rest = it.filter(i => i.d > -50);
   const [, gy] = P(8, 8, under ? -3.2 : -0.95);
@@ -1377,7 +1473,8 @@ export function sceneSVG(id, { labels = true, title = '' } = {}) {
     lower +
     (under ? `<g class="layer hi" style="--lift:-3px;--open:-${under.open}px">${top}</g>` : top) +
     `<rect class="mood" x="-12" y="-4" width="264" height="198" fill="url(#${CUR.k}m)" pointer-events="none"/>` +
-    (under && labels ? `<g class="labels lo">${ulabels.join('')}</g>` : '') + `</svg>`;  // lower pins stay on top so they remain clickable
+    (under && labels ? `<g class="labels lo">${ulabels.join('')}</g>` : '') +
+    (story ? pathSVG(storyStage(story)) : '') + `</svg>`;  // lower pins stay on top so they remain clickable
   CUR = null; U = 14; OY = 46;
   return out;
 }

@@ -2,7 +2,6 @@
 import { sceneSVG, HOTSPOTS } from './sip-world.js';
 import { GUIDES, WINE_STOPS, DIVES } from './sip-depth-data.js';
 import { WINE_LESSON, DIVE_BEATS } from './sip-wine-lesson.js';
-import { storyMarkup } from './sip-academy-layers.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -57,6 +56,14 @@ export function mountAcademy(root) {
   const player = $('.ac-player', root);
   const state = { n: 1, beat: null, dive: null, chart: null };
 
+  function skyOf(beatId, diving) {
+    if (['frame', 'phylloxera'].includes(beatId)) return 'frost';
+    if (['roots', 'shut', 'leaves', 'drip', 'soil', 'tank', 'cloud', 'save', 'leaf', 'on'].includes(beatId)) return 'rain';
+    if (['early', 'crew'].includes(beatId)) return 'dawn';
+    if (diving && ['ullage', 'time', 'species', 'toast', 'care', 'year', 'marks'].includes(beatId)) return 'cellar';
+    if (['year', 'marks', 'smell', 'taste'].includes(beatId)) return 'cellar';
+    return 'day';
+  }
   function lesson(stop) { return WINE_LESSON[stop.id]; }
   function activeBeat(stop) {
     const pack = lesson(stop);
@@ -104,7 +111,7 @@ export function mountAcademy(root) {
       </div>
       <p class="ac-learn"><b>You are learning:</b> ${learn.replace(/^You are learning:?\s*/i, '')}</p>
       <div class="ac-stage-wrap">
-        <div class="ac-stage" data-chart="${chart}" data-dive="${diving ? '1' : '0'}" data-beat="${beat.id}">
+        <div class="ac-stage" data-chart="${chart}" data-dive="${diving ? '1' : '0'}" data-beat="${beat.id}" data-sky="${skyOf(beat.id, diving)}">
           <div class="ac-scene-slot"></div>
           <div class="ac-beats" role="group" aria-label="${diving ? 'Deep dive checks' : 'Scene changes'}">
             ${(diving ? divePack.tabs : pack.beats).map(item => `<button type="button" data-beat="${item.id}" aria-pressed="${item.id === beat.id}">${item.label}</button>`).join('')}
@@ -131,10 +138,9 @@ export function mountAcademy(root) {
       <ol class="ac-rail">${WINE_STOPS.map(s => `<li><button type="button" data-n="${s.n}" aria-current="${s.n === stop.n}"><b>${s.n}</b>${s.title}</button></li>`).join('')}</ol>`;
 
     const slot = $('.ac-scene-slot', player);
-    slot.innerHTML = sceneSVG(chart, { title: stop.title });
+    slot.innerHTML = sceneSVG(chart, { title: stop.title, story: diving ? `dive:${stop.id}:${beat.id}` : `${stop.id}:${beat.id}` });
     const svg = $('svg.scene', slot);
     applyFx(svg, beat.fx);
-    svg.insertAdjacentHTML('beforeend', storyMarkup(stop.id, beat.id, diving));
     if (beat.pin) $(`.tag[data-hs="${beat.pin}"]`, svg)?.classList.add('active');
     player.querySelector(`[data-n="${stop.n}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
