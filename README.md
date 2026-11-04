@@ -17,16 +17,15 @@ Home: Sip Studios › Ai Edu · Through-line: Somm Support water accessibility
 
 ## Dual view (GitHub Pages)
 
-`docs/index.html` is the Pages home, with four views:
+`docs/index.html` is the Pages home, with three views:
 
-- **World** (default): a 3×3 isometric paper card grid, *Nine ways water becomes wine*. Each card is a dense animated SVG scene with numbered pins, adventure-stop nodes for the 22-stop wine arc, a toolbar of scene toggles, and a shared Day / Golden light. Five making styles stay separate. Deep link a stop with `#world/05/arc-crossroads.red`. Click a card's Outline link (or press Enter on it) to open its chart.
+- **World** (default): a 3×3 isometric paper card grid, *Nine ways water becomes wine*. Each card is a dense animated SVG scene with numbered pins, a toolbar of scene toggles, and a shared Day / Golden light. Five making styles stay separate. Deep link a pin with `#world/05/red`. Click a card's Outline link (or press Enter on it) to open its chart.
 
-**Elevation pass (v4):** World scenes, Outline, and page chrome now share the Village's craft: same note dock, chips, light switch, focus rings, and three equal modes in the hero.
+**Elevation pass (v4):** World scenes, Outline, and page chrome share the Village's craft: same note dock, chips, light switch, and focus rings.
 - **Outline**: the Mermaid journey tabs, plus the White and Red Grape Varieties species analysis tables (02, 03).
 - **Village**: a 3D wine-coast teaching diorama built in code with Three.js (loaded from a CDN only when the tab opens; no build step). Drag to orbit, scroll or pinch to zoom, switch Day / Golden / Night, and tap numbered pins: terraces, drip, soil cut, five separate making-lane doors, rinse loop, boat cases, the café table, plus an auger, press, fermenter, barrels, lab bench, cooper workbench, and berry. Deep link a pin with `#village/auger`. Files: `docs/assets/sip-village.js`, `docs/assets/sip-village-content.js`.
-- **Academy**: the wine adventure, using the same isometric World scenes. Each stop has a learn line, a guide beat, hotspots that change the scene, and a cause-and-effect note. Deep dives on stops 4, 5, 10, and 11 swap to a denser board. Other campuses stay listed, not played. Deep link `#academy/wine/5`. Files: `docs/assets/sip-academy.js`, `docs/assets/sip-wine-lesson.js`.
 
-Use the World | Outline | Village | Academy switch to change views. Each Outline chart has an **Open in World** button that goes back to its card, plus the adventure stops that live on that chart. You can link to a view directly with `#world/02`, `#outline/05/crossroads`, or `#academy/wine/9`. Files: `docs/index.html`, `docs/assets/sip-stack.css`, `docs/assets/sip-app.js`, `docs/assets/sip-world.js`, `docs/assets/sip-depth-data.js`.
+Use the World | Outline | Village switch to change views. Each Outline chart has an **Open in World** button that goes back to its card. You can link to a view directly with `#world/02`, `#outline/05`, or `#village/auger`. Files: `docs/index.html`, `docs/assets/sip-stack.css`, `docs/assets/sip-app.js`, `docs/assets/sip-world.js`.
 
 ## Lanes
 
