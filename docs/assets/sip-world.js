@@ -1350,28 +1350,94 @@ export const TOGGLES = {
   ],
 };
 
-/* Academy-only props. World calls sceneSVG without `story`, so these never appear on World cards. */
-function gWrap(item) {
-  return { d: item.d, s: `<g class="ac-iso">${item.s}</g>` };
+/* Academy dioramas. Drawn only when sceneSVG is passed `story`. World cards never set it. */
+function flat(list) {
+  const out = [];
+  const walk = (v) => {
+    if (v == null || v === false) return;
+    if (Array.isArray(v)) { v.forEach(walk); return; }
+    if (v.s) out.push(v);
+  };
+  walk(list);
+  return out;
 }
-function guide(x, y, shirt, hat) {
-  return gWrap(figure(x, y, shirt, { hat: hat || PAL.sand }));
+function plaque(x, y, z, text, c = PAL.cream, tc = LINE) {
+  const [px, py] = P(x, y, z), w = Math.max(28, text.length * 4.15 + 10);
+  return { d: x + y + z * 0.01 + 0.85, s:
+    `<rect x="${f(px - w / 2)}" y="${f(py - 5.4)}" width="${f(w)}" height="8.6" rx="1.7" fill="${c}" stroke="${LINE}" stroke-width=".75"/>` +
+    `<text x="${f(px)}" y="${f(py + .9)}" text-anchor="middle" class="plaque" fill="${tc}">${text}</text>` };
 }
-function shears(x, y) {
-  return [
-    gWrap(line3([x, y, 0.85], [x + 0.42, y + 0.12, 1.2], 0.9, LINE)),
-    gWrap(line3([x + 0.02, y, 0.85], [x + 0.34, y - 0.16, 1.2], 0.9, LINE)),
-  ];
+function pool(x, y, z, c, r = 26) {
+  const [px, py] = P(x, y, z);
+  return { d: x + y + z * 0.01 - 0.35, s: `<ellipse cx="${f(px)}" cy="${f(py)}" rx="${r}" ry="${f(r * .58)}" fill="${c}" opacity=".32"/>` };
 }
-function caneBundle(x, y) {
-  return [0, 1, 2, 3].map(i => gWrap(box(x + i * 0.07, y, 0.02, 0.05, 0.62, 0.05, i % 2 ? PAL.wood : light(PAL.wood, .2), { thin: true })));
+function hero(x, y, who, tool, o = {}) {
+  const look = {
+    sippy: [PAL.teal, PAL.sand, PAL.cream],
+    roma: [PAL.clay, '#f6efe2', PAL.sand],
+    hummin: [PAL.mauve, '#efe6c8', PAL.mint],
+  }[who];
+  const z = o.z || 0;
+  const w = worker(x, y, look[0], tool || 'none', { hat: look[1], apron: o.apron === null ? undefined : (o.apron || look[2]), flip: o.flip, delay: o.delay || 0, tc: o.tc, z });
+  const k = o.k || 1.82;
+  const [bx, by] = P(x, y, z);
+  return { d: x + y + 0.62, s: `<g transform="translate(${f(bx)} ${f(by)}) scale(${k}) translate(${f(-bx)} ${f(-by)})">${w.s}</g>` };
 }
-function pathSVG(stage) {
+function skyWash(kind) {
+  const g = {
+    frost: ['#d5e6f0', .82, '#f7f4ee', 0],
+    dawn: ['#1c2748', .62, '#f0b35c', .05],
+    cellar: ['#2a2432', .5, '#e6d2b4', 0],
+    rain: ['#6e9098', .5, '#e7f1ef', 0],
+    day: ['#ffe3b5', .55, '#fffaf3', 0],
+  }[kind] || ['#ffe3b5', .4, '#fff', 0];
+  const id = `${CUR.k}sky`;
+  const h = { frost: 128, dawn: 156, cellar: 110, rain: 96, day: 40 }[kind] || 40;
+  let extra = '';
+  if (kind === 'dawn') {
+    extra = `<circle cx="186" cy="24" r="7" fill="#ffd58a"/>`;
+    for (let i = 0; i < 7; i++) extra += `<circle cx="${28 + i * 22}" cy="${10 + (i % 3) * 6}" r=".7" fill="#fff6d8" opacity=".85"/>`;
+  } else if (kind === 'frost') extra = `<circle cx="178" cy="22" r="8" fill="#f7fbff" stroke="${LINE}" stroke-width=".45"/>`;
+  else if (kind === 'day') extra = `<circle cx="184" cy="20" r="10" fill="#f0c14a" opacity=".95"/>`;
+  else if (kind === 'cellar') extra = `<circle cx="170" cy="30" r="14" fill="#e7b15a" opacity=".22"/>`;
+  return { d: 2600, s:
+    `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${g[0]}" stop-opacity="${g[1]}"/><stop offset="1" stop-color="${g[2]}" stop-opacity="${g[3]}"/></linearGradient>` +
+    `<rect x="-12" y="-4" width="264" height="${h}" fill="url(#${id})" pointer-events="none"/>${extra}` };
+}
+function journeyStones(stage) {
   const names = ['Vine', 'Pick', 'Make', 'Cave', 'Bottle', 'Glass'];
-  return `<g class="ac-path" pointer-events="none">${names.map((n, i) => {
-    const x = 14 + i * 40, on = i === stage;
-    return `<rect x="${x}" y="181" width="36" height="11" rx="5.5" fill="${on ? '#1A5552' : '#fffaf1'}" stroke="#2e2520" stroke-width=".65"/><text x="${x + 18}" y="188.6" text-anchor="middle" font-size="5.4" font-weight="700" fill="${on ? '#fff' : '#2a221d'}" font-family="Inter, sans-serif">${n}</text>`;
-  }).join('')}</g>`;
+  let s = '';
+  names.forEach((n, i) => {
+    const x = 22 + i * 38, on = i === stage, done = i < stage;
+    const fill = on ? '#1A5552' : done ? '#cfe0d4' : '#f7f1e6';
+    const tc = on ? '#fff' : '#2e2520';
+    const y = on ? 174 : 178, h = on ? 14 : 10;
+    s += `<ellipse cx="${x + 16}" cy="${y + h + 1.6}" rx="15" ry="2.3" fill="#2e2520" opacity=".14"/>`;
+    s += `<rect x="${x}" y="${y}" width="32" height="${h}" rx="2.2" fill="${fill}" stroke="#2e2520" stroke-width=".75"/>`;
+    if (on) s += `<rect x="${x + 1.6}" y="${y + 1.5}" width="28.8" height="2.4" rx="1" fill="#fff" opacity=".38"/>`;
+    s += `<text x="${x + 16}" y="${y + (on ? 10 : 7.2)}" text-anchor="middle" class="plaque" fill="${tc}">${n}</text>`;
+    if (i < 5) s += `<path d="M${x + 32} ${y + h * 0.55} H${x + 38}" stroke="#2e2520" stroke-width=".6"/>`;
+  });
+  return [{ d: 2700, s: `<g class="ac-journey" pointer-events="none">${s}</g>` }];
+}
+function faceBand(z0, z1, c) {
+  return { d: -96, s:
+    fill([[0.12, 8, z0], [7.88, 8, z0], [7.88, 8, z1], [0.12, 8, z1]], c) +
+    fill([[8, 0.12, z0], [8, 7.88, z0], [8, 7.88, z1], [8, 0.12, z1]], dark(c, .16)) +
+    seg3([0.12, 8, z1], [7.88, 8, z1], .5, 'rgba(255,250,240,.6)') };
+}
+function frostField(seed, n = 48) {
+  const r = rng(seed); let s = '';
+  for (let i = 0; i < n; i++) {
+    const [px, py] = P(0.25 + r() * 7.4, 0.35 + r() * 6.4, 0);
+    s += `<circle cx="${f(px)}" cy="${f(py)}" r="${f(.32 + r() * .5)}" fill="#fff" opacity=".82"/>`;
+  }
+  return { d: -42, s };
+}
+function capEllipse(x, y, z, r, c) {
+  const [mx, my] = P(x, y, z);
+  const rx = r * U * 1.22 * 0.9, ry = r * U * 0.55;
+  return { d: x + y + z * 0.01 + 0.2, s: `<ellipse cx="${f(mx)}" cy="${f(my)}" rx="${f(rx)}" ry="${f(ry)}" fill="${c}" stroke="${LINE}" stroke-width=".6"/>` };
 }
 function storyStage(key) {
   const id = key.split(':').find(p => p !== 'dive') || '';
@@ -1382,76 +1448,529 @@ function storyStage(key) {
   if (['give', 'bottle', 'passport', 'journey'].includes(id)) return 4;
   return 5;
 }
-function academyProps(story) {
+function names() { /* guides read by hat, tool, and the note — floor plaques were covering the path */ }
+function trellis(y, winter, fruit, quiet) {
+  const it = [stripe(0.3, y - 0.24, 6.55, 0.66, mix(PAL.soil, winter ? '#d5e3ea' : PAL.sage, .42))];
+  it.push(box(0.28, y - 0.14, 0, 0.34, 0.34, 2.25, dark(PAL.wood, .08)));
+  it.push(line3([0.46, y + 0.06, 1.9], [-0.08, y + 0.58, 0.12], .85, dark(PAL.steel, .12)));
+  it.push(box(6.5, y - 0.08, 0, 0.18, 0.18, 2.05, PAL.wood, { thin: true }));
+  for (const z of [0.72, 1.22, 1.75]) it.push(line3([0.72, y + 0.02, z], [6.45, y + 0.02, z], .7, dark(PAL.steel, .22)));
+  it.push(line3([0.7, y + 0.16, 0.22], [6.4, y + 0.16, 0.22], 1.25, dark(PAL.teal, .22)));
+  for (const x of [1.65, 3.2, 4.8]) {
+    if (winter) it.push(bareVine(x, y, { cz: 1.58 }));
+    else it.push(vine(x, y, { cz: 1.55, grape: fruit, br: 1.12, leaf: PAL.leaf }));
+  }
+  if (!quiet && winter) {
+    it.push(canes(2.05, y + 0.5));
+    it.push(canes(4.35, y + 0.5));
+    it.push(plaque(1.65, y - 0.05, 1.85, 'spur', PAL.sand));
+    it.push(plaque(0.46, y + 0.2, 2.45, 'post', PAL.teal, '#fff'));
+    it.push(plaque(5.15, y - 0.08, 1.28, 'wires', PAL.cream));
+  }
+  if (!quiet && !winter) {
+    it.push(plaque(0.46, y + 0.2, 2.45, 'post', PAL.teal, '#fff'));
+    it.push(plaque(5.15, y - 0.08, 1.28, 'wires', PAL.cream));
+    it.push(plaque(3.2, y, 0.85, 'fruit', PAL.clay, '#fff'));
+  }
+  return it;
+}
+function tankRig(heroic) {
+  const x = heroic ? 5.85 : 6.55, y = heroic ? 4.35 : 0.45, it = [];
+  if (heroic) {
+    it.push(box(x - 0.2, y - 0.65, 1.35, 1.7, 1.25, 0.14, PAL.clay));
+    it.push(box(x - 0.08, y - 0.5, 0, 0.12, 0.12, 1.35, PAL.wood, { thin: true }));
+    it.push(box(x + 1.25, y - 0.5, 0, 0.12, 0.12, 1.35, PAL.wood, { thin: true }));
+    it.push(line3([x + 0.62, y - 0.15, 1.35], [x + 0.62, y + 0.2, 1.05], 1.5, dark(PAL.steel, .15)));
+    it.push(pool(x + 0.62, y + 0.2, 0.7, PAL.water, 34));
+  }
+  it.push(cyl(x + 0.62, y + 0.2, 0, heroic ? 0.5 : 0.34, heroic ? 1.2 : 0.85, mix(PAL.steel, PAL.water, .22), { hoops: [0.32, 0.68] }));
+  it.push(cyl(x + 0.62, y + 0.2, heroic ? 0.7 : 0.48, heroic ? 0.38 : 0.24, 0.38, PAL.water, { noShadow: true, lid: false }));
+  it.push(plaque(x + 0.62, y + 0.15, heroic ? 1.5 : 1.1, heroic ? 'roof water' : 'tank', PAL.mint));
+  if (heroic) it.push(plaque(x + 0.62, y + 0.85, 0.28, 'not leaves', PAL.sand));
+  return it;
+}
+function vineRoom(stop, beat) {
+  const winter = beat === 'frame';
+  const tankFocus = beat === 'tank';
+  const wetLeaves = beat === 'leaf' || beat === 'leaves';
+  const wetRoots = beat === 'on';
+  const it = [ground(winter ? '#d7e6ee' : mix(PAL.sage, '#f4fbf6', .35), winter ? 4 : 9, { H: winter ? 1.15 : 0.78, tufts: winter ? 5 : 16, soil: winter ? mix(PAL.soil, '#e4eef3', .45) : PAL.soil, tuft: winter ? '#efe8dc' : dark(PAL.sage, .25) })];
+  it.push(trellis(1.25, winter, PAL.red, true));
+  it.push(trellis(3.05, winter, PAL.red, false));
+  if (winter) {
+    it.push(frostField(7));
+    it.push(ladder(4.15, 3.35, 0, 1.7, 0.4));
+    it.push(wheelbarrow(2.05, 5.85, PAL.teal, PAL.wood));
+    it.push(pool(3.2, 3.0, 1.2, '#d5e7f2', 40));
+  } else it.push(pool(3.2, 2.4, 1.1, '#ffe0b0', 36));
+  it.push(tankRig(tankFocus));
+  if (!tankFocus) it.push(bush(7.15, 1.35, 0, mix(PAL.leaf, PAL.sage, .2), { berries: '#d9607a' }));
+  it.push(box(3.55, 5.85, 0, 1.05, 0.58, 0.58, PAL.wood, { planks: 2 }));
+  it.push(plaque(4.05, 6.1, 0.78, 'site —', PAL.cream));
+  if (wetRoots) {
+    for (const x of [1.65, 3.2, 4.8]) it.push(drop(x, 3.2, 0.28, x * 0.2));
+    it.push(plaque(2.4, 3.35, 0.45, 'roots', PAL.teal, '#fff'));
+  }
+  if (wetLeaves) {
+    for (const x of [1.7, 3.2, 4.8]) it.push(drop(x, 3.15, 1.45, x * 0.15));
+    it.push(plaque(3.2, 3.05, 1.95, 'wrong place', PAL.clay, '#fff'));
+  }
+  if (beat === 'off') it.push(plaque(1.2, 4.6, 0.4, 'valve shut', PAL.sand));
+  const pin = stop === 'campus' ? (winter ? 'frame' : tankFocus ? 'tank' : 'row') : (beat || 'row');
+  if (winter) {
+    it.push(hero(1.35, 6.25, 'sippy', 'shears'));
+    it.push(hero(5.45, 6.15, 'hummin', 'clip', { k: 1.75 }));
+    it.push(hero(6.45, 1.55, 'roma', 'none', { k: 1.22 }));
+  } else if (tankFocus) {
+    it.push(hero(4.3, 5.45, 'hummin', 'clip'));
+    it.push(hero(2.2, 5.6, 'sippy', 'none'));
+    it.push(hero(6.5, 2.3, 'roma', 'basket', { tc: PAL.red, k: 1.45 }));
+  } else {
+    it.push(hero(1.25, 5.6, 'sippy', beat === 'leaf' ? 'shears' : 'none'));
+    it.push(hero(3.15, 5.75, 'roma', 'basket', { tc: PAL.red }));
+    it.push(hero(5.85, 5.5, 'hummin', 'clip'));
+  }
+  names(it, winter ? [['sippy', 1.35, 5.55], ['hummin', 6.15, 5.45]] : [['sippy', tankFocus ? 2.2 : 1.25, tankFocus ? 5.6 : 5.6], ['roma', tankFocus ? 6.5 : 3.15, tankFocus ? 2.3 : 5.75], ['hummin', tankFocus ? 4.3 : 5.85, tankFocus ? 5.45 : 5.5]]);
+  if (!winter) it.push(birds(3, 2, 2, 16));
+  const labels = [tag([0.45, 3.15, 2.3], pin, 1, winter ? 'Winter frame' : tankFocus ? 'Rain tank' : 'Trained row', winter ? 'posts, wires, spurs' : tankFocus ? 'roof water, dry leaves' : 'one plane of canopy', -6, -18)];
+  if (stop === 'campus' && !winter && !tankFocus) labels.push(tag([5.2, 4.7, 0.35], 'frame', 2, 'See the frame', 'leaves come off', -10, 16));
+  if (stop === 'campus' && winter) labels.push(tag([6.55, 0.7, 1.15], 'tank', 2, 'Rain tank', 'still in the row', 12, -10));
+  return { it, labels, farC: winter ? '#c5d5df' : PAL.sage };
+}
+function soilRoom(beat, dive) {
+  const open = beat !== 'leaf' && beat !== 'save';
+  const wet = beat === 'roots' || beat === 'drip';
+  const H = open ? (dive ? 2.45 : 2.05) : 0.7;
+  const it = [ground(mix(PAL.sage, '#f3faf6', .25), 41, { H, tufts: open ? 4 : 14, soil: PAL.soil })];
+  if (open) {
+    it.push(faceBand(0, -0.48, mix(PAL.soil, PAL.sage, .4)));
+    it.push(faceBand(-0.48, -1.2, mix(PAL.clay, PAL.sand, .3)));
+    it.push(faceBand(-1.2, -2.25, mix(PAL.mauve, PAL.sand, .4)));
+    it.push(plaque(6.35, 7.55, -0.22, 'topsoil', PAL.sand));
+    it.push(plaque(6.35, 7.55, -0.82, 'clay', PAL.clay, '#fff'));
+    it.push(plaque(6.35, 7.55, -1.65, 'rock', dark(PAL.mauve, .15), '#fff'));
+    it.push({ d: -28, s: [1.7, 3.5, 5.3].map(u => roots('y', u, -0.02, -2.15, u * 8)).join('') });
+    if (wet) it.push({ d: -36, s: [1.7, 3.5, 5.3].map(u => bulb(u, -0.02, 0.7, 0.9)).join('') });
+  }
+  it.push(stripe(0.8, 1.7, 5.6, 0.55, mix(PAL.soil, PAL.sage, .35)));
+  for (const x of [1.8, 3.5, 5.2]) it.push(vine(x, 1.9, { cz: 1.35, grape: PAL.red, br: 0.9 }));
+  for (const z of [0.7, 1.15]) it.push(line3([1.1, 1.95, z], [5.8, 1.95, z], .6, dark(PAL.steel, .25)));
+  it.push(hoseReel(0.4, 3.5));
+  it.push(hoseLine([[0.7, 3.4, 0.2], [1.4, 2.15, 0.25], [5.6, 2.15, 0.25]], PAL.teal));
+  if (dive || beat === 'cloud') {
+    it.push(station(7.15, 1.15));
+    if (beat === 'cloud') it.push(plaque(7.15, 1.15, 2.75, 'read gauge', PAL.mint));
+  }
+  if (beat === 'save' || beat === 'cloud') it.push(tankRig(beat === 'save'));
+  if (wet) {
+    for (const x of [1.8, 3.5, 5.2]) it.push(drop(x, 2.05, 0.25, x * 0.17));
+    it.push(plaque(3.5, 2.15, 0.12, 'root zone', PAL.teal, '#fff'));
+    it.push(pool(3.5, 4.2, -0.4, PAL.water, 30));
+  }
+  if (beat === 'leaf') {
+    for (const x of [1.8, 3.5, 5.2]) it.push(drop(x, 1.95, 1.4, x * 0.13));
+    it.push(plaque(3.5, 1.9, 1.85, 'on the leaves', PAL.clay, '#fff'));
+  }
+  if (beat === 'shut' || beat === 'soil') it.push(plaque(1.15, 3.6, 0.45, 'valve shut', PAL.sand));
+  it.push(hero(1.15, 5.15, 'hummin', 'clip'));
+  it.push(hero(4.4, 5.35, 'sippy', 'none'));
+  it.push(hero(6.35, 5.2, 'roma', 'none', { k: 1.6 }));
+  names(it, [['hummin', 1.15, 5.15], ['sippy', 4.4, 5.35], ['roma', 6.35, 5.2]]);
+  const labels = [tag([3.5, 1.9, open ? -0.6 : 1.5], beat, 1, open ? 'Soil cut' : 'Canopy', wet ? 'bulbs at the roots' : 'read the layer', 8, -22)];
+  return { it, labels, farC: PAL.sage };
+}
+function stump(x, y, r = 0.58) {
+  return cyl(x, y, 0, r, 0.28, PAL.wood, { staves: true, hoops: [0.65] });
+}
+function berryModel(x, y, z, kind, compact) {
+  const thick = kind === 'thick', thin = kind === 'thin';
+  const skinH = compact ? (thick ? 0.16 : thin ? 0.04 : 0.09) : (thick ? 1.05 : thin ? 0.12 : 0.28);
+  const r = compact ? (thick ? 0.46 : thin ? 0.32 : 0.38) : (thick ? 2.05 : thin ? 1.35 : 0.7);
+  const pulpH = compact ? 0.22 : thick ? 0.72 : 0.4;
+  const skinC = thick ? '#3d1828' : thin ? '#e7c4ca' : '#8d4a5e';
+  const it = [
+    cyl(x, y, z, r, 0.06, dark(skinC, .08), { noShadow: z !== 0 }),
+    cyl(x, y, z + 0.06, r, skinH, skinC, { noShadow: true, lid: false }),
+    cyl(x, y, z + 0.06 + skinH, Math.max(0.2, r * 0.72), pulpH, thick ? '#f3d7c8' : '#f8ebe3', { noShadow: true }),
+    cyl(x - r * 0.22, y + 0.06, z + 0.1 + skinH + pulpH, 0.1, 0.12, thin ? '#b7c48a' : '#6a4328', { noShadow: true, lid: false }),
+    cyl(x + r * 0.2, y - 0.05, z + 0.12 + skinH + pulpH, 0.1, 0.12, '#6a4328', { noShadow: true, lid: false }),
+  ];
+  it.push(plaque(x, y - 0.05, z + 0.08 + skinH * 0.5, compact ? (thick ? 'thick' : thin ? 'thin' : 'mid') : (thick ? 'thick skin' : 'thin skin'), thick ? PAL.red : PAL.sand, thick ? '#fff' : LINE));
+  return it;
+}
+function berryRoom(beat, dive) {
+  const thick = beat === 'thick' || beat === 'vinifera';
+  const thin = beat === 'thin' || beat === 'american';
+  const three = !thick && !thin;
+  const it = [ground(mix(PAL.sand, PAL.cream, .45), 15, { H: 0.72, tufts: 8, soil: PAL.soil })];
+  it.push(stripe(0.4, 0.7, 6.4, 0.6, mix(PAL.soil, PAL.sage, .32)));
+  it.push(box(0.35, 0.62, 0, 0.16, 0.16, 1.5, PAL.wood, { thin: true }));
+  it.push(vine(2.0, 0.95, { cz: 1.4, grape: thin ? light(PAL.red, .4) : PAL.red, br: thick ? 1.3 : 0.85 }));
+  it.push(vine(4.5, 0.95, { cz: 1.35, grape: PAL.red, br: 1.05 }));
+  if (three) {
+    it.push(box(1.35, 2.55, 0, 4.5, 1.45, 0.42, PAL.wood, { planks: 4 }));
+    it.push(berryModel(2.15, 3.15, 0.42, 'thin', true));
+    it.push(berryModel(3.45, 3.0, 0.42, 'mid', true));
+    it.push(berryModel(4.8, 3.15, 0.42, 'thick', true));
+  } else if (thin) {
+    it.push(stump(3.3, 3.6, 0.85));
+    it.push(berryModel(3.3, 3.6, 0.28, 'thin', false));
+  } else {
+    it.push(stump(3.15, 3.45, 1.15));
+    it.push(berryModel(3.15, 3.45, 0.28, 'thick', false));
+    it.push(cluster(5.35, 2.4, 0.2, PAL.red, 1.35));
+  }
+  it.push(cyl(6.55, 3.15, 0, 0.46, 1.05, light(PAL.wood, .12), { staves: true, hoops: [0.25, 0.8], lid: false }));
+  if (thick || beat === 'three' || beat === 'hybrids') {
+    it.push(capEllipse(6.55, 3.15, 1.0, 0.46, '#4a1d2c'));
+    it.push(plaque(6.55, 3.15, 1.28, 'skins stay', PAL.clay, '#fff'));
+  } else it.push(plaque(6.55, 3.15, 1.22, 'skins out', PAL.mint));
+  it.push(glass(1.15, 4.85, 0, thin || three ? light(PAL.red, .5) : mix(PAL.red, '#fff', .55)));
+  if (three || thick) it.push(glass(1.9, 4.95, 0, thick ? dark(PAL.red, .05) : mix(PAL.terra, PAL.red, .35)));
+  if (dive) {
+    it.push(box(0.2, 0.25, 0, 0.18, 1.5, 1.35, PAL.cream));
+    it.push(plaque(0.35, 0.9, 1.5, beat === 'american' ? 'for the root' : beat === 'clones' ? 'same name' : beat === 'hybrids' ? 'name parents' : 'vinifera', PAL.sand));
+  }
+  it.push(hero(1.15, 6.35, 'roma', 'glass', { tc: thick ? PAL.red : light(PAL.red, .35) }));
+  it.push(hero(3.9, 6.5, 'hummin', 'clip'));
+  it.push(hero(6.2, 6.25, 'sippy', 'none', { k: 1.6 }));
+  names(it, [['roma', 1.2, 5.85], ['hummin', 4.15, 5.95], ['sippy', 6.15, 5.7]]);
+  it.push(birds(2, 5, 4, 14));
+  const labels = [tag([6.55, 3.15, 1.15], beat, 1, thick ? 'Skins stay' : thin ? 'Skins out' : 'Three weights', thick ? 'the band is the color' : 'skin, then pulp', 12, -18)];
+  if (thick) labels.push(tag([2.0, 0.95, 1.55], 'thin', 2, 'Thin skin', 'the band shrinks', -18, -12));
+  if (thin) labels.push(tag([4.5, 0.95, 1.55], 'thick', 2, 'Thick skin', 'the band grows', 12, -12));
+  return { it, labels, farC: PAL.leaf };
+}
+function graftRoom(beat) {
+  const louse = beat === 'phylloxera';
+  const it = [ground(louse ? '#d5e2ea' : mix(PAL.sage, '#f4faf4', .2), 44, { H: 2.5, tufts: 3, soil: PAL.soil })];
+  it.push(faceBand(0, -0.42, mix(PAL.soil, PAL.sage, .35)));
+  it.push(faceBand(-0.42, -1.15, mix(PAL.clay, '#fff', .15)));
+  it.push(faceBand(-1.15, -2.35, mix(PAL.mauve, PAL.sand, .45)));
+  it.push(plaque(6.4, 7.5, -0.2, 'topsoil', PAL.sand));
+  it.push(plaque(6.4, 7.5, -0.75, 'clay', PAL.clay, '#fff'));
+  it.push(plaque(6.4, 7.5, -1.7, 'rock', dark(PAL.mauve, .2), '#fff'));
+  const x = 3.35, y = 3.15;
+  it.push(box(x, y, -1.7, 0.28, 0.28, 1.7, dark(PAL.wood, .4), { noShadow: true }));
+  it.push(cyl(x + 0.14, y + 0.14, -0.04, 0.32, 0.22, PAL.clay, { noShadow: true, hoops: [0.5] }));
+  it.push(box(x + 0.04, y + 0.04, 0.18, 0.2, 0.2, 1.25, PAL.wood, { thin: true, noShadow: true }));
+  it.push({ d: -30, s: roots('y', x + 0.14, -0.05, -2.2, 21, dark(PAL.wood, .25)) });
+  if (!louse) {
+    it.push(bush(x + 0.14, y + 0.14, 1.4, PAL.leaf));
+    it.push(cluster(x + 0.4, y + 0.45, 0.95, PAL.red, 1.05));
+  } else {
+    it.push(frostField(12, 30));
+    let dots = '';
+    for (const [dx, z] of [[0.35, -0.45], [0.15, -0.75], [0.5, -1.05], [0.22, -1.35], [0.48, -1.6]]) {
+      const [px, py] = P(x + dx, 8, z);
+      dots += `<circle cx="${f(px)}" cy="${f(py)}" r="1.8" fill="#7a2434" stroke="${LINE}" stroke-width=".4"/>`;
+    }
+    it.push({ d: -22, s: dots });
+    it.push(box(5.7, 2.4, 0, 0.16, 0.16, 0.7, dark(PAL.mauve, .35), { thin: true }));
+    it.push(plaque(5.9, 2.5, 0.9, 'no graft', PAL.sand));
+    it.push(plaque(x + 0.9, y, -0.9, 'louse', PAL.red, '#fff'));
+  }
+  it.push(plaque(x - 1.15, y + 0.7, -1.05, 'root', dark(PAL.wood, .3), '#fff'));
+  it.push(plaque(x + 1.05, y - 0.65, 1.45, 'scion', PAL.sand));
+  it.push(pool(x, y, 0.8, louse ? '#d5e4ee' : '#e7f0df', 32));
+  it.push(hero(1.2, 5.2, 'roma', 'none'));
+  it.push(hero(5.9, 5.25, 'hummin', 'clip'));
+  it.push(hero(1.15, 2.5, 'sippy', 'shears', { k: 1.45 }));
+  names(it, [['roma', 1.2, 5.2], ['hummin', 5.9, 5.25]]);
+  const labels = [tag([x + 0.14, y + 0.14, 0.1], beat, 1, louse ? 'Phylloxera' : 'Scion + root', louse ? 'the failure is underground' : 'you taste the scion', -8, -28)];
+  return { it, labels, farC: louse ? '#c5d4de' : PAL.sage };
+}
+function harvestRoom(beat) {
+  const early = beat === 'early';
+  const dawn = beat === 'early' || beat === 'crew';
+  const fruit = early ? mix(PAL.white, PAL.sage, .15) : PAL.red;
+  const it = [ground(dawn ? '#efe4cf' : mix(PAL.mustard, '#fff8ec', .45), 19, { H: 0.8, tufts: 12, soil: PAL.soil })];
+  it.push(stripe(0.25, 1.05, 7.3, 0.7, mix(PAL.soil, PAL.sage, .34)));
+  it.push(box(0.28, 0.98, 0, 0.24, 0.24, 1.9, dark(PAL.wood, .1)));
+  it.push(box(7.05, 1.05, 0, 0.16, 0.16, 1.75, PAL.wood, { thin: true }));
+  for (const z of [0.65, 1.1, 1.55]) it.push(line3([0.6, 1.22, z], [6.95, 1.22, z], .6, dark(PAL.steel, .25)));
+  for (const x of [1.7, 3.4, 5.15]) it.push(vine(x, 1.28, { cz: 1.4, grape: fruit, br: early ? 0.8 : 1.25 }));
+  for (let i = 0; i < 3; i++) it.push(crate(0.35, 3.15 + i * 0.58, 0, 0.5, i === 1 ? PAL.terra : PAL.wood));
+  it.push(crate(0.42, 3.25, 0.5, 0.42, PAL.sand));
+  it.push(cluster(0.62, 3.4, 0.95, fruit, early ? 0.85 : 1.25));
+  it.push(box(3.15, 3.35, 0, 1.45, 0.75, 0.55, PAL.wood, { planks: 3 }));
+  it.push(jar(3.5, 3.6, 0.55, early ? PAL.sage : PAL.red, 0.3));
+  it.push(jar(4.05, 3.68, 0.55, PAL.sand, 0.26));
+  it.push(thermo(4.45, 3.55, 0.75, early ? 0.28 : 0.75, early ? PAL.teal : PAL.clay));
+  it.push(plaque(3.85, 3.55, 1.1, early ? 'acid' : beat === 'crew' ? 'cool fruit' : 'body', early ? PAL.mint : PAL.clay, early ? LINE : '#fff'));
+  if (dawn) {
+    it.push(lamp(2.15, 2.9));
+    it.push(lamp(6.35, 2.55));
+    it.push(pool(2.3, 3.1, 1.4, '#ffe1a4', 32));
+    it.push(pool(6.4, 2.7, 1.5, '#ffe1a4', 22));
+  }
+  const rinse = beat !== 'crew';
+  it.push(cyl(6.55, 4.35, 0, 0.38, 0.9, mix(PAL.steel, PAL.water, .28), { hoops: [0.5] }));
+  if (rinse) it.push(cyl(6.55, 4.35, 0.45, 0.28, 0.32, PAL.water, { noShadow: true, lid: false }));
+  it.push(plaque(6.55, 4.35, 1.15, rinse ? 'rinse kept' : 'loop off', rinse ? PAL.mint : PAL.cream));
+  it.push(hero(1.45, 6.25, 'sippy', 'basket', { tc: fruit }));
+  it.push(hero(3.35, 6.45, 'roma', 'none'));
+  it.push(hero(5.15, 6.2, 'hummin', 'clip'));
+  names(it, [['sippy', 1.55, 5.45], ['roma', 3.45, 5.65], ['hummin', 5.15, 5.4]]);
+  const labels = [
+    tag([3.7, 3.6, 1.05], beat, 1, early ? 'Early pick' : beat === 'crew' ? 'Cool fruit' : 'Ripe pick', early ? 'lamps on, acid kept' : 'body for bold reds', -14, -20),
+    tag([0.55, 3.4, 1.0], 'bins', 2, 'Bins', 'whole clusters', -18, 16),
+  ];
+  if (early) labels.push(tag([5.15, 1.28, 1.55], 'ripe', 3, 'Ripe pick', 'lamps off', 14, -12));
+  return { it, labels, farC: dawn ? '#f0c48a' : PAL.mustard };
+}
+function makeRoom(stop, beat) {
+  const order = [['white', 'White', PAL.mint], ['rose', 'Rosé', mix(PAL.terra, '#fff', .35)], ['red', 'Red', PAL.clay], ['champ', 'Bubbles', PAL.teal], ['fort', 'Fort', PAL.wood]];
+  const lit = stop === 'ferment' ? 'red' : stop === 'crossroads' ? beat : '';
+  const it = [ground(mix(PAL.sand, '#fff', .35), 52, { H: 0.55, tufts: 4, soil: mix(PAL.sand, PAL.mauve, .25) })];
+  it.push(box(0.15, 0.12, 0, 7.7, 0.28, 1.7, mix(PAL.sand, PAL.mauve, .3), { planks: 5 }));
+  order.forEach(([id, name, c], i) => {
+    const x = 0.3 + i * 1.52, on = lit === id;
+    it.push(box(x, 0.55, 0, 1.28, 0.4, on ? 1.65 : 1.35, on ? c : mix(PAL.mauve, '#fff', .4)));
+    it.push(box(x + 0.28, 0.62, 0, 0.72, 0.22, on ? 1.05 : 0.18, on ? dark(c, .28) : dark(PAL.mauve, .35), { noShadow: true }));
+    it.push(plaque(x + 0.64, 0.7, on ? 1.85 : 1.55, on ? name : 'shut', on ? PAL.cream : PAL.sand));
+    if (on) it.push(pool(x + 0.6, 1.3, 0.8, c, 20));
+  });
+  if (stop === 'crush') {
+    it.push(box(1.4, 3.3, 0, 2.4, 0.9, 0.7, PAL.wood, { planks: 3 }));
+    it.push(crate(4.2, 3.5, 0, 0.55));
+    it.push(crate(4.85, 3.65, 0, 0.5, PAL.terra));
+    it.push(cluster(2.3, 3.6, 0.75, PAL.red, 1.2));
+    it.push(plaque(2.5, 3.5, 1.15, 'sort first', PAL.mint));
+  }
+  if (stop === 'ferment' || lit === 'red') {
+    it.push(cyl(3.5, 3.4, 0, 0.62, 1.15, light(PAL.wood, .1), { staves: true, hoops: [0.2, 0.78], lid: false }));
+    it.push(capEllipse(3.5, 3.4, 1.08, 0.62, '#4a1d2c'));
+    it.push(steam(3.5, 3.4, 1.25, 3, '#f0d5dc'));
+    it.push(plaque(3.5, 3.4, 1.45, 'cap', PAL.clay, '#fff'));
+    it.push(box(4.5, 3.7, 0, 1.1, 0.55, 0.6, PAL.wood, { planks: 2 }));
+  }
+  if (lit === 'champ') {
+    for (let i = 0; i < 5; i++) it.push(bottle(4.7 + i * 0.28, 3.5, 0.15, PAL.teal, 0.55));
+    it.push(box(4.5, 4.5, 0, 1.5, 0.9, 0.45, mix(PAL.sand, PAL.mauve, .35), { planks: 2 }));
+    it.push(plaque(5.3, 4.7, 0.7, 'cave open', PAL.cream));
+  } else if (lit === 'fort') {
+    it.push(hbarrel(5.1, 3.3, 0, 0.4, 1.1, PAL.wood, { chalk: true }));
+    it.push(cyl(6.6, 3.6, 0, 0.22, 0.55, PAL.gold || PAL.mustard, { noShadow: true }));
+    it.push(plaque(6.5, 3.5, 0.8, 'spirit', PAL.sand));
+  } else if (lit === 'white') {
+    it.push(cyl(1.3, 3.5, 0, 0.4, 1.3, PAL.steel, { hoops: [0.4, 0.75] }));
+    it.push(plaque(1.3, 3.5, 1.5, 'juice only', PAL.mint));
+  } else if (lit === 'rose') {
+    it.push(cyl(2.7, 3.4, 0, 0.4, 1.15, PAL.steel, { hoops: [0.5] }));
+    it.push(plaque(2.7, 3.4, 1.35, 'a few hours', mix(PAL.terra, '#fff', .3)));
+  }
+  if (lit !== 'champ') it.push(box(6.3, 5.15, 0, 1.2, 0.8, 0.12, dark(PAL.wood, .25), { flat: true, thin: true }));
+  const tool = stop === 'ferment' ? 'paddle' : 'none';
+  it.push(hero(1.4, 5.7, 'sippy', tool, { tc: PAL.clay }));
+  it.push(hero(3.6, 5.85, 'roma', stop === 'ferment' ? 'none' : 'clip'));
+  it.push(hero(5.5, 5.6, 'hummin', 'clip', { k: 1.6 }));
+  names(it, [['sippy', 1.4, 5.7], ['roma', 3.6, 5.85], ['hummin', 5.5, 5.6]]);
+  const labels = [tag([lit === 'white' ? 1.0 : lit === 'rose' ? 2.5 : lit === 'champ' ? 5.2 : lit === 'fort' ? 6.4 : 3.5, 2.2, 1.2], beat || (stop === 'crush' ? 'all' : 'red'), 1, lit ? order.find(d => d[0] === lit)[1] : 'Five doors', lit ? 'this door only' : 'none of them open', 6, -24)];
+  return { it, labels, farC: PAL.terra };
+}
+function cutCask(x, y, level, toasted, big) {
+  const H = big ? 2.15 : 1.85;
+  const wine = Math.max(0.28, H * level);
+  const wood = toasted ? dark(PAL.wood, .3) : PAL.wood;
+  const it = [box(x, y, 0, big ? 1.7 : 1.45, big ? 1.05 : 0.95, H, wood, { planks: 6 })];
+  const w = big ? 1.7 : 1.45, d = big ? 1.05 : 0.95;
+  it.push({ d: x + y + 4, s:
+    fill([[x + 0.06, y + d, 0.08], [x + w - 0.06, y + d, 0.08], [x + w - 0.06, y + d, wine], [x + 0.06, y + d, wine]], toasted ? dark(PAL.red, .08) : PAL.red) +
+    (level < 0.92 ? fill([[x + 0.06, y + d, wine], [x + w - 0.06, y + d, wine], [x + w - 0.06, y + d, H - 0.08], [x + 0.06, y + d, H - 0.08]], '#f4efe6') : '') +
+    seg3([x + 0.06, y + d, wine], [x + w - 0.06, y + d, wine], .7, 'rgba(255,250,240,.85)') });
+  const [bx, by] = P(x + w / 2, y + d * 0.45, H + 0.02);
+  it.push({ d: x + y + 4.2, s: `<circle cx="${f(bx)}" cy="${f(by)}" r="${big ? 2.4 : 1.8}" fill="${dark(wood, .35)}" stroke="${LINE}" stroke-width=".55"/>` });
+  it.push(plaque(x + w + 0.15, y + 0.15, level < 0.92 ? (wine + H) / 2 : H * 0.55, level < 0.92 ? 'ullage' : 'full', level < 0.92 ? PAL.cream : PAL.mint));
+  if (toasted) it.push(plaque(x + w * 0.5, y + d, H * 0.35, 'toasted inside', PAL.sand));
+  return it;
+}
+function barrelRack(x, y, chalk) {
+  return [
+    box(x, y, 0, 2.35, 1.05, 0.12, dark(PAL.wood, .22)),
+    hbarrel(x + 0.35, y + 0.05, 0.12, 0.34, 0.95, PAL.wood, { chalk, noShadow: true }),
+    hbarrel(x + 1.25, y + 0.05, 0.12, 0.34, 0.95, light(PAL.wood, .08), { chalk, noShadow: true }),
+    hbarrel(x + 0.8, y + 0.05, 0.82, 0.32, 0.95, PAL.wood, { chalk, noShadow: true }),
+  ];
+}
+function barrelRoom(beat, dive, bench) {
+  const year = ['year', 'ullage', 'time', 'care', 'marks', 'smell'].includes(beat);
+  const taste = beat === 'taste' || beat === 'time';
+  const toast = beat === 'toast';
+  const big = dive && (beat === 'ullage' || beat === 'time' || beat === 'care');
+  const it = [ground(mix(PAL.sand, PAL.mauve, .18), 61, { H: 0.6, tufts: 2, soil: mix(PAL.wood, PAL.sand, .3) })];
+  it.push(box(0.15, 0.12, 0, 7.7, 0.26, 1.55, mix(PAL.sand, PAL.mauve, .32), { planks: 4 }));
+  it.push(cyl(0.7, 1.15, 0, 0.42, 1.55, PAL.steel, { hoops: [0.4, 0.72] }));
+  it.push(plaque(0.7, 1.15, 1.8, 'steel same', PAL.mint));
+  it.push(pool(0.7, 1.3, 0.8, '#d5e4e2', 18));
+  if (!big) it.push(barrelRack(4.9, 0.55, year));
+  it.push(barrelRack(4.7, big ? 0.7 : 2.15, year));
+  it.push(cutCask(big ? 2.5 : 1.7, big ? 2.7 : 3.15, year ? 0.58 : 0.94, toast, big));
+  it.push(pool(big ? 3.2 : 2.3, big ? 3.2 : 3.5, 0.8, '#e7b56a', big ? 36 : 24));
+  it.push(lamp(7.2, 4.4));
+  if (year) {
+    it.push(cyl(big ? 5.45 : 4.55, 5.15, 0, 0.2, 0.52, PAL.clay));
+    it.push(plaque(6.35, 4.15, 1.35, 'top up', PAL.sand));
+    it.push(flow([[big ? 5.45 : 4.55, 5.05, 0.55], [big ? 3.8 : 2.9, big ? 3.6 : 3.9, 1.35]], PAL.red, { packets: 3, dur: 2.8, pc: PAL.red, r: 1.3, d: 12 }));
+  }
+  if (beat === 'species' || dive && beat === 'species') {
+    it.push(box(5.4, 4.3, 0.05, 0.55, 0.1, 0.85, PAL.wood, { thin: true, noShadow: true }));
+    it.push(box(6.15, 4.3, 0.05, 0.55, 0.1, 0.85, light(PAL.wood, .12), { thin: true, noShadow: true }));
+    let grain = '';
+    for (let i = 1; i < 8; i++) grain += seg3([5.46, 4.4, 0.1 + i * 0.09], [5.9, 4.4, 0.1 + i * 0.09], .35, dark(PAL.wood, .25));
+    for (let i = 1; i < 4; i++) grain += seg3([6.2, 4.4, 0.12 + i * 0.2], [6.64, 4.4, 0.12 + i * 0.2], .45, dark(PAL.wood, .2));
+    it.push({ d: 14, s: grain });
+    it.push(plaque(5.65, 4.35, 1.05, 'tight', PAL.cream));
+    it.push(plaque(6.4, 4.35, 1.05, 'wide', PAL.sand));
+  }
+  if (bench || beat === 'care') {
+    it.push(box(5.5, 4.6, 0, 1.5, 0.7, 0.5, PAL.wood, { planks: 2 }));
+    it.push(box(5.7, 4.75, 0.5, 0.9, 0.12, 0.12, light(PAL.wood, .1), { thin: true, noShadow: true }));
+    const [hx, hy] = P(6.5, 4.85, 0.62);
+    it.push({ d: 12.5, s: `<ellipse cx="${f(hx)}" cy="${f(hy)}" rx="7" ry="2.4" fill="none" stroke="${dark(PAL.steel, .2)}" stroke-width="1.6"/>` });
+    it.push(plaque(6.2, 4.8, 0.85, 'hoop', PAL.steel, LINE));
+  }
+  it.push(amphora(7.15, 2.6, PAL.terra, 0.85));
+  it.push(hero(1.05, 6.3, 'hummin', taste ? 'thief' : year ? 'jug' : 'clip'));
+  it.push(hero(big ? 5.55 : 4.55, 6.4, 'roma', 'glass', { tc: PAL.red }));
+  if (!big) it.push(hero(6.4, 5.4, 'sippy', 'none', { k: 1.5 }));
+  names(it, [['hummin', 1.15, 5.55], ['roma', big ? 5.6 : 4.6, 5.7]]);
+  if (taste) {
+    it.push(glass(4.15, 5.15, 0, mix(PAL.sand, '#fff', .2)));
+    it.push(glass(4.7, 5.2, 0, '#c4a574'));
+    it.push(plaque(4.15, 5.15, 0.45, 'air', PAL.cream));
+    it.push(plaque(4.75, 5.2, 0.45, 'spice', PAL.sand));
+  }
+  const labels = [tag([big ? 3.2 : 2.3, big ? 3.3 : 3.6, 1.1], beat, 1, year ? 'One year on' : toast ? 'Toast' : 'Oak row', year ? 'tallies and a gap' : 'air and spice', -12, -22)];
+  if (!dive) labels.push(tag([0.7, 1.15, 1.75], year ? 'young' : 'year', 2, year ? 'Fresh fill' : 'A year on', year ? 'steel does not change' : 'the gap opens', -16, -12));
+  return { it, labels, farC: PAL.wood };
+}
+function labRoom(beat, dive, stop) {
+  const it = [ground(mix(PAL.mint, '#fff', .45), 24, { H: 0.5, tufts: 3, soil: mix(PAL.sand, PAL.mint, .3) })];
+  it.push(box(0.2, 0.15, 0, 7.6, 0.24, 1.4, mix(PAL.sand, '#fff', .2), { planks: 3 }));
+  it.push(cyl(1.0, 1.2, 0, 0.48, 1.7, PAL.steel, { hoops: [0.45, 0.75] }));
+  it.push(plaque(1.0, 1.2, 1.95, 'steel', PAL.mint));
+  it.push(hbarrel(3.3, 0.7, 0, 0.38, 1.1, PAL.wood, { chalk: beat === 'log' || beat === 'clear' }));
+  it.push(box(1.8, 3.5, 0, 4.2, 1.05, 0.7, PAL.wood, { planks: 3 }));
+  it.push(glass(2.2, 3.9, 0.7, PAL.white));
+  it.push(glass(2.9, 3.95, 0.7, PAL.red));
+  it.push(glass(3.6, 3.88, 0.7, mix(PAL.sand, PAL.white, .25)));
+  it.push(box(4.3, 3.75, 0.7, 0.85, 0.5, 0.08, PAL.cream, { flat: true, thin: true, noShadow: true }));
+  it.push(plaque(4.7, 3.95, 0.95, 'log', PAL.sand));
+  if (dive || stop === 'finish') {
+    for (let i = 0; i < 4; i++) it.push(cyl(6.2, 2.4 + i * 0.5, 0, 0.11, 0.34, [PAL.cream, PAL.white, PAL.red, PAL.sand][i], { noShadow: true }));
+    it.push(plaque(6.35, 4.2, 0.55, beat === 'fault' ? 'hold lot' : beat === 'sulfur' ? 'dose' : 'samples', beat === 'fault' ? PAL.clay : PAL.cream, beat === 'fault' ? '#fff' : LINE));
+  }
+  if (beat === 'numbers') it.push(plaque(2.5, 3.7, 1.2, 'sugar · acid', PAL.mint));
+  if (stop === 'finish') {
+    it.push(box(6.2, 0.7, 0, 1.15, 0.7, 0.9, PAL.steel));
+    it.push(hoseLine([[6.5, 1.3, 0.4], [5.2, 1.5, 0.3], [1.5, 1.6, 0.5]], PAL.teal));
+    it.push(plaque(6.7, 0.9, 1.15, 'filter', PAL.teal, '#fff'));
+  }
+  it.push(pool(3.2, 3.8, 0.9, '#fff4d4', 26));
+  it.push(hero(1.3, 5.6, 'hummin', beat === 'sulfur' || beat === 'log' || beat === 'fault' ? 'thief' : 'clip'));
+  it.push(hero(4.4, 5.75, 'roma', 'glass', { tc: PAL.red }));
+  it.push(hero(6.3, 5.45, 'sippy', 'none', { k: 1.5 }));
+  names(it, [['hummin', 1.3, 5.6], ['roma', 4.4, 5.75]]);
+  const labels = [tag([3.0, 3.9, 1.15], beat, 1, 'The bench', 'book, then glass', -8, -24)];
+  return { it, labels, farC: PAL.mint };
+}
+function regionRoom(beat) {
+  const it = [ground(mix(PAL.sage, PAL.sand, .35), 12, { H: 0.7, tufts: 10 })];
+  const cool = beat !== 'warm', warm = beat !== 'cool';
+  it.push(stripe(0.25, 0.7, 3.3, 2.5, cool ? mix(PAL.mint, '#fff', .2) : mix(PAL.sage, '#fff', .45)));
+  it.push(vine(1.1, 1.2, { grape: light(PAL.white, .15), leaf: mix(PAL.leaf, '#fff', .2), br: 0.7 }));
+  it.push(vine(2.2, 1.7, { grape: PAL.white, leaf: PAL.sage, br: 0.75 }));
+  it.push(stripe(4.35, 0.7, 3.3, 2.5, warm ? mix(PAL.terra, PAL.sand, .35) : mix(PAL.sand, '#fff', .4)));
+  it.push(vine(5.2, 1.2, { grape: PAL.red, br: warm ? 1.25 : 0.8 }));
+  it.push(vine(6.5, 1.75, { grape: dark(PAL.red, .05), br: warm ? 1.3 : 0.8 }));
+  if (cool) { it.push(glass(1.4, 4.2, 0, mix(PAL.white, PAL.gold, .25))); it.push(plaque(1.5, 1.15, 1.75, 'cool nights', PAL.mint)); it.push(pool(1.6, 1.5, 1, '#d7f0ea', 28)); }
+  if (warm) { it.push(glass(5.7, 4.2, 0, mix(PAL.gold, PAL.clay, .2))); it.push(plaque(5.8, 1.15, 1.85, 'warm days', PAL.clay, '#fff')); it.push(pool(5.7, 1.5, 1, '#f0c48a', 28)); }
+  if (beat === 'both' || beat === '') it.push(glass(3.5, 4.15, 0, PAL.sand));
+  it.push(hero(3.3, 5.7, 'roma', 'glass', { tc: warm && !cool ? PAL.gold : PAL.white }));
+  it.push(hero(1.3, 5.55, 'sippy', 'none', { k: 1.55 }));
+  it.push(hero(6.0, 5.6, 'hummin', 'clip', { k: 1.55 }));
+  names(it, [['sippy', 1.3, 5.55], ['roma', 3.3, 5.7], ['hummin', 6.0, 5.6]]);
+  const labels = [tag([beat === 'warm' ? 5.6 : 1.5, 1.4, 1.4], beat || 'both', 1, beat === 'warm' ? 'Warm program' : beat === 'cool' ? 'Cool program' : 'Both pours', 'climate in the glass', -6, -22)];
+  return { it, labels, farC: PAL.sage };
+}
+function serviceRoom(stop, beat, stage) {
+  const it = [ground(PAL.cream, 27, { H: 0.48, tufts: 4, soil: mix(PAL.wood, PAL.sand, .35) })];
+  it.push(stripe(0.25, 0.25, 7.5, 5.4, mix(PAL.sand, '#fff', .4), { rows: 6, cols: 8 }));
+  it.push(box(1.1, 2.0, 0, 5.0, 0.9, 0.8, mix(PAL.wood, PAL.sand, .25), { planks: 3 }));
+  const pour = stage >= 5 || ['flight', 'list', 'handoff', 'sip'].includes(stop);
+  if (pour) {
+    [PAL.white, mix(PAL.terra, '#fff', .3), PAL.red, PAL.teal, PAL.wood].forEach((c, i) => it.push(glass(1.55 + i * 0.72, 2.4, 0.8, c)));
+  }
+  if (stop === 'handoff' || beat === 'water' || stop === 'sip') {
+    it.push(glass(1.3, 4.3, 0, PAL.water));
+    it.push(plaque(1.3, 4.3, 0.45, 'water first', PAL.mint));
+  }
+  if (stop === 'sip' || beat === 'pour') it.push(bottle(3.2, 4.2, 0, PAL.red, 0.85));
+  if (stop === 'market' || stop === 'list') {
+    for (let i = 0; i < 5; i++) {
+      it.push(box(0.35 + i * 1.5, 0.35, 0, 1.25, 0.4, 1.45, PAL.wood, { planks: 2 }));
+      it.push(bottle(0.7 + i * 1.5, 0.6, 0.15, [PAL.white, PAL.red, mix(PAL.terra, '#fff', .3), PAL.teal, PAL.wood][i], 0.42));
+    }
+  }
+  if (stage === 4 || ['give', 'bottle', 'passport', 'journey'].includes(stop)) {
+    for (let i = 0; i < 4; i++) it.push(bottle(1.6 + i * 0.42, 2.35, 0.8, PAL.teal, stop === 'give' ? 0.5 : 0.7));
+    it.push(...cases(5.3, 4.4, 0, 2, 2, 2, PAL.sand, 0.4));
+    if (stop === 'journey' || beat === 'truck') it.push(box(5.4, 0.8, 0, 1.9, 2.2, 1.25, PAL.cream));
+    if (stop === 'give') {
+      it.push(cyl(6.7, 2.5, 0, 0.34, 0.9, mix(PAL.steel, PAL.water, .3), { hoops: [0.5] }));
+      it.push(plaque(6.7, 2.5, 1.15, 'rain kept', PAL.mint));
+    }
+    if (stop === 'passport') it.push(plaque(3.2, 2.3, 1.35, 'lot code', PAL.sand));
+  }
+  it.push(hero(1.25, 5.6, 'sippy', stage === 4 ? 'case' : 'none'));
+  it.push(hero(3.5, 5.75, 'roma', 'glass', { tc: PAL.red }));
+  it.push(hero(5.6, 5.55, 'hummin', 'clip'));
+  names(it, [['sippy', 1.25, 5.6], ['roma', 3.5, 5.75], ['hummin', 5.6, 5.55]]);
+  it.push(pool(3.4, 2.5, 1, '#fff1cf', 24));
+  const labels = [tag([3.3, 2.4, 1.15], beat || stop, 1, pour ? 'The table' : 'The dock', stop === 'handoff' || stop === 'sip' ? 'water, then wine' : 'one lot, one path', -10, -22)];
+  return { it, labels, farC: PAL.sand };
+}
+function academySky(stop, beat) {
+  if (beat === 'frame' || beat === 'phylloxera') return 'frost';
+  if (beat === 'early' || beat === 'crew') return 'dawn';
+  if (['barrels', 'bench', 'lab', 'finish'].includes(stop)) return 'cellar';
+  if (['roots', 'shut', 'drip', 'soil', 'cloud', 'leaf'].includes(beat) && stop === 'rain') return 'rain';
+  return 'day';
+}
+function academyScene(story) {
   const dive = story.startsWith('dive:');
   const parts = story.split(':').filter(p => p !== 'dive');
   const stop = parts[0];
   const beat = parts[1] || '';
-  const hi = [];
-  const lo = [];
-  const sippy = (x, y) => guide(x, y, PAL.teal, PAL.sand);
-  const roma = (x, y) => guide(x, y, PAL.clay, PAL.cream);
-  const hummin = (x, y) => guide(x, y, PAL.mauve, PAL.mauve);
-  if (stop === 'campus' && beat === 'frame') {
-    hi.push(sippy(1.15, 6.35), ...shears(1.45, 6.15), ...caneBundle(0.35, 6.7), gWrap(sign(2.3, 6.2, 'FRAME')));
-  } else if (stop === 'campus' && beat === 'tank') {
-    hi.push(hummin(1.1, 6.5), gWrap(cyl(6.55, 6.15, 0, 0.42, 0.78, PAL.steel)), gWrap(cyl(6.55, 6.15, 0.42, 0.36, 0.28, PAL.water)), gWrap(sign(5.9, 5.7, 'ROOF')));
-  } else if (stop === 'campus') {
-    hi.push(sippy(1.05, 6.45), roma(2.15, 6.7), hummin(3.2, 6.4));
-  } else if (stop === 'team') {
-    hi.push(sippy(1.2, 6.4), roma(2.4, 6.65), hummin(3.5, 6.35));
-    if (beat === 'on') hi.push(gWrap(sign(4.4, 6.2, 'ROOTS')));
-    if (beat === 'leaf') hi.push(gWrap(sign(4.6, 5.4, 'LEAVES')));
-  } else if (stop === 'rain' || (dive && (beat === 'drip' || beat === 'soil' || beat === 'leaf' || beat === 'save' || beat === 'cloud'))) {
-    hi.push(hummin(1.0, 6.45), sippy(2.15, 6.6), gWrap(box(5.7, 6.3, 0, 0.08, 0.08, 0.85, PAL.steel, { thin: true })), gWrap(box(5.5, 6.22, 0.82, 0.48, 0.08, 0.06, PAL.clay)));
-    for (let i = 0; i < (dive ? 5 : 3); i++) lo.push(gWrap(cyl(2.2 + i * 0.7, 5.4, -0.15, 0.22, 0.06, beat === 'shut' ? PAL.sand : PAL.water)));
-    if (dive) lo.push(gWrap(sign(1.2, 5.2, 'BULB')), gWrap(sign(4.8, 5.0, 'ROCK')));
-  } else if (stop === 'berry' && dive) {
-    lo.push(roma(3.3, 4.6), gWrap(box(4.05, 4.15, -0.2, 0.28, 0.28, 1.15, dark(PAL.wood, .25))), gWrap(box(3.92, 4.02, 0.9, 0.54, 0.54, 0.14, PAL.clay)), gWrap(box(4.12, 4.22, 1.04, 0.16, 0.16, 0.95, PAL.wood, { thin: true })), gWrap(sign(2.7, 4.0, 'ROOT')), gWrap(sign(5.05, 4.35, 'SCION')));
-  } else if (stop === 'berry') {
-    const fat = beat === 'thick' || beat === 'vinifera';
-    hi.push(roma(1.15, 6.55), hummin(2.35, 6.85), gWrap(cluster(3.5, 6.55, 0.15, fat ? PAL.red : light(PAL.red, .35), fat ? 2.35 : 1.15)), gWrap(sign(4.5, 6.15, fat ? 'THICK' : 'THIN')));
-  } else if (stop === 'harvest') {
-    hi.push(sippy(1.1, 6.4), roma(2.3, 6.65), hummin(3.4, 6.35), gWrap(crate(5.5, 6.1, 0, 0.62)), gWrap(cluster(5.7, 6.25, 0.62, beat === 'early' ? PAL.sage : PAL.red, 1.15)));
-    if (beat === 'early' || beat === 'crew') hi.push(gWrap(lamp(6.6, 5.6)), gWrap(sign(4.6, 6.0, 'ACID')));
-    if (beat === 'ripe') hi.push(gWrap(sign(4.6, 6.0, 'BODY')));
-  } else if (stop === 'ferment') {
-    hi.push(roma(1.3, 6.3), sippy(2.5, 6.55), ...shears(2.7, 6.2), gWrap(sign(3.6, 6.1, 'CAP')));
-  } else if (stop === 'crossroads') {
-    hi.push(sippy(0.8, 6.5), gWrap(sign(2.2, 6.2, (beat || 'DOOR').slice(0, 6).toUpperCase())));
-  } else if (stop === 'crush') {
-    hi.push(sippy(1.1, 6.4), hummin(2.4, 6.6), gWrap(crate(4.8, 6.2, 0, 0.5)), gWrap(sign(5.6, 6.0, 'SORT')));
-  } else if ((dive && (beat === 'ullage' || beat === 'time' || beat === 'species' || beat === 'toast' || beat === 'care')) || (stop === 'barrels' && (beat === 'year' || beat === 'taste'))) {
-    hi.push(hummin(0.85, 6.55), gWrap(hbarrel(1.7, 6.15, 0, 0.52, 1.25, PAL.wood, { chalk: true })), gWrap(cyl(3.5, 6.55, 0, 0.18, 0.48, PAL.clay)), gWrap(sign(3.9, 6.15, 'TOP UP')));
-    if (dive) hi.push(gWrap(cyl(5.15, 6.35, 0, 0.36, 0.62, PAL.red)), gWrap(cyl(5.15, 6.35, 0.62, 0.36, 0.22, PAL.cream)), gWrap(sign(5.85, 5.9, 'GAP')));
-  } else if (stop === 'barrels' || stop === 'bench') {
-    hi.push(hummin(1.1, 6.4), sippy(2.3, 6.6), gWrap(hbarrel(4.2, 5.6, 0, 0.4, 1.05, PAL.wood, { chalk: beat === 'marks' || beat === 'smell' })));
-  } else if (stop === 'lab' || stop === 'finish' || dive) {
-    hi.push(roma(1.2, 6.35), hummin(2.5, 6.6), gWrap(box(4.4, 6.0, 0, 1.6, 0.7, 0.45, PAL.wood, { planks: 2 })));
-    for (let i = 0; i < (dive ? 3 : 2); i++) hi.push(gWrap(cyl(4.6 + i * 0.42, 6.15, 0.45, 0.1, 0.28, i === 1 ? PAL.red : PAL.cream)));
-    if (dive) hi.push(gWrap(sign(6.2, 5.8, 'LOT')));
-  } else if (stop === 'handoff' || stop === 'sip') {
-    hi.push(sippy(1.2, 6.4), roma(2.5, 6.6), gWrap(sign(3.8, 6.1, beat === 'water' || stop === 'handoff' ? 'WATER' : 'SIP')));
-  } else {
-    hi.push(sippy(1.2, 6.45), roma(2.5, 6.65));
-  }
-  return { hi, lo };
+  const stage = storyStage(story);
+  let built;
+  if (stop === 'berry' && (beat === 'graft' || beat === 'phylloxera')) built = graftRoom(beat);
+  else if (stop === 'berry') built = berryRoom(beat, dive);
+  else if (stop === 'rain' && beat !== 'leaves') built = soilRoom(beat, dive);
+  else if (stop === 'campus' || stop === 'team' || stop === 'rain') built = vineRoom(stop, beat === 'leaves' ? 'leaves' : beat);
+  else if (stop === 'harvest') built = harvestRoom(beat);
+  else if (stop === 'crush' || stop === 'ferment' || stop === 'crossroads') built = makeRoom(stop, beat);
+  else if (stop === 'barrels' || stop === 'bench') built = barrelRoom(beat, dive, stop === 'bench');
+  else if (stop === 'lab' || stop === 'finish') built = labRoom(beat, dive, stop);
+  else if (stop === 'regions') built = regionRoom(beat);
+  else built = serviceRoom(stop, beat, stage);
+  const sky = academySky(stop, beat);
+  const it = flat(built.it);
+  it.push(...journeyStones(stage));
+  it.push(skyWash(sky));
+  const bg = { frost: '#e4eef3', dawn: '#f4d7b0', cellar: '#e7d5bf', rain: '#d5e6e4', day: '#f6ead6' }[sky];
+  return { academy: true, it, labels: built.labels, bg, far: 'hills', farC: built.farC || bg, opts: {} };
 }
 
 const CAM = { '01': { U: 12.2, OY: 28 }, '05': { U: 12.2, OY: 30 }, '08': { U: 12.2, OY: 30 } };
 export function sceneSVG(id, { labels = true, title = '', story = null } = {}) {
   beginScene();
-  const cam = CAM[id] || {};
-  U = cam.U ?? 14; OY = cam.OY ?? 46;
-  const built = SCENES[id]();
+  if (story) { U = 14.6; OY = 42; }
+  else { const cam = CAM[id] || {}; U = cam.U ?? 14; OY = cam.OY ?? 46; }
+  const built = (story && academyScene(story)) || SCENES[id]();
   const { labels: lb = [], ulabels = [], bg = PAL.mint, under, state, far = 'hills', farC, opts = {} } = built;
   const it = built.it;
-  if (story) {
-    const extra = academyProps(story);
-    it.push(...extra.hi);
-    if (extra.lo.length && under) under.it.push(...extra.lo);
-    else it.push(...extra.lo);
-  }
   it.sort((a, b) => a.d - b.d);
   const base = it.filter(i => i.d <= -50), rest = it.filter(i => i.d > -50);
   const [, gy] = P(8, 8, under ? -3.2 : -0.95);
@@ -1463,7 +1982,7 @@ export function sceneSVG(id, { labels = true, title = '', story = null } = {}) {
     under.it.sort((a, b) => a.d - b.d);
     lower = `<g class="layer lo">${under.it.map(i => i.s).join('')}</g>`;
   }
-  const out = `<svg xmlns="${NS}" class="scene${under ? ' stacked' : ''}" data-scene="${id}"${state ? ` data-state="${state}"` : ''}${Object.entries(opts).map(([k, v]) => ` data-o-${k}="${v}"`).join('')} viewBox="-12 -4 264 198" role="img" aria-label="${title}" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">` +
+  const out = `<svg xmlns="${NS}" class="scene${under ? ' stacked' : ''}${built.academy ? ' ac-board' : ''}" data-scene="${id}"${state ? ` data-state="${state}"` : ''}${Object.entries(opts).map(([k, v]) => ` data-o-${k}="${v}"`).join('')} viewBox="-12 -4 264 198" role="img" aria-label="${title}" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">` +
     defs() +
     `<circle cx="120" cy="84" r="80" fill="${bg}" opacity=".55"/>` +
     `<circle cx="120" cy="84" r="80" fill="url(#${CUR.k}v)" opacity=".5"/>` +
@@ -1472,9 +1991,9 @@ export function sceneSVG(id, { labels = true, title = '', story = null } = {}) {
     `<ellipse cx="126" cy="${f(gy + 6)}" rx="86" ry="6.5" fill="${LINE}" opacity=".1" filter="url(#${CUR.k}b)"/>` +
     lower +
     (under ? `<g class="layer hi" style="--lift:-3px;--open:-${under.open}px">${top}</g>` : top) +
-    `<rect class="mood" x="-12" y="-4" width="264" height="198" fill="url(#${CUR.k}m)" pointer-events="none"/>` +
+    (built.academy ? '' : `<rect class="mood" x="-12" y="-4" width="264" height="198" fill="url(#${CUR.k}m)" pointer-events="none"/>`) +
     (under && labels ? `<g class="labels lo">${ulabels.join('')}</g>` : '') +
-    (story ? pathSVG(storyStage(story)) : '') + `</svg>`;  // lower pins stay on top so they remain clickable
+    `</svg>`;
   CUR = null; U = 14; OY = 46;
   return out;
 }

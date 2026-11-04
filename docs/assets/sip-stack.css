@@ -646,7 +646,10 @@ body.dive-open { overflow: hidden; }
 .ac-stage[data-sky="rain"]::after { background: linear-gradient(180deg, rgba(90, 140, 150, .28), transparent 80%); }
 .ac-stage[data-sky="dawn"]::after { background: linear-gradient(180deg, rgba(240, 176, 84, .38), transparent 72%); }
 .ac-stage[data-sky="cellar"]::after { background: linear-gradient(180deg, rgba(48, 40, 52, .2), transparent 70%); }
-.ac-iso .sgn { letter-spacing: .04em; }
+.scene.ac-board .plaque { font: 700 5.5px var(--sans); letter-spacing: .06em; text-transform: uppercase; }
+.scene.ac-board .tag .t1 { font-size: 7.2px; letter-spacing: .045em; }
+.scene.ac-board .tag .t2 { font-size: 6.2px; }
+.ac-stage .scene.ac-board { background: #f3eadc; }
 .ac-learn { margin: 0 0 .65rem; padding: .6rem .8rem; background: var(--mint); border: 1px solid rgba(26,85,82,.35); border-radius: 8px; font-size: 1.05rem; line-height: 1.35; }
 .ac-learn b { color: var(--teal); }
 .ac-story { font-family: var(--serif); font-size: 1.02rem; }

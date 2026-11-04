@@ -142,6 +142,7 @@ export function mountAcademy(root) {
     const svg = $('svg.scene', slot);
     applyFx(svg, beat.fx);
     if (beat.pin) $(`.tag[data-hs="${beat.pin}"]`, svg)?.classList.add('active');
+    $(`.tag[data-hs="${beat.id}"]`, svg)?.classList.add('active');
     player.querySelector(`[data-n="${stop.n}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
 
@@ -166,26 +167,26 @@ export function mountAcademy(root) {
     }
     const jump = e.target.closest('[data-n]');
     if (jump) { location.hash = `academy/wine/${jump.dataset.n}`; return; }
-    const beatBtn = e.target.closest('[data-beat]');
+    const beatBtn = e.target.closest('button[data-beat]');
     if (beatBtn) {
       if (state.dive) state.dive = beatBtn.dataset.beat;
       else state.beat = beatBtn.dataset.beat;
       renderWine();
       return;
     }
-    const diveBtn = e.target.closest('[data-dive]');
+    const diveBtn = e.target.closest('button[data-dive]');
     if (diveBtn) {
       state.dive = diveBtn.dataset.dive === 'on' ? (DIVE_BEATS[state.n]?.tabs[0].id || null) : null;
       renderWine();
       return;
     }
-    const tag = e.target.closest('svg.scene .tag');
+    const tag = e.target.closest('.tag');
     if (tag) {
-      const key = tag.dataset.hs;
+      const key = tag.getAttribute('data-hs');
       const stop = WINE_STOPS[state.n - 1];
       const pack = state.dive ? DIVE_BEATS[stop.n] : lesson(stop);
       const beats = state.dive ? pack.tabs : pack.beats;
-      const hit = beats.find(item => item.pin === key);
+      const hit = beats.find(item => item.id === key) || beats.find(item => item.pin === key);
       if (hit) {
         if (state.dive) state.dive = hit.id; else state.beat = hit.id;
         renderWine();
