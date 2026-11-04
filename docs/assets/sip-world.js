@@ -42,7 +42,7 @@ function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>>
 let SEQ = 0, CUR = null;
 function beginScene() {
   const k = `sx${++SEQ}`;
-  CUR = { k, grads: new Map(), shadows: [] };
+  CUR = { k, grads: new Map(), shadows: [], academy: false };
 }
 function bandGrad(c) { // hard-stop cel bands: light | mid | dark (cylinders, bottles)
   if (!CUR.grads.has(c)) CUR.grads.set(c, `${CUR.k}g${CUR.grads.size}`);
@@ -50,11 +50,19 @@ function bandGrad(c) { // hard-stop cel bands: light | mid | dark (cylinders, bo
 }
 function defs() {
   let g = '';
-  for (const [c, id] of CUR.grads)
-    g += `<linearGradient id="${id}" x1="0" x2="1" y1="0" y2="0">` +
-      `<stop offset="0" stop-color="${light(c, .32)}"/><stop offset=".26" stop-color="${light(c, .32)}"/>` +
-      `<stop offset=".26" stop-color="${c}"/><stop offset=".64" stop-color="${c}"/>` +
-      `<stop offset=".64" stop-color="${dark(c, .2)}"/><stop offset="1" stop-color="${dark(c, .3)}"/></linearGradient>`;
+  for (const [c, id] of CUR.grads) {
+    // Academy vessels keep hard cel bands, with one extra light lip so oak and steel read rounder.
+    g += CUR.academy
+      ? `<linearGradient id="${id}" x1="0" x2="1" y1="0" y2="0">` +
+        `<stop offset="0" stop-color="${light(c, .5)}"/><stop offset=".16" stop-color="${light(c, .5)}"/>` +
+        `<stop offset=".16" stop-color="${light(c, .16)}"/><stop offset=".38" stop-color="${light(c, .16)}"/>` +
+        `<stop offset=".38" stop-color="${c}"/><stop offset=".68" stop-color="${c}"/>` +
+        `<stop offset=".68" stop-color="${dark(c, .24)}"/><stop offset="1" stop-color="${dark(c, .4)}"/></linearGradient>`
+      : `<linearGradient id="${id}" x1="0" x2="1" y1="0" y2="0">` +
+        `<stop offset="0" stop-color="${light(c, .32)}"/><stop offset=".26" stop-color="${light(c, .32)}"/>` +
+        `<stop offset=".26" stop-color="${c}"/><stop offset=".64" stop-color="${c}"/>` +
+        `<stop offset=".64" stop-color="${dark(c, .2)}"/><stop offset="1" stop-color="${dark(c, .3)}"/></linearGradient>`;
+  }
   return `<defs>${g}` +
     `<pattern id="${CUR.k}h" patternUnits="userSpaceOnUse" width="2" height="2" patternTransform="rotate(-32)"><path d="M0,0V2" stroke="${LINE}" stroke-width=".28" opacity=".5"/></pattern>` +
     `<filter id="${CUR.k}b" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.15"/></filter>` +
@@ -244,8 +252,8 @@ function figure(cx, cy, c, opts = {}) {
     `<path d="M${bx - 3},${by - 5} L${bx - 2.4},${by - 11.4} Q${bx},${by - 13.2} ${bx + 2.4},${by - 11.4} L${bx + 3},${by - 5} Z" fill="none" stroke="${LINE}" stroke-width=".8" stroke-linejoin="round"/>` +
     `<path d="M${bx - 2.6},${by - 10.6} q-1.3,2.6 -.6,4.8" stroke="${LINE}" stroke-width=".6" fill="none" stroke-linecap="round"/>` +
     `<circle cx="${bx}" cy="${by - 15.4}" r="2.9" fill="${PAL.skin}" stroke="${LINE}" stroke-width=".8"/>` +
-    `<path d="M${bx - 2.9},${by - 15.6} A2.9,2.9 0 0 1 ${bx + 2.9},${by - 15.6} Q${bx + 0.6},${by - 16.8} ${bx - 2.9},${by - 15.6} Z" fill="${hair}" stroke="${LINE}" stroke-width=".55"/>` +
-    (opts.hat ? `<ellipse cx="${bx}" cy="${by - 16.6}" rx="4.6" ry="1.3" fill="${opts.hat}" stroke="${LINE}" stroke-width=".5"/><path d="M${bx - 2.2},${by - 16.8} q2.2,-3.4 4.4,0 z" fill="${opts.hat}" stroke="${LINE}" stroke-width=".5"/>` : '') +
+    (opts.identity ? guideHair(bx, by, opts.identity, hair) : `<path d="M${bx - 2.9},${by - 15.6} A2.9,2.9 0 0 1 ${bx + 2.9},${by - 15.6} Q${bx + 0.6},${by - 16.8} ${bx - 2.9},${by - 15.6} Z" fill="${hair}" stroke="${LINE}" stroke-width=".55"/>`) +
+    (opts.hat && !opts.identity ? `<ellipse cx="${bx}" cy="${by - 16.6}" rx="4.6" ry="1.3" fill="${opts.hat}" stroke="${LINE}" stroke-width=".5"/><path d="M${bx - 2.2},${by - 16.8} q2.2,-3.4 4.4,0 z" fill="${opts.hat}" stroke="${LINE}" stroke-width=".5"/>` : '') +
     (opts.apron ? `<path d="M${bx - 1.9},${by - 10.2} h3.8 l.5,5.4 h-4.8 z" fill="${opts.apron}" stroke="${LINE}" stroke-width=".45"/>` : '') +
     (opts.extra || '') +
     `</g>` };
@@ -342,7 +350,7 @@ function worker(cx, cy, c, tool = 'none', o = {}) {
   const arm = `<path d="M${pp(bx + 1.6 * fl, by - 11)}L${pp(hx, hy)}" stroke="${dark(c, .2)}" stroke-width="1.5" stroke-linecap="round"/><circle cx="${f(hx)}" cy="${f(hy)}" r=".85" fill="${PAL.skin}" stroke="${LINE}" stroke-width=".35"/>`;
   const toolG = `<g class="tool" style="transform-origin:${f(bx + 1.6 * fl)}px ${f(by - 11)}px;--delay:${o.delay ?? 0}s">` +
     (o.flip ? `<g transform="translate(${f(2 * hx)},0) scale(-1,1)">${TOOLS[tool](hx, hy, o.tc)}</g>` : draw) + arm + `</g>`;
-  const fig = figure(cx, cy, c, { z, hat: o.hat, apron: o.apron, hair: o.hair, cls: o.cls ?? 'chore', style: `--delay:${o.delay ?? 0}s`, extra: toolG });
+  const fig = figure(cx, cy, c, { z, hat: o.hat, apron: o.apron, hair: o.hair, identity: o.identity, cls: o.cls ?? 'chore', style: `--delay:${o.delay ?? 0}s`, extra: toolG });
   return { d: cx + cy + z * 0.01 + 0.35, s: fig.s };
 }
 // walking loop: item drawn at pts[0]; animateMotion carries it around the closed path
@@ -1371,14 +1379,25 @@ function pool(x, y, z, c, r = 26) {
   const [px, py] = P(x, y, z);
   return { d: x + y + z * 0.01 - 0.35, s: `<ellipse cx="${f(px)}" cy="${f(py)}" rx="${r}" ry="${f(r * .58)}" fill="${c}" opacity=".32"/>` };
 }
+function guideHair(bx, by, who, hair) {
+  // Clean silhouettes only. No eyes, mouths, or glasses — those read as noise at this size.
+  if (who === 'roma') {
+    return `<path d="M${bx - 3.1},${by - 16} q-1.5,5.2.6,6.6 q1,-2.4.3,-3.6 q.9,3.8 2.2,4.4 q.5,-2 .1,-3.6 q1.5,3.6 2.8,3 q1.8,-2.6 0,-6.8 q-2.4,-2.8 -6,-.0 z" fill="${hair}" stroke="${LINE}" stroke-width=".55" stroke-linejoin="round"/>`;
+  }
+  if (who === 'hummin') {
+    return `<path d="M${bx - 2.9},${by - 15.4} A3,2.6 0 0 1 ${bx + 2.6},${by - 15.2} Q${bx + .2},${by - 18.4} ${bx - 2.9},${by - 15.4} Z" fill="${hair}" stroke="${LINE}" stroke-width=".55"/>` +
+      `<circle cx="${bx + 2.35}" cy="${by - 17.7}" r="1.25" fill="${hair}" stroke="${LINE}" stroke-width=".45"/>`;
+  }
+  return `<path d="M${bx - 3},${by - 15.1} q.2,-3.8 3,-4.1 q2.8,.2 3,4.1 q-1.4,-1.3 -3,-1.15 q-1.7,-.15 -3,1.15 z" fill="${hair}" stroke="${LINE}" stroke-width=".55"/>`;
+}
 function hero(x, y, who, tool, o = {}) {
   const look = {
-    sippy: [PAL.teal, PAL.sand, PAL.cream],
-    roma: [PAL.clay, '#f6efe2', PAL.sand],
-    hummin: [PAL.mauve, '#efe6c8', PAL.mint],
+    sippy: [PAL.teal, PAL.cream, '#2a2422'],
+    roma: [PAL.clay, PAL.sand, '#6b3a2c'],
+    hummin: [PAL.mauve, PAL.mint, '#3c3340'],
   }[who];
   const z = o.z || 0;
-  const w = worker(x, y, look[0], tool || 'none', { hat: look[1], apron: o.apron === null ? undefined : (o.apron || look[2]), flip: o.flip, delay: o.delay || 0, tc: o.tc, z });
+  const w = worker(x, y, look[0], tool || 'none', { identity: who, hair: look[2], apron: o.apron === null ? undefined : (o.apron || look[1]), flip: o.flip, delay: o.delay || 0, tc: o.tc, z });
   const k = o.k || 1.82;
   const [bx, by] = P(x, y, z);
   return { d: x + y + 0.62, s: `<g transform="translate(${f(bx)} ${f(by)}) scale(${k}) translate(${f(-bx)} ${f(-by)})">${w.s}</g>` };
@@ -1501,6 +1520,9 @@ function vineRoom(stop, beat) {
     it.push(frostField(7));
     it.push(ladder(4.15, 3.35, 0, 1.7, 0.4));
     it.push(wheelbarrow(2.05, 5.85, PAL.teal, PAL.wood));
+    it.push(crate(0.38, 4.45, 0, 0.46));
+    it.push(cyl(0.58, 4.68, 0.46, 0.11, 0.1, PAL.steel, { noShadow: true, lid: false }));
+    it.push(canes(0.95, 4.7));
     it.push(pool(3.2, 3.0, 1.2, '#d5e7f2', 40));
   } else it.push(pool(3.2, 2.4, 1.1, '#ffe0b0', 36));
   it.push(tankRig(tankFocus));
@@ -1625,6 +1647,11 @@ function berryRoom(beat, dive) {
     it.push(capEllipse(6.55, 3.15, 1.0, 0.46, '#4a1d2c'));
     it.push(plaque(6.55, 3.15, 1.28, 'skins stay', PAL.clay, '#fff'));
   } else it.push(plaque(6.55, 3.15, 1.22, 'skins out', PAL.mint));
+  if (thick || thin) {
+    it.push(box(0.32, 5.35, 0, 0.95, 0.42, 0.28, PAL.wood, { planks: 2, thin: true }));
+    it.push(jar(0.5, 5.5, 0.28, light(PAL.red, .45), 0.22));
+    it.push(jar(0.92, 5.52, 0.28, PAL.red, 0.26));
+  }
   it.push(glass(1.15, 4.85, 0, thin || three ? light(PAL.red, .5) : mix(PAL.red, '#fff', .55)));
   if (three || thick) it.push(glass(1.9, 4.95, 0, thick ? dark(PAL.red, .05) : mix(PAL.terra, PAL.red, .35)));
   if (dive) {
@@ -1670,6 +1697,9 @@ function graftRoom(beat) {
     it.push(plaque(5.9, 2.5, 0.9, 'no graft', PAL.sand));
     it.push(plaque(x + 0.9, y, -0.9, 'louse', PAL.red, '#fff'));
   }
+  it.push(cyl(6.55, 1.15, 0, 0.22, 0.34, PAL.clay, { hoops: [0.55] }));
+  it.push(bareVine(6.55, 1.15, { cz: 0.7 }));
+  it.push(cyl(7.15, 1.35, 0.05, 0.1, 0.08, PAL.cream, { noShadow: true }));
   it.push(plaque(x - 1.15, y + 0.7, -1.05, 'root', dark(PAL.wood, .3), '#fff'));
   it.push(plaque(x + 1.05, y - 0.65, 1.45, 'scion', PAL.sand));
   it.push(pool(x, y, 0.8, louse ? '#d5e4ee' : '#e7f0df', 32));
@@ -1708,6 +1738,7 @@ function harvestRoom(beat) {
   it.push(cyl(6.55, 4.35, 0, 0.38, 0.9, mix(PAL.steel, PAL.water, .28), { hoops: [0.5] }));
   if (rinse) it.push(cyl(6.55, 4.35, 0.45, 0.28, 0.32, PAL.water, { noShadow: true, lid: false }));
   it.push(plaque(6.55, 4.35, 1.15, rinse ? 'rinse kept' : 'loop off', rinse ? PAL.mint : PAL.cream));
+  it.push(wheelbarrow(6.45, 5.55, PAL.teal, fruit));
   it.push(hero(1.45, 6.25, 'sippy', 'basket', { tc: fruit }));
   it.push(hero(3.35, 6.45, 'roma', 'none'));
   it.push(hero(5.15, 6.2, 'hummin', 'clip'));
@@ -1779,6 +1810,7 @@ function cutCask(x, y, level, toasted, big) {
     fill([[x + 0.06, y + d, 0.08], [x + w - 0.06, y + d, 0.08], [x + w - 0.06, y + d, wine], [x + 0.06, y + d, wine]], toasted ? dark(PAL.red, .08) : PAL.red) +
     (level < 0.92 ? fill([[x + 0.06, y + d, wine], [x + w - 0.06, y + d, wine], [x + w - 0.06, y + d, H - 0.08], [x + 0.06, y + d, H - 0.08]], '#f4efe6') : '') +
     seg3([x + 0.06, y + d, wine], [x + w - 0.06, y + d, wine], .7, 'rgba(255,250,240,.85)') });
+  for (const zz of [0.22, H * 0.72]) it.push({ d: x + y + 4.08, s: seg3([x + 0.02, y + d, zz], [x + w - 0.02, y + d, zz], 1.35, dark(PAL.steel, .22)) });
   const [bx, by] = P(x + w / 2, y + d * 0.45, H + 0.02);
   it.push({ d: x + y + 4.2, s: `<circle cx="${f(bx)}" cy="${f(by)}" r="${big ? 2.4 : 1.8}" fill="${dark(wood, .35)}" stroke="${LINE}" stroke-width=".55"/>` });
   it.push(plaque(x + w + 0.15, y + 0.15, level < 0.92 ? (wine + H) / 2 : H * 0.55, level < 0.92 ? 'ullage' : 'full', level < 0.92 ? PAL.cream : PAL.mint));
@@ -1808,6 +1840,11 @@ function barrelRoom(beat, dive, bench) {
   it.push(cutCask(big ? 2.5 : 1.7, big ? 2.7 : 3.15, year ? 0.58 : 0.94, toast, big));
   it.push(pool(big ? 3.2 : 2.3, big ? 3.2 : 3.5, 0.8, '#e7b56a', big ? 36 : 24));
   it.push(lamp(7.2, 4.4));
+  if (!big) {
+    it.push(box(0.32, 4.25, 0, 1.05, 0.5, 0.4, PAL.wood, { planks: 2 }));
+    it.push(cyl(0.55, 4.42, 0.4, 0.08, 0.07, PAL.cream, { noShadow: true, lid: false }));
+    it.push(glass(0.95, 4.48, 0.4, PAL.red));
+  }
   if (year) {
     it.push(cyl(big ? 5.45 : 4.55, 5.15, 0, 0.2, 0.52, PAL.clay));
     it.push(plaque(6.35, 4.15, 1.35, 'top up', PAL.sand));
@@ -1966,7 +2003,7 @@ function academyScene(story) {
 const CAM = { '01': { U: 12.2, OY: 28 }, '05': { U: 12.2, OY: 30 }, '08': { U: 12.2, OY: 30 } };
 export function sceneSVG(id, { labels = true, title = '', story = null } = {}) {
   beginScene();
-  if (story) { U = 14.6; OY = 42; }
+  if (story) { U = 14.6; OY = 42; CUR.academy = true; }
   else { const cam = CAM[id] || {}; U = cam.U ?? 14; OY = cam.OY ?? 46; }
   const built = (story && academyScene(story)) || SCENES[id]();
   const { labels: lb = [], ulabels = [], bg = PAL.mint, under, state, far = 'hills', farC, opts = {} } = built;
