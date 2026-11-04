@@ -12,6 +12,8 @@ export function mountCraft(root) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'low-power' });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  // The refraction pass and composer see the same scene; update shadows only once per frame.
+  renderer.shadowMap.autoUpdate = false;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.15;
   stage.prepend(renderer.domElement);
   renderer.domElement.tabIndex = 0;
@@ -155,20 +157,23 @@ export function mountCraft(root) {
     birds.forEach((b,i)=>{const a=t*.15+i*1.3;b.position.set(Math.cos(a)*5,6+i*.25+Math.sin(t+i)*.15,Math.sin(a)*3-2);b.rotation.y=-a;b.children.forEach((w,j)=>w.rotation.z=(j?1:-1)*(.2+Math.sin(t*5+i)*.35));b.scale.setScalar(1-weather*.6);});
     controls.update();
     // Half-resolution scene-color pass supplies real, normal-distorted refraction.
+    renderer.shadowMap.needsUpdate=true;
     ocean.visible=false;renderer.setRenderTarget(refraction);renderer.render(scene,camera);renderer.setRenderTarget(null);ocean.visible=true;
     composer.render();
   }
   function frame(now){if(!visible||lost)return;const dt=Math.min((now-last)/1000||0,.05);last=now;paint(dt);}
-  function fit(){const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);composer.setSize(w,h);renderer.getDrawingBufferSize(waterUniforms.viewport.value);refraction.setSize(Math.max(1,Math.round(w*.65)),Math.max(1,Math.round(h*.65)));camera.aspect=w/h;camera.fov=THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(THREE.MathUtils.degToRad(37)/2)*Math.max(1,1.18/camera.aspect)));camera.updateProjectionMatrix();if(visible&&!lost)paint();}
+  let fittedWidth=0,fittedHeight=0;
+  function fit(){const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h||(w===fittedWidth&&h===fittedHeight))return false;fittedWidth=w;fittedHeight=h;renderer.setSize(w,h,false);composer.setSize(w,h);renderer.getDrawingBufferSize(waterUniforms.viewport.value);refraction.setSize(Math.max(1,Math.round(w*.65)),Math.max(1,Math.round(h*.65)));camera.aspect=w/h;camera.fov=THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(THREE.MathUtils.degToRad(37)/2)*Math.max(1,1.18/camera.aspect)));camera.updateProjectionMatrix();if(visible&&!lost)paint();return true;}
   const ro=new ResizeObserver(fit);ro.observe(stage);
-  controls.addEventListener('change',()=>{if(paused&&visible&&!lost)requestAnimationFrame(()=>paint());});
+  controls.addEventListener('change',()=>{if(paused&&visible&&!lost)requestAnimationFrame(()=>{if(paused&&visible&&!lost)paint();});});
   slider.addEventListener('input',()=>{target=Number(slider.value)/100;cycle=false;cycleButton.setAttribute('aria-pressed','false');if(paused)paint();});
   cycleButton.addEventListener('click',()=>{cycle=!cycle;cycleButton.setAttribute('aria-pressed',String(cycle));if(cycle){paused=false;pauseUI();}});
   pauseButton.addEventListener('click',()=>{paused=!paused;pauseUI();});
   root.querySelector('.craft-reset').addEventListener('click',()=>{camera.position.set(16,12.5,20);controls.target.set(0,1.1,0);controls.update();});
   reduced.addEventListener('change',()=>{paused=reduced.matches;cycle=false;cycleButton.setAttribute('aria-pressed','false');pauseUI();});
   renderer.domElement.addEventListener('keydown',e=>{const offset=camera.position.clone().sub(controls.target),s=new THREE.Spherical().setFromVector3(offset);if(e.key==='ArrowLeft')s.theta-=.12;else if(e.key==='ArrowRight')s.theta+=.12;else if(e.key==='ArrowUp')s.phi=Math.max(.48,s.phi-.1);else if(e.key==='ArrowDown')s.phi=Math.min(1.35,s.phi+.1);else if(e.key==='+'||e.key==='=')s.radius=Math.max(19,s.radius-1);else if(e.key==='-')s.radius=Math.min(38,s.radius+1);else return;e.preventDefault();camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(s));controls.update();});
-  renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();lost=true;renderer.setAnimationLoop(null);status.hidden=false;status.textContent='Graphics paused. Refresh to restore the coast.';});
+  renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();lost=true;renderer.setAnimationLoop(null);status.hidden=false;status.textContent='Graphics paused. Restoring the coast… Refresh if it does not return.';});
+  renderer.domElement.addEventListener('webglcontextrestored',()=>{lost=false;status.hidden=true;syncLoop();if(visible)paint();});
   fit();paint();status.hidden=true;
-  return {setVisible(value){visible=value;last=performance.now();syncLoop();if(value&&!lost)fit();}};
+  return {setVisible(value){if(visible===value)return;visible=value;last=performance.now();syncLoop();if(value&&!lost&&!fit())paint();}};
 }
