@@ -2,6 +2,7 @@
 import { sceneSVG, HOTSPOTS } from './sip-world.js';
 import { GUIDES, WINE_STOPS, DIVES } from './sip-depth-data.js';
 import { WINE_LESSON, DIVE_BEATS } from './sip-wine-lesson.js';
+import { storyMarkup } from './sip-academy-layers.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -103,7 +104,7 @@ export function mountAcademy(root) {
       </div>
       <p class="ac-learn"><b>You are learning:</b> ${learn.replace(/^You are learning:?\s*/i, '')}</p>
       <div class="ac-stage-wrap">
-        <div class="ac-stage" data-chart="${chart}">
+        <div class="ac-stage" data-chart="${chart}" data-dive="${diving ? '1' : '0'}" data-beat="${beat.id}">
           <div class="ac-scene-slot"></div>
           <div class="ac-beats" role="group" aria-label="${diving ? 'Deep dive checks' : 'Scene changes'}">
             ${(diving ? divePack.tabs : pack.beats).map(item => `<button type="button" data-beat="${item.id}" aria-pressed="${item.id === beat.id}">${item.label}</button>`).join('')}
@@ -133,6 +134,7 @@ export function mountAcademy(root) {
     slot.innerHTML = sceneSVG(chart, { title: stop.title });
     const svg = $('svg.scene', slot);
     applyFx(svg, beat.fx);
+    svg.insertAdjacentHTML('beforeend', storyMarkup(stop.id, beat.id, diving));
     if (beat.pin) $(`.tag[data-hs="${beat.pin}"]`, svg)?.classList.add('active');
     player.querySelector(`[data-n="${stop.n}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }

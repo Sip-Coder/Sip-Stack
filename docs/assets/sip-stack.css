@@ -634,6 +634,9 @@ body.dive-open { overflow: hidden; }
 .ac-stage-wrap { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(240px, .8fr); gap: .7rem; align-items: start; }
 .ac-stage { position: relative; background: #ecdcbf; background-image: var(--grain), var(--fibers); border: 1.3px solid var(--line); border-radius: 12px; overflow: visible; padding: .35rem .4rem .55rem; box-shadow: inset 0 0 0 4px #f6ecda; }
 .ac-stage .scene { margin: 0; background: #fbf6ec; border-radius: 8px; }
+.ac-over { pointer-events: none; }
+.ac-over text { font-family: var(--sans); }
+.ac-stage[data-dive="1"] .ac-over .plate > rect:first-child { stroke: var(--teal); stroke-width: 1.2; }
 .ac-learn { margin: 0 0 .65rem; padding: .6rem .8rem; background: var(--mint); border: 1px solid rgba(26,85,82,.35); border-radius: 8px; font-size: 1.05rem; line-height: 1.35; }
 .ac-learn b { color: var(--teal); }
 .ac-story { font-family: var(--serif); font-size: 1.02rem; }
