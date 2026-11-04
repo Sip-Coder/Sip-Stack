@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&amp;family=Inter:wght@400;500;600&amp;display=swap" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath d=%27M12 3l8 4.5v9L12 21l-8-4.5v-9z%27 fill=%27%23914C2C%27/%3E%3C/svg%3E" />
 <link rel="stylesheet" href="assets/sip-stack.css" />
+<link rel="stylesheet" href="assets/sip-craft.css" />
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
 <body data-mode="world">
@@ -577,6 +578,21 @@
         <p class="vl-foot">An imaginary Sip Studies harbor: vines, an auger, five separate making doors, a press, tanks, a lab bench, barrels, and a table that pours water before wine.</p>
       </div>
     </div>
+    <section class="craft" id="village-demo" aria-labelledby="craft-title">
+      <header class="craft-heading"><div><p class="craft-kicker">SIP STUDIES · CRAFT PLAYGROUND / 01</p><h2 id="craft-title">What Three.js <em>can do.</em></h2></div><p>A small coast. A change in the weather.<br>Water, light, and a little wonder.</p></header>
+      <div class="craft-stage" aria-label="Cinematic coastal vineyard and lighthouse diorama">
+        <div class="craft-overlay"><span>WATER TO WINE</span><span>THE TIDELIGHT COAST</span></div>
+        <p class="craft-status" role="status">Preparing the coast…</p>
+        <div class="craft-bottom"><span>Drag to explore · pinch to zoom</span><span>PROCEDURAL THREE.JS</span></div>
+      </div>
+      <div class="craft-controls" role="group" aria-label="Craft demo controls">
+        <label>Day <input class="craft-weather" type="range" min="0" max="100" value="15" aria-label="Weather from day to storm"> Storm</label>
+        <button type="button" class="craft-cycle" aria-pressed="false">Cycle weather</button>
+        <button type="button" class="craft-pause" aria-pressed="false">Pause motion</button>
+        <button type="button" class="craft-reset">Reset view</button>
+      </div>
+      <p class="craft-caption">Craft playground — not part of the teaching village. <span>Mint sea / clay coast / a light to come home to.</span></p>
+    </section>
   </section>
 
   <footer>
@@ -584,5 +600,6 @@
     <p>Three modes: World scenes, Outline stops, and a procedural Village. Deep links: <code>#world/05/red</code>, <code>#outline/05</code>, <code>#village/auger</code>. Source: <a href="https://github.com/Sip-Coder/Sip-Stack">github.com/Sip-Coder/Sip-Stack</a>.</p>
   </footer>
   <script type="module" src="assets/sip-app.js"></script>
+  <script type="module" src="assets/sip-craft-loader.js"></script>
 </body>
 </html>
