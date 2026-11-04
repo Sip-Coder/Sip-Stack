@@ -608,11 +608,9 @@ export function mountVillage(root, { onPin } = {}) {
     Object.values(pinBtns).forEach(b => b.classList.toggle('active', b.dataset.pin === id));
     list.querySelectorAll('button').forEach(b => b.setAttribute('aria-current', String(b.dataset.pin === id)));
     note.hidden = false;
-    note.innerHTML = `<button class="x" type="button" aria-label="Close note">×</button><div class="k">Village · pin ${p.n} of ${PINS.length}${p.ac ? ` · stop ${p.ac} of 22` : ''}</div><h4>${p.t}</h4><p>${p.b}</p>` +
+    note.innerHTML = `<button class="x" type="button" aria-label="Close note">×</button><div class="k">Village · pin ${p.n} of ${PINS.length}</div><h4>${p.t}</h4><p>${p.b}</p>` +
       `<div class="row"><span class="act"><b>What changed</b> ${act}</span>` +
-      `<a class="to-outline" href="#outline/${p.chart}${p.stop ? '/' + p.stop : ''}">Outline →</a>` +
-      (p.ac ? `<a href="#academy/wine/${p.ac}">Academy →</a>` : '') +
-      (p.dive ? `<button type="button" data-open-dive="${p.dive}">Deep dive</button>` : '') +
+      `<a class="to-outline" href="#outline/${p.chart}">Outline →</a>` +
       `</div>`;
     $('.x', note).addEventListener('click', close);
     if (!quiet) focusOn(anchor(p).toArray(), p.zoom || 1.45);
