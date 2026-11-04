@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Sip-Stack · Nine ways water becomes wine</title>
-<meta name="description" content="Sip Studies Ai Edu — wine experience charts from vineyard to table, with red, white, rosé, Champagne, and fortified making styles as separate paths. Water to Wine. World view (isometric map) and Outline view (Mermaid journeys)." />
+<title>Sip-Stack · Water to Wine</title>
+<meta name="description" content="Sip Studies Ai Edu — 22 wine stops and 22 beer stops, nine world scenes, a wine-coast village, and fifteen academy campuses. Five making styles stay separate." />
 <meta name="theme-color" content="#f4ead8" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,17 +21,19 @@
       <button type="button" role="tab" data-mode="world" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>World</button>
       <button type="button" role="tab" data-mode="outline" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h4v4H4zM16 14h4v4h-4zM8 8h5a3 3 0 0 1 3 3v3"/></svg>Outline</button>
       <button type="button" role="tab" data-mode="village" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 20h18M5 20v-7l4-3 4 3v7M13 20v-9l3-2.5 3 2.5v9M8 16h2M16 13h1"/></svg>Village</button>
+      <button type="button" role="tab" data-mode="academy" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>Academy</button>
     </div>
   </div>
 
   <header class="hero">
     <p class="eyebrow">Experience Charts · Wine · Vineyard to Table</p>
     <h1>Sip Studies · <em>Water to Wine</em></h1>
-    <p class="lede">Nine wine charts climb one ladder, vine to table: train the vine, read the grapes, pick, make five separate styles, age, bottle, shop, and serve. Water runs through every rung.</p>
-    <nav class="modes" aria-label="Three ways to read the charts">
-      <a href="#world" data-mode="world"><b>World</b><span>Nine iso scenes. Tap pins, flip toggles, watch each one change.</span></a>
-      <a href="#outline" data-mode="outline"><b>Outline</b><span>Each rung as a top-down chart, a practice list, and a Give-Back.</span></a>
-      <a href="#village" data-mode="village"><b>Village</b><span>One 3D wine coast to orbit, relight, and explore pin by pin.</span></a>
+    <p class="lede">Twenty-two wine stops and twenty-two beer stops. Nine scenes, one coast village, fifteen campuses.</p>
+    <nav class="modes" aria-label="Four ways to read the charts">
+      <a href="#world" data-mode="world"><b>World</b><span>Nine scenes. Pins and stop nodes change the picture.</span></a>
+      <a href="#outline" data-mode="outline"><b>Outline</b><span>Every wine stop. Five making styles stay apart.</span></a>
+      <a href="#village" data-mode="village"><b>Village</b><span>Auger, press, tanks, barrels, lab, and the café table.</span></a>
+      <a href="#academy" data-mode="academy"><b>Academy</b><span>Five guilds, fifteen campuses. Wine and beer play all 22.</span></a>
     </nav>
     <p class="fine-print">Original Sip Studies teaching material. Not affiliated with any court, guild, or credentialing body.</p>
     <p class="values">Culture · Credible · Catalyze · Legacy</p>
@@ -40,7 +42,7 @@
   <section id="world" class="view active" aria-label="World view">
     <div class="world-wrap">
       <div class="canvas">
-        <div class="canvas-head"><h2>Nine ways <em>water</em> becomes wine</h2><span class="hint">Tap a pin or a toolbar button to change a scene · click a panel for its Outline</span><div class="sip-light world-light" role="group" aria-label="Light over the scenes"><button type="button" data-light="day" aria-pressed="true">Day</button><button type="button" data-light="golden" aria-pressed="false">Golden</button></div></div>
+        <div class="canvas-head"><h2>Nine ways <em>water</em> becomes wine</h2><span class="hint">Tap a pin, an adventure stop, or a toolbar button</span><div class="sip-light world-light" role="group" aria-label="Light over the scenes"><button type="button" data-light="day" aria-pressed="true">Day</button><button type="button" data-light="golden" aria-pressed="false">Golden</button></div></div>
         <div class="grid">
       <article class="card" tabindex="0" data-id="01" aria-label="01 of 9: Vineyard &amp; Vine Training. Enter opens the Outline chart; Tab reaches the pins and scene buttons.">
         <div class="card-top"><span class="num"><b>01</b> / 09</span><svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg></div>
@@ -574,14 +576,18 @@
         </div>
         <div class="vl-note sip-note" aria-live="polite" hidden></div>
         <ol class="vl-list" aria-label="Village pins"></ol>
-        <p class="vl-foot">An imaginary Sip Studies harbor, built in code: vines on the terraces, five making lanes behind five separate doors, a working dock, and a table that pours water before wine.</p>
+        <p class="vl-foot">An imaginary Sip Studies harbor: vines, an auger, five separate making doors, a press, tanks, a lab bench, barrels, and a table that pours water before wine.</p>
       </div>
     </div>
   </section>
 
+  <section id="academy" class="view" aria-label="Academy">
+    <div class="ac-wrap"><div id="ac-root"></div></div>
+  </section>
+
   <footer>
     <p><b>Sip-Stack</b> · Sip Studios · Ai Edu · Water to Wine</p>
-    <p>Three modes, one ladder: World scenes are hand-built SVG with pins and scene toggles, Outline charts render with Mermaid, and the Village is procedural Three.js. Deep links: <code>#world/05/red</code>, <code>#outline/03</code>, <code>#village/drip</code>. Source: <a href="https://github.com/Sip-Coder/Sip-Stack">github.com/Sip-Coder/Sip-Stack</a>.</p>
+    <p>Four modes: World scenes, Outline stops, a procedural Village, and Academy (wine and beer, 22 stops each). Deep links: <code>#world/05/arc-crossroads.red</code>, <code>#outline/05/crossroads</code>, <code>#village/auger</code>, <code>#academy/beer/13</code>. Source: <a href="https://github.com/Sip-Coder/Sip-Stack">github.com/Sip-Coder/Sip-Stack</a>.</p>
   </footer>
   <script type="module" src="assets/sip-app.js"></script>
 </body>
