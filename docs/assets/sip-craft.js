@@ -9,7 +9,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 export function mountCraft(root) {
   const stage = root.querySelector('.craft-stage'), status = root.querySelector('.craft-status');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'low-power' });
+  // Keep the last completed frame available if the browser recomposites between draws.
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'low-power', preserveDrawingBuffer: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   // The refraction pass and composer see the same scene; update shadows only once per frame.
@@ -27,7 +28,10 @@ export function mountCraft(root) {
   controls.minDistance = 19; controls.maxDistance = 38; controls.minPolarAngle = .48; controls.maxPolarAngle = 1.35;
   const composer = new EffectComposer(renderer); composer.addPass(new RenderPass(scene, camera));
   const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), .5, .6, 1.05);
-  composer.addPass(bloom); composer.addPass(new OutputPass());
+  const outputPass = new OutputPass();
+  // The final opaque triangle covers the screen; stale depth must not mask it.
+  outputPass.material.depthTest = false; outputPass.material.depthWrite = false;
+  composer.addPass(bloom); composer.addPass(outputPass);
   const hemi = new THREE.HemisphereLight('#d8e6da', '#4e3945', 2.5); scene.add(hemi);
   const sun = new THREE.DirectionalLight('#ffe0a1', 4); sun.position.set(-8, 15, 5); sun.castShadow = true;
   sun.shadow.mapSize.set(1024,1024); Object.assign(sun.shadow.camera,{left:-12,right:12,top:12,bottom:-12}); sun.shadow.bias = -.001; scene.add(sun);
@@ -158,8 +162,16 @@ export function mountCraft(root) {
     controls.update();
     // Half-resolution scene-color pass supplies real, normal-distorted refraction.
     renderer.shadowMap.needsUpdate=true;
-    ocean.visible=false;renderer.setRenderTarget(refraction);renderer.render(scene,camera);renderer.setRenderTarget(null);ocean.visible=true;
-    composer.render();
+    const previousTarget = renderer.getRenderTarget();
+    ocean.visible=false;
+    try { renderer.setRenderTarget(refraction);renderer.render(scene,camera); }
+    finally { ocean.visible=true;renderer.setRenderTarget(previousTarget); }
+    // RenderPass and bloom explicitly clear their own targets. Prevent the final
+    // fullscreen OutputPass from auto-clearing the visible canvas to black first.
+    const previousAutoClear = renderer.autoClear;
+    renderer.autoClear = false;
+    try { composer.render(); }
+    finally { renderer.autoClear = previousAutoClear; }
   }
   function frame(now){if(!visible||lost)return;const dt=Math.min((now-last)/1000||0,.05);last=now;paint(dt);}
   let fittedWidth=0,fittedHeight=0;
