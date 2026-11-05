@@ -460,8 +460,9 @@ export function mountVillage(root, { onPin } = {}) {
   const camera = new THREE.OrthographicCamera(-10, 10, 10, -10, .1, 400);
   const state = { drip: false, cut: false, reuse: false, loaded: false, pour: 0, door: null, light: 'golden', orbit: !still(), pin: null };
   let shown = false, stageVisible = false, craftActive = document.body.dataset.craftVisible === 'true';
+  const otherSceneActive = () => craftActive || document.body.dataset.creekVisible === 'true';
   const tw = {}; // tweens: key -> {from,to,t0,dur,apply}
-  const tween = (key, from, to, dur, apply) => { if (still() || (shown && stageVisible && craftActive)) { apply(to); delete tw[key]; return; } tw[key] = { from, to, t0: performance.now(), dur, apply }; };
+  const tween = (key, from, to, dur, apply) => { if (still() || (shown && stageVisible && otherSceneActive())) { apply(to); delete tw[key]; return; } tw[key] = { from, to, t0: performance.now(), dur, apply }; };
 
   let dyn, controls, hemi, sun;
   const HOME = { target: new THREE.Vector3(0, 3.6, 0), theta: .72, phi: .98, r: 80 };
@@ -733,15 +734,15 @@ export function mountVillage(root, { onPin } = {}) {
   }
   function frame() { if (running) animate(); }
 
-  // Only one diorama animates at a time. The craft scene takes priority if the
-  // two stages are partly visible together; a single on-demand render keeps
+  // Only one diorama animates at a time. The lower scenes take priority if
+  // stages are partly visible together; a single on-demand render keeps
   // the visible Village responsive to its controls while its loop is paused.
   let stillFrame = 0;
   function renderStill() {
-    if (stillFrame || !renderer || !shown || !stageVisible || !craftActive || document.hidden || running) return;
+    if (stillFrame || !renderer || !shown || !stageVisible || !otherSceneActive() || document.hidden || running) return;
     stillFrame = requestAnimationFrame(() => {
       stillFrame = 0;
-      if (!shown || !stageVisible || !craftActive || document.hidden || running) return;
+      if (!shown || !stageVisible || !otherSceneActive() || document.hidden || running) return;
       // Finish any in-flight interaction once; do not leave a half-open door
       // or an unfinished camera move frozen during the overlap.
       for (const [key, transition] of Object.entries(tw)) { transition.apply(transition.to); delete tw[key]; }
@@ -751,7 +752,7 @@ export function mountVillage(root, { onPin } = {}) {
     });
   }
   function syncLoop() {
-    const shouldRun = !!renderer && shown && stageVisible && !craftActive && !document.hidden;
+    const shouldRun = !!renderer && shown && stageVisible && !otherSceneActive() && !document.hidden;
     if (shouldRun === running) return;
     running = shouldRun;
     if (running) { fit(); clock.getDelta(); renderer.setAnimationLoop(frame); }
@@ -767,6 +768,7 @@ export function mountVillage(root, { onPin } = {}) {
     syncLoop();
     renderStill();
   });
+  document.addEventListener('sip:creek-visibility', () => { syncLoop(); renderStill(); });
   document.addEventListener('visibilitychange', () => { syncLoop(); renderStill(); });
   $('.village-wrap', root).addEventListener('click', renderStill, true);
   controls?.addEventListener('change', renderStill);

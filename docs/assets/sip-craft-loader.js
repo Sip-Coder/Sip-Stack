@@ -2,7 +2,7 @@
 const block = document.querySelector('.craft');
 const stage = block.querySelector('.craft-stage');
 let instance, loading, failed = false, intersecting = false, announced = false;
-const active = () => intersecting && document.body.dataset.mode === 'village' && !document.hidden;
+const active = () => intersecting && document.body.dataset.mode === 'village' && !document.hidden && document.body.dataset.creekVisible !== 'true';
 // Give the visible craft scene priority over the teaching Village's animation loop.
 function announce(value) {
   if (value === announced) return;
@@ -37,3 +37,5 @@ async function sync() {
 new IntersectionObserver(([entry]) => { intersecting = entry.isIntersecting; sync(); }, { threshold: .01 }).observe(stage);
 new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['data-mode'] });
 document.addEventListener('visibilitychange', sync);
+// Creek announces before it starts, so this stops Tidelight synchronously.
+document.addEventListener('sip:creek-visibility', sync);

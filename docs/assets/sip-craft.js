@@ -175,10 +175,12 @@ export function mountCraft(root) {
   }
   function frame(now){if(!visible||lost)return;const dt=Math.min((now-last)/1000||0,.05);last=now;paint(dt);}
   let fittedWidth=0,fittedHeight=0;
-  function fit(){const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h||(w===fittedWidth&&h===fittedHeight))return false;fittedWidth=w;fittedHeight=h;renderer.setSize(w,h,false);composer.setSize(w,h);renderer.getDrawingBufferSize(waterUniforms.viewport.value);refraction.setSize(Math.max(1,Math.round(w*.65)),Math.max(1,Math.round(h*.65)));camera.aspect=w/h;camera.fov=THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(THREE.MathUtils.degToRad(37)/2)*Math.max(1,1.18/camera.aspect)));camera.updateProjectionMatrix();if(visible&&!lost)paint();return true;}
+  // Resizing clears the preserved canvas. Keep its last frame while Creek has
+  // priority; CSS scales it until this scene is active and can redraw safely.
+  function fit(){if(document.body.dataset.creekVisible==='true')return false;const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h||(w===fittedWidth&&h===fittedHeight))return false;fittedWidth=w;fittedHeight=h;renderer.setSize(w,h,false);composer.setSize(w,h);renderer.getDrawingBufferSize(waterUniforms.viewport.value);refraction.setSize(Math.max(1,Math.round(w*.65)),Math.max(1,Math.round(h*.65)));camera.aspect=w/h;camera.fov=THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(THREE.MathUtils.degToRad(37)/2)*Math.max(1,1.18/camera.aspect)));camera.updateProjectionMatrix();if(visible&&!lost)paint();return true;}
   const ro=new ResizeObserver(fit);ro.observe(stage);
   controls.addEventListener('change',()=>{if(paused&&visible&&!lost)requestAnimationFrame(()=>{if(paused&&visible&&!lost)paint();});});
-  slider.addEventListener('input',()=>{target=Number(slider.value)/100;cycle=false;cycleButton.setAttribute('aria-pressed','false');if(paused)paint();});
+  slider.addEventListener('input',()=>{target=Number(slider.value)/100;cycle=false;cycleButton.setAttribute('aria-pressed','false');if(paused&&visible&&!lost)paint();});
   cycleButton.addEventListener('click',()=>{cycle=!cycle;cycleButton.setAttribute('aria-pressed',String(cycle));if(cycle){paused=false;pauseUI();}});
   pauseButton.addEventListener('click',()=>{paused=!paused;pauseUI();});
   root.querySelector('.craft-reset').addEventListener('click',()=>{camera.position.set(16,12.5,20);controls.target.set(0,1.1,0);controls.update();});
