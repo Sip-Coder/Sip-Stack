@@ -106,9 +106,9 @@ export function mountCreek(root) {
     const silhouette=new THREE.Shape();silhouette.moveTo(-30,-4);
     for(let x=-30;x<=30;x+=1.5){const valley=smooth(2,12,Math.abs(x));const y=1.35+valley*height+.32*Math.sin(x*.27+phase)+.16*Math.sin(x*.67-phase);silhouette.lineTo(x,y);}
     silhouette.lineTo(30,-4);silhouette.closePath();
-    const mesh=add(new THREE.ShapeGeometry(silhouette),new THREE.MeshBasicMaterial({color,fog:false,side:THREE.DoubleSide}),0,0,z);mesh.castShadow=false;mesh.receiveShadow=false;
+    const mesh=add(new THREE.ShapeGeometry(silhouette),new THREE.MeshBasicMaterial({color,fog:false,side:THREE.DoubleSide}),0,0,z);mesh.castShadow=false;mesh.receiveShadow=false;return mesh;
   }
-  ridge(-31,'#a1c2b3',.7,3.4);ridge(-26,'#789e8c',2.1,2.5);
+  const farRidge=ridge(-31,'#a1c2b3',.7,3.4),nearRidge=ridge(-26,'#789e8c',2.1,2.5);
 
   // A continuous sculpted bed rises naturally into two banks. Color varies by
   // height, so the wet creek edge reads as soil rather than a hard seam.
@@ -308,6 +308,7 @@ export function mountCreek(root) {
     Object.keys(colors).forEach(key=>colors[key].lerp(targetColors[key],blend));
     hemiPower=mix(hemiPower,mood.hemiPower,blend);sunPower=mix(sunPower,mood.sunPower,blend);lampPower=mix(lampPower,mood.lamp,blend);sparkle=mix(sparkle,mood.sparkle,blend);
     skyUniforms.top.value.copy(colors.top);skyUniforms.horizon.value.copy(colors.horizon);scene.fog.color.copy(colors.fog);
+    farRidge.material.color.copy(colors.fog).multiplyScalar(1.02);nearRidge.material.color.copy(colors.fog).multiplyScalar(.68);
     waterUniforms.tint.value.copy(colors.water);waterUniforms.reflection.value.copy(colors.skyWater);waterUniforms.glint.value=sparkle;waterUniforms.time.value=elapsed;
     light.color.copy(colors.hemi);light.groundColor.copy(colors.ground);light.intensity=hemiPower;sun.color.copy(colors.sun);sun.intensity=sunPower;lamp.emissiveIntensity=lampPower;warm.intensity=lampPower*3.2;
     floating.forEach(({leaf,phase,offset,speed,rot})=>{const z=10-((phase*30+elapsed*speed)%30);leaf.position.set(bend(z)+offset,.075+Math.sin(elapsed*1.5+phase*20)*.015,z);leaf.rotation.z=rot+Math.sin(elapsed*.35+phase*10)*.18;});
