@@ -12,6 +12,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath d=%27M12 3l8 4.5v9L12 21l-8-4.5v-9z%27 fill=%27%23914C2C%27/%3E%3C/svg%3E" />
 <link rel="stylesheet" href="assets/sip-stack.css" />
 <link rel="stylesheet" href="assets/sip-craft.css" />
+<link rel="stylesheet" href="assets/sip-creek.css" />
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
 <body data-mode="world">
@@ -593,6 +594,27 @@
       </div>
       <p class="craft-caption">Craft playground — not part of the teaching village. <span>Mint sea / clay coast / a light to come home to.</span></p>
     </section>
+    <section class="creek" id="sip-creek" aria-labelledby="creek-title">
+      <header class="creek-heading">
+        <div><p class="creek-kicker">SIP STUDIES · CRAFT PLAYGROUND / 02</p><h2 id="creek-title">Sip Creek <em>· Water to Wine</em></h2></div>
+        <p>Take the long way to the table.<br>There’s always water first.</p>
+      </header>
+      <div class="creek-stage" aria-label="A quiet Sip Studies creek and tasting shelter">
+        <div class="creek-overlay"><span>WATER FIRST, ALWAYS</span><span>SIP CREEK / A MOMENT BY THE WATER</span></div>
+        <p class="creek-loading" role="status">Finding the creek…</p>
+        <div class="creek-hint"><span>Drag to look · pinch to zoom</span><span>AN ORIGINAL SIP STUDIES SCENE</span></div>
+      </div>
+      <div class="creek-controls">
+        <div class="creek-light" role="group" aria-label="Light over Sip Creek">
+          <button type="button" data-light="afternoon" aria-pressed="true">Afternoon</button>
+          <button type="button" data-light="golden" aria-pressed="false">Golden</button>
+          <button type="button" data-light="blue" aria-pressed="false">Blue</button>
+          <button type="button" data-light="night" aria-pressed="false">Night</button>
+        </div>
+        <div class="creek-actions"><button type="button" class="creek-pause" aria-pressed="false">Pause motion</button><button type="button" class="creek-reset">Reset view</button></div>
+      </div>
+      <p class="creek-caption"><span>Craft playground — a little pause beyond the teaching village.</span><span>Water first. Wine follows.</span></p>
+    </section>
   </section>
 
   <footer>
@@ -601,5 +623,6 @@
   </footer>
   <script type="module" src="assets/sip-app.js"></script>
   <script type="module" src="assets/sip-craft-loader.js"></script>
+  <script type="module" src="assets/sip-creek-loader.js"></script>
 </body>
 </html>

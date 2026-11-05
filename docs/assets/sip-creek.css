@@ -1,0 +1,22 @@
+/* Sip Creek is an independent playground; styles do not reach either scene above it. */
+.creek{max-width:1440px;margin:100px auto 34px;padding:0 24px;color:#1a5552;scroll-margin-top:85px}
+.creek-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin:0 0 28px}
+.creek-kicker{font:600 10px Inter,sans-serif;letter-spacing:.19em;margin:0 0 14px}
+.creek-heading h2{font:400 clamp(32px,4vw,56px) Fraunces,serif;letter-spacing:-.04em;margin:0}
+.creek-heading h2 em{color:#914c2c}
+.creek-heading>p{font:13px/1.8 Inter,sans-serif;color:#67615e;margin:0}
+.creek-stage{height:clamp(440px,57vw,760px);position:relative;isolation:isolate;overflow:hidden;border-radius:18px;background:radial-gradient(ellipse at 50% 32%,#78928a,#1a3939 75%);box-shadow:0 30px 65px #1a555225}
+.creek-stage canvas{display:block;width:100%;height:100%;touch-action:none;outline-offset:-5px}
+.creek-stage::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 46%,transparent 40%,#0a222552 100%);z-index:1}
+.creek-overlay,.creek-hint{position:absolute;left:30px;right:30px;display:flex;justify-content:space-between;gap:12px;pointer-events:none;z-index:2;font:500 10px Inter,sans-serif;letter-spacing:.16em;color:#f5e5c7;text-shadow:0 1px 8px #102d2e}
+.creek-overlay{top:27px}.creek-hint{bottom:24px;font-size:9px;letter-spacing:.1em}
+.creek-loading{position:absolute;top:45%;width:100%;text-align:center;color:#edd4a8;font:14px Inter,sans-serif;z-index:3}
+.creek-loading[hidden]{display:none}
+.creek-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:22px 0 12px}
+.creek-light,.creek-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.creek-controls button{font:500 11px Inter,sans-serif;border:1px solid #1a555240;background:transparent;color:#1a5552;border-radius:24px;padding:10px 16px;cursor:pointer}
+.creek-controls button[aria-pressed="true"]{background:#1a5552;color:#d8e6da}
+.creek-controls button:focus-visible,.creek-stage canvas:focus-visible{outline:3px solid #914c2c;outline-offset:4px}
+.creek-caption{display:flex;justify-content:space-between;gap:16px;font:11px/1.7 Inter,sans-serif;color:#746d69}
+.creek-caption span:last-child{font-style:italic}
+@media(max-width:600px){.creek{padding:0 14px;margin-top:56px}.creek-heading{display:block}.creek-heading>p{margin-top:16px}.creek-overlay,.creek-hint{left:18px;right:18px}.creek-overlay span:last-child,.creek-hint span:last-child{display:none}.creek-controls{gap:14px}.creek-light{width:100%}.creek-controls button{padding:9px 13px}.creek-caption{display:block}.creek-caption span{display:block}}
