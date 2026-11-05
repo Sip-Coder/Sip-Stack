@@ -243,7 +243,8 @@ export function mountCreek(root) {
 
   const skyUniforms={top:{value:new THREE.Color(moods.afternoon.top)},horizon:{value:new THREE.Color(moods.afternoon.horizon)}};
   const skyMaterial=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,depthTest:false,uniforms:skyUniforms,vertexShader:`varying vec3 vP;void main(){vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`uniform vec3 top,horizon;varying vec3 vP;void main(){float t=smoothstep(-.15,.65,normalize(vP).y);gl_FragColor=vec4(mix(horizon,top,t),1.);\n${composer?'':'#include <tonemapping_fragment>\n#include <colorspace_fragment>'}}`});
-  const sky=new THREE.Mesh(new THREE.SphereGeometry(80,32,20),skyMaterial);sky.renderOrder=-100;scene.add(sky);
+  // Keep the whole sky inside the 100-unit far plane even at maximum orbit zoom.
+  const sky=new THREE.Mesh(new THREE.SphereGeometry(60,32,20),skyMaterial);sky.renderOrder=-100;scene.add(sky);
 
   // Refraction samples a separate scene-color target; the visible water remains
   // a single continuous stream with small normal waves and sparse sun glints.
