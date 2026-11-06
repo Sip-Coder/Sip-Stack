@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
@@ -45,43 +46,68 @@ export function mountCreek(root) {
   const canvas = renderer.domElement;
   canvas.tabIndex = 0;
   canvas.setAttribute('aria-label', 'Sip Creek, a waterside tasting shelter. Drag to look, pinch to zoom, or use the arrow and plus and minus keys.');
+  // Show the loading state until a completed image has been submitted.
+  canvas.style.visibility = 'hidden';
+  status.hidden = false;
   stage.prepend(canvas);
 
   const scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2('#c1d7c8', .023);
   const camera = new THREE.PerspectiveCamera(42, 1, .08, 100);
-  const home = new THREE.Vector3(1.4, 2.25, 11.6);
-  const homeTarget = new THREE.Vector3(-.35, 1.05, -5.3);
+  const home = new THREE.Vector3(1.1, 1.60, 10.8);
+  const homeTarget = new THREE.Vector3(-.45, .95, -5.1);
   camera.position.copy(home);
   const controls = new OrbitControls(camera, canvas);
   controls.target.copy(homeTarget);
   controls.enableDamping = false; controls.enablePan = false;
   controls.minDistance = 11; controls.maxDistance = 26;
-  controls.minPolarAngle = .8; controls.maxPolarAngle = 1.47;
+  controls.minPolarAngle = .8; controls.maxPolarAngle = 1.535;
   controls.minAzimuthAngle = -.55; controls.maxAzimuthAngle = .55;
   controls.update();
 
   // On touch/small screens use a single full-scene output instead of the 11 bloom
   // targets. Both paths retain the refraction pass and animated water glints.
-  let composer, bloom;
-  if (!mobile) {
-    composer = new EffectComposer(renderer);
+  const halfFloat = renderer.extensions.has('EXT_color_buffer_float') || renderer.extensions.has('EXT_color_buffer_half_float');
+  let composer, bloom, focusPass;
+  if (!mobile && halfFloat) {
+    // Read scene depth from the compositor's own target: no extra scene render.
+    // Both ping-pong targets get independent depth textures through clone().
+    const depth=new THREE.DepthTexture(1,1,THREE.UnsignedIntType);
+    const sceneTarget=new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,depthBuffer:true,depthTexture:depth});
+    composer = new EffectComposer(renderer,sceneTarget);
+    // DepthTexture.clone() shares its source; give the second framebuffer an
+    // independent attachment so sampling one never aliases the write target.
+    composer.renderTarget2.depthTexture=new THREE.DepthTexture(1,1,THREE.UnsignedIntType);
     composer.addPass(new RenderPass(scene, camera));
-    bloom = new UnrealBloomPass(new THREE.Vector2(1,1), .23, .55, 1.1);
+    // A modest, depth-aware lens blur: near reeds and distant hills soften,
+    // while the water and shelter around the focus distance remain crisp.
+    focusPass=new ShaderPass({
+      uniforms:{tDiffuse:{value:null},tDepth:{value:null},pixel:{value:new THREE.Vector2(1,1)},focus:{value:16},nearClip:{value:camera.near},farClip:{value:camera.far}},
+      vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+      fragmentShader:`uniform sampler2D tDiffuse,tDepth;uniform vec2 pixel;uniform float focus,nearClip,farClip;varying vec2 vUv;
+        float distanceAt(vec2 p){float d=texture2D(tDepth,clamp(p,vec2(.001),vec2(.999))).x;return nearClip*farClip/(farClip-d*(farClip-nearClip));}
+        void main(){float center=distanceAt(vUv);float radius=clamp((abs(center-focus)-2.5)*.68,0.,6.0);vec4 color=texture2D(tDiffuse,vUv);float total=1.;
+          vec2 offsets[8];offsets[0]=vec2(1.,0.);offsets[1]=vec2(-1.,0.);offsets[2]=vec2(0.,1.);offsets[3]=vec2(0.,-1.);offsets[4]=vec2(.707,.707);offsets[5]=vec2(-.707,.707);offsets[6]=vec2(.707,-.707);offsets[7]=vec2(-.707,-.707);
+          for(int i=0;i<8;i++){vec2 uv=clamp(vUv+offsets[i]*pixel*radius,vec2(.001),vec2(.999));float sampleDistance=distanceAt(uv);float weight=mix(.55,1.,exp(-abs(center-sampleDistance)*.18));color+=texture2D(tDiffuse,uv)*weight;total+=weight;}
+          gl_FragColor=vec4(color.rgb/total,1.);}`
+    });
+    focusPass.material.depthTest=false;focusPass.material.depthWrite=false;
+    const renderFocus=focusPass.render.bind(focusPass);
+    focusPass.render=(renderer,writeBuffer,readBuffer,deltaTime,maskActive)=>{focusPass.uniforms.tDepth.value=readBuffer.depthTexture;renderFocus(renderer,writeBuffer,readBuffer,deltaTime,maskActive);};
+    composer.addPass(focusPass);
+    bloom = new UnrealBloomPass(new THREE.Vector2(1,1), .30, .5, 1.18);
     composer.addPass(bloom);
     const output = new OutputPass();
     output.material.depthTest = false; output.material.depthWrite = false;
     composer.addPass(output);
   }
+  // RGBA8 refraction is broadly supported and avoids a mobile float attachment.
   const refraction = new THREE.WebGLRenderTarget(1, 1, { type:THREE.UnsignedByteType, depthBuffer:true });
-  const halfFloat = renderer.extensions.has('EXT_color_buffer_float') || renderer.extensions.has('EXT_color_buffer_half_float');
-  // Composer's bloom uses half-float targets; retain the low-cost direct path on
-  // systems without the required color attachment support.
-  if (composer && !halfFloat) { composer.dispose(); bloom.dispose(); composer = null; bloom = null; }
 
   const light = new THREE.HemisphereLight('#d8e6da','#887d71',1.5); scene.add(light);
   const sun = new THREE.DirectionalLight('#fff0c9',3.1);
-  sun.position.set(-8, 12, 5); sun.castShadow = true;
+  // Low upstream light makes ripples catch the same source that casts shadows.
+  sun.position.set(-3, 5, -22); sun.castShadow = true;
   sun.shadow.mapSize.set(mobile ? 512 : 1024, mobile ? 512 : 1024);
   Object.assign(sun.shadow.camera, {left:-13,right:13,top:13,bottom:-13,near:.1,far:50});
   sun.shadow.bias = -.0004; sun.shadow.normalBias = .03;
@@ -118,19 +144,23 @@ export function mountCreek(root) {
     const x=mix(-12,12,ix/nx),z=mix(-23,13,iz/nz), y=ground(x,z), d=Math.abs(x-bend(z));
     positions.push(x,y,z);
     const col=bed.clone().lerp(soil,smooth(1.7,3.1,d)).lerp(bank,smooth(2.9,5.8,d)*.76);
-    col.multiplyScalar(.92 + .08*Math.sin(x*2.7+z*1.6)); terrainColors.push(col.r,col.g,col.b);
+    const wetEdge=1-smooth(.05,.7,Math.abs(d-2.65));
+    col.multiplyScalar((.92 + .08*Math.sin(x*2.7+z*1.6))*(1-.15*wetEdge)); terrainColors.push(col.r,col.g,col.b);
     if(ix<nx && iz<nz) {const a=iz*(nx+1)+ix,b=a+nx+1;indices.push(a,b,a+1,b,b+1,a+1);}
   }
   const terrain = new THREE.BufferGeometry(); terrain.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));terrain.setAttribute('color',new THREE.Float32BufferAttribute(terrainColors,3));terrain.setIndex(indices);terrain.computeVertexNormals();
   add(terrain,new THREE.MeshStandardMaterial({vertexColors:true,roughness:1}),0,0,0);
 
   // A bed of individually colored rounded pebbles is visible through the water.
-  const pebbleGeometry = new THREE.SphereGeometry(1,9,6);
+  const pebbleGeometry = new THREE.SphereGeometry(1,12,8);
+  // Subtle irregularity makes the bed look water-worn rather than stamped discs.
+  const pebbleVertices=pebbleGeometry.attributes.position;
+  for(let i=0;i<pebbleVertices.count;i++){const x=pebbleVertices.getX(i),y=pebbleVertices.getY(i),z=pebbleVertices.getZ(i);const n=1+.055*Math.sin(x*9+z*6)*Math.cos(y*8-z*5);pebbleVertices.setXYZ(i,x*n,y*n,z*n);}pebbleGeometry.computeVertexNormals();
   const pebbles = new THREE.InstancedMesh(pebbleGeometry,mat('#ffffff',{roughness:.95}),mobile?230:400);
   const dummy = new THREE.Object3D(); const pebbleColors=['#665e63','#9b856d','#c0ad91','#41635b','#915e48','#a5b9a6'];
   for(let i=0;i<pebbles.count;i++) {
     const z=mix(-22,12,rng()),x=bend(z)+mix(-2.45,2.45,rng()),r=mix(.055,.22,rng());
-    dummy.position.set(x,ground(x,z)+r*.33,z);dummy.rotation.set(rng()*.5,rng()*PI,0);dummy.scale.set(r*(1+rng()),r*.46,r*(1+rng()));dummy.updateMatrix();
+    dummy.position.set(x,ground(x,z)+r*.33,z);dummy.rotation.set(rng()*.5,rng()*PI,0);dummy.scale.set(r*(1+rng()),r*(.55+rng()*.20),r*(1+rng()));dummy.updateMatrix();
     pebbles.setMatrixAt(i,dummy.matrix);pebbles.setColorAt(i,new THREE.Color(pebbleColors[Math.floor(rng()*pebbleColors.length)]));
   }
   pebbles.receiveShadow=true;scene.add(pebbles);
@@ -138,11 +168,13 @@ export function mountCreek(root) {
   // Contact shadows are individual, quiet translucent discs under the largest rocks.
   const shadowMaterial=new THREE.ShaderMaterial({transparent:true,depthWrite:false,vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`varying vec2 vUv;void main(){float d=length(vUv-.5)*2.;gl_FragColor=vec4(.055,.105,.085,pow(max(0.,1.-d),1.6)*.48);}`});
   const stoneColors=['#817985','#909a91','#a7998f','#72817c'];
+  const rockGeometry=new THREE.SphereGeometry(1,24,16),rockVertices=rockGeometry.attributes.position;
+  for(let i=0;i<rockVertices.count;i++){const x=rockVertices.getX(i),y=rockVertices.getY(i),z=rockVertices.getZ(i);const n=1+.08*Math.sin(x*5.7+z*3.5)*Math.cos(y*5.2-z*4.1);rockVertices.setXYZ(i,x*n,y*n,z*n);}rockGeometry.computeVertexNormals();
   for(let i=0;i<30;i++) {
     const z=mix(-20,10,rng()), side=rng()<.5?-1:1, x=bend(z)+side*mix(2.05,5.5,rng());
     const r=mix(.27,.82,rng()),y=ground(x,z);
     const sh=add(new THREE.CircleGeometry(1,20),shadowMaterial,x,y+.025,z);sh.rotation.x=-PI/2;sh.scale.set(r*1.5,r,1);sh.castShadow=false;sh.receiveShadow=false;
-    const stone=sphere(mat(stoneColors[i%stoneColors.length]),x,y+r*.42,z,r*1.3,r*.58,r*.9);stone.rotation.y=rng()*PI;
+    const stone=add(rockGeometry,mat(stoneColors[i%stoneColors.length]),x,y+r*.41,z);stone.scale.set(r*1.3,r*.64,r*.9);stone.rotation.set(rng()*.12,rng()*PI,rng()*.14);
   }
   // Tufts are batched: soft mint blades and deeper evergreen blades.
   // Three tapered, gently bent blades form each tuft, with no cone silhouette.
@@ -202,6 +234,16 @@ export function mountCreek(root) {
     }
   }
 
+  // Close leaves and reeds frame the stream. The desktop lens pass softens
+  // their near tips while retaining the shelter and middle water in focus.
+  const foreground=new THREE.InstancedMesh(new THREE.SphereGeometry(1,12,8),mat('#ffffff',{side:THREE.DoubleSide}),24);
+  for(let i=0;i<24;i++){
+    const side=i<12?-1:1,j=i%12,z=7.0+(j%3)*.38,x=bend(z)+side*(2.8+Math.floor(j/3)*.20),y=ground(x,z),h=.45+(j%4)*.13;
+    dummy.position.set(x,y+h*.42,z);dummy.rotation.set(.15,0,side*(.28+(j%4)*.15));dummy.scale.set(.065,h*.55,.13);dummy.updateMatrix();foreground.setMatrixAt(i,dummy.matrix);
+    foreground.setColorAt(i,new THREE.Color(['#305d4d','#476f57','#71947a','#8da98a'][j%4]));
+  }
+  foreground.receiveShadow=true;scene.add(foreground);
+
   // Sip's open tasting shelter sits on the left bank; a vine pergola and a
   // water-first table make the miniature its own place, not a borrowed house.
   const shelter=new THREE.Group();shelter.position.set(-5.2,ground(-5.2,-7.1),-7.1);scene.add(shelter);
@@ -251,7 +293,7 @@ export function mountCreek(root) {
   const waterUniforms = {
     time:{value:0}, viewport:{value:new THREE.Vector2(1,1)}, refract:{value:refraction.texture},
     tint:{value:new THREE.Color(moods.afternoon.water)}, reflection:{value:new THREE.Color(moods.afternoon.skyWater)},
-    glint:{value:moods.afternoon.sparkle}, sunDir:{value:new THREE.Vector3(-.5,.82,.3).normalize()},
+    glint:{value:moods.afternoon.sparkle}, sunDir:{value:new THREE.Vector3(-3,5,-17).normalize()},
   };
   const wpos=[], windices=[], wu=56,wv=160;
   for(let j=0;j<=wv;j++)for(let i=0;i<=wu;i++) {
@@ -266,10 +308,20 @@ export function mountCreek(root) {
     void main(){vec3 p=position;p.y+=wave(p.xz);float e=.025;vec2 q=p.xz;vec3 n=normalize(vec3(wave(q-vec2(e,0.))-wave(q+vec2(e,0.)),2.*e,wave(q-vec2(0.,e))-wave(q+vec2(0.,e))));vec4 w=modelMatrix*vec4(p,1.);worldP=w.xyz;normalW=normalize(mat3(modelMatrix)*n);gl_Position=projectionMatrix*viewMatrix*w;}`,
     fragmentShader:`uniform float time,glint;uniform sampler2D refract;uniform vec2 viewport;uniform vec3 tint,reflection,sunDir;varying vec3 worldP,normalW;
     void main(){vec3 n=normalize(normalW),view=normalize(cameraPosition-worldP);float fresnel=pow(clamp(1.-max(dot(n,view),0.),0.,1.),3.);
-      vec2 uv=gl_FragCoord.xy/viewport+n.xz*.018;vec3 bottom=texture2D(refract,clamp(uv,vec2(.001),vec2(.999))).rgb;
-      vec3 water=mix(bottom*vec3(.72,1.02,.91),tint,.32);water=mix(water,reflection,.08+fresnel*.42);
-      float sun=pow(max(dot(reflect(-sunDir,n),view),0.),210.)*glint*1.4;
-      float sparkle=pow(max(0.,sin(worldP.x*13.+sin(worldP.z*5.+time)) * sin(worldP.z*14.-time*2.)),46.) * glint * .20;
+      // Analytic micro-ripples are evaluated per fragment for fine, moving
+      // refraction and specular highlights between the water mesh vertices.
+      float a=worldP.x*8.0+worldP.z*3.5-time*1.9,b=worldP.z*10.0-worldP.x*3.2-time*1.35;
+      vec2 fine=vec2(cos(a)*.020-cos(b)*.010,cos(a)*.009+cos(b)*.031);
+      n=normalize(n+vec3(-fine.x,0.,-fine.y));
+      vec2 uv=gl_FragCoord.xy/viewport+n.xz*.020;vec3 bottom=texture2D(refract,clamp(uv,vec2(.001),vec2(.999))).rgb;
+      float edge=abs(worldP.x-(.68*sin(worldP.z*.23)+.25*sin(worldP.z*.52)));
+      float shallow=smoothstep(1.55,2.75,edge);
+      vec3 water=mix(bottom*vec3(.82,1.04,.96),tint,mix(.24,.12,shallow));water=mix(water,reflection,.08+fresnel*.38);
+      vec3 halfVec=normalize(view+sunDir);float sun=pow(max(dot(n,halfVec),0.),320.)*glint*.62;
+      float sparkle=pow(max(0.,sin(worldP.x*15.+sin(worldP.z*5.+time*1.1)) * sin(worldP.z*15.-time*2.)),40.) * glint * .32;
+      vec2 causticP=worldP.xz+n.xz*.35+vec2(time*.07,-time*.13);
+      float caustic=pow(.5+.5*sin(causticP.x*5.+sin(causticP.y*3.)),8.)*pow(.5+.5*cos(causticP.y*5.-time*.55),6.);
+      water+=vec3(.22,.38,.28)*caustic*(1.-fresnel)*.16;
       water+=vec3(1.,.88,.58)*(sun+sparkle);gl_FragColor=vec4(water,1.);${directChunks}}`});
   const water=new THREE.Mesh(waterGeometry,waterMaterial);water.position.y=.015;water.receiveShadow=true;scene.add(water);
 
@@ -282,15 +334,15 @@ export function mountCreek(root) {
     floating.push({leaf,phase:rng(),offset:mix(-1.5,1.5,rng()),speed:mix(.13,.25,rng()),rot:rng()*PI*2});
   }
   // A few skimming glints around the near water give depth without foam.
-  const glintGeo=new THREE.BufferGeometry(),glintPositions=new Float32Array(26*3);
-  for(let i=0;i<26;i++){const z=mix(-17,11,rng());glintPositions[i*3]=bend(z)+mix(-2.2,2.2,rng());glintPositions[i*3+1]=.08;glintPositions[i*3+2]=z;}
+  const glintGeo=new THREE.BufferGeometry(),glintPositions=new Float32Array(40*3);
+  for(let i=0;i<40;i++){const z=mix(-17,11,rng());glintPositions[i*3]=bend(z)+mix(-2.2,2.2,rng());glintPositions[i*3+1]=.08;glintPositions[i*3+2]=z;}
   glintGeo.setAttribute('position',new THREE.BufferAttribute(glintPositions,3));
-  const glintMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{time:waterUniforms.time,strength:waterUniforms.glint},vertexShader:`uniform float time;varying float vA;void main(){vA=.5+.5*sin(time*2.2+position.x*4.+position.z*3.);vec4 p=modelViewMatrix*vec4(position,1.);gl_PointSize=clamp(20./-p.z,1.,4.);gl_Position=projectionMatrix*p;}`,fragmentShader:`uniform float strength;varying float vA;void main(){float d=length(gl_PointCoord-.5);float a=(1.-smoothstep(.08,.5,d))*pow(vA,6.)*.7;gl_FragColor=vec4(vec3(1.,.89,.68)*strength,a);}`});
+  const glintMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{time:waterUniforms.time,strength:waterUniforms.glint},vertexShader:`uniform float time;varying float vA;void main(){vA=.5+.5*sin(time*2.2+position.x*4.+position.z*3.);vec4 p=modelViewMatrix*vec4(position,1.);gl_PointSize=clamp(25./-p.z,1.,4.5);gl_Position=projectionMatrix*p;}`,fragmentShader:`uniform float strength;varying float vA;void main(){float d=length(gl_PointCoord-.5);float a=(1.-smoothstep(.08,.5,d))*pow(vA,6.)*.7;gl_FragColor=vec4(vec3(1.,.89,.68)*strength,a);}`});
   const glints=new THREE.Points(glintGeo,glintMat);scene.add(glints);
 
   const colors={top:new THREE.Color(moods.afternoon.top),horizon:new THREE.Color(moods.afternoon.horizon),fog:new THREE.Color(moods.afternoon.fog),water:new THREE.Color(moods.afternoon.water),skyWater:new THREE.Color(moods.afternoon.skyWater),sun:new THREE.Color(moods.afternoon.sun),hemi:new THREE.Color(moods.afternoon.hemi),ground:new THREE.Color(moods.afternoon.ground)};
   const targetColors=Object.fromEntries(Object.entries(colors).map(([key,value])=>[key,value.clone()]));
-  let mood=moods.afternoon, elapsed=0, visible=false, lost=false, paused=reduced.matches, last=0, fittedWidth=0, fittedHeight=0;
+  let mood=moods.afternoon, elapsed=0, visible=false, lost=false, paused=reduced.matches, last=0, fittedWidth=0, fittedHeight=0, hasFrame=false;
   let hemiPower=mood.hemiPower,sunPower=mood.sunPower,lampPower=mood.lamp,sparkle=mood.sparkle;
   let interacting=false;const driftAxis=new THREE.Vector3(0,1,0),driftOffset=new THREE.Vector3();
   controls.addEventListener('start',()=>{interacting=true;});controls.addEventListener('end',()=>{interacting=false;});
@@ -314,6 +366,7 @@ export function mountCreek(root) {
     light.color.copy(colors.hemi);light.groundColor.copy(colors.ground);light.intensity=hemiPower;sun.color.copy(colors.sun);sun.intensity=sunPower;lamp.emissiveIntensity=lampPower;warm.intensity=lampPower*3.2;
     floating.forEach(({leaf,phase,offset,speed,rot})=>{const z=10-((phase*30+elapsed*speed)%30);leaf.position.set(bend(z)+offset,.075+Math.sin(elapsed*1.5+phase*20)*.015,z);leaf.rotation.z=rot+Math.sin(elapsed*.35+phase*10)*.18;});
     controls.update();
+    if(focusPass)focusPass.uniforms.focus.value=camera.position.distanceTo(controls.target);
     const wasAutoClear=renderer.autoClear;
     try {
       renderer.autoClear=false;renderer.shadowMap.needsUpdate=true;
@@ -327,6 +380,8 @@ export function mountCreek(root) {
         // mobile render so stale depth cannot hide the next completed frame.
         renderer.clearDepth();renderer.render(scene,camera);
       }
+      // The canvas is revealed only after a complete frame has been submitted.
+      if(!hasFrame){canvas.style.visibility='visible';status.hidden=true;hasFrame=true;}
     } finally {water.visible=true;renderer.setRenderTarget(null);renderer.autoClear=wasAutoClear;}
   }
   function frame(now) {
@@ -343,6 +398,7 @@ export function mountCreek(root) {
     if(!w||!h||(w===fittedWidth&&h===fittedHeight))return false;
     fittedWidth=w;fittedHeight=h;renderer.setSize(w,h,false);if(composer)composer.setSize(w,h);
     renderer.getDrawingBufferSize(waterUniforms.viewport.value);
+    if(focusPass)focusPass.uniforms.pixel.value.set(1/waterUniforms.viewport.value.x,1/waterUniforms.viewport.value.y);
     refraction.setSize(Math.max(1,Math.round(w*(mobile?.50:.65))),Math.max(1,Math.round(h*(mobile?.50:.65))));
     camera.aspect=w/h;camera.fov=THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(THREE.MathUtils.degToRad(42)/2)*Math.max(1,1.0/camera.aspect)));camera.updateProjectionMatrix();
     if(visible&&!lost)paint(0,paused);return true;
@@ -364,9 +420,8 @@ export function mountCreek(root) {
     else return;
     event.preventDefault();camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(spherical));controls.update();
   });
-  canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();lost=true;renderer.setAnimationLoop(null);status.hidden=false;status.textContent='Graphics paused. Restoring Sip Creek… Refresh if it does not return.';});
-  canvas.addEventListener('webglcontextrestored',()=>{lost=false;status.hidden=true;syncLoop();if(visible)paint(0,paused);});
+  canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();lost=true;hasFrame=false;renderer.setAnimationLoop(null);canvas.style.visibility='hidden';status.hidden=false;status.textContent='Graphics paused. Restoring Sip Creek… Refresh if it does not return.';});
+  canvas.addEventListener('webglcontextrestored',()=>{lost=false;syncLoop();if(visible)paint(0,paused);});
   showPause();selectLight('afternoon');fit();
-  status.hidden=true;
   return {setVisible(value){if(value===visible)return;visible=value;syncLoop();if(value&&!lost&&!fit())paint(0,paused);}};
 }
