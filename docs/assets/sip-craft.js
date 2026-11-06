@@ -16,6 +16,8 @@ export function mountCraft(root) {
   // The refraction pass and composer see the same scene; update shadows only once per frame.
   renderer.shadowMap.autoUpdate = false;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.15;
+  // Keep the loading state visible until a complete frame has reached the canvas.
+  renderer.domElement.style.visibility = 'hidden';
   stage.prepend(renderer.domElement);
   renderer.domElement.tabIndex = 0;
   renderer.domElement.setAttribute('aria-label', 'Tidelight Coast. Drag to orbit, arrow keys rotate, plus and minus zoom. Weather and motion controls follow the scene.');
@@ -33,7 +35,7 @@ export function mountCraft(root) {
   outputPass.material.depthTest = false; outputPass.material.depthWrite = false;
   composer.addPass(bloom); composer.addPass(outputPass);
   const hemi = new THREE.HemisphereLight('#d8e6da', '#4e3945', 2.5); scene.add(hemi);
-  const sun = new THREE.DirectionalLight('#ffe0a1', 4); sun.position.set(-8, 15, 5); sun.castShadow = true;
+  const sun = new THREE.DirectionalLight('#ffe0a1', 4); sun.position.set(-8, 10, -10); sun.castShadow = true;
   sun.shadow.mapSize.set(1024,1024); Object.assign(sun.shadow.camera,{left:-12,right:12,top:12,bottom:-12}); sun.shadow.bias = -.001; scene.add(sun);
   const fill = new THREE.DirectionalLight('#73cfc6', 1.2); fill.position.set(6,5,-8); scene.add(fill);
   const group = new THREE.Group(); scene.add(group);
@@ -46,11 +48,30 @@ export function mountCraft(root) {
   // A floating slab of ocean, with cut geological strata and terraced vines.
   box(16,.65,12,teal,0,-1,0);
   box(15.7,.12,11.7,mat('#d8e6da',{metalness:.4,roughness:.3}),0,-1.38,0);
+  // A submerged pebble bed gives the refracted scene real depth. One instanced
+  // mesh keeps its draw cost small on phones as well as desktop.
+  const pebbles=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1,1),mat('#ffffff',{roughness:.94}),240);
+  const pebbleTransform=new THREE.Object3D(), pebbleColors=['#edd4a8','#817985','#a6b9a3','#914c2c'];
+  let pebbleSeed=6419;const pebbleRandom=()=>{pebbleSeed=(pebbleSeed*1664525+1013904223)>>>0;return pebbleSeed/4294967296;};
+  for(let i=0;i<pebbles.count;i++){
+    const size=.055+pebbleRandom()*.17;
+    pebbleTransform.position.set((pebbleRandom()-.5)*15.3,-.65,(pebbleRandom()-.5)*11.3);
+    pebbleTransform.scale.set(size*(.85+pebbleRandom()*.6),size*.38,size*(.8+pebbleRandom()*.7));
+    pebbleTransform.rotation.set(0,pebbleRandom()*Math.PI,0);pebbleTransform.updateMatrix();
+    pebbles.setMatrixAt(i,pebbleTransform.matrix);pebbles.setColorAt(i,new THREE.Color(pebbleColors[i%pebbleColors.length]));
+  }
+  pebbles.castShadow=false;pebbles.receiveShadow=true;group.add(pebbles);
   for(let i=0;i<4;i++) {
     const rock=mesh(new THREE.CylinderGeometry(3.9-i*.42,4.3-i*.4,.85,9),i%2?sand:mauve,-2.5,.05+i*.64,-1.8);
     rock.scale.z=.88; rock.rotation.y=.13;
   }
   const top=cyl(2.65,3.15,.4,sand,-2.5,2.55,-1.8,9); top.scale.z=.88;
+  // Soft painted contact shading sits just above the terrace, underneath the
+  // architecture and trellises, without another screen-space AO pass.
+  const contactMaterial=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,uniforms:{opacity:{value:.25}},vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`varying vec2 vUv;uniform float opacity;void main(){float d=length((vUv-.5)*2.);float a=(1.-smoothstep(.28,1.,d))*opacity;gl_FragColor=vec4(.035,.075,.065,a);}`});
+  function contact(x,y,z,w,d){const m=mesh(new THREE.PlaneGeometry(w,d),contactMaterial,x,y,z);m.rotation.x=-Math.PI/2;m.castShadow=false;m.receiveShadow=false;}
+  contact(-2.6,2.758,-.15,3.5,2.8);
+  for(const [x,z] of [[-4.1,-2.7],[-.9,-3.6],[-5.2,-1.9]])contact(x,2.758,z,.9,.9);
   // Vine trellises follow the crown of the island.
   for(let row=0;row<4;row++) for(let col=0;col<9;col++) {
     const x=-4.55+col*.48,z=-3.4+row*.8;
@@ -101,6 +122,16 @@ export function mountCraft(root) {
   mesh(new THREE.ConeGeometry(.79,.6,32),clay,4.4,4.86,-2.25);
   for(let i=0;i<12;i++){const a=i/12*Math.PI*2;box(.035,.54,.035,teal,4.4+Math.cos(a)*.62,4.2,-2.25+Math.sin(a)*.62);}
   const beacon=new THREE.PointLight('#ffcf86',18,10,2); beacon.position.set(4.4,4.3,-2.25);group.add(beacon);
+  // A small procedural glow keeps the lamp legible through rain without
+  // making bloom wash out the lighthouse silhouette.
+  const haloPixels=new Uint8Array(64*64*4);
+  for(let y=0;y<64;y++)for(let x=0;x<64;x++){
+    const d=Math.hypot((x-31.5)/31.5,(y-31.5)/31.5),i=(y*64+x)*4;
+    haloPixels[i]=255;haloPixels[i+1]=180;haloPixels[i+2]=96;haloPixels[i+3]=Math.round(255*Math.pow(Math.max(0,1-d),2.8));
+  }
+  const haloTexture=new THREE.DataTexture(haloPixels,64,64,THREE.RGBAFormat);haloTexture.needsUpdate=true;
+  const haloMaterial=new THREE.SpriteMaterial({map:haloTexture,color:'#ffd3a0',transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:.18});
+  const halo=new THREE.Sprite(haloMaterial);halo.position.copy(beacon.position);halo.scale.set(2.8,2.8,1);group.add(halo);
   // Soft, additive lighthouse shaft with radial falloff (no opaque cone silhouette).
   const beamMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,uniforms:{strength:{value:.1}},vertexShader:`varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`varying vec2 vUv;uniform float strength;void main(){float a=pow(sin(vUv.x*3.14159),3.)*pow(vUv.y,1.5)*strength;gl_FragColor=vec4(1.,.77,.39,a);}`});
   const beamPivot=new THREE.Group();beamPivot.position.set(4.4,4.3,-2.25);group.add(beamPivot);
@@ -121,7 +152,34 @@ export function mountCraft(root) {
     float wave(vec2 p){return sin(p.x*1.7+time*1.4)*cos(p.y*1.3+time*.8)*(.035+storm*.15)+sin(p.x*3.6+p.y*2.8-time*2.)*(.02+storm*.065);}
     void main(){vec3 p=position;p.z+=wave(p.xy);float e=.03;vec3 n=normalize(vec3((wave(p.xy-vec2(e,0.))-wave(p.xy+vec2(e,0.)))/(2.*e),(wave(p.xy-vec2(0.,e))-wave(p.xy+vec2(0.,e)))/(2.*e),1.));vec4 world=modelMatrix*vec4(p,1.);vP=world.xyz;vN=normalize(mat3(modelMatrix)*n);gl_Position=projectionMatrix*viewMatrix*world;}`,
     fragmentShader:`uniform float time,storm;uniform sampler2D refractTex;uniform vec2 viewport;varying vec3 vP;varying vec3 vN;
-    void main(){vec3 n=normalize(vN),v=normalize(cameraPosition-vP);float f=pow(1.-max(dot(n,v),0.),3.);vec2 q=vP.xz+n.xz*.7;float c=pow(.5+.5*sin(q.x*4.+sin(q.y*3.+time)) ,8.)*pow(.5+.5*cos(q.y*5.-time*.6),3.);vec3 sea=mix(vec3(.025,.18,.17),vec3(.022,.075,.105),storm);sea+=vec3(.18,.25,.16)*c*(1.-storm)*.35;sea=mix(sea,mix(vec3(.35,.54,.48),vec3(.20,.26,.32),storm),f*.8);float lace=pow(.5+.5*sin(q.x*31.+sin(q.y*23.-time*2.)),3.)*(.5+.5*sin(q.y*37.+q.x*17.+time));float foam=smoothstep(.10,.23,vP.y)*storm*lace*.85;float edge=smoothstep(7.65,8.,abs(vP.x))+smoothstep(5.65,6.,abs(vP.z));sea=mix(sea,vec3(.77,.86,.79),clamp(foam+edge*.24,0.,.72));float spec=pow(max(dot(reflect(-normalize(vec3(-.7,1.,.4)),n),v),0.),150.);sea+=vec3(1.,.76,.4)*spec*(1.-storm)*2.;vec2 screenUV=gl_FragCoord.xy/viewport;vec3 below=texture2D(refractTex,clamp(screenUV+n.xz*.012*(1.-storm),vec2(.001),vec2(.999))).rgb;sea=mix(sea,below*vec3(.45,.85,.76),.28*(1.-storm)*(1.-f));gl_FragColor=vec4(sea,1.);#include <tonemapping_fragment>\n#include <colorspace_fragment>}`.replace(';#include',';\n#include')});
+    void main(){
+      vec2 p=vP.xz;
+      vec2 detail=vec2(sin(p.x*9.+sin(p.y*5.+time*.7)-time*1.3),cos(p.y*11.+p.x*4.+time*1.1));
+      vec3 n=normalize(vN+vec3(detail.x,0.,detail.y)*(.022+storm*.018));
+      vec3 v=normalize(cameraPosition-vP), light=normalize(vec3(-8.,10.,-10.));
+      float f=pow(clamp(1.-dot(n,v),0.,1.),3.);
+      vec2 q=p+n.xz*.7;
+      float caustic=pow(.5+.5*sin(q.x*4.+sin(q.y*3.+time)),8.)*pow(.5+.5*cos(q.y*5.-time*.6),3.);
+      vec3 sea=mix(vec3(.025,.18,.17),vec3(.022,.075,.105),storm);
+      sea+=vec3(.18,.25,.16)*caustic*(1.-storm)*.3;
+      vec2 screenUV=gl_FragCoord.xy/viewport;
+      vec3 below=texture2D(refractTex,clamp(screenUV+n.xz*(.010+storm*.005),vec2(.001),vec2(.999))).rgb;
+      sea=mix(sea,below*vec3(.50,.88,.80),(.46-storm*.25)*(1.-f));
+      sea=mix(sea,mix(vec3(.35,.54,.48),vec3(.20,.26,.32),storm),f*.65);
+      float islandAO=1.-smoothstep(3.7,4.6,length((p-vec2(-2.5,-1.8))*vec2(1.,1.1)));
+      float towerAO=1.-smoothstep(1.2,2.2,length(p-vec2(4.4,-2.25)));
+      vec2 dock=abs(p-vec2(1.4,2.5));
+      float dockAO=(1.-smoothstep(2.35,2.9,dock.x))*(1.-smoothstep(.42,.9,dock.y));
+      sea*=1.-clamp(islandAO*.25+towerAO*.26+dockAO*.16,0.,.38);
+      float lace=pow(.5+.5*sin(q.x*31.+sin(q.y*23.-time*2.)),3.)*(.5+.5*sin(q.y*37.+q.x*17.+time));
+      float foam=smoothstep(.10,.23,vP.y)*storm*lace*.38;
+      float edge=smoothstep(7.65,8.,abs(p.x))+smoothstep(5.65,6.,abs(p.y));
+      sea=mix(sea,vec3(.77,.86,.79),clamp(foam+edge*.2,0.,.68));
+      float spec=pow(max(dot(reflect(-light,n),v),0.),180.);
+      float sparkle=pow(max(0.,sin(q.x*10.+time*1.6)*cos(q.y*12.-time*1.2)),24.);
+      sea+=mix(vec3(1.1,.76,.40),vec3(.53,.78,.82),storm)*(spec*(.38-storm*.18)+sparkle*(.24-storm*.12));
+      gl_FragColor=vec4(sea,1.);#include <tonemapping_fragment>\n#include <colorspace_fragment>
+    }`.replace(';#include',';\n#include')});
   const ocean=mesh(new THREE.PlaneGeometry(16,12,160,120),water,0,0,0);ocean.rotation.x=-Math.PI/2;ocean.castShadow=false;
   // Continuous ribbons spill off all four cut edges, fading into mist below the slab.
   const spillMat=new THREE.ShaderMaterial({uniforms:waterUniforms,transparent:true,side:THREE.DoubleSide,depthWrite:false,vertexShader:`varying vec2 vUv;uniform float time,storm;void main(){vUv=uv;vec3 p=position;p.z+=sin(p.x*4.+time*3.)*.025*(1.+storm);gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,fragmentShader:`varying vec2 vUv;uniform float time,storm;void main(){float streak=pow(.5+.5*sin(vUv.x*180.+sin(vUv.y*12.-time*5.)),5.);float a=pow(vUv.y,1.6)*(.17+streak*.55);gl_FragColor=vec4(mix(vec3(.24,.61,.55),vec3(.78,.86,.8),streak),a);}`});
@@ -144,7 +202,7 @@ export function mountCraft(root) {
   void main(){float h=normalize(vDir).y+.55;vec3 horizon=mix(vec3(.14,.22,.21),vec3(.12,.18,.22),storm);vec3 zenith=mix(vec3(.018,.07,.085),vec3(.018,.035,.065),storm);vec3 c=mix(horizon,zenith,smoothstep(-.15,.7,h));vec2 q=vDir.xz*.085+vec2(time*.012,0.);float cloud=fbm(q+fbm(q*.6));float body=smoothstep(.35,.7,cloud);c=mix(c,vec3(.13,.18,.2)*(cloud+.25),body*storm*.85);c+=vec3(.12,.1,.075)*smoothstep(.5,.75,cloud)*(1.-storm)*.25;gl_FragColor=vec4(c,1.);}` }));scene.add(sky);
   const disc=mesh(new THREE.SphereGeometry(1.6,32,24),new THREE.MeshBasicMaterial({color:'#edd4a8'}),-9,5,-16);disc.castShadow=false;
   const slider=root.querySelector('.craft-weather'),cycleButton=root.querySelector('.craft-cycle'),pauseButton=root.querySelector('.craft-pause');
-  let weather=.15,target=.15,t=0,visible=false,paused=reduced.matches,cycle=false,last=0,lost=false;
+  let weather=.15,target=.15,t=0,visible=false,paused=reduced.matches,cycle=false,last=0,lost=false,revealed=false;
   function syncLoop(){last=performance.now();renderer.setAnimationLoop(visible&&!lost&&!paused?frame:null);}
   function pauseUI(){syncLoop();pauseButton.setAttribute('aria-pressed',String(paused));pauseButton.textContent=paused?'Resume motion':'Pause motion';}
   pauseUI();
@@ -153,11 +211,16 @@ export function mountCraft(root) {
     skyUniforms.storm.value=weather;skyUniforms.time.value=t;waterUniforms.time.value=t;waterUniforms.storm.value=weather;mistMat.uniforms.storm.value=weather;
     scene.background.set('#526a65').lerp(new THREE.Color('#101e2a'),weather);scene.fog.color.copy(scene.background);scene.fog.density=.009+weather*.015;
     hemi.intensity=1.5-weather*.7;sun.intensity=3.2-weather*2.9;fill.intensity=1+weather*.65;
-    beacon.intensity=10+weather*24;lamp.emissiveIntensity=1.7+weather*3;beamMat.uniforms.strength.value=.015+weather*.11;beamPivot.rotation.y=t*.22+.6;
-    bloom.strength=.28+weather*.4;disc.material.color.set('#edd4a8').lerp(new THREE.Color('#817985'),weather);
+    beacon.intensity=12+weather*30;lamp.emissiveIntensity=1.8+weather*3.8;beamMat.uniforms.strength.value=.02+weather*.16;beamPivot.rotation.y=t*.22+.6;
+    haloMaterial.opacity=.16+weather*.24;contactMaterial.uniforms.opacity.value=.25+weather*.07;
+    bloom.strength=.34+weather*.38;disc.material.color.set('#edd4a8').lerp(new THREE.Color('#817985'),weather);
     boat.position.y=.25+Math.sin(t*1.4)*(.025+weather*.1);boat.rotation.z=Math.sin(t*1.3)*(.025+weather*.08);
     rainMat.opacity=Math.max(0,weather-.25)*.4;
-    rainBase.forEach(([x,y,z],i)=>{const h=((y-t*(9+weather*5))%12+12)%12;rainPos.set([x,h,z,x-.14-weather*.23,h+.4,z+.05],i*6);});rainGeo.attributes.position.needsUpdate=true;
+    for(let i=0;i<rainBase.length;i++){
+      const [x,y,z]=rainBase[i],h=((y-t*(9+weather*5))%12+12)%12,j=i*6;
+      rainPos[j]=x;rainPos[j+1]=h;rainPos[j+2]=z;rainPos[j+3]=x-.14-weather*.23;rainPos[j+4]=h+.4;rainPos[j+5]=z+.05;
+    }
+    rainGeo.attributes.position.needsUpdate=true;
     birds.forEach((b,i)=>{const a=t*.15+i*1.3;b.position.set(Math.cos(a)*5,6+i*.25+Math.sin(t+i)*.15,Math.sin(a)*3-2);b.rotation.y=-a;b.children.forEach((w,j)=>w.rotation.z=(j?1:-1)*(.2+Math.sin(t*5+i)*.35));b.scale.setScalar(1-weather*.6);});
     controls.update();
     // Half-resolution scene-color pass supplies real, normal-distorted refraction.
@@ -172,6 +235,8 @@ export function mountCraft(root) {
     renderer.autoClear = false;
     try { composer.render(); }
     finally { renderer.autoClear = previousAutoClear; }
+    // Reveal only after the complete composer frame has been submitted.
+    if(!revealed){renderer.domElement.style.visibility='';status.hidden=true;revealed=true;}
   }
   function frame(now){if(!visible||lost)return;const dt=Math.min((now-last)/1000||0,.05);last=now;paint(dt);}
   let fittedWidth=0,fittedHeight=0;
@@ -186,8 +251,8 @@ export function mountCraft(root) {
   root.querySelector('.craft-reset').addEventListener('click',()=>{camera.position.set(16,12.5,20);controls.target.set(0,1.1,0);controls.update();});
   reduced.addEventListener('change',()=>{paused=reduced.matches;cycle=false;cycleButton.setAttribute('aria-pressed','false');pauseUI();});
   renderer.domElement.addEventListener('keydown',e=>{const offset=camera.position.clone().sub(controls.target),s=new THREE.Spherical().setFromVector3(offset);if(e.key==='ArrowLeft')s.theta-=.12;else if(e.key==='ArrowRight')s.theta+=.12;else if(e.key==='ArrowUp')s.phi=Math.max(.48,s.phi-.1);else if(e.key==='ArrowDown')s.phi=Math.min(1.35,s.phi+.1);else if(e.key==='+'||e.key==='=')s.radius=Math.max(19,s.radius-1);else if(e.key==='-')s.radius=Math.min(38,s.radius+1);else return;e.preventDefault();camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(s));controls.update();});
-  renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();lost=true;renderer.setAnimationLoop(null);status.hidden=false;status.textContent='Graphics paused. Restoring the coast… Refresh if it does not return.';});
-  renderer.domElement.addEventListener('webglcontextrestored',()=>{lost=false;status.hidden=true;syncLoop();if(visible)paint();});
-  fit();paint();status.hidden=true;
+  renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();lost=true;revealed=false;renderer.setAnimationLoop(null);renderer.domElement.style.visibility='hidden';status.hidden=false;status.textContent='Graphics paused. Restoring the coast… Refresh if it does not return.';});
+  renderer.domElement.addEventListener('webglcontextrestored',()=>{lost=false;syncLoop();if(visible)paint();});
+  fit();paint();
   return {setVisible(value){if(visible===value)return;visible=value;last=performance.now();syncLoop();if(value&&!lost&&!fit())paint();}};
 }

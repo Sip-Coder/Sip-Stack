@@ -15,8 +15,9 @@
 .creek-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:22px 0 12px}
 .creek-light,.creek-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .creek-controls button{font:500 11px Inter,sans-serif;border:1px solid #1a555240;background:transparent;color:#1a5552;border-radius:24px;padding:10px 16px;cursor:pointer}
+.creek-controls button{min-height:40px}
 .creek-controls button[aria-pressed="true"]{background:#1a5552;color:#d8e6da}
 .creek-controls button:focus-visible,.creek-stage canvas:focus-visible{outline:3px solid #914c2c;outline-offset:4px}
 .creek-caption{display:flex;justify-content:space-between;gap:16px;font:11px/1.7 Inter,sans-serif;color:#746d69}
 .creek-caption span:last-child{font-style:italic}
-@media(max-width:600px){.creek{padding:0 14px;margin-top:56px}.creek-heading{display:block}.creek-heading>p{margin-top:16px}.creek-overlay,.creek-hint{left:18px;right:18px}.creek-overlay span:last-child,.creek-hint span:last-child{display:none}.creek-controls{gap:14px}.creek-light{width:100%}.creek-controls button{padding:9px 13px}.creek-caption{display:block}.creek-caption span{display:block}}
+@media(max-width:600px){.creek{padding:0 14px;margin-top:56px}.creek-heading{display:block}.creek-heading>p{margin-top:16px}.creek-overlay,.creek-hint{left:18px;right:18px}.creek-overlay span:last-child,.creek-hint span:last-child{display:none}.creek-controls{gap:14px}.creek-light{width:100%}.creek-controls button{min-height:44px;padding:9px 13px}.creek-caption{display:block}.creek-caption span{display:block}}

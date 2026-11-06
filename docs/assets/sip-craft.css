@@ -5,3 +5,8 @@
 @media(max-width:600px){.craft{padding:0 14px;margin-top:56px}.craft-heading{display:block}.craft-heading>p{margin-top:16px}.craft-overlay,.craft-bottom{left:18px;right:18px}.craft-overlay span:last-child,.craft-bottom span:last-child{display:none}.craft-controls{gap:8px}.craft-controls label{width:100%;margin-bottom:8px}.craft-weather{flex:1}.craft-caption{display:block}.craft-caption span{display:block}}
 
 .craft-stage::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 40%,#06182055 100%);z-index:1}
+.craft-status{z-index:3}
+.craft-controls button{min-height:40px}
+.craft-weather{min-height:44px}
+.craft-stage canvas:focus-visible{outline:3px solid #914c2c;outline-offset:4px}
+@media(max-width:600px){.craft-controls button{min-height:44px;padding:9px 13px}}
