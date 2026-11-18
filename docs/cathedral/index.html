@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#14203a">
+  <title>Blue Hour Cathedral · Sip-Stack</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./cathedral.css">
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head>
+<body>
+  <main id="stage" aria-label="Gothic cathedral rooftop at blue hour">
+    <header><a href="../" aria-label="Back to Sip-Stack">‹ &nbsp; Sip-Stack</a></header>
+    <p id="status" role="status">Preparing the rooftop…</p>
+    <noscript>The cathedral flythrough needs JavaScript and WebGL.</noscript>
+    <footer>
+      <div class="details"><div><h1>Blue Hour <i>Cathedral</i></h1><p id="chapter">The central spire</p></div>
+        <div class="controls" role="group" aria-label="Camera controls">
+          <button id="play" type="button" disabled>Pause</button>
+          <button id="replay" type="button" disabled>Replay</button>
+          <button id="orbit" type="button" aria-pressed="false" disabled>Free orbit</button>
+        </div>
+      </div>
+      <div class="transport"><input id="time" type="range" min="0" max="16" step="0.01" value="0" aria-label="Flight time in seconds" disabled><output for="time" id="clock">00:00 / 00:16</output></div>
+    </footer>
+  </main>
+  <script type="module">
+    import('./flight.js').then(m => m.start()).catch(error => {
+      document.querySelector('#status').textContent = 'The rooftop could not load. Check your connection and WebGL support, then refresh.';
+      console.warn('Cathedral initialization', error);
+    });
+  </script>
+</body>
+</html>
