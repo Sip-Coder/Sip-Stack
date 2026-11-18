@@ -91,6 +91,12 @@ export async function start() {
     const u=T.MathUtils.clamp(t/15.45,0,1);
     const eased=.64*u+.36*u*u*(3-2*u);
     flight.getPoint(eased,camera.position); gaze.getPoint(eased,look);
+    // Keep both flanking statues in the last portrait frame. Dollying
+    // back retains the perspective of the arch and its inscription.
+    const distance=camera.position.distanceTo(look);
+    const halfView=Math.tan(T.MathUtils.degToRad(camera.fov*.5))*camera.aspect;
+    const extra=Math.max(0,6.95/(distance*halfView)-1)*T.MathUtils.smoothstep(t,9.5,13.4);
+    camera.position.sub(look).multiplyScalar(1+extra).add(look);
     camera.lookAt(look);
   }
   function resize() {
