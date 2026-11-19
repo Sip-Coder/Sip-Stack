@@ -34,7 +34,7 @@ def measure(browser, url, package, restore):
     context.route("**/*", resolve)
     page = context.new_page()
     errors = []
-    page.on("pageerror", lambda error: errors.append(str(error)))
+    page.on("pageerror", lambda error: errors.append(error.stack or str(error)))
     page.on("console", lambda msg: errors.append(msg.text) if msg.type == "error" else None)
     if restore:
         page.add_init_script("""window.screenClears = [];
@@ -45,7 +45,8 @@ def measure(browser, url, package, restore):
                   !this.getParameter(this.DRAW_FRAMEBUFFER_BINDING)) screenClears.push(stage.className);
               return clear.call(this, mask);
             };""")
-    page.add_init_script("""window.firstSceneFrames = {};
+    page.add_init_script("""Error.stackTraceLimit = 32;
+        window.firstSceneFrames = {};
         new MutationObserver(records => {
           for (const {target: canvas} of records) {
             if (canvas.nodeName !== 'CANVAS' || canvas.style.visibility !== 'visible') continue;
@@ -68,6 +69,8 @@ def measure(browser, url, package, restore):
                 return Math.round(firstSceneFrames[document.querySelector(stage).className] - script.startTime);
             }""", [stage, module])
             assert canvas.evaluate("c => c.getContext('webgl2').getContextAttributes().preserveDrawingBuffer")
+            if restore:
+                print("Visible frame", module, flush=True)
             if restore and prefix == "vl":
                 notes = page.evaluate("""() => {
                     const pins = [...document.querySelectorAll('.vl-list [data-pin]')];
@@ -89,6 +92,8 @@ def measure(browser, url, package, restore):
                 page.wait_for_timeout(250)
                 page.evaluate("loss.restoreContext()")
                 page.wait_for_function(visible, arg=stage, timeout=180000)
+            if restore:
+                print("Restored frame", module, flush=True)
             colors = canvas.evaluate("""c => {
                 const sample=document.createElement('canvas'); sample.width=32; sample.height=32;
                 const ctx=sample.getContext('2d'); ctx.drawImage(c,0,0,32,32);

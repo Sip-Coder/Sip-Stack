@@ -333,7 +333,7 @@ export function mountCraft(root) {
   }
   function frame(now) {
     frameId = 0;
-    if (!warmed || !visible || lost || document.hidden) return;
+    if (!warmed || !visible || lost || document.hidden || renderer.getContext().isContextLost()) return;
     const dt = last === null ? 0 : (now - last) / 1000;
     last = now;
     draw(dt);

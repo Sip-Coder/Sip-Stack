@@ -38,17 +38,21 @@ export function coastalLight(renderer, scene, hemi, sun, sea, initialTier) {
     );
   const floatTarget = renderer.extensions.has('EXT_color_buffer_float');
   const gen = floatTarget ? new T.PMREMGenerator(renderer) : null;
-  const cube = new T.WebGLCubeRenderTarget(256, {
-    type: floatTarget ? T.HalfFloatType : T.UnsignedByteType,
-    generateMipmaps: true,
-    minFilter: T.LinearMipmapLinearFilter,
-  });
+  let mobile = initialTier === 'Mobile';
+  function skyTarget() {
+    return new T.WebGLCubeRenderTarget(mobile ? 128 : 256, {
+      type: floatTarget ? T.HalfFloatType : T.UnsignedByteType,
+      generateMipmaps: true,
+      minFilter: T.LinearMipmapLinearFilter,
+    });
+  }
+  let cube = skyTarget();
   const capture = new T.CubeCamera(0.1, 500, cube);
-  // Retain the full sky for the backdrop. Mobile's rough surfaces use a
-  // smaller lighting probe sampled from that same captured radiance.
+  // The backdrop and rough-surface radiance have different angular resolutions.
+  // Both sample the same procedural atmosphere.
   const probeScene = new T.Scene();
   probeScene.background = cube.texture;
-  let mobile = initialTier === 'Mobile', probeCamera;
+  let probeCamera;
   function radiance() {
     if (!mobile) return cube.texture;
     if (!probeCamera) {
@@ -141,6 +145,11 @@ export function coastalLight(renderer, scene, hemi, sun, sea, initialTier) {
     quality(tier) {
       if (mobile === (tier === 'Mobile')) return;
       mobile = tier === 'Mobile';
+      const previous = cube;
+      cube = skyTarget();
+      capture.renderTarget = cube;
+      probeScene.background = cube.texture;
+      previous.dispose();
       env?.dispose();
       env = undefined;
       pending = true;

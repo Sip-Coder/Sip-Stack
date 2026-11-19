@@ -827,7 +827,7 @@ export function mountVillage(root, { onPin } = {}) {
     }
   }
   function draw() {
-    if(!warmed) return;
+    if(!warmed || renderer.getContext().isContextLost()) return;
     if(!state.orbit) pose(elapsed,camera,controls.target);
     else controls.update();
     lighting.captureSky(); post.render(); placePins();

@@ -377,7 +377,7 @@ export function mountCreek(root) {
   }
   function draw(now) {
     frame = 0;
-    if (!warmed || !visible || lost || document.hidden) return;
+    if (!warmed || !visible || lost || document.hidden || renderer.getContext().isContextLost()) return;
     fit();
     const dt = last === null ? 0 : Math.max(0, (now - last) * 0.001);
     last = now;
