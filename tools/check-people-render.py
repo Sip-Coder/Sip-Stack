@@ -81,6 +81,10 @@ def measure(browser, url, package, restore):
                 }""")
                 assert len(notes) == len(set(notes)) == 18, notes
                 page.locator(".vl-transport [data-act=reset]").evaluate("button => button.click()")
+                quality = page.locator(".vl-quality")
+                for setting in ("High", "Mobile"):
+                    quality.select_option(label=setting)
+                    page.evaluate("() => new Promise(done => requestAnimationFrame(() => requestAnimationFrame(done)))")
             if restore:
                 page.locator(stage).evaluate("e => e.scrollIntoView({block:'center'})")
                 canvas.evaluate("""c => {
