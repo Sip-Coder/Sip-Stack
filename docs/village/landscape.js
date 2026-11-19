@@ -163,6 +163,7 @@ export function masonry(k, x0, x1, z, low, high, random) {
 }
 
 export function cypress(k, x, y, z, s, r) {
+  k.nav?.circle('cypress',x,z,.25*s,y,y+3*s);
   k.cyl(x, y + s * 0.72, z, s * 0.09, s * 1.42, '#584c37');
   for (let n = 0; n < 15; n++) {
     const t = n / 15,
@@ -177,6 +178,7 @@ export function cypress(k, x, y, z, s, r) {
   }
 }
 export function olive(k, x, y, z, s, r) {
+  k.nav?.circle('olive tree',x,z,.17*s,y,y+2.2*s);
   k.cyl(x, y + 0.53 * s, z, s * 0.14, s * 1.12, '#695c47', [0, 0, 0.13]);
   for (let i = 0; i < 6; i++) {
     const a = i * 2.4,
@@ -205,6 +207,7 @@ export function olive(k, x, y, z, s, r) {
 }
 
 function civicSquare(k, r) {
+  k.nav?.surface('piazza',-11,2,-17,-10,7.075);
   k.box(-11, 2, -0.95, 7.02, -17, -10, '#857d67');
   masonry(k, -11, 2, -10.05, 5.8, 7.03, r);
   for (let j = 0; j < 12; j++)
@@ -217,6 +220,7 @@ function civicSquare(k, r) {
   const x = -6,
     z = -13.7,
     b = 7.06;
+  k.nav?.box('belfry',x,z,1.14,1.14,b,15.72);
   k.box(x - 1, x + 1, b, 13.4, z - 1, z + 1, '#d5b08a', 'plaster');
   for (const h of [7.4, 11.75, 13.4, 15.55])
     k.box(x - 1.14, x + 1.14, h, h + 0.17, z - 1.14, z + 1.14, '#ead7b1');
@@ -296,9 +300,11 @@ function civicSquare(k, r) {
     );
   // A small shaded loggia bounds the upper square.
   const az = -15.66;
+  k.nav?.box('loggia wall',-5.6,az-.69,3.325,.085,7.065,9.015);
   k.push('plaster', [-5.6, 8.04, az - 0.69], [6.65, 1.95, 0.17], '#caac89');
   for (let i = 0; i < 5; i++) {
     const xx = -8.86 + i * 1.62;
+    k.nav?.box('loggia post',xx,az,.12,.12,7.025,8.475);
     k.push('stone', [xx, 7.75, az], [0.22, 1.45, 0.24], '#c5af8e');
     k.push('stone', [xx, 8.48, az], [0.31, 0.14, 0.33], '#e4cfaa');
     if (i === 4) break;
@@ -319,6 +325,7 @@ function civicSquare(k, r) {
   cypress(k, 0.86, 7, -15.8, 1.28, r);
   cypress(k, -10.45, 7, -16.1, 1.48, r);
   for (const x of [-4, -0.5]) {
+    k.nav?.box('piazza bench',x,-12.995,.64,.165,7.075,7.53);
     k.box(x - 0.64, x + 0.64, 7.44, 7.53, -13.16, -12.83, '#815b39');
     for (const dx of [-0.49, 0.49])
       k.box(x + dx - 0.09, x + dx + 0.09, 7.08, 7.44, -13.13, -12.88, '#9d937e');
