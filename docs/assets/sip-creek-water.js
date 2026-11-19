@@ -41,6 +41,9 @@ function flowMap() {
   tex.needsUpdate = true;
   return tex;
 }
+export function streamHeight(x, z, t) {
+  return surface(z) + 0.012 * Math.sin(z * 3.1 + t * 1.9 + x) + 0.009 * Math.sin(x * 3.3 + z * 1.4 + t);
+}
 export function stream(scene, rng, time, sky, mineral, opaque, camera) {
   const verts = [],
     idx = [],
@@ -126,21 +129,43 @@ export function stream(scene, rng, time, sky, mineral, opaque, camera) {
       float cell=length(fract(froth*3.4+noise*3.+curl*2.)-.5);
       float bubbles=1.-smoothstep(.024,.105+fwidth(cell),abs(cell-.30));
       float foam=smoothstep(.47,.80,field.b*.77+noise*.52)*(bubbles*.27+.39*smoothstep(.49,.64,noise));
+      vec2 hull=wp.xz-vec2(1.35,-13.);
+      float downstream=-hull.y;
+      foam+=exp(-20.*abs(abs(hull.x)-(.34+.12*downstream)))*smoothstep(.4,1.,downstream)
+            *(1.-smoothstep(1.2,3.,downstream))*(.12+.08*sin(18.*downstream-time*4.))*noise;
       c=mix(c,mix(vec3(.25,.35,.42),vec3(.82,.86,.72),daylight),foam);
       gl_FragColor=vec4(c,1.);
     }`,
   });
   scene.add(new T.Mesh(g, m));
-  const leafShape = new T.Shape();
-  leafShape.moveTo(0, -0.09);
-  leafShape.quadraticCurveTo(-0.1, -0.015, -0.025, 0.085);
-  leafShape.lineTo(0, 0.14);
-  leafShape.quadraticCurveTo(0.11, 0.03, 0, -0.09);
-  const leafG = new T.ShapeGeometry(leafShape, 6);
-  leafG.rotateX(-Math.PI / 2);
+  // A curled blade with a raised midrib and paired lateral veins.
+  const lp = [],
+    lc = [],
+    li = [],
+    vein = new T.Color('#d5a45b'),
+    edge = new T.Color('#88572f');
+  for (let j = 0; j <= 16; j++) {
+    const u = j / 16,
+      w = 0.068 * Math.sin(Math.PI * u) ** 0.81;
+    for (let k = -4; k <= 4; k++) {
+      const v = k / 4,
+        z = (u - 0.47) * 0.24 + 0.017 * Math.abs(v) * Math.sin(Math.PI * u);
+      lp.push(v * w + 0.012 * u * u, 0.014 * v * v + 0.007 * Math.sin(u * 5) - 0.008 * Math.abs(v), z);
+      const tone = 0.91 + 0.12 * Math.cos(j * 2.8 - Math.abs(k) * 0.89),
+        color = k === 0 ? vein : edge;
+      lc.push(color.r * tone, color.g * tone, color.b * tone);
+      const n = lp.length / 3 - 1;
+      if (j && k > -4) li.push(n - 10, n - 1, n, n - 10, n, n - 9);
+    }
+  }
+  const leafG = new T.BufferGeometry();
+  leafG.setAttribute('position', new T.Float32BufferAttribute(lp, 3));
+  leafG.setAttribute('color', new T.Float32BufferAttribute(lc, 3));
+  leafG.setIndex(li);
+  leafG.computeVertexNormals();
   const leaves = new T.InstancedMesh(
     leafG,
-    new T.MeshStandardMaterial({ color: '#d39a4b', side: T.DoubleSide, roughness: 0.52 }),
+    new T.MeshStandardMaterial({ vertexColors: true, side: T.DoubleSide, roughness: 0.54 }),
     32,
   );
   scene.add(leaves);
@@ -172,45 +197,26 @@ export function stream(scene, rng, time, sky, mineral, opaque, camera) {
     positions.push(x, surface(z), z);
     seeds.push(rng(), rng());
   }
-  function motes(coords, phases, night) {
-    const geo = new T.BufferGeometry();
-    geo.setAttribute('position', new T.Float32BufferAttribute(coords, 3));
-    geo.setAttribute('seed', new T.Float32BufferAttribute(phases, 2));
-    const material = new T.ShaderMaterial({
-      transparent: true,
-      depthWrite: false,
-      blending: night ? T.AdditiveBlending : T.NormalBlending,
-      uniforms: { time, viewport: uniforms.viewport, daylight: sky.daylight },
-      vertexShader: `
-        attribute vec2 seed;uniform float time;uniform vec2 viewport;varying float fade;
-        void main(){vec3 p=position;
-          ${
-            night
-              ? `p.x+=sin(time*.61+seed.x*21.)*.33;p.y+=sin(time*.84+seed.y*12.)*.14;p.z+=cos(time*.42+seed.x*12.)*.37;
-            fade=pow(.5+.5*sin(time*1.66+seed.x*32.),2.);`
-              : `float t=fract(time*(1.08+seed.y*.9)+seed.x);p.z-=t*.31;p.x+=(seed.x-.5)*t*.19;
-            p.y+=.016+4.*t*(1.-t)*(.06+seed.y*.12);fade=sin(t*3.14159)*.67;`
-          }
-          vec4 eye=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*eye;
-          gl_PointSize=clamp(viewport.y*${night ? '.048' : '.011'}/max(.1,-eye.z),1.4,${night ? '12.' : '4.'});}`,
-      fragmentShader: `varying float fade;uniform float daylight;void main(){float d=length(gl_PointCoord-.5)*2.;
-        gl_FragColor=vec4(${night ? 'vec3(3.2,2.05,.47)' : 'mix(vec3(.33,.42,.49),vec3(.93,.96,.88),daylight)'},fade*exp(-d*d*5.)*(1.-smoothstep(.65,1.,d)));}`,
-    });
-    const o = new T.Points(geo, material);
-    o.frustumCulled = false;
-    scene.add(o);
-    return o;
-  }
-  motes(positions, seeds, false);
-  positions.length = seeds.length = 0;
-  for (let i = 0; i < 85; i++) {
-    const z = lerp(-19, 14, rng());
-    positions.push(channel(z) + (rng() - 0.5) * 7, surface(z) + 0.22 + rng() * 1.32, z);
-    seeds.push(rng(), rng());
-  }
-  const flies = motes(positions, seeds, true);
+  const spray = new T.BufferGeometry();
+  spray.setAttribute('position', new T.Float32BufferAttribute(positions, 3));
+  spray.setAttribute('seed', new T.Float32BufferAttribute(seeds, 2));
+  scene.add(
+    new T.Points(
+      spray,
+      new T.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        uniforms: { time, viewport: uniforms.viewport, daylight: sky.daylight },
+        vertexShader: `attribute vec2 seed;uniform float time;uniform vec2 viewport;varying float fade;
+      void main(){vec3 p=position;float t=fract(time*(1.08+seed.y*.9)+seed.x);p.z-=t*.31;p.x+=(seed.x-.5)*t*.19;
+      p.y+=.016+4.*t*(1.-t)*(.06+seed.y*.12);fade=sin(t*3.14159)*.67;
+      vec4 eye=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*eye;gl_PointSize=clamp(viewport.y*.011/max(.1,-eye.z),1.4,4.);}`,
+        fragmentShader: `varying float fade;uniform float daylight;void main(){float d=length(gl_PointCoord-.5)*2.;
+      gl_FragColor=vec4(mix(vec3(.33,.42,.49),vec3(.93,.96,.88),daylight),fade*exp(-d*d*5.)*(1.-smoothstep(.65,1.,d)));}`,
+      }),
+    ),
+  );
   function update(t) {
-    flies.visible = sky.daylight.value < 0.5;
     for (let i = 0; i < tracks.length; i++) {
       const { path, offset, speed } = tracks[i],
         n = path.length / 2 - 1;

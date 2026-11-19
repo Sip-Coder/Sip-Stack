@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { buildSky, sunDirection, seeded } from './sip-craft-sky.js';
 import { buildHarbor } from './sip-craft-harbor.js';
 import { buildLand, stoneTexture } from './sip-craft-land.js';
-import { buildSea, hullWave } from './sip-craft-water.js';
+import { buildSea } from './sip-craft-water.js';
 import { makePipeline } from './sip-craft-render.js';
 import { warmShaders } from './sip-warm.js';
 
@@ -307,8 +307,7 @@ export function mountCraft(root) {
     land.environmentIntensity = 0.64 - weather * 0.24;
     sun.intensity = 2.87 * (1 - weather * 0.94);
     skyLight.intensity = 0.95 - weather * 0.48 + u.flash.value * 0.66;
-    const heave = hullWave(3, 4.2, t, weather);
-    harbor(t, weather, heave, (hullWave(3.08, 4.2, t, weather) - heave) / 0.08);
+    harbor(t, weather, camera, tier);
     if (dirty || Math.abs(t - shadowTime) > 0.18) {
       renderer.shadowMap.needsUpdate = true;
       shadowTime = t;

@@ -200,6 +200,10 @@ export function buildSea(scene, u, sky, opaque, camera) {
       float whitecap=smoothstep(.17,.50,crest)*( .24+.76*storm);
       float lace=clamp(tex.b*.95+crossSea.b*.62,0.,1.);
       float froth=smoothstep(.14,.87,(wash+whitecap)*(lace+.34));
+      vec2 mooring=p-vec2(3.,4.2);
+      float along=dot(mooring,vec2(.738,.674)),across=abs(dot(mooring,vec2(-.674,.738)));
+      float hullEdge=abs(across-.39*max(0.,1.-along*along));
+      froth+=exp(-24.*hullEdge)*(1.-smoothstep(.85,1.16,abs(along)))*(.12+.09*sin(7.*along-t*3.))*lace;
       radiance=mix(radiance,mix(vec3(.79,.87,.77),vec3(.44,.55,.57),storm),froth);
       float mist=(1.-exp(-dist*(.005+storm*.022)))*exp(-max(wP.y,0.)*.05);
       vec3 horizon=texture2D(skyMap,skyUV(normalize(vec3(-v.x,.028,-v.z)))).rgb;

@@ -5,11 +5,15 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
-import { contacts, landscape, seeded, V } from './sip-creek-land.js';
+import { contacts, landscape, seeded, V, surface, ground } from './sip-creek-land.js';
 import { atmosphere, materials, lightSettings } from './sip-creek-materials.js';
 import { grove } from './sip-creek-grove.js';
-import { stream } from './sip-creek-water.js';
+import { stream, streamHeight } from './sip-creek-water.js';
 import { cellar } from './sip-creek-cellar.js';
+import { cutter, floatHull } from '../life/harbor.js';
+import { tube } from '../life/forms.js';
+import { flock } from '../life/birds.js';
+import { insects, trout } from '../life/wildlife.js';
 import { warmShaders } from './sip-warm.js';
 
 const tiers = ['Mobile', 'Medium', 'High'],
@@ -98,6 +102,65 @@ export function mountCreek(root) {
   grove(scene, rng, time, wood, detail, contact);
   contact.stamp(3.8, -14, 2.35, 1.54, 0.82);
   const lantern = cellar(scene, wood, rng);
+  const skiff = cutter('#b7c7b5', '#395c5b');
+  skiff.root.name = 'Creek skiff';
+  skiff.root.position.set(1.35, 0, -13);
+  skiff.root.rotation.y = 1.45;
+  scene.add(skiff.root);
+  const stakeZ = -14.38,
+    stakeX = 2.25,
+    stakeY = ground(stakeX, stakeZ);
+  const tether = new T.MeshStandardMaterial({ color: '#8d7655', roughness: 0.86 });
+  tube(
+    scene,
+    [
+      [stakeX, stakeY - 0.06, stakeZ],
+      [stakeX, stakeY + 0.42, stakeZ],
+    ],
+    0.044,
+    tether,
+    4,
+  );
+  tube(
+    scene,
+    [
+      [1.47, surface(-14) + 0.42, -14],
+      [1.76, surface(-14) + 0.29, -14.19],
+      [stakeX, stakeY + 0.38, stakeZ],
+    ],
+    0.012,
+    tether,
+    12,
+  );
+  const kingfisher = flock(scene, {
+    kind: 'kingfisher',
+    count: 1,
+    center: [-1.2, 2.48, 6.1],
+    radii: [1.8, 2.6],
+    perch: [-1.51, surface(6.4) + 0.45, 6.4],
+    scale: 0.53,
+    obstacles: [[-2.4, 2.0, 7.2, 0.68]],
+  });
+  const finches = flock(scene, {
+    kind: 'songbird',
+    count: 4,
+    center: [0.3, 3.7, -7.6],
+    radii: [3.2, 2.1],
+    perch: [4.1, ground(4.1, -16.45) + 1.915, -16.45],
+    scale: 0.36,
+  });
+  const troutPool = trout(scene, 9, 0.84, 4.42, (x, z) => surface(z), 0.85);
+  const dragonflies = insects(
+    scene,
+    'dragonfly',
+    9,
+    [-0.37, surface(5.1) + 0.54, 5.1],
+    [1.48, 0.22, 1.62],
+    0.65,
+  );
+  const butterflies = insects(scene, 'butterfly', 7, [-2.35, 1.83, -7.8], [1.4, 0.34, 1.12], 0.63);
+  const fireflies = insects(scene, 'firefly', 32, [-0.17, 1.55, -2.6], [2.7, 0.72, 13.4], 0.34);
+  let lastShadow = -1;
   const hdr =
     renderer.extensions.has('EXT_color_buffer_float') ||
     renderer.extensions.has('EXT_color_buffer_half_float');
@@ -298,7 +361,7 @@ export function mountCreek(root) {
     leafLight.groundColor.copy(hemi.groundColor);
     leafLight.intensity = m.ambient * 1.6;
     air.uniforms.haze.value.copy(scene.fog.color);
-    lantern(light === 'night' || light === 'blue');
+    lantern.light(light === 'night' || light === 'blue');
     renderer.shadowMap.needsUpdate = true;
     moodDirty = false;
   }
@@ -330,6 +393,19 @@ export function mountCreek(root) {
     updateLOD(camera, tier);
     time.value = ambient;
     creek.update(ambient);
+    const mobile = tier === 0;
+    lantern.update(ambient, camera, mobile);
+    floatHull(skiff.root, ambient, streamHeight, 0, 0.015);
+    kingfisher(ambient, mobile, camera);
+    finches(ambient, mobile, camera);
+    troutPool(ambient, mobile);
+    dragonflies(ambient, mobile, false);
+    butterflies(ambient, mobile, false);
+    fireflies(ambient, mobile, daylight.value < 0.5);
+    if (!mobile && Math.abs(ambient - lastShadow) > 0.2) {
+      renderer.shadowMap.needsUpdate = true;
+      lastShadow = ambient;
+    }
     renderer.setRenderTarget(opaque);
     renderer.clear();
     renderer.render(scene, camera);
@@ -449,7 +525,10 @@ export function mountCreek(root) {
   // Hold the first frame until the shaders are linked; the canvas stays hidden meanwhile.
   let warmed = false;
   if (moodDirty) applyLight(); // fog and scene.environment are part of every lit shader's key
-  warmShaders(renderer, [[scene, camera, opaque], [overlay, camera, opaque]]).then((ms) => {
+  warmShaders(renderer, [
+    [scene, camera, opaque],
+    [overlay, camera, opaque],
+  ]).then((ms) => {
     warmed = true;
     console.info(`Sip Creek shaders ready in ${Math.round(ms)} ms (tier ${tier})`);
     queue();
