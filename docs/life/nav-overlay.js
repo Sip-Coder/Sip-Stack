@@ -202,7 +202,14 @@ export function peopleOverlay(root, nav, viewport) {
       for (const foot of actor.feet ?? [])
         for (const sole of [foot.heel, foot.toe]) {
           local(v.copy(sole), foot.ankle);
-          const error = Math.abs(v.y - nav.floor(v.x, v.z));
+          // A seated oarsman braces on a moving deck. Sample its local board
+          // height in the hull frame before plotting the contact in the scene.
+          let error;
+          if (agent.deckHeight) {
+            foot.ankle.localToWorld(w.copy(sole));
+            actor.g.parent.worldToLocal(w);
+            error = Math.abs(w.y - agent.deckHeight(w.x, w.z));
+          } else error = Math.abs(v.y - nav.floor(v.x, v.z));
           if (foot.planted) record.footError = Math.max(record.footError, error);
           cross(v, 0.021 * scale, foot.planted ? (error > 0.02 * scale ? bad : good) : pathColor);
         }
