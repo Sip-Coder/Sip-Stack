@@ -164,5 +164,5 @@ export function pipeline(renderer, scene, camera, sea, sun) {
     }
     composer.render();
   }
-  return { quality, resize, render };
+  return { quality, resize, render, target };
 }
