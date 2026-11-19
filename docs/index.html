@@ -584,13 +584,22 @@
       <div class="craft-stage" aria-label="Cinematic coastal vineyard and lighthouse diorama">
         <div class="craft-overlay"><span>WATER TO WINE</span><span>THE TIDELIGHT COAST</span></div>
         <p class="craft-status" role="status">Preparing the coast…</p>
-        <div class="craft-bottom"><span>Drag to explore · pinch to zoom</span><span>PROCEDURAL THREE.JS</span></div>
+        <div class="craft-bottom"><span class="craft-beat">The swell</span><span>PROCEDURAL THREE.JS</span></div>
       </div>
       <div class="craft-controls" role="group" aria-label="Craft demo controls">
+        <div class="craft-transport" role="group" aria-label="Coastal flight">
+          <button type="button" class="craft-play">Play</button>
+          <button type="button" class="craft-replay">Replay</button>
+          <input class="craft-scrub" type="range" min="0" max="18" step=".01" value="0" aria-label="Flight time in seconds">
+          <output class="craft-clock">00:00 / 00:18</output>
+          <button type="button" class="craft-orbit" aria-pressed="false">Free orbit</button>
+        </div>
         <label>Day <input class="craft-weather" type="range" min="0" max="100" value="15" aria-label="Weather from day to storm"> Storm</label>
         <button type="button" class="craft-cycle" aria-pressed="false">Cycle weather</button>
         <button type="button" class="craft-pause" aria-pressed="false">Pause motion</button>
+        <button type="button" class="craft-thunder" aria-pressed="false">Thunder sound</button>
         <button type="button" class="craft-reset">Reset view</button>
+        <label class="craft-tier">Quality <select class="craft-quality"><option value="auto">Auto</option><option value="2">High</option><option value="1">Medium</option><option value="0">Mobile</option></select></label>
       </div>
       <p class="craft-caption">Craft playground — not part of the teaching village. <span>Mint sea / clay coast / a light to come home to.</span></p>
     </section>

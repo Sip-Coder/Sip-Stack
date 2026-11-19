@@ -10,3 +10,10 @@
 .craft-weather{min-height:44px}
 .craft-stage canvas:focus-visible{outline:3px solid #914c2c;outline-offset:4px}
 @media(max-width:600px){.craft-controls button{min-height:44px;padding:9px 13px}}
+.craft-transport{display:flex;align-items:center;gap:10px;width:100%;padding-bottom:12px;border-bottom:1px solid #1a555222}
+.craft-scrub{min-width:55px;flex:1;accent-color:#1a5552;height:36px}
+.craft-clock{font:500 11px Inter,sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap}
+.craft-controls .craft-tier{margin:0;gap:8px}.craft-quality{font:inherit;color:inherit;background:transparent;border:1px solid #1a555240;border-radius:12px;padding:8px}
+.craft-overlay,.craft-bottom{color:#fff3d9;text-shadow:0 1px 5px #183735}
+.craft-stage::after{background:linear-gradient(180deg,#12202138,transparent 16%,transparent 84%,#1020223d)}
+@media(max-width:600px){.craft-stage{height:clamp(440px,70svh,690px)}.craft-transport{gap:6px;flex-wrap:wrap}.craft-transport .craft-scrub{order:2;flex-basis:69%}.craft-clock{order:3}.craft-controls .craft-tier{width:auto}}
