@@ -247,8 +247,8 @@ export function atmosphere(scene, renderer, daylight, hdr) {
   const skyOnly = new T.Scene();
   skyOnly.add(sky.clone());
   const pmrem = hdr ? new T.PMREMGenerator(renderer) : null;
-  let env;
-  function apply(name) {
+  let env, mobileCapture;
+  function apply(name, mobile) {
     const m = lightSettings[name];
     uniforms.zenith.value.set(m.sky);
     uniforms.horizon.value.set(m.air);
@@ -260,7 +260,26 @@ export function atmosphere(scene, renderer, daylight, hdr) {
     // The direct sky, sun and hemisphere also work on RGBA8-only GPUs.
     if (!pmrem) return;
     const previous = env;
-    env = pmrem.fromScene(skyOnly, 0.025, 0.1, 110);
+    if (mobile) {
+      // The sky dome remains at the screen resolution. Only the environment
+      // used for indirect light needs a low-frequency representation on Mobile.
+      if (!mobileCapture) {
+        const probe = new T.WebGLCubeRenderTarget(64, {
+          type: T.HalfFloatType, generateMipmaps: false, minFilter: T.LinearFilter,
+        });
+        mobileCapture = new T.CubeCamera(0.1, 110, probe);
+      }
+      const autoClear = renderer.autoClear;
+      renderer.autoClear = true;
+      try {
+        mobileCapture.update(renderer, skyOnly);
+      } finally {
+        renderer.autoClear = autoClear;
+      }
+      env = pmrem.fromCubemap(mobileCapture.renderTarget.texture);
+    } else {
+      env = pmrem.fromScene(skyOnly, 0.025, 0.1, 110);
+    }
     scene.environment = env.texture;
     previous?.dispose();
     scene.environmentIntensity = 0.48;

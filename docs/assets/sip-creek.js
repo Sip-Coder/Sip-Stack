@@ -329,7 +329,9 @@ export function mountCreek(root) {
     camera.updateProjectionMatrix();
   }
   function selectQuality() {
+    const wasMobile = tier === 0;
     tier = quality.value === 'auto' ? automaticTier(renderer, stage.clientWidth) : Number(quality.value);
+    if (wasMobile !== (tier === 0)) moodDirty = true;
     quality.options[0].textContent = 'Auto · ' + tiers[automaticTier(renderer, stage.clientWidth)];
     for (const { mesh, max, fractions } of densities) mesh.count = Math.ceil(max * fractions[tier]);
     renderer.shadowMap.enabled = tier > 0;
@@ -350,7 +352,7 @@ export function mountCreek(root) {
     queue();
   }
   function applyLight() {
-    sky.apply(light);
+    sky.apply(light, tier === 0);
     air.uniforms.mist.value = light === 'morning' ? 3.8 : 1;
     const m = lightSettings[light];
     sun.color.set(m.sun);
