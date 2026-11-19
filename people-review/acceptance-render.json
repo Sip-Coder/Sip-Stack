@@ -1,0 +1,131 @@
+{
+  "mainCommit": "99339be",
+  "branchRuntimeCommit": "1d65831",
+  "priorToCreekProbe": "a710fd8",
+  "profile": {
+    "browser": "Chromium 155.0.8059.79 built on Debian GNU/Linux 13 (trixie)",
+    "viewport": [
+      390,
+      844
+    ],
+    "deviceScaleFactor": 1,
+    "renderer": "SwiftShader",
+    "touch": true,
+    "reducedMotion": true,
+    "endpoint": "Scene module request to first displayed populated canvas (ms)",
+    "coldBrowserPerTrial": true,
+    "order": [
+      "main",
+      "branch",
+      "branch",
+      "main",
+      "main",
+      "branch"
+    ],
+    "repetitionsPerRevision": {
+      "village": 6,
+      "craft": 6,
+      "creek": 3
+    }
+  },
+  "samplesMs": {
+    "main": {
+      "village": [
+        5242,
+        5502,
+        4493,
+        4818,
+        4568,
+        5437
+      ],
+      "craft": [
+        2370,
+        2601,
+        2427,
+        2453,
+        2848,
+        2540
+      ],
+      "creek": [
+        3969,
+        4590,
+        3967
+      ]
+    },
+    "branch": {
+      "village": [
+        4517,
+        4326,
+        4348,
+        4658,
+        5055,
+        5028
+      ],
+      "craft": [
+        2352,
+        2327,
+        2490,
+        2134,
+        2557,
+        2449
+      ],
+      "creek": [
+        2909,
+        2874,
+        3044
+      ]
+    }
+  },
+  "medianMs": {
+    "main": {
+      "village": 5030.0,
+      "craft": 2496.5,
+      "creek": 3969
+    },
+    "branch": {
+      "village": 4587.5,
+      "craft": 2400.5,
+      "creek": 2909
+    }
+  },
+  "preOptimizationCreekMs": [
+    [
+      "main",
+      4090
+    ],
+    [
+      "branch",
+      4234
+    ],
+    [
+      "branch",
+      3779
+    ],
+    [
+      "main",
+      4160
+    ],
+    [
+      "main",
+      3875
+    ],
+    [
+      "branch",
+      4831
+    ]
+  ],
+  "allMedianFirstFramesWithinMain": true,
+  "contextLoss": {
+    "restoredScenes": [
+      "Village",
+      "Tidelight Coast",
+      "Sip Creek"
+    ],
+    "villagePinNotes": 18,
+    "nonblankBeforeAndAfter": true,
+    "preserveDrawingBuffer": true,
+    "visibleFramebufferColorClears": 0,
+    "consoleErrors": 0,
+    "pageErrors": 0
+  }
+}
