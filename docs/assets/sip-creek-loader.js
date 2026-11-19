@@ -29,8 +29,13 @@ async function sync() {
       failed = true;
       const status = block.querySelector('.creek-loading');
       status.hidden = false;
-      status.textContent = 'The creek could not load. WebGL and a connection are needed. Refresh to try again.';
-      console.warn('Creek demo:', error);
+      status.textContent = 'Updating the creek…';
+      import('./sip-recover.js')
+        .then(({ recover }) => recover('Sip Creek', error, ['./assets/sip-creek.js']))
+        .catch(() => false)
+        .then((reloading) => {
+          if (!reloading) status.textContent = 'The creek could not load. Refresh to try again.';
+        });
     } finally { loading = false; }
   }
   if (!active() || failed) {

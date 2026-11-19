@@ -25,8 +25,14 @@ async function sync() {
       if (active()) instance = mountCraft(block);
     } catch (error) {
       failed = true;
-      block.querySelector('.craft-status').textContent = 'The coast could not load. WebGL and a connection are needed. Refresh to try again.';
-      console.warn('Craft demo:', error);
+      const status = block.querySelector('.craft-status');
+      status.textContent = 'Updating the coast…';
+      import('./sip-recover.js')
+        .then(({ recover }) => recover('Tidelight Coast', error, ['./assets/sip-craft.js']))
+        .catch(() => false)
+        .then((reloading) => {
+          if (!reloading) status.textContent = 'The coast could not load. Refresh to try again.';
+        });
     } finally { loading = false; }
   }
   if (!active() || failed) {

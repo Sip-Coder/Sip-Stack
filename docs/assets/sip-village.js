@@ -9,6 +9,7 @@ import { coastalLight } from '../village/light.js';
 import { autoTier, pipeline } from '../village/renderer.js';
 import { duration, chapters, chapter, pose } from '../village/camera.js';
 import { PINS, LANES, LANE_X } from './sip-village-content.js';
+import { warmShaders } from './sip-warm.js';
 
 const motionMQ = matchMedia('(prefers-reduced-motion: reduce)');
 const still = () => motionMQ.matches;
@@ -536,7 +537,7 @@ export function mountVillage(root, { onPin } = {}) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(47, 1, .12, 390);
   const state = { drip: false, cut: false, reuse: false, loaded: false, pour: 0, door: null, light: 'golden', orbit: still(), pin: null };
-  let dirty=true;
+  let dirty=true, warmed=false;
   let shown = false, stageVisible = false, craftActive = document.body.dataset.craftVisible === 'true';
   const otherSceneActive = () => craftActive || document.body.dataset.creekVisible === 'true';
   const tw = {}; // tweens: key -> {from,to,t0,dur,apply}
@@ -838,6 +839,7 @@ export function mountVillage(root, { onPin } = {}) {
     }
   }
   function draw() {
+    if(!warmed) return;
     if(!state.orbit) pose(elapsed,camera,controls.target);
     else controls.update();
     lighting.captureSky(); post.render(); placePins();
@@ -944,6 +946,15 @@ export function mountVillage(root, { onPin } = {}) {
     lost=false;lighting.restore();renderer.shadowMap.needsUpdate=true;syncLoop();renderStill();
   });
   if (dyn) ambient(3); // place people and props even when motion is reduced
+  // Hold the first frame until the shaders are linked; the canvas stays hidden meanwhile.
+  if (!renderer) warmed = true;
+  else {
+    lighting.captureSky(); // scene.environment is part of every lit shader's key
+    warmShaders(renderer, [[scene, camera, post.target]]).then(ms => {
+    warmed = true; console.info(`Village shaders ready in ${Math.round(ms)} ms (${automatic} tier)`);
+    dirty = true; renderStill();
+  });
+  }
   motionMQ.addEventListener?.('change', () => { if(still()) {freeOrbit();resetView(true);} });
 
   return {

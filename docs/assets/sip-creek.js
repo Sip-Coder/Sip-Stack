@@ -10,6 +10,7 @@ import { atmosphere, materials, lightSettings } from './sip-creek-materials.js';
 import { grove } from './sip-creek-grove.js';
 import { stream } from './sip-creek-water.js';
 import { cellar } from './sip-creek-cellar.js';
+import { warmShaders } from './sip-warm.js';
 
 const tiers = ['Mobile', 'Medium', 'High'],
   duration = 20;
@@ -310,7 +311,7 @@ export function mountCreek(root) {
   }
   function draw(now) {
     frame = 0;
-    if (!visible || lost || document.hidden) return;
+    if (!warmed || !visible || lost || document.hidden) return;
     fit();
     const dt = last === null ? 0 : Math.max(0, (now - last) * 0.001);
     last = now;
@@ -445,6 +446,14 @@ export function mountCreek(root) {
   }).observe(stage);
   selectQuality();
   buttons();
+  // Hold the first frame until the shaders are linked; the canvas stays hidden meanwhile.
+  let warmed = false;
+  if (moodDirty) applyLight(); // fog and scene.environment are part of every lit shader's key
+  warmShaders(renderer, [[scene, camera, opaque], [overlay, camera, opaque]]).then((ms) => {
+    warmed = true;
+    console.info(`Sip Creek shaders ready in ${Math.round(ms)} ms (tier ${tier})`);
+    queue();
+  });
   return {
     setVisible(value) {
       visible = value;

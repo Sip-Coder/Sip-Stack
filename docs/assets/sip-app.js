@@ -271,9 +271,12 @@ function showVillage(pin) {
   document.title = 'Village · Sip-Stack · wine-coast diorama';
   villageP ??= import('./sip-village.js').then(m => (village = m.mountVillage($('#village'), {
     onPin: id => history.replaceState(null, '', id ? `#village/${id}` : '#village'),
-  }))).catch(err => {
-    console.warn('Village failed to load', err);
-    $('#village .vl-loading').textContent = 'The 3D village could not load. Check your connection and refresh.';
+  }))).catch(async err => {
+    const status = $('#village .vl-loading');
+    status.textContent = 'Updating the village…';
+    const { recover } = await import('./sip-recover.js').catch(() => ({ recover: async () => false }));
+    if (await recover('Village', err, ['./assets/sip-village.js'])) return;
+    status.textContent = 'The 3D village could not load. Refresh to try again.';
     villageP = null;
   });
   villageP.then(v => { if (v && document.body.dataset.mode === 'village') v.show(pin); });

@@ -5,6 +5,7 @@ import { buildHarbor } from './sip-craft-harbor.js';
 import { buildLand, stoneTexture } from './sip-craft-land.js';
 import { buildSea, hullWave } from './sip-craft-water.js';
 import { makePipeline } from './sip-craft-render.js';
+import { warmShaders } from './sip-warm.js';
 
 const duration = 18;
 const curve = (points) => new T.CatmullRomCurve3(points.map((p) => new T.Vector3(...p)));
@@ -330,7 +331,7 @@ export function mountCraft(root) {
   }
   function frame(now) {
     frameId = 0;
-    if (!visible || lost || document.hidden) return;
+    if (!warmed || !visible || lost || document.hidden) return;
     const dt = last === null ? 0 : (now - last) / 1000;
     last = now;
     draw(dt);
@@ -451,6 +452,14 @@ export function mountCraft(root) {
   });
   applyTier();
   controlsUI();
+  // Hold the first frame until the shaders are linked; the canvas stays hidden meanwhile.
+  let warmed = false;
+  sky.update(); // scene.environment is part of every lit shader's key
+  warmShaders(renderer, [[land, camera, opaque], [water, camera, opaque]]).then((ms) => {
+    warmed = true;
+    console.info(`Tidelight shaders ready in ${Math.round(ms)} ms (tier ${tier})`);
+    requestDraw();
+  });
   return {
     setVisible(value) {
       if (visible === value) return;
