@@ -143,5 +143,58 @@
     "minimumActivePoseUpdatesPerObservation": 6,
     "inactivePoseUpdates": 0,
     "consoleErrors": 0
+  },
+  "motionEnabled": {
+    "motionPreference": "no-preference",
+    "repetitionsPerRevision": 3,
+    "samplesMs": {
+      "main": {
+        "village": [
+          10875,
+          10803,
+          10360
+        ],
+        "craft": [
+          6323,
+          6494,
+          6308
+        ],
+        "creek": [
+          4780,
+          5662,
+          4935
+        ]
+      },
+      "branch": {
+        "village": [
+          9688,
+          11857,
+          10766
+        ],
+        "craft": [
+          3077,
+          3264,
+          8025
+        ],
+        "creek": [
+          3837,
+          4030,
+          3959
+        ]
+      }
+    },
+    "medianMs": {
+      "main": {
+        "village": 10803,
+        "craft": 6323,
+        "creek": 4935
+      },
+      "branch": {
+        "village": 10766,
+        "craft": 3264,
+        "creek": 3959
+      }
+    },
+    "allMedianFirstFramesWithinMain": true
   }
 }
