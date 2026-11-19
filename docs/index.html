@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&amp;family=Inter:wght@400;500;600&amp;display=swap" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath d=%27M12 3l8 4.5v9L12 21l-8-4.5v-9z%27 fill=%27%23914C2C%27/%3E%3C/svg%3E" />
 <link rel="stylesheet" href="assets/sip-stack.css" />
+<link rel="stylesheet" href="village/controls.css" />
 <link rel="stylesheet" href="assets/sip-craft.css" />
 <link rel="stylesheet" href="assets/sip-creek.css" />
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
@@ -555,16 +556,23 @@
   <section id="village" class="view" aria-label="Village view">
     <div class="village-wrap">
       <div class="vl-card">
-        <div class="canvas-head"><h2>The <em>wine-coast</em> village</h2><span class="hint">Drag to orbit · scroll or pinch to zoom · tap a pin or a place</span></div>
+        <div class="canvas-head"><h2>The <em>wine-coast</em> village</h2><span class="hint">Free orbit · drag to explore and select a teaching pin</span></div>
         <div class="vl-stage" tabindex="0" role="application" aria-label="3D wine-coast village. Arrow keys orbit, plus and minus zoom, R resets the view, Tab moves through the numbered pins." data-light="golden">
           <div class="vl-pins"></div>
           <p class="vl-loading"><span class="spin-dot" aria-hidden="true"></span>Building the village…</p>
-          <div class="vl-hud" role="toolbar" aria-label="View controls">
-            <div class="vl-light" role="group" aria-label="Light">
-              <button type="button" data-light="day" aria-pressed="false">Day</button><button type="button" data-light="golden" aria-pressed="true">Golden</button><button type="button" data-light="night" aria-pressed="false">Night</button>
-            </div>
-            <button type="button" data-act="orbit" aria-pressed="false" title="Slow auto-orbit">⟳<span> Orbit</span></button>
-            <button type="button" data-act="reset" title="Reset view (R)">⌂<span> Reset</span></button>
+          <div class="vl-chapter" aria-hidden="true"><b>Harbor approach</b></div>
+        </div>
+        <div class="vl-deck" aria-label="Village camera and lighting">
+          <div class="vl-transport" role="group" aria-label="Camera">
+            <button type="button" data-act="play">Play</button>
+            <button type="button" data-act="replay">Replay</button>
+            <button type="button" data-act="orbit" aria-pressed="false">Free orbit</button>
+            <button type="button" data-act="reset" title="Reset view (R)">Reset</button>
+          </div>
+          <div class="vl-track"><input type="range" min="0" max="20" step=".01" value="0" aria-label="Flight time in seconds"><output>0:00 / 0:20</output></div>
+          <div class="vl-settings">
+            <label>Light <input class="vl-sun" type="range" min="0" max="100" value="50"><output>Golden hour</output></label>
+            <label>Quality <select class="vl-quality"><option value="auto">Auto</option><option>High</option><option>Medium</option><option>Mobile</option></select></label>
           </div>
         </div>
         <div class="vl-toggles sip-tools" role="group" aria-label="Change the village">
