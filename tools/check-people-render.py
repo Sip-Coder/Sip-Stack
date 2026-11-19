@@ -68,7 +68,18 @@ def measure(browser, url, package, restore):
                 return Math.round(firstSceneFrames[document.querySelector(stage).className] - script.startTime);
             }""", [stage, module])
             assert canvas.evaluate("c => c.getContext('webgl2').getContextAttributes().preserveDrawingBuffer")
+            if restore and prefix == "vl":
+                notes = page.evaluate("""() => {
+                    const pins = [...document.querySelectorAll('.vl-list [data-pin]')];
+                    return pins.map(pin => {
+                      pin.click();
+                      return document.querySelector('.vl-note h4').textContent;
+                    });
+                }""")
+                assert len(notes) == len(set(notes)) == 18, notes
+                page.locator(".vl-transport [data-act=reset]").evaluate("button => button.click()")
             if restore:
+                page.locator(stage).evaluate("e => e.scrollIntoView({block:'center'})")
                 canvas.evaluate("""c => {
                   window.loss = c.getContext('webgl2').getExtension('WEBGL_lose_context');
                   loss.loseContext();
