@@ -454,6 +454,7 @@ export function mountCraft(root) {
     sky.invalidate();
     applyTier();
     restorePeople(land);
+    resize();
     sky.update();
     warmShaders(renderer, [[land, camera, opaque], [water, camera, opaque]]).then(() => {
       if (lost || generation !== contextGeneration) return;
@@ -466,6 +467,7 @@ export function mountCraft(root) {
   // Hold the first frame until the shaders are linked; the canvas stays hidden meanwhile.
   let warmed = false;
   primePeople(land, tier === 2);
+  resize();
   sky.update(); // scene.environment is part of every lit shader's key
   warmShaders(renderer, [[land, camera, opaque], [water, camera, opaque]]).then((ms) => {
     if (contextGeneration !== 0) return;

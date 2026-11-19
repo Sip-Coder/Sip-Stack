@@ -543,7 +543,7 @@ export function mountVillage(root, { onPin } = {}) {
     sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -20, right: 20, top: 20, bottom: -20, near: 1, far: 90 }); sun.shadow.bias = -.0006; sun.shadow.normalBias = .03;
     scene.add(sun, sun.target);
     dyn = buildWorld(scene);
-    lighting=coastalLight(renderer,scene,hemi,sun,dyn.sea.uniforms);
+    lighting=coastalLight(renderer,scene,hemi,sun,dyn.sea.uniforms,automatic);
     post=pipeline(renderer,scene,camera,dyn.sea,sun);
     post.quality(automatic); quality.options[0].textContent='Auto · '+automatic;
     controls = new OrbitControls(camera, renderer.domElement);
@@ -673,7 +673,14 @@ export function mountVillage(root, { onPin } = {}) {
   });
   track.addEventListener('input',()=>guided(track.valueAsNumber,false));
   $('.vl-sun',deck).addEventListener('input',e=>setLight(e.target.valueAsNumber/100));
-  quality.addEventListener('change',()=>{post?.quality(quality.value==='auto'?automatic:quality.value);if(dyn)ambient(T);flightStamp=null;renderStill();});
+  quality.addEventListener('change', () => {
+    const tier = quality.value === 'auto' ? automatic : quality.value;
+    post?.quality(tier);
+    lighting?.quality(tier);
+    if (dyn) ambient(T);
+    flightStamp = null;
+    renderStill();
+  });
   function syncToggles() {
     const on = { drip: state.drip, cut: state.cut, reuse: state.reuse, cases: state.loaded, pour: state.pour > 0 };
     toggles.querySelectorAll('button[data-t]').forEach(b => b.setAttribute('aria-pressed', String(!!on[b.dataset.t])));
