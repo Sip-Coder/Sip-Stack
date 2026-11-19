@@ -294,6 +294,25 @@ async function heapCheck() {
     rawDeltas: [b - a, c - b],
   };
 }
+function recoveredState() {
+  const actor = worker(new T.Scene(), 4, 1, 'Recovered cloth'),
+    d = actor.dynamics;
+  actor.setLOD(0, false);
+  for (let i = 0; i < 90; i++) {
+    actor.g.position.z = i * 0.012;
+    actor.pose(i / 60, 'walk');
+    d.finish();
+  }
+  const before = stateHash([d]),
+    count = d.stepCount,
+    version = d.panels[0].geometry.attributes.position.version;
+  d.restore();
+  const after = stateHash([d]),
+    updated = d.panels[0].geometry.attributes.position.version > version;
+  actor.pose(500, 'walk');
+  d.finish();
+  return { before, after, bufferInvalidated: updated, recoverySteps: d.stepCount - count };
+}
 export default async function runPhysics({ baseline = false } = {}) {
   if (baseline)
     return {
@@ -337,8 +356,11 @@ export default async function runPhysics({ baseline = false } = {}) {
         failures.push(scene + '/' + k + ' failed stability, replay or CPU budget');
     }
   }
+  const recovered = recoveredState();
+  if (recovered.before !== recovered.after || !recovered.bufferInvalidated || recovered.recoverySteps !== 0)
+    failures.push('context recovery changed solver state, missed a buffer or replayed inactive time');
   const heap = await heapCheck();
   if (!heap.available || heap.retainedGrowthBytes > 0)
     failures.push('warmed solver retained heap between collection windows');
-  return { failures, throttle: 4, cloth, scenes, heap };
+  return { failures, throttle: 4, cloth, scenes, heap, recovered };
 }

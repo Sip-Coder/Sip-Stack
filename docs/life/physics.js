@@ -6,6 +6,7 @@ import { collide, createPanel } from './cloth.js';
 
 const clamp = T.MathUtils.clamp;
 const data = (n) => new Float32Array(n);
+export const palmEnvelope = { y0: -0.022, y1: -0.104, r0: 0.032, r1: 0.03 };
 function makeCapsules(rig, build, waist) {
   const { hip, spine, chest, neck, head, sides } = rig;
   const segments = [];
@@ -23,7 +24,7 @@ function makeCapsules(rig, build, waist) {
     add(side + 'foot', ankle, toe, 0.039, 0.042, 0.014, -0.021, 0.012, -0.032, 0.022);
     add(side + 'upper arm', arm, elbow, 0.053 * build, 0.039 * build, 0.028, -0.025, 0.015);
     add(side + 'forearm', elbow, hand, 0.039 * build, 0.024, 0.016, -0.014, 0.012);
-    add(side + 'hand', hand, hand, 0.032, 0.03, 0.006, -0.022, -0.104);
+    add(side + 'hand', hand, hand, palmEnvelope.r0, palmEnvelope.r1, 0.006, palmEnvelope.y0, palmEnvelope.y1);
   }
   const capsules = data(8 * segments.length),
     bounds = data(6 * segments.length);
@@ -73,17 +74,36 @@ function springChain(ids, rig) {
     parentRotation = new T.Quaternion();
   const parent = rig.bones.indexOf(bones[ids[0]].parent);
   for (let i = 1; i < n; i++) length[i] = bind[ids[i]].distanceTo(bind[ids[i - 1]]);
+  let anchored = false;
   function anchor(matrices) {
+    const x = target[0],
+      y = target[1],
+      z = target[2];
     for (let i = 0; i < n; i++) {
       direction.copy(bind[ids[i]]).sub(bind[parent]).applyMatrix4(matrices[parent]);
       direction.toArray(target, 3 * i);
     }
+    if (anchored) {
+      const dx = 0.9 * (target[0] - x),
+        dy = 0.9 * (target[1] - y),
+        dz = 0.9 * (target[2] - z);
+      for (let k = 0; k < position.length; k += 3) {
+        position[k] += dx;
+        position[k + 1] += dy;
+        position[k + 2] += dz;
+        previous[k] += dx;
+        previous[k + 1] += dy;
+        previous[k + 2] += dz;
+      }
+    }
+    anchored = true;
   }
   function reset() {
     position.set(target);
     previous.set(target);
     velocity.fill(0);
   }
+  let peakSpeed = 0;
   function solve(dt, w, acc, caps, bounds) {
     previous.set(position);
     const damping = Math.exp(-8 * dt);
@@ -113,6 +133,7 @@ function springChain(ids, rig) {
       position[k + 2] = position[a + 2] + f * z;
       collide(position, k, caps, bounds, 0.007);
       const speed = direction.fromArray(position, k).sub(rest.fromArray(previous, k)).length() / dt;
+      peakSpeed = Math.max(peakSpeed, speed);
       const scale = Math.min(1, 7 / Math.max(1e-6, speed)) / dt;
       for (let j = 0; j < 3; j++) velocity[k + j] = (position[k + j] - previous[k + j]) * scale;
     }
@@ -135,7 +156,21 @@ function springChain(ids, rig) {
     }
   }
   const rotationVector = new T.Vector3();
-  return { ids, position, previous, velocity, target, rendered, anchor, reset, solve, render };
+  return {
+    ids,
+    position,
+    previous,
+    velocity,
+    target,
+    rendered,
+    anchor,
+    reset,
+    solve,
+    render,
+    get peakSpeed() {
+      return peakSpeed;
+    },
+  };
 }
 
 // Monotone chain on at most eight sole corners. Keep the scratch arrays so
@@ -264,18 +299,22 @@ export function createDynamics({ root, rig, style, build = 1, waist = 1, clothCo
     node.children.forEach(visit);
   }
   visit(root);
-  const active = bones.map((b, i) => (required.has(b) ? i : -1)).filter((i) => i >= 0);
+  const identity = new T.Matrix4(),
+    localMatrices = new Map([[root, identity]]);
+  const paths = order.map((node) => {
+    const id = bones.indexOf(node);
+    const local = id < 0 ? new T.Matrix4() : matrices[id];
+    const parent = localMatrices.get(node.parent);
+    localMatrices.set(node, local);
+    return { node, local, parent };
+  });
   function transforms() {
-    root.updateWorldMatrix(true, false);
-    inverse.copy(root.matrixWorld).invert();
-    for (let i = 0; i < order.length; i++) {
-      const n = order[i];
-      n.updateMatrix();
-      n.matrixWorld.multiplyMatrices(n.parent.matrixWorld, n.matrix);
-    }
-    for (let i = 0; i < active.length; i++) {
-      const j = active[i];
-      matrices[j].multiplyMatrices(inverse, bones[j].matrixWorld);
+    // Accumulate directly in the character frame. This avoids a world-space
+    // multiply followed by an inverse-root multiply for every collider.
+    for (let i = 0; i < paths.length; i++) {
+      const { node, local, parent } = paths[i];
+      node.updateMatrix();
+      local.multiplyMatrices(parent, node.matrix);
     }
   }
 
@@ -476,14 +515,17 @@ export function createDynamics({ root, rig, style, build = 1, waist = 1, clothCo
       maxSpeed = 0;
     for (let i = 0; i < panels.length + springs.length; i++) {
       const p = i < panels.length ? panels[i] : springs[i - panels.length];
+      maxSpeed = Math.max(maxSpeed, p.peakSpeed);
       for (let j = 0; j < p.position.length; j += 3) {
         let v2 = 0,
+          observed = 0,
           d2 = 0;
         for (let k = j; k < j + 3; k++) {
           v2 += p.velocity[k] ** 2;
+          observed += ((p.position[k] - p.previous[k]) / h) ** 2;
           d2 += (p.position[k] - p.target[k]) ** 2;
         }
-        maxSpeed = Math.max(maxSpeed, Math.sqrt(v2));
+        maxSpeed = Math.max(maxSpeed, Math.sqrt(v2), Math.sqrt(observed));
         energy += 0.5 * (v2 + 29 * d2);
       }
     }

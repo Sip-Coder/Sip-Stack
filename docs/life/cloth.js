@@ -203,6 +203,21 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
     length = new Float32Array(lengths),
     alpha = new Float32Array(compliance);
   const lambda = new Float32Array(length.length);
+  // Topology and inverse masses stay fixed. Precompute each step size's
+  // XPBD denominator once when this garment first enters the near/mid tier.
+  function prepareRate(hz) {
+    const scaled = new Float32Array(length.length),
+      inverse = new Float32Array(length.length);
+    for (let j = 0; j < length.length; j++) {
+      const wa = links[j * 2] < cols ? 0 : 1,
+        wb = links[j * 2 + 1] < cols ? 0 : 1;
+      scaled[j] = Math.abs(alpha[j]) * hz * hz;
+      inverse[j] = 1 / (wa + wb + scaled[j]);
+    }
+    return { scaled, inverse };
+  }
+  const desktop = prepareRate(60),
+    mobile = prepareRate(30);
   const rw = 2 * (wrapped ? cols : cols - 1) + 1,
     rh = 2 * (rows - 1) + 1,
     nv = rw * rh;
@@ -293,10 +308,11 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
     previous.set(target);
     velocity.fill(0);
   }
+  let peakSpeed = 0;
   function solve(dt, iter, wind, acc, caps, bounds) {
     previous.set(position);
     lambda.fill(0);
-    const d2 = dt * dt,
+    const rate = dt > 0.02 ? mobile : desktop,
       damping = Math.exp(-8 * dt);
     for (let k = 0; k < position.length; k++) {
       if (k < cols * 3) {
@@ -323,8 +339,7 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
         const d = Math.sqrt(x * x + y * y + z * z),
           c = d - length[j];
         if (d < 1e-7 || (alpha[j] < 0 && c <= 0)) continue;
-        const compliance = Math.abs(alpha[j]) / d2,
-          dl = (-c - compliance * lambda[j]) / (wa + wb + compliance);
+        const dl = (-c - rate.scaled[j] * lambda[j]) * rate.inverse[j];
         lambda[j] += dl;
         const scale = dl / d;
         position[a] += wa * scale * x;
@@ -348,6 +363,7 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
         z = (position[k + 2] - previous[k + 2]) / dt;
       const speed = Math.sqrt(x * x + y * y + z * z),
         f = speed > 6 ? 6 / speed : 1;
+      peakSpeed = Math.max(peakSpeed, speed);
       velocity[k] = x * f;
       velocity[k + 1] = y * f;
       velocity[k + 2] = z * f;
@@ -417,6 +433,9 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
     reset,
     solve,
     render,
+    get peakSpeed() {
+      return peakSpeed;
+    },
     chains: driver.chains,
     setLOD: driver.setLOD,
   };
