@@ -30,7 +30,8 @@ export function pointGap(o, x, y, z) {
       d = Math.min(d, Math.hypot(axial - a - da * t, radial - r - dr * t));
       if (axial >= a && axial <= b && radial <= r + (dr * (axial - a)) / da) inside = true;
     }
-    for (const k of [0, profile.length - 1]) {
+    for (let endIndex = 0; endIndex < 2; endIndex++) {
+      const k = endIndex === 0 ? 0 : profile.length - 1;
       const [end, r] = profile[k];
       d = Math.min(d, Math.hypot(axial - end, Math.max(0, radial - r)));
     }

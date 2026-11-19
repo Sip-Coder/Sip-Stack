@@ -3,7 +3,8 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { seeded } from './sip-craft-sky.js';
 
 import { flock } from '../life/birds.js';
-import { worker } from '../life/people.js';
+import { peopleNav } from '../life/nav.js';
+import { worker, rankPeople } from '../life/people.js';
 import { cutter, clothPanel, floatHull, tastingGlass } from '../life/harbor.js';
 import { trout, insects } from '../life/wildlife.js';
 import { wind } from '../life/forms.js';
@@ -13,6 +14,8 @@ export function buildHarbor(scene, u, grain) {
   const rng = seeded(381);
   const group = new THREE.Group();
   scene.add(group);
+  const nav=peopleNav(scene,'.craft-stage');
+  let obstacle;
   const mat = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.78, ...extra });
   const clay = mat('#914c2c'),
     sand = mat('#edd4a8'),
@@ -28,7 +31,14 @@ export function buildHarbor(scene, u, grain) {
     parent.add(m);
     return m;
   }
-  const box = (w, h, d, m, x, y, z, p) => mesh(new THREE.BoxGeometry(w, h, d), m, x, y, z, p);
+  function box(w,h,d,m,x,y,z,p) {
+    if(obstacle && !p) nav.box(obstacle,x,z,w/2,d/2,y-h/2,y+h/2);
+    return mesh(new THREE.BoxGeometry(w,h,d),m,x,y,z,p);
+  }
+  function deck(name,w,h,d,m,x,y,z,tread=false) {
+    nav.surface(name,x-w/2,x+w/2,z-d/2,z+d/2,y+h/2,tread);
+    return box(w,h,d,m,x,y,z);
+  }
   const cyl = (a, b, h, m, x, y, z, n = 32) => mesh(new THREE.CylinderGeometry(a, b, h, n), m, x, y, z);
   function weathered(material, masonry = false) {
     material.onBeforeCompile = (shader) => {
@@ -108,6 +118,7 @@ export function buildHarbor(scene, u, grain) {
       );
   };
   // Vine trellises follow the crown of the island.
+  for(let row=0;row<4;row++) nav.box('vine row',-2.63,-3.4+row*.8,2.20,.21,2.68,3.36);
   for (let row = 0; row < 4; row++)
     for (let col = 0; col < 9; col++) {
       const x = -4.55 + col * 0.48,
@@ -118,7 +129,9 @@ export function buildHarbor(scene, u, grain) {
       if (col % 3 === 0) mesh(new THREE.SphereGeometry(0.045, 6, 4), grape, x, 3.04, z + 0.13);
     }
   // Limestone tasting house with a terracotta roof, glazed arches, and warm windows.
+  obstacle='tasting house';
   box(2.35, 1.55, 1.6, mint, -2.6, 3.48, -0.15);
+  obstacle=null;
   const roofShape = new THREE.Shape();
   roofShape.moveTo(-1.35, 0);
   roofShape.lineTo(1.35, 0);
@@ -166,19 +179,24 @@ export function buildHarbor(scene, u, grain) {
   for (let side of [-1, 1])
     for (let i = 0; i < 6; i++) box(0.18, 0.12, 0.16, sand, -2.6 + side * 1.18, 2.85 + i * 0.24, 0.65);
   box(2.6, 0.12, 1.8, sand, -2.6, 4.22, -0.15);
+  obstacle='awning stanchion';
   for (let x of [-3.4, -1.8]) box(0.08, 1.25, 0.08, teal, x, 3.45, 1.65);
   const awning = clothPanel(2.3, 1.15, '#b47750');
   awning.position.set(-2.6, 4.06, 1.18);
   awning.rotation.x = -1.44;
   scene.add(awning);
   // Terrace railings, a table, wine amphorae and cypress silhouettes.
+  obstacle='terrace rail';
   for (let i = 0; i < 9; i++) box(0.04, 0.4, 0.04, teal, -4.05 + i * 0.37, 3.05, 1.8);
   box(3.1, 0.035, 0.035, teal, -2.55, 3.25, 1.8);
+  obstacle=null;
+  nav.circle('tasting table',-2.5,1.1,.31,2.84,3.385);
   cyl(0.31, 0.31, 0.07, sand, -2.5, 3.35, 1.1);
   cyl(0.035, 0.06, 0.48, teal, -2.5, 3.08, 1.1);
   for (let i = 0; i < 3; i++) {
     const a = mesh(new THREE.SphereGeometry(0.19, 14, 12), clay, -4.4 + i * 0.42, 2.98, 0.45);
     a.scale.y = 1.35;
+    nav.circle('amphora',a.position.x,a.position.z,.19,2.72,3.30);
     cyl(0.08, 0.065, 0.12, clay, -4.4 + i * 0.42, 3.24, 0.45);
   }
   for (const [x, z] of [
@@ -186,6 +204,7 @@ export function buildHarbor(scene, u, grain) {
     [-0.9, -3.6],
     [-5.2, -1.9],
   ]) {
+    nav.circle('cypress',x,z,.21,2.70,4.85);
     cyl(0.045, 0.065, 0.7, clay, x, 3.05, z);
     for (let k = 0; k < 32; k++) {
       const a = rng() * 6.28,
@@ -232,16 +251,17 @@ export function buildHarbor(scene, u, grain) {
     box(0.29, 0.65, 0.025, teal, -3.4 + i * 0.52, 3.55, 0.665);
     box(0.2, 0.48, 0.03, lamp, -3.4 + i * 0.52, 3.55, 0.685);
   }
-  box(2.8, 0.12, 1.4, sand, -2.6, 2.82, 1.15);
+  deck('tasting terrace',2.8, 0.12, 1.4, sand, -2.6, 2.82, 1.15);
   for (let i = 0; i < 16; i++) {
     const h = 2.64 - i * 0.124,
       x = -1.38 + i * 0.084,
       z = 1.23 + i * 0.083;
     box(1.18, h + 0.15, 0.22, sand, x, h * 0.5 - 0.07, z);
-    box(1.22, 0.055, 0.24, mauve, x, h, z);
+    deck('stair tread',1.22, 0.055, 0.24, mauve, x, h, z,true);
   }
   // Detached lighthouse, breakwater and lantern gallery.
 
+  nav.circle('lighthouse',4.4,-2.25,.68,.55,3.95);
   cyl(0.48, 0.68, 3.4, mint, 4.4, 2.25, -2.25);
   cyl(0.557, 0.591, 0.5, clay, 4.4, 2.62, -2.25);
   cyl(0.76, 0.76, 0.12, teal, 4.4, 3.91, -2.25);
@@ -298,12 +318,13 @@ export function buildHarbor(scene, u, grain) {
   beam.position.x = 6.5;
   beamPivot.add(beam);
   // Pier, lanterns and a little sailing boat.
-  box(5, 0.16, 0.85, clay, 1.4, 0.62, 2.5);
+  deck('pier subfloor',5, 0.16, 0.85, clay, 1.4, 0.62, 2.5);
   for (let i = 0; i < 6; i++) {
     box(0.08, 0.9, 0.08, teal, -0.8 + i * 0.86, 0.25, 2.2);
     box(0.08, 0.9, 0.08, teal, -0.8 + i * 0.86, 0.25, 2.8);
   }
   const lanterns = [];
+  obstacle='pier lantern';
   for (const x of [-0.6, 1.1, 3.1]) {
     box(0.23, 0.027, 0.035, teal, x + 0.103, 1.78, 2.8);
     box(0.027, 0.27, 0.035, teal, x, 1.65, 2.8);
@@ -314,12 +335,14 @@ export function buildHarbor(scene, u, grain) {
     box(0.045, 0.9, 0.045, teal, x, 1.08, 2.8);
     mesh(new THREE.SphereGeometry(0.105, 12, 8), lamp, 0, -0.2, 0, hanger);
   }
+  obstacle=null;
   const rig = cutter('#e6dac3', '#286564', true),
     boat = rig.root;
   boat.name = 'Tidelight cutter';
   boat.position.set(3, 0, 4.2);
   boat.rotation.y = 0.74 - Math.PI / 2;
   group.add(boat);
+  nav.box('cutter',0,0,1.1,.43,-.115,.375,0,boat);
   const pennant = clothPanel(0.45, 0.13, '#af5942', 'flag');
   pennant.position.set(0.33, 1.78, 0);
   boat.add(pennant);
@@ -362,12 +385,16 @@ export function buildHarbor(scene, u, grain) {
     for (const dx of [-0.075, 0.075]) box(0.016, 0.2, 0.017, iron, dx, -0.2, 0.06, hanger);
   }
   for (let i = 0; i < 15; i++) box(0.139, 0.07, 0.025, i % 2 ? clay : canvas, -3.64 + i * 0.149, 3.96, 1.75);
+  // Plank gaps are narrower than a sole. Their continuous tread plane
+  // preserves support as the heel crosses a joint between boards.
+  nav.surface('pier planking',-1.04-.059,-1.04+38*.13+.059,2.5-.455,2.5+.455,.714+.034/2);
   for (let i = 0; i < 39; i++) {
     const board = box(0.118, 0.034, 0.91, darkWood, -1.04 + i * 0.13, 0.714, 2.5);
     board.rotation.y = (rng() - 0.5) * 0.012;
   }
   for (const x of [-0.76, 0.96, 2.68]) {
     for (const z of [2.13, 2.87]) {
+      nav.circle('mooring post',x,z,.061,-.16,.80);
       cyl(0.052, 0.061, 0.96, darkWood, x, 0.32, z, 10);
       for (let i = 0; i < 3; i++) cyl(0.06, 0.06, 0.018, brass, x, 0.71 + i * 0.023, z, 10);
     }
@@ -393,12 +420,12 @@ export function buildHarbor(scene, u, grain) {
   const fish = trout(scene, 8, 2.05, 3.83, (x, z, t) => hullWave(x, z, t, u.storm.value), 0.72);
   const insectsAtVines = insects(scene, 'butterfly', 5, [-3.1, 3.48, -2.49], [1.02, 0.22, 0.48], 0.34);
   const dockhand = worker(scene, 7, 0.51, 'Pier hand');
-  dockhand.g.position.set(1.64, 0.732, 2.55);
-  dockhand.g.rotation.y = 0.71;
+  nav.place(dockhand,1.64,2.54,.71);
   const guest = worker(scene, 6, 0.49, 'Terrace taster');
-  guest.g.position.set(-2.02, 2.88, 1.03);
-  guest.g.rotation.y = -1.16;
+  nav.place(guest,-1.89,1.16,-1.52,.06);
+  const people=[dockhand,guest];
   const taste = tastingGlass(guest);
+  nav.agents.find(a=>a.actor===guest).props=[taste.prop];
   // Batch static architecture by material. Keep moving elements and the light
   // shaft separate so their transforms remain independent.
   const batches = new Map();
@@ -421,6 +448,7 @@ export function buildHarbor(scene, u, grain) {
     parts.forEach((p) => p.dispose());
   }
   return (t, w, camera, tier) => {
+    nav.begin(t);
     beacon.intensity = 1.4 + w * 5;
     lamp.emissiveIntensity = 0.3 + w * 2;
     beamMat.uniforms.strength.value = 0.012 + w * 0.11;
@@ -433,13 +461,11 @@ export function buildHarbor(scene, u, grain) {
     flights(t, tier === 0, camera);
     fish(t, tier === 0);
     insectsAtVines(t, tier === 0, false);
-    dockhand.pose(t, 'talk');
-    dockhand.lod(camera, tier === 0);
-    guest.g.visible = tier > 0;
-    if (guest.g.visible) {
-      guest.pose(t, 'taste');
-      taste(t);
-      guest.lod(camera, false);
-    }
+    dockhand.pose(t, 'talk',nav.floor);
+    guest.dynamics.load(.31,.16,1.28,.23);
+    guest.pose(t,'taste',nav.floor);
+    taste(t);
+    rankPeople(people,camera,tier===0,tier===2);
+    nav.draw();
   };
 }

@@ -14,6 +14,7 @@ import { cutter, floatHull } from '../life/harbor.js';
 import { tube } from '../life/forms.js';
 import { flock } from '../life/birds.js';
 import { insects, trout } from '../life/wildlife.js';
+import { primePeople, finishPeople, restorePeople } from '../life/scene-people.js';
 import { warmShaders } from './sip-warm.js';
 
 const tiers = ['Mobile', 'Medium', 'High'],
@@ -107,6 +108,7 @@ export function mountCreek(root) {
   skiff.root.position.set(1.35, 0, -13);
   skiff.root.rotation.y = 1.45;
   scene.add(skiff.root);
+  lantern.nav.box(skiff.root.name,0,0,1.1,.43,-.115,.375,0,skiff.root);
   const stakeZ = -14.38,
     stakeX = 2.25,
     stakeY = ground(stakeX, stakeZ);
@@ -394,7 +396,7 @@ export function mountCreek(root) {
     time.value = ambient;
     creek.update(ambient);
     const mobile = tier === 0;
-    lantern.update(ambient, camera, mobile);
+    lantern.update(ambient,camera,mobile,tier===2);
     floatHull(skiff.root, ambient, streamHeight, 0, 0.015);
     kingfisher(ambient, mobile, camera);
     finches(ambient, mobile, camera);
@@ -413,6 +415,7 @@ export function mountCreek(root) {
     renderer.setRenderTarget(null);
     if (first) {
       canvas.style.visibility = 'visible';
+      finishPeople(renderer, scene, camera, opaque);
       status.hidden = true;
       first = false;
     }
@@ -503,6 +506,7 @@ export function mountCreek(root) {
   });
   canvas.addEventListener('webglcontextlost', (e) => {
     e.preventDefault();
+    warmed = false;
     lost = true;
     suspend();
     first = true;
@@ -514,7 +518,13 @@ export function mountCreek(root) {
     lost = false;
     moodDirty = true;
     renderer.shadowMap.needsUpdate = true;
-    queue();
+    restorePeople(scene);
+    applyLight();
+    warmShaders(renderer, [[scene, camera, opaque], [overlay, camera, opaque]]).then(() => {
+      if (lost) return;
+      warmed = true;
+      queue();
+    });
   });
   new ResizeObserver(() => {
     if (quality.value === 'auto' && tier !== automaticTier(renderer, stage.clientWidth)) selectQuality();
@@ -524,6 +534,7 @@ export function mountCreek(root) {
   buttons();
   // Hold the first frame until the shaders are linked; the canvas stays hidden meanwhile.
   let warmed = false;
+  primePeople(scene, tier === 2);
   if (moodDirty) applyLight(); // fog and scene.environment are part of every lit shader's key
   warmShaders(renderer, [
     [scene, camera, opaque],

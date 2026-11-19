@@ -1,6 +1,8 @@
+import { inspectCask } from '../life/tasks.js';
 import * as T from 'three';
 import { ground, tau } from './sip-creek-land.js';
 
+import { peopleNav } from '../life/nav.js';
 import { worker } from '../life/people.js';
 import { wind } from '../life/forms.js';
 export function cellar(scene, wood, rng) {
@@ -8,6 +10,7 @@ export function cellar(scene, wood, rng) {
   station.position.set(3.8, ground(3.8, -14), -14);
   station.rotation.y = -0.52;
   scene.add(station);
+  const nav=peopleNav(station,'.creek-stage');
   const standard = (color, roughness, metalness = 0) =>
     new T.MeshStandardMaterial({ color, roughness, metalness });
   const iron = standard('#474440', 0.49, 0.72),
@@ -86,11 +89,18 @@ export function cellar(scene, wood, rng) {
         const length = 2 * Math.sqrt(0.46 ** 2 - offset ** 2);
         box(barrel, offset, 0.743, 0, 0.006, 0.004, length, iron);
       }
+    const belly=Math.max(...profile.map(p=>p[1]))*scale, end=profile.at(-1)[0]*scale;
+    const obstacle=lying ? nav.box('inspection cask',x,z,belly,end,y-belly,y+belly)
+      : nav.circle('standing cask',x,z,belly,y-end,y+end);
+    obstacle.stave={profile,scale,lying,y};
+    barrel.userData.staveSurface=obstacle;
     return barrel;
   }
   // The downhill edge of the small cooper's platform rests on stone footings.
+  nav.surface('cooper platform',-3.35/2,3.35/2,-1.1-.158/2,-1.1+13*.17+.158/2,.023+.15/2);
   for (let j = 0; j < 14; j++) box(station, 0, 0.023, -1.1 + j * 0.17, 3.35, 0.15, 0.158);
   for (const z of [-0.54, 0.49]) {
+    nav.box('cask cradle',-.42,z,.65,.085,.13,.70);
     box(station, -0.42, 0.3, z, 1.23, 0.33, 0.17);
     for (const side of [-1, 1])
       box(station, -0.42 + side * 0.47, 0.45, z, 0.16, 0.45, 0.17).rotation.z = -side * 0.42;
@@ -212,6 +222,7 @@ export function cellar(scene, wood, rng) {
     1.47,
     -0.65,
   );
+  nav.box('lamp post',-1.39,-.59,.055,.055,.025,2.075);
   box(station, -1.39, 1.05, -0.59, 0.11, 2.05, 0.11);
   box(station, -1.19, 2.06, -0.59, 0.52, 0.08, 0.1);
   const lamp = standard('#ffde9c', 0.42);
@@ -231,8 +242,8 @@ export function cellar(scene, wood, rng) {
   hanger.position.set(lx, 2.03, lz);
   for (const part of hanger.children) part.position.sub(hanger.position);
   const cooper = worker(station, 7, 0.92, 'Cooper');
-  cooper.g.position.set(0.32, 0.101, 0.85);
-  cooper.g.rotation.y = -2.21;
+  nav.place(cooper,.63,.20,-Math.PI/2);
+  const touchStaves=inspectCask(cooper,main);
   const glow = new T.PointLight('#ffbd72', 4, 8, 2);
   glow.position.set(lx, ly + 0.02, lz + 0.2);
   station.add(glow);
@@ -241,10 +252,13 @@ export function cellar(scene, wood, rng) {
     lamp.emissiveIntensity = night ? 4.3 : 0.04;
   }
   return {
-    light,
-    update(t, camera, mobile) {
-      cooper.pose(t, 'inspect');
-      cooper.lod(camera, mobile);
+    light,nav,
+    update(t,camera,mobile,high=true) {
+      nav.begin(t);
+      cooper.pose(t, 'inspect',nav.floor);
+      touchStaves(t);
+      cooper.lod(camera,mobile,true,high);
+      nav.draw();
       hanger.rotation.z = wind(t, 3.8, -14) * 0.059;
     },
   };

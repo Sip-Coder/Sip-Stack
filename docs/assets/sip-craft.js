@@ -5,6 +5,7 @@ import { buildHarbor } from './sip-craft-harbor.js';
 import { buildLand, stoneTexture } from './sip-craft-land.js';
 import { buildSea } from './sip-craft-water.js';
 import { makePipeline } from './sip-craft-render.js';
+import { primePeople, finishPeople, restorePeople } from '../life/scene-people.js';
 import { warmShaders } from './sip-warm.js';
 
 const duration = 18;
@@ -314,6 +315,7 @@ export function mountCraft(root) {
     }
     pipeline.draw(dt);
     canvas.style.visibility = 'visible';
+    finishPeople(renderer, land, camera, opaque);
     status.hidden = true;
     dirty = false;
     const b = free ? 3 : elapsed < 6 ? 0 : elapsed < 12 ? 1 : 2;
@@ -437,6 +439,7 @@ export function mountCraft(root) {
   new ResizeObserver(requestDraw).observe(stage);
   canvas.addEventListener('webglcontextlost', (e) => {
     e.preventDefault();
+    warmed = false;
     lost = true;
     stop();
     canvas.style.visibility = 'hidden';
@@ -447,12 +450,19 @@ export function mountCraft(root) {
     lost = false;
     sky.invalidate();
     applyTier();
-    requestDraw();
+    restorePeople(land);
+    sky.update();
+    warmShaders(renderer, [[land, camera, opaque], [water, camera, opaque]]).then(() => {
+      if (lost) return;
+      warmed = true;
+      requestDraw();
+    });
   });
   applyTier();
   controlsUI();
   // Hold the first frame until the shaders are linked; the canvas stays hidden meanwhile.
   let warmed = false;
+  primePeople(land, tier === 2);
   sky.update(); // scene.environment is part of every lit shader's key
   warmShaders(renderer, [[land, camera, opaque], [water, camera, opaque]]).then((ms) => {
     warmed = true;
