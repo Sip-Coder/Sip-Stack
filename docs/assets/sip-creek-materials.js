@@ -77,33 +77,31 @@ float caustics(vec2 p){
 
 // Periodic lattice octaves bake a multiscale mineral field, grooves and normal slopes.
 function mineralMap() {
-  const size = 256,
-    rng = seeded(159),
-    grids = [4, 8, 16, 32, 64, 128].map((n) => Float32Array.from({ length: n * n }, rng));
-  function field(x, y) {
-    let value = 0,
-      weight = 0.46;
-    for (const grid of grids) {
-      const n = Math.sqrt(grid.length),
-        u = (x * n) / size,
-        v = (y * n) / size,
-        i = Math.floor(u),
-        j = Math.floor(v);
-      const a = u - i,
-        b = v - j,
-        s = a * a * (3 - 2 * a),
-        t = b * b * (3 - 2 * b);
-      const at = (dx, dy) => grid[((j + dy + n) % n) * n + ((i + dx + n) % n)];
-      value +=
-        weight *
-        T.MathUtils.lerp(T.MathUtils.lerp(at(0, 0), at(1, 0), s), T.MathUtils.lerp(at(0, 1), at(1, 1), s), t);
-      weight *= 0.56;
+  const size = 256, rng = seeded(159), data = new Uint8Array(size * size * 4);
+  // Generate each octave in the same RNG order. Adjacent image scanlines
+  // share their X-interpolated grid rows. Round to float only after the
+  // six weighted double-precision contributions have been accumulated.
+  const sum = new Float64Array(size * size);
+  let weight = .46;
+  for (const n of [4,8,16,32,64,128]) {
+    const grid = new Float32Array(n * n), rows = new Float64Array(n * size);
+    for (let i=0; i<grid.length; i++) grid[i] = rng();
+    for (let j=0; j<n; j++) {
+      for (let x=0; x<size; x++) {
+        const u=x*n/size, i=Math.floor(u), a=u-i;
+        rows[j*size+x] = T.MathUtils.lerp(grid[j*n+i],grid[j*n+(i+1)%n],a*a*(3-2*a));
+      }
     }
-    return value;
+    for (let y=0; y<size; y++) {
+      const v=y*n/size, j=Math.floor(v), b=v-j, blend=b*b*(3-2*b);
+      const bottom=j*size, top=(j+1)%n*size;
+      for (let x=0; x<size; x++) {
+        sum[y*size+x] += weight*T.MathUtils.lerp(rows[bottom+x],rows[top+x],blend);
+      }
+    }
+    weight *= .56;
   }
-  const data = new Uint8Array(size * size * 4),
-    heights = new Float32Array(size * size);
-  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) heights[y * size + x] = field(x, y);
+  const heights = new Float32Array(sum);
   for (let y = 0; y < size; y++)
     for (let x = 0; x < size; x++) {
       const i = y * size + x,

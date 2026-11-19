@@ -159,7 +159,7 @@ export function tastingGlass(actor) {
   taste.prop={object:g,radius:.053,center:new T.Vector3(0,.12,0),halfLength:.024};
   return taste;
 }
-export function cutter(color, stripe, sail = false) {
+function cutterPattern(color, stripe, sail) {
   const root = new T.Group(),
     hull = new T.Group();
   root.add(hull);
@@ -168,14 +168,14 @@ export function cutter(color, stripe, sail = false) {
     uv = [],
     idx = [];
   const bands = [
-    [-0.115, 0.02, stripe],
-    [0.008, 0.44, stripe],
-    [0.111, 0.74, stripe],
-    [0.158, 0.82, color],
-    [0.207, 0.88, stripe],
-    [0.239, 0.92, color],
-    [0.287, 0.96, color],
-    [0.35, 1, color],
+    [-0.115, 0.02, 'stripe'],
+    [0.008, 0.44, 'stripe'],
+    [0.111, 0.74, 'stripe'],
+    [0.158, 0.82, 'paint'],
+    [0.207, 0.88, 'stripe'],
+    [0.239, 0.92, 'paint'],
+    [0.287, 0.96, 'paint'],
+    [0.35, 1, 'paint'],
     [0.375, 0.99, '#735137'],
     [0.366, 0.949, '#bc945f'],
     [0.28, 0.89, '#a57b52'],
@@ -183,10 +183,13 @@ export function cutter(color, stripe, sail = false) {
     [0.09, 0.43, '#875f40'],
     [0.087, 0, '#7b593e'],
   ];
+  const palette = {paint:color, stripe}, paintRanges=[], shellMaterial=finish('wood');
   for (const s of [-1, 1])
     for (let j = 1; j < bands.length; j++) {
       const n = p.length / 3,
-        tint = new T.Color(bands[j][2]);
+        band = bands[j][2],
+        tint = new T.Color(palette[band] ?? band);
+      if (band in palette) paintRanges.push({ start:idx.length, count:32*6, band });
       for (let i = 0; i <= 32; i++)
         for (let k = 0; k < 2; k++) {
           const u = i / 16 - 1,
@@ -210,7 +213,7 @@ export function cutter(color, stripe, sail = false) {
     g.setAttribute(name, new T.Float32BufferAttribute(a, n));
   g.setIndex(idx);
   g.computeVertexNormals();
-  mesh(hull, g, finish('wood'));
+  mesh(hull, g, shellMaterial);
   const seat = new T.Vector3();
   for (const x of [-0.58, -0.08, 0.46]) {
     const thwart = plank(hull, 0.16, 0.043, 0.76 * (1 - Math.abs(x) ** 1.78), x, 0.286, 0);
@@ -276,8 +279,6 @@ export function cutter(color, stripe, sail = false) {
   // Raised locks leave space for the rower's knees beneath the return stroke.
   for(const sign of [-1,1]) plank(hull,.055,.061,.058,-.025,.390,sign*.402);
   batchParts(hull);
-  const oars = [],
-    grips = [];
   for (const s of [-1, 1]) {
     const lock = new T.Group();
     lock.position.set(-.025, .410, s * .393);
@@ -302,9 +303,36 @@ export function cutter(color, stripe, sail = false) {
     const grip = new T.Object3D();
     grip.position.z = -s * .201;
     lock.add(grip);
-    grips.push(grip);
-    oars.push(lock);
+    grip.name = 'Oar grip';
   }
+  const paintKey = JSON.stringify([color,stripe]);
+  const shell = hull.children.find(part=>part.material===shellMaterial);
+  shell.name='Painted planking';
+  return {root, seat, deckHeight, paintRanges, shells:new Map([[paintKey,shell.geometry]])};
+}
+
+const cutterPatterns = new Map();
+export function cutter(color, stripe, sail = false) {
+  // A boat gets its own complete transform hierarchy, including two oarlocks
+  // and two grip sockets. The mould, fixed fittings and oar geometry are shared.
+  if (!cutterPatterns.has(sail)) cutterPatterns.set(sail,cutterPattern(color,stripe,sail));
+  const pattern = cutterPatterns.get(sail), root = pattern.root.clone(true);
+  const shell = root.getObjectByName('Painted planking'), paintKey = JSON.stringify([color,stripe]);
+  if (!pattern.shells.has(paintKey)) {
+    const source = shell.geometry, painted = new T.BufferGeometry();
+    for (const [name,attribute] of Object.entries(source.attributes)) painted.setAttribute(name,attribute);
+    const colors = source.attributes.color.clone();
+    const shades = {paint:new T.Color(color),stripe:new T.Color(stripe)};
+    for (const {start,count,band} of pattern.paintRanges) {
+      const shade=shades[band];
+      for(let i=start;i<start+count;i++) colors.setXYZ(i,shade.r,shade.g,shade.b);
+    }
+    painted.setAttribute('color',colors);
+    pattern.shells.set(paintKey,painted);
+  }
+  shell.geometry = pattern.shells.get(paintKey);
+  const seat=pattern.seat.clone(), deckHeight=pattern.deckHeight;
+  const oars=root.children.slice(1), grips=oars.map(lock=>lock.getObjectByName('Oar grip'));
   function stroke(t, active) {
     for (let i = 0; i < 2; i++) {
       const s = i * 2 - 1;
