@@ -1,11 +1,14 @@
+import { warmGarmentMesh } from './cloth.js';
 import { finishPeopleLoad } from './appearance.js';
 import { warmShaders } from '../assets/sip-warm.js';
 
 export function primePeople(scene, high) {
-  let representative;
+  let representative, hasGarment = false;
   scene.traverse((node) => {
+    hasGarment ||= node.userData.hasPeopleGarment;
     if (!representative && node.userData.preparePeopleLOD) representative = node.userData.preparePeopleLOD;
   });
+  if (hasGarment) scene.add(warmGarmentMesh());
   if (representative) {
     representative(1);
     if (high) representative(0);
