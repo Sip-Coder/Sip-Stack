@@ -229,6 +229,8 @@ async function windowRun(name, spikes) {
   const avg = windows.map((v, i) => v / Math.max(1, samples[i]));
   const early = Math.max(...avg.slice(1, 6)),
     late = Math.max(...avg.slice(6));
+  let increasing = true;
+  for (let i = 7; i < avg.length; i++) if (avg[i] <= avg[i - 1]) increasing = false;
   const warmed = times.subarray(120, frames).sort();
   const result = {
     frames,
@@ -241,7 +243,8 @@ async function windowRun(name, spikes) {
     maxEnergy: round(maxEnergy),
     maxEarlyMeanEnergy: round(early),
     maxLateMeanEnergy: round(late),
-    boundedEnergy: late <= Math.max(2, 3 * early),
+    tenSecondMeanEnergies: Array.from(avg, round),
+    boundedEnergy: late <= Math.max(0.012, 3 * early) && !(increasing && avg[11] > 1.25 * avg[6] + 0.005),
     nanFrames: nan,
     meanPhysicsMs: round((ms() - startMs) / (frames - 120)),
     p95PhysicsMs: round(warmed[Math.floor(warmed.length * 0.95)]),
