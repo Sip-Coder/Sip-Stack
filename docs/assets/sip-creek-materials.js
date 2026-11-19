@@ -224,7 +224,7 @@ vec3 skyColor(vec3 d){
   float disk=smoothstep(.99986,.99996,mu);
   return col+solar*disk*mix(2.2,9.,daylight);
 }`;
-export function atmosphere(scene, renderer, daylight) {
+export function atmosphere(scene, renderer, daylight, hdr) {
   const uniforms = {
     zenith: { value: new T.Color() },
     horizon: { value: new T.Color() },
@@ -248,7 +248,7 @@ export function atmosphere(scene, renderer, daylight) {
   scene.add(sky);
   const skyOnly = new T.Scene();
   skyOnly.add(sky.clone());
-  const pmrem = new T.PMREMGenerator(renderer);
+  const pmrem = hdr ? new T.PMREMGenerator(renderer) : null;
   let env;
   function apply(name) {
     const m = lightSettings[name];
@@ -258,6 +258,9 @@ export function atmosphere(scene, renderer, daylight) {
     uniforms.lightDir.value.fromArray(m.dir).normalize();
     daylight.value = name === 'night' ? 0.04 : name === 'blue' ? 0.45 : 1;
     scene.fog = new T.FogExp2(m.fog, name === 'night' ? 0.033 : 0.019);
+    // Three's PMREM baker requires a renderable half-float attachment.
+    // The direct sky, sun and hemisphere also work on RGBA8-only GPUs.
+    if (!pmrem) return;
     const previous = env;
     env = pmrem.fromScene(skyOnly, 0.025, 0.1, 110);
     scene.environment = env.texture;

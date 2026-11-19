@@ -97,7 +97,11 @@ export function mountCreek(root) {
   grove(scene, rng, time, wood, detail, contact);
   contact.stamp(3.8, -14, 2.35, 1.54, 0.82);
   const lantern = cellar(scene, wood, rng);
-  const sky = atmosphere(scene, renderer, daylight);
+  const hdr =
+    renderer.extensions.has('EXT_color_buffer_float') ||
+    renderer.extensions.has('EXT_color_buffer_half_float');
+  const type = hdr ? T.HalfFloatType : T.UnsignedByteType;
+  const sky = atmosphere(scene, renderer, daylight, hdr);
   const hemi = new T.HemisphereLight('#f2e8c8', '#777353', 1.15);
   const sun = new T.DirectionalLight();
   sun.castShadow = true;
@@ -108,7 +112,6 @@ export function mountCreek(root) {
   // Leaves drifting on the water share the forest's illumination.
   const leafLight = new T.HemisphereLight();
   overlay.add(leafLight);
-  const type = renderer.extensions.has('EXT_color_buffer_float') ? T.HalfFloatType : T.UnsignedByteType;
   const opaque = new T.WebGLRenderTarget(1, 1, {
     type,
     depthTexture: new T.DepthTexture(1, 1, T.UnsignedIntType),
