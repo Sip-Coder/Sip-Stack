@@ -15,9 +15,9 @@ from urllib.parse import urlsplit
 from playwright.sync_api import sync_playwright
 
 
-def measure(browser, url, package, restore):
+def measure(browser, url, package, restore, activity=False):
     context = browser.new_context(viewport={"width": 390, "height": 844},
-                                  has_touch=True, is_mobile=True, reduced_motion="reduce")
+                                  has_touch=True, is_mobile=True, reduced_motion="no-preference" if activity else "reduce")
 
     def resolve(route):
         request = route.request.url
@@ -26,6 +26,14 @@ def measure(browser, url, package, restore):
             path = urlsplit(request.split(marker, 1)[1]).path
             route.fulfill(path=package / path, content_type="application/javascript",
                           headers={"Access-Control-Allow-Origin": "*"})
+        elif activity and urlsplit(request).path.endswith("/life/physics.js"):
+            response = route.fetch()
+            source = response.text()
+            signature = "function pose(t, action) {"
+            assert source.count(signature) == 1
+            source = source.replace(signature, signature +
+                " window.workerTicks[root.name] = (window.workerTicks[root.name] || 0) + 1;")
+            route.fulfill(response=response, body=source)
         elif urlsplit(request).hostname in ("fonts.googleapis.com", "fonts.gstatic.com"):
             route.fulfill(body="", content_type="text/css")
         else:
@@ -46,7 +54,7 @@ def measure(browser, url, package, restore):
               return clear.call(this, mask);
             };""")
     page.add_init_script("""Error.stackTraceLimit = 32;
-        window.firstSceneFrames = {};
+        window.firstSceneFrames = {}; window.workerTicks = {};
         new MutationObserver(records => {
           for (const {target: canvas} of records) {
             if (canvas.nodeName !== 'CANVAS' || canvas.style.visibility !== 'visible') continue;
@@ -105,6 +113,20 @@ def measure(browser, url, package, restore):
                 return new Set(new Uint32Array(rgba.buffer)).size;
             }""")
             assert colors > 24, (module, "blank framebuffer", colors)
+        if activity:
+            names = {"vl": "Harvester", "craft": "Pier hand", "creek": "Cooper"}
+            for prefix, actor in names.items():
+                page.locator("." + prefix + "-stage").evaluate("e=>e.scrollIntoView({block:'center'})")
+                start = page.evaluate("name=>workerTicks[name] || 0", actor)
+                page.wait_for_function("([k,n])=>workerTicks[k] >= n+3", arg=[actor, start], timeout=60000)
+                snapshot = page.evaluate("() => ({...workerTicks})")
+                page.wait_for_function("([k,n])=>workerTicks[k] >= n+6", arg=[actor, snapshot[actor]],
+                                       timeout=60000)
+                end = page.evaluate("() => ({...workerTicks})")
+                for inactive in names.values():
+                    if inactive != actor:
+                        assert end[inactive] == snapshot[inactive], (actor, inactive, snapshot, end)
+                print("Exclusive active physics", actor, flush=True)
         assert not errors, errors
         if restore:
             assert not page.evaluate("screenClears"), "default framebuffer cleared during scene render"
@@ -122,6 +144,7 @@ if __name__ == "__main__":
     parser.add_argument("urls", nargs="+")
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--restore", action="store_true")
+    parser.add_argument("--activity", action="store_true", help="Verify exclusive physics updates with motion enabled")
     options = parser.parse_args()
     package = Path(os.environ.get("THREE_ROOT", "node_modules/three")).resolve()
     assert json.loads((package / "package.json").read_text())["version"] == "0.170.0"
@@ -132,7 +155,7 @@ if __name__ == "__main__":
                 browser = driver.chromium.launch(executable_path=os.environ.get("CHROME", "/usr/bin/chromium"),
                     args=["--enable-unsafe-swiftshader","--use-angle=swiftshader","--disable-dev-shm-usage","--no-sandbox"])
                 try:
-                    timing = measure(browser, url, package, options.restore)
+                    timing = measure(browser, url, package, options.restore, options.activity)
                     results[url].append(timing)
                     print(json.dumps({"run": run + 1, "url": url, "ms": timing}), flush=True)
                 finally:
