@@ -269,13 +269,15 @@ function tracks(scene, nav) {
   }
   return result;
 }
-function floorError(actor, track, i, floor) {
+const boatSpace = new T.Matrix4();
+const historicalDeck = (x) => 0.204 + 0.094 * Math.abs(Math.round(x / 0.103) * 0.103) ** 3;
+function floorError(actor, track, i, floor, inverse) {
   const f = actor.feet?.[i],
     ankle = f?.ankle || track.b.sides[i].ankle;
   function sample(x, z, point) {
     if (point) xyz.copy(point);
     else xyz.set(x, -0.077, z);
-    xyz.applyMatrix4(ankle.matrixWorld).applyMatrix4(toSpace);
+    xyz.applyMatrix4(ankle.matrixWorld).applyMatrix4(inverse);
     return (xyz.y - floor(xyz.x, xyz.z)) / actor.g.scale.y;
   }
   return [sample(0, -0.064, f?.heel), sample(0, 0.167, f?.toe)];
@@ -336,9 +338,13 @@ function inspect(track, space, nav, obstacles, frame) {
     activeProps = propSegments.filter((p) => !p.hidden);
   track.testSegments = [...actual, ...activeProps];
   stats.limitExcessDeg = Math.max(stats.limitExcessDeg, limitError(track));
-  if (name !== 'Oarsman') {
-    const floor = nav?.floor || ((x, z) => originalHeight(name, x, z));
-    const sols = [floorError(a, track, 0, floor), floorError(a, track, 1, floor)];
+  {
+    const seated = name === 'Oarsman';
+    const floor = seated
+      ? agent?.deckHeight || historicalDeck
+      : nav?.floor || ((x, z) => originalHeight(name, x, z));
+    const inverse = seated ? boatSpace.copy(g.parent.matrixWorld).invert() : toSpace;
+    const sols = [floorError(a, track, 0, floor, inverse), floorError(a, track, 1, floor, inverse)];
     const walking = record.action === 'walk' || record.action === 'carry';
     const nearest = Math.max(...sols[0].map(Math.abs)) < Math.max(...sols[1].map(Math.abs)) ? 0 : 1;
     if (walking && Math.min(...sols[0], ...sols[1]) > 0.02) stats.bothAirFrames++;
@@ -462,7 +468,7 @@ function checkCrowd(group, space, obstacles) {
     },
   };
 }
-async function simulate(name) {
+async function simulate(name, mobile) {
   globalThis.probedActors = [];
   const s = new T.Scene(),
     camera = new T.PerspectiveCamera(),
@@ -471,15 +477,15 @@ async function simulate(name) {
   let update;
   if (name === 'Village') {
     const dyn = buildForCheck(s);
-    update = (t) => dyn.life(t, camera, 'High');
+    update = (t) => dyn.life(t, camera, mobile ? 'Mobile' : 'High');
   }
   if (name === 'Tidelight') {
     const harbor = buildHarbor(s, { seaTime: { value: 0 }, storm: { value: 0.1 } }, new T.DataTexture());
-    update = (t) => harbor(t, 0.1, camera, 2);
+    update = (t) => harbor(t, 0.1, camera, mobile ? 0 : 2);
   }
   if (name === 'Creek') {
     const station = cellar(s, new T.MeshStandardMaterial(), rng);
-    update = (t) => station.update(t, camera, false);
+    update = (t) => station.update(t, camera, mobile);
   }
   update(0);
   let local = s,
@@ -490,7 +496,8 @@ async function simulate(name) {
       nav = o.userData.peopleNav;
     }
   });
-  const people = tracks(s, nav);
+  const built = tracks(s, nav);
+  const people = built.filter((p) => p.record.a.g.visible);
   if (!nav && name === 'Creek') local = people[0].record.a.g.parent;
   const obstacles = nav?.obstacles || originalObstacles(name);
   const crowd = checkCrowd(s.getObjectByName('Tasting group'), local, obstacles);
@@ -521,7 +528,7 @@ async function simulate(name) {
       if (typeof stats[k] === 'number') stats[k] = Math.round(stats[k] * 1000) / 1000;
     out[record.name] = stats;
     if (
-      (record.name !== 'Oarsman' && !stats.footFrames) ||
+      !stats.footFrames ||
       stats.missingGripFrames ||
       stats.groundErrorMm > 20 ||
       stats.bothAirFrames ||
@@ -539,16 +546,24 @@ async function simulate(name) {
     if (crowd.stats.intersecting) failure.push('crowd/static geometry');
   }
   const expected = name === 'Village' ? 7 : name === 'Tidelight' ? 2 : 1;
-  if (people.length !== expected) failure.push(name + ' missing actors');
-  if (name === 'Village' && !crowd) failure.push('Village missing VAT gathering');
+  if (!people.length || built.length !== expected) failure.push(name + ' missing actors');
+  if (name === 'Village' && !mobile && !crowd) failure.push('Village missing VAT gathering');
   return { workers: out, frames, obstacles: obstacles.length, failures: failure };
 }
 export default async function ({ baseline }) {
   if (!baseline) ({ pointGap } = await import('../docs/life/nav.js'));
   const out = { failures: [] };
   for (const name of names) {
-    out[name] = await simulate(name);
+    out[name] = await simulate(name, false);
     out.failures.push(...out[name].failures);
+    out.mobile ||= {};
+    out.mobile[name] = await simulate(name, true);
+    out.failures.push(...out.mobile[name].failures.map((f) => 'Mobile ' + f));
+  }
+  if (!baseline) {
+    const { runNavigationCases } = await import('./check-people-nav.mjs');
+    out.navigation = runNavigationCases();
+    out.failures.push(...out.navigation.failures);
   }
   return out;
 }

@@ -71,7 +71,8 @@ export function worker(...args){
     } else throw Error('Unknown resource');
     res.setHeader('Content-Type', 'text/javascript');
     res.end(text);
-  } catch {
+  } catch (error) {
+    if (path !== '/favicon.ico') console.error(path, error.message);
     res.writeHead(404);
     res.end();
   }
@@ -96,9 +97,22 @@ const chrome = spawn(
 );
 let socket;
 try {
-  for (let i = 0; i < 300 && !existsSync(join(profile, 'DevToolsActivePort')); i++) await delay(50);
-  const port = readFileSync(join(profile, 'DevToolsActivePort'), 'utf8').split('\n')[0];
-  const [tab] = await (await fetch('http://127.0.0.1:' + port + '/json/list')).json();
+  const portFile = join(profile, 'DevToolsActivePort');
+  let tab;
+  for (let i = 0; i < 300 && !tab; i++) {
+    if (chrome.exitCode !== null) throw Error('Chromium closed during startup');
+    const port = existsSync(portFile) && Number(readFileSync(portFile, 'utf8').split('\n')[0]);
+    if (port > 0) {
+      try {
+        const tabs = await (await fetch('http://127.0.0.1:' + port + '/json/list')).json();
+        tab = tabs.find((t) => t.type === 'page' && t.webSocketDebuggerUrl);
+      } catch {
+        /* The port file can be published before the listener is ready. */
+      }
+    }
+    if (!tab) await delay(50);
+  }
+  if (!tab) throw Error('Chromium did not publish a debugging target');
   socket = new WebSocket(tab.webSocketDebuggerUrl);
   await new Promise((ok, no) => {
     socket.onopen = ok;

@@ -139,9 +139,9 @@ function weights(meshes) {
   return { vertices, triangles, invalid, four };
 }
 
-export default async function runRig({ baseline }) {
+async function inspectVariant(baseline, variant, job) {
   const scene = new T.Scene(),
-    actor = worker(scene, 0, 1.76, 'Deformation check');
+    actor = worker(scene, variant, 1.76, job);
   const camera = new T.PerspectiveCamera();
   actor.g.scale.setScalar(1);
   actor.lod(camera, false);
@@ -152,7 +152,7 @@ export default async function runRig({ baseline }) {
     : (await import('../docs/life/deformation.js')).skinPoint;
   const report = { failures: [], bones: bones.length, tiers: [] };
   for (let tier = 0; tier < 2; tier++) {
-    actor.setLOD?.(tier);
+    actor.setLOD?.(tier, false);
     const meshes = actor.tiers?.[tier] || (tier === 0 ? actor.layers : [actor.low]);
     const info = { tier, weights: weights(meshes), poses: {} };
     if (info.weights.invalid) report.failures.push('LOD' + tier + ' invalid weights');
@@ -222,6 +222,41 @@ export default async function runRig({ baseline }) {
       }
     }
     report.tiers.push(info);
+  }
+  return report;
+}
+
+export default async function runRig({ baseline }) {
+  const actors = [
+    [0, 'Harvester'],
+    [1, 'Porter'],
+    [2, 'Taster'],
+    [3, 'Cellar worker'],
+    [4, 'Stair walker'],
+    [5, 'Oarsman'],
+    [6, 'Cantina guest'],
+    [7, 'Cooper'],
+    [7, 'Pier hand'],
+    [6, 'Terrace taster'],
+  ];
+  let report;
+  for (const [variant, name] of actors) {
+    const spec = await inspectVariant(baseline, variant, name);
+    report ??= { ...spec, failures: [], variants: {} };
+    const summary = spec.tiers.map((t) => {
+      const probes = Object.values(t.poses).flatMap((p) => Object.values(p));
+      return {
+        tier: t.tier,
+        minAreaRatio: Math.min(...probes.map((p) => p.areaRatio)),
+        flippedTriangles: probes.reduce((n, p) => n + p.flippedTriangles, 0),
+        weights: t.weights,
+      };
+    });
+    report.variants[name] = { bones: spec.bones, tiers: summary };
+    report.failures.push(...spec.failures.map((f) => name + ' ' + f));
+    window.probedActors.length = 0;
+    // Fixture actors are isolated; release CPU geometry before generating the next one.
+    globalThis.gc?.();
   }
   return report;
 }
