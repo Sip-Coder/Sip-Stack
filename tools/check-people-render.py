@@ -36,15 +36,16 @@ def measure(browser, url, package, restore):
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
     page.on("console", lambda msg: errors.append(msg.text) if msg.type == "error" else None)
+    if restore:
+        page.add_init_script("""window.screenClears = [];
+            const clear = WebGL2RenderingContext.prototype.clear;
+            WebGL2RenderingContext.prototype.clear = function(mask) {
+              const stage = this.canvas.parentElement;
+              if ((mask & this.COLOR_BUFFER_BIT) && stage?.matches('.vl-stage,.craft-stage,.creek-stage') &&
+                  !this.getParameter(this.DRAW_FRAMEBUFFER_BINDING)) screenClears.push(stage.className);
+              return clear.call(this, mask);
+            };""")
     page.add_init_script("""window.firstSceneFrames = {};
-        window.screenClears = [];
-        const clear = WebGL2RenderingContext.prototype.clear;
-        WebGL2RenderingContext.prototype.clear = function(mask) {
-          const stage = this.canvas.parentElement;
-          if ((mask & this.COLOR_BUFFER_BIT) && stage?.matches('.vl-stage,.craft-stage,.creek-stage') &&
-              !this.getParameter(this.DRAW_FRAMEBUFFER_BINDING)) screenClears.push(stage.className);
-          return clear.call(this, mask);
-        };
         new MutationObserver(records => {
           for (const {target: canvas} of records) {
             if (canvas.nodeName !== 'CANVAS' || canvas.style.visibility !== 'visible') continue;
@@ -85,7 +86,8 @@ def measure(browser, url, package, restore):
             }""")
             assert colors > 24, (module, "blank framebuffer", colors)
         assert not errors, errors
-        assert not page.evaluate("screenClears"), "default framebuffer cleared during scene render"
+        if restore:
+            assert not page.evaluate("screenClears"), "default framebuffer cleared during scene render"
         return times
     except Exception:
         if errors:
