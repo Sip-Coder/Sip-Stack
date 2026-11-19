@@ -231,17 +231,19 @@ export function insects(scene, kind, count, center, spread, size) {
   });
   m.onBeforeCompile = (s) => {
     s.uniforms.insectTime = time;
+    s.uniforms.dragon = { value: Number(fly) };
+    s.uniforms.firefly = { value: Number(night) };
     s.vertexShader =
-      'attribute float wing;uniform float insectTime;varying float membrane;varying vec3 markings;\n' +
+      'attribute float wing;uniform float insectTime,dragon;varying float membrane;varying vec3 markings;\n' +
       s.vertexShader.replace(
         '#include <begin_vertex>',
         `#include <begin_vertex>
        markings=position;membrane=wing;
-       float a=wing*(${fly ? '.20' : '.71'}+sin(insectTime*${fly ? '39.' : '16.'}+instanceMatrix[3].z*2.)*${fly ? '.37' : '.70'});
+       float a=wing*(mix(.71,.20,dragon)+sin(insectTime*mix(16.,39.,dragon)+instanceMatrix[3].z*2.)*mix(.70,.37,dragon));
        transformed.x*=cos(a);transformed.y+=abs(position.x)*sin(a);`,
       );
     s.fragmentShader =
-      'uniform float insectTime;varying float membrane;varying vec3 markings;\n' +
+      'uniform float insectTime,dragon,firefly;varying float membrane;varying vec3 markings;\n' +
       s.fragmentShader
         .replace(
           '#include <color_fragment>',
@@ -250,13 +252,15 @@ export function insects(scene, kind, count, center, spread, size) {
         vec2 q=vec2(abs(markings.x),markings.z);
         float vein=smoothstep(.72,.99,cos(q.y*205.+q.x*61.+2.*sin(q.x*18.)));
         diffuseColor.rgb*=1.-vein*.36;
-        ${fly ? 'diffuseColor.rgb+=vec3(.12,.24,.20)*pow(.5+.5*sin(q.x*62.+insectTime*3.),5.);' : 'diffuseColor.rgb*=1.-.62*smoothstep(.145,.21,q.x);diffuseColor.rgb+=vec3(.52,.46,.31)*smoothstep(.8,1.,sin(q.y*141.))*smoothstep(.15,.18,q.x);'}
+        if(dragon>.5)diffuseColor.rgb+=vec3(.12,.24,.20)*pow(.5+.5*sin(q.x*62.+insectTime*3.),5.);
+        else {diffuseColor.rgb*=1.-.62*smoothstep(.145,.21,q.x);
+          diffuseColor.rgb+=vec3(.52,.46,.31)*smoothstep(.8,1.,sin(q.y*141.))*smoothstep(.15,.18,q.x);}
       }`,
         )
         .replace(
           '#include <emissivemap_fragment>',
           `#include <emissivemap_fragment>
-      ${night ? 'if(markings.z<-.075 && membrane<.5) totalEmissiveRadiance+=vec3(2.8,1.9,.3)*(.55+.45*sin(insectTime*2.+markings.z));' : ''}`,
+      if(firefly>.5 && markings.z<-.075 && membrane<.5) totalEmissiveRadiance+=vec3(2.8,1.9,.3)*(.55+.45*sin(insectTime*2.+markings.z));`,
         );
   };
   const batch = new T.InstancedMesh(insectGeometry(kind), m, count),
