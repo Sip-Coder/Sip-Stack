@@ -450,7 +450,7 @@ function buildWorld(scene) {
   // lamps (night)
   dyn.lamps = [[-5.4, 2.7, -1.0], [5.3, 4.4, -1.9], [4.4, 2.6, 6.6]].map(p => { const l = new THREE.PointLight('#ffc27a', 0, 9, 1.4); l.position.set(...p); scene.add(l); return l; });
 
-  dyn.life=villageLife(scene,dyn.boats,swell);
+  dyn.life=villageLife(scene,dyn.boats,swell,H);
   return dyn;
 }
 

@@ -23,7 +23,7 @@ function stairHeight(x, z) {
   }
   return 7.05;
 }
-export function villageLife(scene, boats, swell) {
+export function villageLife(scene, boats, swell, houses) {
   const picker = worker(scene, 0, 0.61, 'Harvester'),
     docker = worker(scene, 1, 0.6, 'Porter'),
     host = worker(scene, 2, 0.61, 'Taster'),
@@ -76,14 +76,16 @@ export function villageLife(scene, boats, swell) {
   const flights = flock(scene, {
     kind: 'swallow',
     count: 6,
-    center: [0.4, 10, -5.4],
+    center: [0.4, 14, -4.8],
     radii: [8, 3.4],
     perch: [-8.65, 7.27, -3.1],
     scale: 0.38,
-    obstacles: [
-      [-4.9, 11.6, -6.3, 3.5],
-      [-0.95, 7.15, -3, 1.6],
-    ],
+    obstacles: houses.map(({ x, z, w, d, base, floors }) => [
+      x,
+      base + floors * 1.05 + 0.28 + Math.min(w, d) * 0.3,
+      z,
+      Math.hypot(w, d) * 0.5 + 0.28,
+    ]),
   });
   const pollinators = insects(scene, 'butterfly', 8, [4.2, 5.83, -5.38], [1.05, 0.22, 0.25], 0.42);
   const lengths = dock.slice(1).map((p, i) => Math.hypot(p[0] - dock[i][0], p[2] - dock[i][2]));

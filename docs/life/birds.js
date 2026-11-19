@@ -312,7 +312,8 @@ export function flock(scene, { kind, count, center, radii, perch, scale, obstacl
     aim = new T.Vector3(),
     steer = new T.Vector3(),
     delta = new T.Vector3(),
-    home = new T.Vector3(...perch);
+    home = new T.Vector3(...perch),
+    approach = new T.Vector3();
   for (let i = 0; i < count; i++) {
     const root = bird(kind),
       a = i * 2.399;
@@ -382,7 +383,13 @@ export function flock(scene, { kind, count, center, radii, perch, scale, obstacl
         p.x += scale * 0.11 * smooth((clock - 3.2) / 0.36);
       } else {
         p.addScaledVector(b.v, dt);
-        if (percher && clock > 22) p.lerp(home, 1 - Math.exp(-dt * (0.2 + 5 * perchBlend)));
+        if (percher && clock > 22) {
+          // Approach the perch above the roofline before descending onto it.
+          approach.copy(home);
+          approach.y +=
+            scale * 0.148 + Math.max(scale * 1.5, center[1] - home.y) * (1 - smooth((clock - 24.5) / 2.35));
+          p.lerp(approach, 1 - Math.exp(-dt * (0.4 + 5 * perchBlend)));
+        }
       }
       if (!rest) g.rotation.y += Math.atan2(turn, Math.cos(heading - g.rotation.y)) * Math.min(1, dt * 5);
       g.rotation.z = rest ? 0 : -turn * 0.47;
