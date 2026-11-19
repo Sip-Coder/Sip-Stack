@@ -1,4 +1,5 @@
 import * as T from 'three';
+import { m, scaleSpec } from '../life/scale.js';
 import { V, seeded, ground, channel, breadth, surface, tau, lerp } from './sip-creek-land.js';
 
 // Bake a compound twig at load. Transparent margins and mipmapped leaf edges
@@ -379,6 +380,7 @@ export function grove(scene, rng, time, wood, setDensity, contact) {
     new T.SphereGeometry(1, 8, 6),
     new T.MeshPhysicalMaterial({ roughness: 0.51, clearcoat: 0.15 }),
   );
+  const postHeight = m('creek', 2.12), berryRadius = m('creek', .009);
   for (let row = 0; row < 7; row++) {
     const z = -9.75 - Math.floor(row / 2) * 2.45 - (row % 2 ? 6.7 : 0);
     for (let j = 0; j < 13; j++) {
@@ -387,7 +389,7 @@ export function grove(scene, rng, time, wood, setDensity, contact) {
       const tip = V(x + 0.12, y + 1.22, z);
       limb(cordons, V(x - 0.09, y, z), tip, 0.059, '#72573f');
       limb(cordons, tip, V(x + 1.38, ground(x + 1.38, z) + 1.18, z + 0.08), 0.036, '#736445');
-      if (j % 3 === 0) put(posts, x, y + 0.94, z, 0.115, 1.95, 0.12, 0, 0.12, -0.042, '#c9ae80');
+      if (j % 3 === 0) put(posts, x, y + 0.94, z, m('creek', .125), postHeight, m('creek', .13), 0, 0.12, -0.042, '#c9ae80');
       for (let k = 0; k < 10; k++)
         put(
           vines,
@@ -409,15 +411,15 @@ export function grove(scene, rng, time, wood, setDensity, contact) {
         for (let b = 0; b < 21; b++) {
           const u = b / 21,
             a = b * 2.399,
-            r = 0.092 * (1 - u) ** 0.6;
+            r = m('creek', .027) * (1 - u) ** 0.6;
           put(
             grapes,
             bx + Math.cos(a) * r,
-            by - u * 0.26,
+            by - u * m('creek', .085),
             bz + Math.sin(a) * r,
-            0.044,
-            0.047,
-            0.044,
+            berryRadius,
+            berryRadius * 1.07,
+            berryRadius,
             0,
             0,
             0,
@@ -427,7 +429,7 @@ export function grove(scene, rng, time, wood, setDensity, contact) {
       }
     }
   }
-  finish(posts, null, true);
+  scaleSpec(finish(posts, null, true), 'creek', 'vine trellis', [2.12,.125,.13], 'Grove cordon posts');
   finish(cordons, null, true);
   finish(vines, null, true);
   finish(grapes, [0.37, 0.68, 1]);

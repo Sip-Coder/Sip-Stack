@@ -15,6 +15,11 @@ const bucket = (x, z) => (x + 512) * 1024 + z + 512;
 // Signed point distance for articulated swept spheres. A cask uses the actual
 // piecewise-linear lathe profile, including both end faces, in axial/radial space.
 export function pointGap(o, x, y, z) {
+  if(o.rail){
+    const {a,b,radius}=o.rail,dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z;
+    const t=T.MathUtils.clamp(((x-a.x)*dx+(y-a.y)*dy+(z-a.z)*dz)/(dx*dx+dy*dy+dz*dz),0,1);
+    return Math.hypot(x-a.x-t*dx,y-a.y-t*dy,z-a.z-t*dz)-radius;
+  }
   if (o.stave) {
     const { profile, scale, lying } = o.stave;
     const axial = (lying ? z - o.z : y - o.stave.y) / scale;
@@ -65,7 +70,7 @@ export function clearanceTo(o, x, y, z, radius, height) {
 }
 
 export function peopleNav(root, viewport) {
-  const surfaces = [],
+  const flights = [], surfaces = [],
     obstacles = [],
     agents = [],
     index = new Map(),
@@ -85,16 +90,28 @@ export function peopleNav(root, viewport) {
     surfaces.push(patch);
     if (node) decks.push({ node, patch, x0, x1, z0, z1, y });
   }
-  function floor(x, z) {
-    let y = -Infinity;
-    for (const s of surfaces)
-      if (s.y > y && x >= s.x0 - 1e-8 && x <= s.x1 + 1e-8 && z >= s.z0 - 1e-8 && z <= s.z1 + 1e-8) y = s.y;
+  function stairTread(flight,index,cx,cz,y) {
+    const {dx,dz,width,pitch,rise}=flight;
+    const rx=(Math.abs(dz)*width+Math.abs(dx)*pitch)/2,rz=(Math.abs(dx)*width+Math.abs(dz)*pitch)/2;
+    const patch={name:flight.name+' tread '+index,id:flight.name+'/'+index,index,flight,cx,cz,y,dx,dz,width,pitch,rise,
+      noseX:cx-dx*pitch/2,noseZ:cz-dz*pitch/2,x0:cx-rx,x1:cx+rx,z0:cz-rz,z1:cz+rz,tread:true};
+    surfaces.push(patch);flight.treads.push(patch);return patch;
+  }
+  function covers(s,x,z){
+    if(x<s.x0-1e-8||x>s.x1+1e-8||z<s.z0-1e-8||z>s.z1+1e-8)return false;
+    if(!s.flight)return true;
+    const xx=x-s.cx,zz=z-s.cz;
+    return Math.abs(xx*s.dx+zz*s.dz)<=s.pitch/2+1e-8 && Math.abs(xx*s.dz-zz*s.dx)<=s.width/2+1e-8;
+  }
+  function floor(x,z) {
+    let y=-Infinity;
+    for(const s of surfaces) if(s.y>y && covers(s,x,z)) y=s.y;
     return y;
   }
-  floor.snapTread = (z, x = 1.3) => {
-    for (const s of surfaces)
-      if (s.tread && x >= s.x0 && x <= s.x1 && z >= s.z0 && z < s.z1) return (s.z0 + s.z1) / 2;
-    return z;
+  floor.treadAt=(x,z)=>{
+    let selected=null;
+    for(const s of surfaces) if(s.tread && (!selected||s.y>selected.y) && covers(s,x,z)) selected=s;
+    return selected;
   };
   function register(o, node) {
     obstacles.push(o);
@@ -135,6 +152,7 @@ export function peopleNav(root, viewport) {
     }
     for (const m of moving) {
       const { node, o } = m;
+      if (o.updateBounds) { o.updateBounds(); continue; }
       node.updateWorldMatrix(true, false);
       // Follow reparented crates and boat yaw in the nav map's local frame.
       target.set(m.centerX, 0, m.centerZ).applyMatrix4(node.matrixWorld).applyMatrix4(inverse);
@@ -171,10 +189,12 @@ export function peopleNav(root, viewport) {
     const y = floor(x, z),
       r = agent.reserved;
     if (!Number.isFinite(y) || clearance(x, y + 0.005, z, r, agent.height) <= 0) return false;
+    const tread = floor.treadAt(x, z);
+    const maxEdgeChange = tread ? Math.ceil(r / tread.pitch) * tread.rise : 0.20 * agent.unit;
     for (const [dx, dz] of directions) {
       const edge = floor(x + dx * r, z + dz * r);
       // One stair can occupy less than the pedestrian radius.
-      if (!Number.isFinite(edge) || Math.abs(edge - y) > 0.52) return false;
+      if (!Number.isFinite(edge) || Math.abs(edge - y) > maxEdgeChange + 1e-7) return false;
     }
     if (local)
       for (const other of agents) {
@@ -210,7 +230,7 @@ export function peopleNav(root, viewport) {
       unit = g?.scale.y ?? background.unit;
     const agent = {
       name: g?.name ?? background.name,
-      actor,
+      unit, actor,
       position: g?.position ?? new T.Vector3(),
       radius: unit * 0.285,
       reserved: unit * (0.285 + 0.03) + extra,
@@ -235,7 +255,8 @@ export function peopleNav(root, viewport) {
         x = ax + (bx - ax) * u,
         z = az + (bz - az) * u,
         next = floor(x, z);
-      if (!valid(agent, x, z) || Math.abs(h - next) > 0.26) return false;
+      const maxRise = floor.treadAt(x, z)?.rise ?? 0.20 * agent.unit;
+      if (!valid(agent, x, z) || Math.abs(h - next) > maxRise + 1e-7) return false;
       h = next;
     }
     return true;
@@ -381,7 +402,7 @@ export function peopleNav(root, viewport) {
     }
   }
   const nav = {
-    surface,
+    surface,flights,stairTread,
     box,
     circle,
     floor,

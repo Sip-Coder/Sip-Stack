@@ -68,7 +68,7 @@ function originalHeight(name, x, z) {
 }
 // Signed Euclidean distance to the finite cylinder or oriented prism.
 function clearance(p, o, r) {
-  if (o.stave && pointGap) return pointGap(o, p.x, p.y, p.z) - r;
+  if ((o.stave || o.rail) && pointGap) return pointGap(o, p.x, p.y, p.z) - r;
   const dx = p.x - o.x,
     dz = p.z - o.z,
     v = Math.max(o.bottom - p.y, p.y - o.top);

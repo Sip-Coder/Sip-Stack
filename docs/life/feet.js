@@ -1,4 +1,5 @@
 import * as T from 'three';
+import { stairFeet } from './stair-feet.js';
 
 const up = new T.Vector3(0, 1, 0);
 const right = new T.Vector3(1, 0, 0);
@@ -22,6 +23,8 @@ export function footPlant(root, bones, sides, pelvis, prints) {
     phase: 0,
     swing: 0,
     height: 0,
+    recoveryAt: -Infinity,
+    recoveryTo: new T.Vector3(),
   }));
   const local = new T.Vector3(),
     rest = new T.Vector3(),
@@ -36,11 +39,13 @@ export function footPlant(root, bones, sides, pelvis, prints) {
     kneeDirection = new T.Vector3(),
     cross = new T.Vector3(),
     swivel = new T.Quaternion();
+  let previousFloor = null;
   let previousTime = -Infinity,
     previousAction = '',
     oldX = 0,
     oldZ = 0;
-  function solve(t, action, cycle, stride, floor, dynamics) {
+  const solveStairs = stairFeet(root, feet, sides, pelvis);
+  function solve(t, action, cycle, stride, floor, dynamics, path) {
     if (action === 'row' && !floor) {
       for (const foot of feet) foot.planted = false;
       for (const p of prints) p.visible = false;
@@ -55,151 +60,159 @@ export function footPlant(root, bones, sides, pelvis, prints) {
     const walking = action === 'walk' || action === 'carry',
       ground = floor || flat;
     const reset =
+      (floor && !previousFloor) ||
       t < previousTime ||
       t - previousTime > 0.3 ||
       Math.hypot(pos.x - oldX, pos.z - oldZ) > 0.7 * sc ||
-      previousAction === 'row' ||
-      previousTime === -Infinity ||
-      walking !== (previousAction === 'walk' || previousAction === 'carry');
+      (previousAction === 'row') !== (action === 'row') ||
+      previousTime === -Infinity;
+    previousFloor = floor;
     oldX = pos.x;
     oldZ = pos.z;
     previousTime = t;
     previousAction = action;
     let ceiling = pelvis.position.y;
-    if (walking && floor?.snapTread) {
-      const mid = floor.snapTread(pos.z, pos.x);
-      if (mid !== pos.z) {
-        // A continuous ramp between adjacent tread centres guides the pelvis.
-        // Shoes still sample the actual horizontal tops independently.
-        const other = floor.snapTread(mid + Math.sign(pos.z - mid) * 0.205, pos.x);
-        if (Math.abs(other - mid) > 0.001) {
-          const blend = Math.min(1, Math.abs((pos.z - mid) / (other - mid)));
-          const rise = ground(pos.x, other) - ground(pos.x, mid);
-          if (Number.isFinite(rise)) ceiling += (blend * rise) / sc;
-        }
-      }
-    }
     hipInverse.copy(pelvis.quaternion).invert();
-    for (let i = 0; i < 2; i++) {
-      const f = feet[i],
-        side = sides[i],
-        p = (cycle + i * 0.5) % 1,
-        swing = Math.min(1, Math.max(0, (p - 0.55) / 0.45));
-      const contact = !walking || p < 0.55,
-        wasPlanted = f.planted;
-      const lead =
-        action === 'row'
-          ? 0.725
-          : walking
-            ? reset && contact
-              ? (0.275 - p) * stride
-              : 0.275 * stride
-            : 0.036 * side.s;
-      const balance = dynamics?.stepTarget;
-      const bx = balance && balance[0] === i ? balance[1] : 0,
-        bz = balance && balance[0] === i ? balance[2] : 0;
-      const x = side.h + bx,
-        z = lead + bz;
-      local.set(pos.x + sc * (x * c + z * s), 0, pos.z + sc * (z * c - x * s));
-      if (floor?.snapTread) {
-        const middle = (f.heel.z + f.toe.z) * 0.5 * sc * c;
-        local.z = floor.snapTread(local.z + middle, local.x) - middle;
-      }
-      // Land with the complete sole on a single surface. At a quay seam
-      // or the end of a flight, the ankle can be on the landing while the
-      // toe overhangs a riser. Search fore and aft for the closest flat patch.
-      if (floor) {
-        const x0 = local.x,
-          z0 = local.z,
-          other = feet[1 - i];
-        const maxRise = walking && !reset && other.planted ? 0.5 * sc : Infinity;
-        for (let n = 0; n < 47; n++) {
-          const offset = Math.ceil(n / 2) * (n % 2 ? 1 : -1) * 0.026 * sc;
-          local.x = x0 + offset * s;
-          local.z = z0 + offset * c;
-          if (floor.snapTread) {
-            const middle = (f.heel.z + f.toe.z) * 0.5 * sc * c;
-            local.z = floor.snapTread(local.z + middle, local.x) - middle;
+    if (path) {
+      solveStairs(path);
+      ceiling = pelvis.position.y;
+    } else
+      for (let i = 0; i < 2; i++) {
+        const f = feet[i],
+          side = sides[i],
+          p = (cycle + i * 0.5) % 1;
+        let swing = Math.min(1, Math.max(0, (p - 0.55) / 0.45));
+        let contact = !walking || p < 0.55;
+        const wasPlanted = f.planted;
+        const lead =
+          action === 'row'
+            ? 0.725
+            : walking
+              ? reset && contact
+                ? (0.275 - p) * stride
+                : 0.275 * stride
+              : 0.036 * side.s;
+        const balance = dynamics?.stepTarget;
+        const bx = balance && balance[0] === i ? balance[1] : 0,
+          bz = balance && balance[0] === i ? balance[2] : 0;
+        const x = side.h + bx,
+          z = lead + bz;
+        local.set(pos.x + sc * (x * c + z * s), 0, pos.z + sc * (z * c - x * s));
+        // Land with the complete sole on a single surface. At a quay seam
+        // or the end of a flight, the ankle can be on the landing while the
+        // toe overhangs a riser. Search fore and aft for the closest flat patch.
+        if (floor) {
+          const x0 = local.x,
+            z0 = local.z,
+            other = feet[1 - i];
+          const maxRise = walking && !reset && other.planted ? 0.5 * sc : Infinity;
+          for (let n = 0; n < 47; n++) {
+            const offset = Math.ceil(n / 2) * (n % 2 ? 1 : -1) * 0.026 * sc;
+            local.x = x0 + offset * s;
+            local.z = z0 + offset * c;
+            const heel = ground(local.x + f.heel.z * sc * s, local.z + f.heel.z * sc * c);
+            const toe = ground(local.x + f.toe.z * sc * s, local.z + f.toe.z * sc * c);
+            if (
+              Number.isFinite(heel) &&
+              Math.abs(heel - toe) < 0.001 &&
+              Math.abs(heel - other.height) <= maxRise
+            )
+              break;
           }
-          const heel = ground(local.x + f.heel.z * sc * s, local.z + f.heel.z * sc * c);
-          const toe = ground(local.x + f.toe.z * sc * s, local.z + f.toe.z * sc * c);
-          if (
-            Number.isFinite(heel) &&
-            Math.abs(heel - toe) < 0.001 &&
-            Math.abs(heel - other.height) <= maxRise
-          )
-            break;
         }
-      }
-      if (reset || (!walking && (bx || bz))) {
-        f.hold.copy(local);
-        f.from.copy(local);
-        f.target.copy(local);
-        f.yaw = yaw;
-      } else if (contact && !wasPlanted) {
-        f.hold.copy(local);
-        f.yaw = yaw;
-      }
-      if (contact) {
-        f.target.copy(f.hold);
-      } else {
-        if (wasPlanted) f.from.copy(f.hold);
-        f.target.lerpVectors(f.from, local, ease(swing));
-        f.yaw = yaw;
-      }
-      const cs = Math.cos(f.yaw),
-        sn = Math.sin(f.yaw);
-      const yHeel = floor ? ground(f.target.x + f.heel.z * sn * sc, f.target.z + f.heel.z * cs * sc) : pos.y;
-      const yToe = floor ? ground(f.target.x + f.toe.z * sn * sc, f.target.z + f.toe.z * cs * sc) : pos.y;
-      const incline = Math.atan2(yToe - yHeel, (f.toe.z - f.heel.z) * sc);
-      const lift = walking ? 0.13 * Math.sin(Math.PI * swing) : 0;
-      // Rock around the heel on landing, settle flat, then pivot around the
-      // planted toe. World-space pivot compensation keeps the contact still.
-      let roll = 0,
-        pivot = 0;
-      if (walking && contact) {
-        if (p < 0.09) {
-          roll = -0.06 * (1 - ease(p / 0.09));
-          pivot = f.heel.z;
-        } else if (p > 0.44) {
-          roll = 0.065 * ease((p - 0.44) / 0.11);
-          pivot = f.toe.z;
+        // The balance controller can request a short recovery step during an
+        // idle. Lift one shoe and replant it, instead of dragging both supports.
+        if (walking || reset || action === 'row') f.recoveryAt = -Infinity;
+        else if (
+          f.recoveryAt === -Infinity &&
+          balance?.[0] === i &&
+          feet[1 - i].planted &&
+          Math.hypot(local.x - f.hold.x, local.z - f.hold.z) > 0.045 * sc
+        ) {
+          f.recoveryAt = t;
+          f.recoveryTo.copy(local);
+          f.from.copy(f.hold);
         }
-      }
-      f.pitch = -incline + (contact ? roll : 0.22 * Math.sin(2 * Math.PI * swing));
-      const surface = yHeel + (yToe - yHeel) * (-f.heel.z / (f.toe.z - f.heel.z));
-      f.height = surface;
-      const dx = (f.target.x - pos.x) / sc,
-        dz = (f.target.z - pos.z) / sc;
-      f.model.set(
-        dx * c - dz * s,
-        (surface - pos.y) / sc + 0.077 / Math.max(0.5, Math.cos(incline)) + lift,
-        dx * s + dz * c,
-      );
-      if (roll) {
-        const bindY = f.heel.y,
-          base = -incline;
-        f.model.y +=
-          bindY * (Math.cos(base) - Math.cos(f.pitch)) - pivot * (Math.sin(base) - Math.sin(f.pitch));
-        const advance =
-          bindY * (Math.sin(base) - Math.sin(f.pitch)) + pivot * (Math.cos(base) - Math.cos(f.pitch));
-        f.model.x += Math.sin(f.yaw - yaw) * advance;
-        f.model.z += Math.cos(f.yaw - yaw) * advance;
-      }
-      const h = bones[side.thigh];
-      rotated.copy(h.position).applyQuaternion(pelvis.quaternion);
-      const reach = bones[side.shin].position.length() + bones[side.ankle].position.length() - 0.0002;
-      const horizontal =
-        (f.model.x - pelvis.position.x - rotated.x) ** 2 + (f.model.z - pelvis.position.z - rotated.z) ** 2;
-      if (contact)
-        ceiling = Math.min(
-          ceiling,
-          f.model.y - rotated.y + Math.sqrt(Math.max(0.01, reach * reach - horizontal)),
+        if (f.recoveryAt !== -Infinity) {
+          swing = Math.min(1, (t - f.recoveryAt) / 0.36);
+          local.copy(f.recoveryTo);
+          contact = swing >= 1;
+          if (contact) {
+            f.target.copy(local);
+            f.recoveryAt = -Infinity;
+          }
+        }
+        if (reset) {
+          f.hold.copy(local);
+          f.from.copy(local);
+          f.target.copy(local);
+          f.yaw = yaw;
+        } else if (contact && !wasPlanted) {
+          f.hold.copy(walking ? local : f.target);
+          f.yaw = yaw;
+        }
+        if (contact) {
+          f.target.copy(f.hold);
+        } else {
+          if (wasPlanted) f.from.copy(f.hold);
+          f.target.lerpVectors(f.from, local, ease(swing));
+          f.yaw = yaw;
+        }
+        const cs = Math.cos(f.yaw),
+          sn = Math.sin(f.yaw);
+        const yHeel = floor
+          ? ground(f.target.x + f.heel.z * sn * sc, f.target.z + f.heel.z * cs * sc)
+          : pos.y;
+        const yToe = floor ? ground(f.target.x + f.toe.z * sn * sc, f.target.z + f.toe.z * cs * sc) : pos.y;
+        const incline = Math.atan2(yToe - yHeel, (f.toe.z - f.heel.z) * sc);
+        const lift = !contact ? (walking ? 0.13 : 0.044) * Math.sin(Math.PI * swing) : 0;
+        // Rock around the heel on landing, settle flat, then pivot around the
+        // planted toe. World-space pivot compensation keeps the contact still.
+        let roll = 0,
+          pivot = 0;
+        if (walking && contact) {
+          if (p < 0.09) {
+            roll = -0.06 * (1 - ease(p / 0.09));
+            pivot = f.heel.z;
+          } else if (p > 0.44) {
+            roll = 0.065 * ease((p - 0.44) / 0.11);
+            pivot = f.toe.z;
+          }
+        }
+        f.pitch = -incline + (contact ? roll : 0.22 * Math.sin(2 * Math.PI * swing));
+        const surface = yHeel + (yToe - yHeel) * (-f.heel.z / (f.toe.z - f.heel.z));
+        f.height = surface;
+        const dx = (f.target.x - pos.x) / sc,
+          dz = (f.target.z - pos.z) / sc;
+        f.model.set(
+          dx * c - dz * s,
+          (surface - pos.y) / sc + 0.077 / Math.max(0.5, Math.cos(incline)) + lift,
+          dx * s + dz * c,
         );
-      f.planted = contact;
-      f.swing = swing;
-      f.phase = p;
-    }
+        if (roll) {
+          const bindY = f.heel.y,
+            base = -incline;
+          f.model.y +=
+            bindY * (Math.cos(base) - Math.cos(f.pitch)) - pivot * (Math.sin(base) - Math.sin(f.pitch));
+          const advance =
+            bindY * (Math.sin(base) - Math.sin(f.pitch)) + pivot * (Math.cos(base) - Math.cos(f.pitch));
+          f.model.x += Math.sin(f.yaw - yaw) * advance;
+          f.model.z += Math.cos(f.yaw - yaw) * advance;
+        }
+        const h = bones[side.thigh];
+        rotated.copy(h.position).applyQuaternion(pelvis.quaternion);
+        const reach = bones[side.shin].position.length() + bones[side.ankle].position.length() - 0.0002;
+        const horizontal =
+          (f.model.x - pelvis.position.x - rotated.x) ** 2 + (f.model.z - pelvis.position.z - rotated.z) ** 2;
+        if (contact)
+          ceiling = Math.min(
+            ceiling,
+            f.model.y - rotated.y + Math.sqrt(Math.max(0.01, reach * reach - horizontal)),
+          );
+        f.planted = contact;
+        f.swing = swing;
+        f.phase = p;
+      }
     pelvis.position.y = ceiling;
     for (let i = 0; i < 2; i++) {
       const side = sides[i],

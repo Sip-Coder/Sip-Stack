@@ -1,9 +1,9 @@
 // Node 22+, Chromium, and the same Three.js package as docs/index.html.
 // THREE_ROOT=/path/to/three CHROME=/usr/bin/chromium node tools/check-people.mjs
-// --ref=<commit> runs the SAME probes on repository history. --suite=scene|rig|physics
+// --ref=<commit> runs the SAME probes on repository history. --suite=scene|rig|physics|scale|motion
 import { createServer } from 'node:http';
 import { spawn, execFileSync } from 'node:child_process';
-import { existsSync, readFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, readFileSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, resolve, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -14,7 +14,8 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const option = (name) => process.argv.find((a) => a.startsWith('--' + name + '='))?.split('=')[1];
 const ref = option('ref'),
   suite = option('suite') || 'all';
-if (!['all', 'scene', 'rig', 'physics'].includes(suite)) throw Error('Unknown suite ' + suite);
+const suites = ['scene', 'rig', 'scale', 'motion', 'physics'];
+if (suite !== 'all' && !suites.includes(suite)) throw Error('Unknown suite ' + suite);
 if (ref && !/^[\w./-]+$/.test(ref)) throw Error('Invalid git ref');
 const three =
   process.env.THREE_ROOT || resolve(dirname(createRequire(import.meta.url).resolve('three')), '..');
@@ -29,14 +30,18 @@ function source(file) {
       })
     : readFileSync(join(root, file), 'utf8');
 }
-let baseline = false;
-if (ref) {
+function revisionHas(file) {
+  if (!ref) return existsSync(join(root, file));
   try {
-    source('docs/life/deformation.js');
+    execFileSync('git', ['cat-file', '-e', ref + ':' + file], { cwd: root, stdio: 'ignore' });
+    return true;
   } catch {
-    baseline = true;
+    return false;
   }
 }
+const baseline = !revisionHas('docs/life/deformation.js');
+const scaleAvailable = revisionHas('docs/life/scale.js'),
+  motionAvailable = revisionHas('docs/life/feet.js');
 const server = createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost'),
     path = url.pathname;
@@ -151,17 +156,41 @@ try {
   await loaded;
   const report = {},
     failures = [];
-  for (const key of ['scene', 'rig', 'physics']) {
+  for (const key of suites) {
     if (suite !== 'all' && suite !== key) continue;
+    if (ref && key === 'scale' && !scaleAvailable) {
+      report.scale = {
+        available: false,
+        failures: [],
+        reason:
+          'This revision predates the per-object scale registry. The audit of main at 411f01d is transcribed in people-review/scale-report.md.',
+      };
+      continue;
+    }
+    if (ref && key === 'motion' && !motionAvailable) {
+      report.motion = {
+        available: false,
+        failures: [],
+        reason:
+          'This revision predates articulated stance observations. Its foot and hand measurements are in the legacy scene suite.',
+      };
+      continue;
+    }
     if (key === 'physics') await call('Emulation.setCPUThrottlingRate', { rate: 4 });
     const r = await call('Runtime.evaluate', {
-      expression: `(async()=>{window.probedActors=[];return (await import('/tools/check-people-${key}.mjs')).default(${JSON.stringify({ baseline })})})()`,
+      expression: `(async()=>{window.probedActors=[];return (await import('/tools/check-people-${key}.mjs')).default(${JSON.stringify({ baseline, ref })})})()`,
       returnByValue: true,
       awaitPromise: true,
     });
     if (r.exceptionDetails) throw Error(r.exceptionDetails.exception?.description || r.exceptionDetails.text);
     report[key] = r.result.value;
     failures.push(...report[key].failures);
+    if (key === 'scale' && !ref) {
+      const { formatScaleReport } = await import('./check-scale.mjs');
+      const markdown = formatScaleReport(report[key]);
+      writeFileSync(join(root, 'people-review/scale-report.md'), markdown);
+      if (suite === 'scale') process.stderr.write(markdown);
+    }
   }
   console.log(JSON.stringify(report, null, 2));
   if (failures.length) process.exitCode = 1;

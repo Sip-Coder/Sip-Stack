@@ -52,6 +52,78 @@ const gaze = spline([
 const beats = ['The spring', 'The stepping stones', 'The vineyard edge', 'The cooper’s barrel'];
 const quad = 'varying vec2 uv0;void main(){uv0=uv;gl_Position=vec4(position.xy,0.,1.);}';
 
+export function buildCreekSkiff(scene, nav) {
+  const skiff = cutter('#b7c7b5', '#395c5b', false, 'creek');
+  skiff.root.name = 'Creek skiff';
+  skiff.root.position.set(1.35, 0, -13);
+  skiff.root.rotation.y = 1.45;
+  scene.add(skiff.root);
+  nav.box(skiff.root.name,0,0,1.1,.43,-.115,.375,0,skiff.root);
+  const stakeZ = -14.38,
+    stakeX = 2.25,
+    stakeY = ground(stakeX, stakeZ);
+  const tether = new T.MeshStandardMaterial({ color: '#8d7655', roughness: 0.86 });
+  tube(
+    scene,
+    [
+      [stakeX, stakeY - 0.06, stakeZ],
+      [stakeX, stakeY + 0.42, stakeZ],
+    ],
+    0.044,
+    tether,
+    4,
+  );
+  tube(
+    scene,
+    [
+      [1.47, surface(-14) + 0.42, -14],
+      [1.76, surface(-14) + 0.29, -14.19],
+      [stakeX, stakeY + 0.38, stakeZ],
+    ],
+    0.012,
+    tether,
+    12,
+  );
+  return skiff;
+}
+
+export function buildCreekWildlife(scene) {
+  const kingfisher = flock(scene, {
+    sceneKey: 'creek', kind: 'kingfisher',
+    count: 1,
+    center: [-1.2, 2.48, 6.1],
+    radii: [1.8, 2.6],
+    perch: [-1.51, surface(6.4) + 0.45, 6.4],
+    obstacles: [[-2.4, 2.0, 7.2, 0.68]],
+  });
+  const finches = flock(scene, {
+    sceneKey: 'creek', kind: 'songbird',
+    count: 4,
+    center: [0.3, 3.7, -7.6],
+    radii: [3.2, 2.1],
+    perch: [4.1, ground(4.1, -16.45) + 1.915, -16.45],
+  });
+  const troutPool = trout(scene, 9, 0.84, 4.42, (x, z) => surface(z), 0.85, 'creek', 0.35);
+  const dragonflies = insects(
+    scene,
+    'dragonfly',
+    9,
+    [-0.37, surface(5.1) + 0.54, 5.1],
+    [1.48, 0.22, 1.62],
+    'creek',
+  );
+  const butterflies = insects(scene, 'butterfly', 7, [-2.35, 1.83, -7.8], [1.4, 0.34, 1.12], 'creek');
+  const fireflies = insects(scene, 'firefly', 32, [-0.17, 1.55, -2.6], [2.7, 0.72, 13.4], 'creek');
+  return (t, mobile, camera, dusk) => {
+    kingfisher(t, mobile, camera);
+    finches(t, mobile, camera);
+    troutPool(t, mobile);
+    dragonflies(t, mobile, false);
+    butterflies(t, mobile, false);
+    fireflies(t, mobile, dusk);
+  };
+}
+
 export function mountCreek(root) {
   const find = (s) => root.querySelector(s),
     stage = find('.creek-stage'),
@@ -103,65 +175,8 @@ export function mountCreek(root) {
   grove(scene, rng, time, wood, detail, contact);
   contact.stamp(3.8, -14, 2.35, 1.54, 0.82);
   const lantern = cellar(scene, wood, rng);
-  const skiff = cutter('#b7c7b5', '#395c5b');
-  skiff.root.name = 'Creek skiff';
-  skiff.root.position.set(1.35, 0, -13);
-  skiff.root.rotation.y = 1.45;
-  scene.add(skiff.root);
-  lantern.nav.box(skiff.root.name,0,0,1.1,.43,-.115,.375,0,skiff.root);
-  const stakeZ = -14.38,
-    stakeX = 2.25,
-    stakeY = ground(stakeX, stakeZ);
-  const tether = new T.MeshStandardMaterial({ color: '#8d7655', roughness: 0.86 });
-  tube(
-    scene,
-    [
-      [stakeX, stakeY - 0.06, stakeZ],
-      [stakeX, stakeY + 0.42, stakeZ],
-    ],
-    0.044,
-    tether,
-    4,
-  );
-  tube(
-    scene,
-    [
-      [1.47, surface(-14) + 0.42, -14],
-      [1.76, surface(-14) + 0.29, -14.19],
-      [stakeX, stakeY + 0.38, stakeZ],
-    ],
-    0.012,
-    tether,
-    12,
-  );
-  const kingfisher = flock(scene, {
-    kind: 'kingfisher',
-    count: 1,
-    center: [-1.2, 2.48, 6.1],
-    radii: [1.8, 2.6],
-    perch: [-1.51, surface(6.4) + 0.45, 6.4],
-    scale: 0.53,
-    obstacles: [[-2.4, 2.0, 7.2, 0.68]],
-  });
-  const finches = flock(scene, {
-    kind: 'songbird',
-    count: 4,
-    center: [0.3, 3.7, -7.6],
-    radii: [3.2, 2.1],
-    perch: [4.1, ground(4.1, -16.45) + 1.915, -16.45],
-    scale: 0.36,
-  });
-  const troutPool = trout(scene, 9, 0.84, 4.42, (x, z) => surface(z), 0.85);
-  const dragonflies = insects(
-    scene,
-    'dragonfly',
-    9,
-    [-0.37, surface(5.1) + 0.54, 5.1],
-    [1.48, 0.22, 1.62],
-    0.65,
-  );
-  const butterflies = insects(scene, 'butterfly', 7, [-2.35, 1.83, -7.8], [1.4, 0.34, 1.12], 0.63);
-  const fireflies = insects(scene, 'firefly', 32, [-0.17, 1.55, -2.6], [2.7, 0.72, 13.4], 0.34);
+  const skiff = buildCreekSkiff(scene, lantern.nav);
+  const wildlife = buildCreekWildlife(scene);
   let lastShadow = -1;
   const hdr =
     renderer.extensions.has('EXT_color_buffer_float') ||
@@ -401,12 +416,7 @@ export function mountCreek(root) {
     const mobile = tier === 0;
     lantern.update(ambient,camera,mobile,tier===2);
     floatHull(skiff.root, ambient, streamHeight, 0, 0.015);
-    kingfisher(ambient, mobile, camera);
-    finches(ambient, mobile, camera);
-    troutPool(ambient, mobile);
-    dragonflies(ambient, mobile, false);
-    butterflies(ambient, mobile, false);
-    fireflies(ambient, mobile, daylight.value < 0.5);
+    wildlife(ambient, mobile, camera, daylight.value < 0.5);
     if (!mobile && Math.abs(ambient - lastShadow) > 0.2) {
       renderer.shadowMap.needsUpdate = true;
       lastShadow = ambient;
