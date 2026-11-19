@@ -21,6 +21,7 @@ export function harbor(scene) {
   geo.computeBoundingSphere();
   const uniforms = {
     t: { value: 0 },
+    oarWake: { value: new T.Vector4() },
     sunDir: { value: new T.Vector3() },
     sunColor: { value: new T.Color() },
     horizon: { value: new T.Color() },
@@ -48,7 +49,7 @@ export function harbor(scene) {
       gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);
     }`,
     fragmentShader: `
-    uniform float t,dusk; uniform vec3 sunDir,sunColor,horizon,zenith;
+    uniform vec4 oarWake;uniform float t,dusk; uniform vec3 sunDir,sunColor,horizon,zenith;
     uniform sampler2D opaque,sceneDepth; uniform bool useSSR;
     uniform mat4 projectionMatrix;
     varying vec3 seaPos,seaNormal;
@@ -102,6 +103,10 @@ export function harbor(scene) {
       vec3 color=mix(water,refl,clamp(fres+.09,0.,1.))+sunColor*glint;
       float lace=sin(shore*33.-t*2.+1.4*ripple(p))*.5+.5;
       float foam=(1.-smoothstep(.02,.35+.12*sin(t+p.x*2.),shore))*smoothstep(.2,.84,lace)*micro;
+      vec2 delta=p-oarWake.xy;
+      float trail=-dot(delta,oarWake.zw), lateral=abs(dot(delta,vec2(-oarWake.w,oarWake.z)));
+      float arms=abs(lateral-(.34+.19*trail));
+      foam+=exp(-15.*arms)*smoothstep(-.2,.4,trail)*(1.-smoothstep(.6,2.6,trail))*(.21+.14*sin(19.*trail-4.*t+ripple(p)));
       color=mix(color,vec3(.73,.81,.71)*(1.-dusk*.65),foam*.76);
       color=mix(color,horizon,1.-exp(-.000048*dist*dist));
       gl_FragColor=vec4(color,1.);

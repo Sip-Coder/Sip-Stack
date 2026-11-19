@@ -2,6 +2,13 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { seeded } from './sip-craft-sky.js';
 
+import { flock } from '../life/birds.js';
+import { worker } from '../life/people.js';
+import { cutter, clothPanel, floatHull, tastingGlass } from '../life/harbor.js';
+import { trout, insects } from '../life/wildlife.js';
+import { wind } from '../life/forms.js';
+import { hullWave } from './sip-craft-water.js';
+
 export function buildHarbor(scene, u, grain) {
   const rng = seeded(381);
   const group = new THREE.Group();
@@ -160,8 +167,10 @@ export function buildHarbor(scene, u, grain) {
     for (let i = 0; i < 6; i++) box(0.18, 0.12, 0.16, sand, -2.6 + side * 1.18, 2.85 + i * 0.24, 0.65);
   box(2.6, 0.12, 1.8, sand, -2.6, 4.22, -0.15);
   for (let x of [-3.4, -1.8]) box(0.08, 1.25, 0.08, teal, x, 3.45, 1.65);
-  const awning = box(2.3, 0.06, 1.15, clay, -2.6, 4.06, 1.18);
-  awning.rotation.x = 0.13;
+  const awning = clothPanel(2.3, 1.15, '#b47750');
+  awning.position.set(-2.6, 4.06, 1.18);
+  awning.rotation.x = -1.44;
+  scene.add(awning);
   // Terrace railings, a table, wine amphorae and cypress silhouettes.
   for (let i = 0; i < 9; i++) box(0.04, 0.4, 0.04, teal, -4.05 + i * 0.37, 3.05, 1.8);
   box(3.1, 0.035, 0.035, teal, -2.55, 3.25, 1.8);
@@ -294,22 +303,26 @@ export function buildHarbor(scene, u, grain) {
     box(0.08, 0.9, 0.08, teal, -0.8 + i * 0.86, 0.25, 2.2);
     box(0.08, 0.9, 0.08, teal, -0.8 + i * 0.86, 0.25, 2.8);
   }
+  const lanterns = [];
   for (const x of [-0.6, 1.1, 3.1]) {
+    box(0.23, 0.027, 0.035, teal, x + 0.103, 1.78, 2.8);
+    box(0.027, 0.27, 0.035, teal, x, 1.65, 2.8);
+    const hanger = new THREE.Group();
+    hanger.position.set(x + 0.192, 1.78, 2.8);
+    group.add(hanger);
+    lanterns.push(hanger);
     box(0.045, 0.9, 0.045, teal, x, 1.08, 2.8);
-    mesh(new THREE.SphereGeometry(0.105, 12, 8), lamp, x, 1.58, 2.8);
+    mesh(new THREE.SphereGeometry(0.105, 12, 8), lamp, 0, -0.2, 0, hanger);
   }
-  const boat = new THREE.Group();
-  boat.position.set(3, 0.25, 4.2);
+  const rig = cutter('#e6dac3', '#286564', true),
+    boat = rig.root;
+  boat.name = 'Tidelight cutter';
+  boat.position.set(3, 0, 4.2);
+  boat.rotation.y = 0.74 - Math.PI / 2;
   group.add(boat);
-  mesh(new THREE.SphereGeometry(1, 24, 12), clay, 0, 0, 0, boat).scale.set(0.38, 0.19, 0.95);
-  box(0.035, 1.7, 0.035, teal, 0, 0.9, 0, boat);
-  const sailGeo = new THREE.BufferGeometry();
-  sailGeo.setAttribute(
-    'position',
-    new THREE.Float32BufferAttribute([0.02, 1.65, 0, 0.02, 0.4, 0, 0.02, 0.45, 0.77], 3),
-  );
-  sailGeo.computeVertexNormals();
-  mesh(sailGeo, new THREE.MeshStandardMaterial({ color: '#edd4a8', side: THREE.DoubleSide }), 0, 0, 0, boat);
+  const pennant = clothPanel(0.45, 0.13, '#af5942', 'flag');
+  pennant.position.set(0.33, 1.78, 0);
+  boat.add(pennant);
   const iron = mat('#353f3d', { metalness: 0.66, roughness: 0.43 }),
     brass = mat('#aa8957', { metalness: 0.76, roughness: 0.34 });
   const lens = mat('#b8d7c0', { metalness: 0.45, roughness: 0.13 });
@@ -342,10 +355,11 @@ export function buildHarbor(scene, u, grain) {
   const canvas = mat('#c9af81'),
     darkWood = mat('#655443');
   weathered(darkWood);
-  for (const x of [-0.6, 1.1, 3.1]) {
-    cyl(0.12, 0.15, 0.055, iron, x, 1.485, 2.8, 8);
-    cyl(0.045, 0.14, 0.093, iron, x, 1.705, 2.8, 8);
-    for (const dx of [-0.075, 0.075]) box(0.016, 0.2, 0.017, iron, x + dx, 1.58, 2.86);
+  for (const hanger of lanterns) {
+    mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.071, 8), iron, 0, -0.033, 0, hanger);
+    mesh(new THREE.CylinderGeometry(0.12, 0.15, 0.055, 8), iron, 0, -0.295, 0, hanger);
+    mesh(new THREE.CylinderGeometry(0.045, 0.14, 0.093, 8), iron, 0, -0.075, 0, hanger);
+    for (const dx of [-0.075, 0.075]) box(0.016, 0.2, 0.017, iron, dx, -0.2, 0.06, hanger);
   }
   for (let i = 0; i < 15; i++) box(0.139, 0.07, 0.025, i % 2 ? clay : canvas, -3.64 + i * 0.149, 3.96, 1.75);
   for (let i = 0; i < 39; i++) {
@@ -364,54 +378,27 @@ export function buildHarbor(scene, u, grain) {
     box(0.21, 0.026, 0.018, iron, x, 3.57, 0.71);
     box(0.31, 0.055, 0.13, sand, x, 3.27, 0.7);
   }
-  // A second canvas triangle, boom, gunwales and slender waterline stripe.
-  const jib = new THREE.BufferGeometry();
-  jib.setAttribute(
-    'position',
-    new THREE.Float32BufferAttribute([0, 1.55, -0.04, 0, 0.36, -0.13, 0, 0.32, -0.81], 3),
-  );
-  jib.computeVertexNormals();
-  mesh(jib, new THREE.MeshStandardMaterial({ color: '#cbb18a', side: THREE.DoubleSide }), 0, 0, 0, boat);
-  box(0.045, 0.04, 0.84, clay, 0, 0.42, 0.38, boat);
-  mesh(new THREE.SphereGeometry(1, 28, 12), sand, 0, 0.09, 0, boat).scale.set(0.37, 0.095, 0.94);
-  boat.rotation.y = 0.74;
-  const birds = [];
-  for (let i = 0; i < 5; i++) {
-    const b = new THREE.Group();
-    for (const side of [-1, 1]) {
-      const g = new THREE.BufferGeometry();
-      g.setAttribute(
-        'position',
-        new THREE.Float32BufferAttribute(
-          [
-            0,
-            0,
-            0.07,
-            0.24 * side,
-            0.05,
-            0.04,
-            0.43 * side,
-            0.02,
-            -0.105,
-            0,
-            0,
-            0.07,
-            0.43 * side,
-            0.02,
-            -0.105,
-            0,
-            0,
-            -0.055,
-          ],
-          3,
-        ),
-      );
-      g.computeVertexNormals();
-      mesh(g, new THREE.MeshStandardMaterial({ color: '#d6d2bb', side: THREE.DoubleSide }), 0, 0, 0, b);
-    }
-    scene.add(b);
-    birds.push(b);
-  }
+  const flights = flock(scene, {
+    kind: 'gull',
+    count: 5,
+    center: [-0.5, 5.65, -0.9],
+    radii: [4.9, 3.1],
+    perch: [-2.6, 5.15, -0.15],
+    scale: 0.64,
+    obstacles: [
+      [4.4, 5.3, -2.25, 1.15],
+      [-2.6, 5.1, -0.15, 1.65],
+    ],
+  });
+  const fish = trout(scene, 8, 2.05, 3.83, (x, z, t) => hullWave(x, z, t, u.storm.value), 0.72);
+  const insectsAtVines = insects(scene, 'butterfly', 5, [-3.1, 3.48, -2.49], [1.02, 0.22, 0.48], 0.34);
+  const dockhand = worker(scene, 7, 0.51, 'Pier hand');
+  dockhand.g.position.set(1.64, 0.732, 2.55);
+  dockhand.g.rotation.y = 0.71;
+  const guest = worker(scene, 6, 0.49, 'Terrace taster');
+  guest.g.position.set(-2.02, 2.88, 1.03);
+  guest.g.rotation.y = -1.16;
+  const taste = tastingGlass(guest);
   // Batch static architecture by material. Keep moving elements and the light
   // shaft separate so their transforms remain independent.
   const batches = new Map();
@@ -433,23 +420,26 @@ export function buildHarbor(scene, u, grain) {
     group.add(merged);
     parts.forEach((p) => p.dispose());
   }
-  return (t, w, heave, slope) => {
+  return (t, w, camera, tier) => {
     beacon.intensity = 1.4 + w * 5;
     lamp.emissiveIntensity = 0.3 + w * 2;
     beamMat.uniforms.strength.value = 0.012 + w * 0.11;
     beamPivot.rotation.y = t * 0.22 + 0.6;
     haloMaterial.opacity = 0.13 + w * 0.21;
-    boat.position.y = heave + 0.095;
-    boat.rotation.z = slope * 0.56;
-    boat.rotation.x = 0.038 * Math.sin(t * 1.4);
-    for (let i = 0; i < birds.length; i++) {
-      const b = birds[i],
-        a = t * 0.079 + i * 1.24;
-      b.position.set(-5 + Math.cos(a) * 7, 5.8 + i * 0.2 + Math.sin(a * 2) * 0.3, -5 + Math.sin(a) * 4);
-      b.rotation.y = -a;
-      b.rotation.z = 0.12 * Math.sin(a);
-      b.children[0].rotation.z = -0.26 * Math.sin(t * 3.9 + i);
-      b.children[1].rotation.z = -b.children[0].rotation.z;
+    for (const hanger of lanterns) hanger.rotation.z = wind(t, hanger.position.x, 2.8) * (0.045 + 0.048 * w);
+    floatHull(boat, t, hullWave, w, 0.009);
+    pennant.userData.billow(t, 3, 4.2);
+    awning.userData.billow(t, -2.6, 1.18);
+    flights(t, tier === 0, camera);
+    fish(t, tier === 0);
+    insectsAtVines(t, tier === 0, false);
+    dockhand.pose(t, 'talk');
+    dockhand.lod(camera, tier === 0);
+    guest.g.visible = tier > 0;
+    if (guest.g.visible) {
+      guest.pose(t, 'taste');
+      taste(t);
+      guest.lod(camera, false);
     }
   };
 }

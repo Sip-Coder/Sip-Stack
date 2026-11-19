@@ -1,6 +1,8 @@
 import * as T from 'three';
 import { ground, tau } from './sip-creek-land.js';
 
+import { worker } from '../life/people.js';
+import { wind } from '../life/forms.js';
 export function cellar(scene, wood, rng) {
   const station = new T.Group();
   station.position.set(3.8, ground(3.8, -14), -14);
@@ -217,18 +219,33 @@ export function cellar(scene, wood, rng) {
   const lx = -0.99,
     ly = 1.76,
     lz = -0.59;
-  mesh(station, new T.CylinderGeometry(0.016, 0.016, 0.16, 8), iron, lx, 1.98, lz);
-  mesh(station, new T.CylinderGeometry(0.095, 0.19, 0.11, 4), iron, lx, ly + 0.14, lz).rotation.y =
+  const hanger = new T.Group();
+  station.add(hanger);
+  mesh(hanger, new T.CylinderGeometry(0.016, 0.016, 0.16, 8), iron, lx, 1.98, lz);
+  mesh(hanger, new T.CylinderGeometry(0.095, 0.19, 0.11, 4), iron, lx, ly + 0.14, lz).rotation.y =
     Math.PI / 4;
-  box(station, lx, ly, lz, 0.205, 0.21, 0.205, lamp);
-  box(station, lx, ly - 0.13, lz, 0.28, 0.046, 0.28, iron);
+  box(hanger, lx, ly, lz, 0.205, 0.21, 0.205, lamp);
+  box(hanger, lx, ly - 0.13, lz, 0.28, 0.046, 0.28, iron);
   for (const dx of [-0.11, 0.11])
-    for (const dz of [-0.11, 0.11]) box(station, lx + dx, ly, lz + dz, 0.024, 0.23, 0.024, iron);
+    for (const dz of [-0.11, 0.11]) box(hanger, lx + dx, ly, lz + dz, 0.024, 0.23, 0.024, iron);
+  hanger.position.set(lx, 2.03, lz);
+  for (const part of hanger.children) part.position.sub(hanger.position);
+  const cooper = worker(station, 7, 0.92, 'Cooper');
+  cooper.g.position.set(0.32, 0.101, 0.85);
+  cooper.g.rotation.y = -2.21;
   const glow = new T.PointLight('#ffbd72', 4, 8, 2);
   glow.position.set(lx, ly + 0.02, lz + 0.2);
   station.add(glow);
-  return (night) => {
+  function light(night) {
     glow.intensity = night ? 15 : 1.1;
     lamp.emissiveIntensity = night ? 4.3 : 0.04;
+  }
+  return {
+    light,
+    update(t, camera, mobile) {
+      cooper.pose(t, 'inspect');
+      cooper.lod(camera, mobile);
+      hanger.rotation.z = wind(t, 3.8, -14) * 0.059;
+    },
   };
 }
