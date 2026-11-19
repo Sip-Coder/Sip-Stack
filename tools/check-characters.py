@@ -114,6 +114,29 @@ def switch(page, mode):
     page.evaluate("() => new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))")
 
 
+def formation(page):
+    call(page, "view", "lineup")
+    call(page, "render")
+    assert page.locator('[data-action="lineup"]').get_attribute("aria-pressed") == "true"
+    group = page.locator('[data-action="group"]')
+    group.evaluate("button=>button.click()")
+    assert group.get_attribute("aria-pressed") == "true"
+    # While walking together, selecting the next driver preserves all world positions.
+    travel = page.locator(HOST).evaluate("""h => {
+      const t = h.characterTest;
+      const positions = () => ['sippy','roma','hummin'].map(name => {
+        t.select(name); const {x,z}=t.snapshot(); return [x,z];
+      });
+      const start=positions();
+      t.select('sippy'); t.tick(180,{x:0,z:1});
+      const end=positions();
+      return end.map(([x,z],i)=>Math.hypot(x-start[i][0],z-start[i][1]));
+    }""")
+    assert min(travel) > 1.0, travel
+    print("Three-character formation travel (m)", travel, flush=True)
+    group.evaluate("button=>button.click()")
+
+
 def controls(page):
     canvas = page.locator(HOST + " canvas")
     canvas.focus()
@@ -217,6 +240,7 @@ def exercise(browser, url, package, system_fonts):
                 return c.checkVisibility({visibilityProperty:true}) && characterChecks.painted(c);
             }""")
             print(f"{tier} · three heroes rendered and context restored", flush=True)
+        formation(page)
         call(page, "tier", "mobile")
         call(page, "view", "follow")
         call(page, "reset")
