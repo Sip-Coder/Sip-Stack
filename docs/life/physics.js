@@ -2,7 +2,7 @@
 // diorama may both be scaled and tilted; neither scale enters the integrator.
 import * as T from 'three';
 import { wind } from './forms.js';
-import { collide, createPanel } from './cloth.js';
+import { capsuleGrid, collide, createPanel } from './cloth.js';
 
 const clamp = T.MathUtils.clamp;
 const data = (n) => new Float32Array(n);
@@ -27,7 +27,8 @@ function makeCapsules(rig, build, waist) {
     add(side + 'hand', hand, hand, palmEnvelope.r0, palmEnvelope.r1, 0.006, palmEnvelope.y0, palmEnvelope.y1);
   }
   const capsules = data(8 * segments.length),
-    bounds = data(6 * segments.length);
+    grid = capsuleGrid(segments.length),
+    bounds = grid.boxes;
   const footOffsets = sides.map(
     (_, i) => segments.findIndex((v) => v.name === (i ? 'right foot' : 'left foot')) * 8,
   );
@@ -56,7 +57,7 @@ function makeCapsules(rig, build, waist) {
     }
     for (let j = 0; j < 3; j++) com[j] /= mass;
   }
-  return { capsules, bounds, segments, footOffsets, names, update };
+  return { capsules, bounds: grid, segments, footOffsets, names, update };
 }
 
 function springChain(ids, rig) {
@@ -457,6 +458,7 @@ export function createDynamics({ root, rig, style, build = 1, waist = 1, clothCo
       resetNext = true;
       return;
     }
+    bounds.build(capsules);
     for (let i = 0; i < panels.length; i++) {
       panels[i].anchor(matrices[anchors[i]]);
       if (resetNext) panels[i].reset();

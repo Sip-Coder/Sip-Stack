@@ -8,24 +8,57 @@ const clamp = (v, a, b) => Math.max(a, Math.min(v, b));
 // Capsules are [start.xyz, start radius, end.xyz, end radius], in rig space.
 // Use the closest point on the line swept by a linearly varying sphere. The
 // analytic axial offset matters on tapered calves, especially near a knee.
-function projectCapsule(p, k, caps, c, padding) {
+const binCount = 48;
+// 8 cm slabs in rig coordinates. Saturating at either end keeps outlying
+// vertices and colliders in the same end slab, with the exact AABB test below.
+const slab = (v) => Math.max(0, Math.min(binCount - 1, Math.floor(v * 12.5) + 16));
+export function capsuleGrid(n) {
+  const masks = new Int32Array(3 * binCount),
+    shape = new Float32Array(5 * n),
+    boxes = new Float32Array(6 * n);
+  function build(caps) {
+    masks.fill(0);
+    for (let i = 0; i < n; i++) {
+      const c = i * 8,
+        d = i * 6,
+        j = i * 5,
+        bit = 1 << i;
+      const dx = caps[c + 4] - caps[c],
+        dy = caps[c + 5] - caps[c + 1],
+        dz = caps[c + 6] - caps[c + 2],
+        sq = dx * dx + dy * dy + dz * dz,
+        dr = caps[c + 7] - caps[c + 3];
+      shape[j] = dx;
+      shape[j + 1] = dy;
+      shape[j + 2] = dz;
+      shape[j + 3] = sq > 1e-10 ? 1 / sq : 0;
+      shape[j + 4] = dr / Math.sqrt(Math.max(1e-10, sq * (sq - dr * dr)));
+      for (let axis = 0; axis < 3; axis++) {
+        const base = axis * binCount,
+          lo = base + slab(boxes[d + axis]),
+          hi = base + slab(boxes[d + axis + 3]);
+        for (let k = lo; k <= hi; k++) masks[k] |= bit;
+      }
+    }
+  }
+  function candidates(x, y, z) {
+    return masks[slab(x)] & masks[binCount + slab(y)] & masks[2 * binCount + slab(z)];
+  }
+  return { boxes, shape, build, candidates };
+}
+function projectCapsule(p, k, caps, c, shape, j, padding) {
   const x = p[k] - caps[c],
     y = p[k + 1] - caps[c + 1],
     z = p[k + 2] - caps[c + 2];
-  const dx = caps[c + 4] - caps[c],
-    dy = caps[c + 5] - caps[c + 1],
-    dz = caps[c + 6] - caps[c + 2];
-  const l2 = dx * dx + dy * dy + dz * dz;
-  const dr = caps[c + 7] - caps[c + 3];
-  const t = l2 > 1e-10 ? (x * dx + y * dy + z * dz) / l2 : 0;
+  const dx = shape[j],
+    dy = shape[j + 1],
+    dz = shape[j + 2],
+    t = (x * dx + y * dy + z * dz) * shape[j + 3];
   const ax = x - dx * t,
     ay = y - dy * t,
     az = z - dz * t;
-  const u = clamp(
-    t + dr * Math.sqrt((ax * ax + ay * ay + az * az) / Math.max(1e-10, l2 * (l2 - dr * dr))),
-    0,
-    1,
-  );
+  const u = clamp(t + shape[j + 4] * Math.sqrt(ax * ax + ay * ay + az * az), 0, 1),
+    dr = caps[c + 7] - caps[c + 3];
   let nx = x - dx * u,
     ny = y - dy * u,
     nz = z - dz * u;
@@ -46,20 +79,31 @@ function projectCapsule(p, k, caps, c, padding) {
 
 // Largest remaining signed correction is normally zero after a single sweep.
 // Revisit overlapping tapered ends (e.g. hip and thigh) until both are clear.
-export function collide(p, k, caps, bounds, pad) {
+export function collide(p, k, caps, grid, pad) {
+  const boxes = grid.boxes;
   for (let pass = 0; pass < 6; pass++) {
-    let moved = false;
-    for (let c = 0, b = 0; c < caps.length; c += 8, b += 6) {
+    let moved = false,
+      mask = grid.candidates(p[k], p[k + 1], p[k + 2]);
+    while (mask) {
+      const bit = mask & -mask,
+        i = 31 - Math.clz32(bit),
+        b = 6 * i;
+      mask ^= bit;
       if (
-        p[k] < bounds[b] ||
-        p[k] > bounds[b + 3] ||
-        p[k + 1] < bounds[b + 1] ||
-        p[k + 1] > bounds[b + 4] ||
-        p[k + 2] < bounds[b + 2] ||
-        p[k + 2] > bounds[b + 5]
+        p[k] < boxes[b] ||
+        p[k] > boxes[b + 3] ||
+        p[k + 1] < boxes[b + 1] ||
+        p[k + 1] > boxes[b + 4] ||
+        p[k + 2] < boxes[b + 2] ||
+        p[k + 2] > boxes[b + 5]
       )
         continue;
-      if (projectCapsule(p, k, caps, c, pad)) moved = true;
+      if (projectCapsule(p, k, caps, 8 * i, grid.shape, 5 * i, pad)) {
+        moved = true;
+        // A push may enter a neighbour's broad-phase slab. Re-query higher
+        // indices this pass and the lower indices on the following sweep.
+        mask = grid.candidates(p[k], p[k + 1], p[k + 2]) & -(bit * 2);
+      }
     }
     if (!moved) break;
   }
@@ -236,22 +280,13 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
     nv = rw * rh;
   const renderPosition = new Float32Array(nv * 3),
     normals = new Float32Array(nv * 3);
-  const remap = new Uint16Array(nv * 4),
-    weight = new Float32Array(nv * 4),
-    uv = [],
+  const uv = [],
     colors = [],
     triangles = [];
   const tint = new T.Color(color);
   for (let r = 0; r < rh; r++)
     for (let c = 0; c < rw; c++) {
-      const i = r * rw + c,
-        a = Math.min(rows - 2, r >> 1),
-        x = c * 0.5,
-        b = wrapped ? Math.floor(x) % cols : Math.min(cols - 2, Math.floor(x));
-      const u = x - Math.min(Math.floor(x), wrapped ? cols : cols - 2),
-        v = r * 0.5 - a;
-      remap.set([particle(a, b), particle(a, b + 1), particle(a + 1, b), particle(a + 1, b + 1)], i * 4);
-      weight.set([(1 - u) * (1 - v), u * (1 - v), (1 - u) * v, u * v], i * 4);
+      const i = r * rw + c;
       uv.push(c / (rw - 1), 1 - r / (rh - 1));
       const thread = 0.98 + 0.025 * Math.cos(c * 0.88 + r * 0.23);
       colors.push(tint.r * thread, tint.g * thread, tint.b * thread);
@@ -272,14 +307,24 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
   const driver = garmentRig(mesh, kind, cols, rows, wrapped);
   const surface = new Float32Array(position.length),
     fold = new Float32Array(nv);
-  const foldColumn = new Uint8Array(nv),
-    foldRow = new Uint8Array(nv);
+  const foldJoint = new Uint8Array(nv),
+    neighbours = new Uint16Array(4 * nv);
+  function setLOD(level) {
+    driver.setLOD(level);
+    for (let r = 0; r < rh; r++)
+      for (let c = 0; c < rw; c++) {
+        const i = r * rw + c;
+        foldJoint[i] = driver.joint(Math.min(cols - 1, c >> 1), Math.round(r * 0.5));
+      }
+  }
   for (let r = 0; r < rh; r++)
     for (let c = 0; c < rw; c++) {
       const i = r * rw + c;
-      fold[i] = Math.sin(Math.PI * c * 0.5) ** 2 * 0.0032 * Math.cos(c * 2.08 + r * 0.14) * (r / (rh - 1));
-      foldColumn[i] = Math.min(cols - 1, Math.floor(c * 0.5));
-      foldRow[i] = Math.round(r * 0.5);
+      fold[i] = (c & 1) * 0.0032 * Math.cos(c * 2.08 + r * 0.14) * (r / (rh - 1));
+      neighbours[4 * i] = 3 * (r * rw + (c === 0 ? (wrapped ? rw - 2 : 0) : c - 1));
+      neighbours[4 * i + 1] = 3 * (r * rw + (c === rw - 1 ? (wrapped ? 1 : c) : c + 1));
+      neighbours[4 * i + 2] = 3 * (Math.max(0, r - 1) * rw + c);
+      neighbours[4 * i + 3] = 3 * (Math.min(rh - 1, r + 1) * rw + c);
     }
   let anchored = false,
     lastX = 0,
@@ -385,47 +430,59 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
   function render(f, caps, bounds) {
     for (let j = 0; j < surface.length; j++) surface[j] = previous[j] + (position[j] - previous[j]) * f;
     driver.update(surface);
-    for (let i = 0; i < nv; i++) {
-      const k = i * 3;
-      let x = 0,
-        y = 0,
-        z = 0;
-      for (let j = 4 * i; j < 4 * i + 4; j++) {
-        const a = remap[j] * 3,
-          w = weight[j];
-        x += w * surface[a];
-        y += w * surface[a + 1];
-        z += w * surface[a + 2];
+    // Separable bilinear subdivision of the same proxy. Each proxy vertex
+    // and horizontal midpoint is interpolated just once, including the seam.
+    for (let r = 0; r < rows; r++) {
+      const row = r * rw * 6;
+      for (let c = 0; c < rw; c += 2) {
+        const a = 3 * (r * cols + ((c >> 1) % cols)),
+          k = row + 3 * c;
+        renderPosition[k] = surface[a];
+        renderPosition[k + 1] = surface[a + 1];
+        renderPosition[k + 2] = surface[a + 2];
       }
-      const j = driver.joint(foldColumn[i], foldRow[i]),
+      for (let c = 1; c < rw; c += 2) {
+        const k = row + 3 * c;
+        for (let j = k; j < k + 3; j++)
+          renderPosition[j] = 0.5 * (renderPosition[j - 3] + renderPosition[j + 3]);
+      }
+    }
+    const span = 3 * rw;
+    for (let r = 1; r < rh; r += 2) {
+      const end = (r + 1) * span;
+      for (let j = r * span; j < end; j++)
+        renderPosition[j] = 0.5 * (renderPosition[j - span] + renderPosition[j + span]);
+    }
+    for (let i = 0; i < nv; i++) {
+      const k = 3 * i,
+        j = foldJoint[i],
         amount = fold[i];
-      renderPosition[k] = x + amount * driver.normal[j];
-      renderPosition[k + 1] = y + amount * driver.normal[j + 1];
-      renderPosition[k + 2] = z + amount * driver.normal[j + 2];
+      renderPosition[k] += amount * driver.normal[j];
+      renderPosition[k + 1] += amount * driver.normal[j + 1];
+      renderPosition[k + 2] += amount * driver.normal[j + 2];
       collide(renderPosition, k, caps, bounds, 0.003);
     }
-    for (let r = 0; r < rh; r++)
-      for (let c = 0; c < rw; c++) {
-        const i = r * rw + c,
-          k = 3 * i;
-        const a = 3 * (r * rw + (c === 0 ? (wrapped ? rw - 2 : 0) : c - 1)),
-          b = 3 * (r * rw + (c === rw - 1 ? (wrapped ? 1 : c) : c + 1));
-        const d = 3 * (Math.max(0, r - 1) * rw + c),
-          e = 3 * (Math.min(rh - 1, r + 1) * rw + c);
-        const x = renderPosition[b] - renderPosition[a],
-          y = renderPosition[b + 1] - renderPosition[a + 1],
-          z = renderPosition[b + 2] - renderPosition[a + 2];
-        const xx = renderPosition[e] - renderPosition[d],
-          yy = renderPosition[e + 1] - renderPosition[d + 1],
-          zz = renderPosition[e + 2] - renderPosition[d + 2];
-        const nx = yy * z - zz * y,
-          ny = zz * x - xx * z,
-          nz = xx * y - yy * x;
-        const inv = 1 / Math.max(1e-9, Math.sqrt(nx * nx + ny * ny + nz * nz));
-        normals[k] = nx * inv;
-        normals[k + 1] = ny * inv;
-        normals[k + 2] = nz * inv;
-      }
+    for (let i = 0; i < nv; i++) {
+      const k = i * 3,
+        j = i * 4;
+      const a = neighbours[j],
+        b = neighbours[j + 1],
+        d = neighbours[j + 2],
+        e = neighbours[j + 3];
+      const x = renderPosition[b] - renderPosition[a],
+        y = renderPosition[b + 1] - renderPosition[a + 1],
+        z = renderPosition[b + 2] - renderPosition[a + 2];
+      const xx = renderPosition[e] - renderPosition[d],
+        yy = renderPosition[e + 1] - renderPosition[d + 1],
+        zz = renderPosition[e + 2] - renderPosition[d + 2];
+      const nx = yy * z - zz * y,
+        ny = zz * x - xx * z,
+        nz = xx * y - yy * x;
+      const inv = 1 / Math.max(1e-9, Math.sqrt(nx * nx + ny * ny + nz * nz));
+      normals[k] = nx * inv;
+      normals[k + 1] = ny * inv;
+      normals[k + 2] = nz * inv;
+    }
     geometry.attributes.position.needsUpdate = true;
     geometry.attributes.normal.needsUpdate = true;
   }
@@ -450,6 +507,6 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
       return peakSpeed;
     },
     chains: driver.chains,
-    setLOD: driver.setLOD,
+    setLOD,
   };
 }
