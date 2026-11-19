@@ -1,0 +1,1339 @@
+{
+  "scene": {
+    "failures": [
+      "Village/Harvester",
+      "Village/Porter",
+      "Village/Taster",
+      "Village/Cellar worker",
+      "Village/Stair walker",
+      "Village/Oarsman",
+      "crowd/static geometry",
+      "Mobile Village/Harvester",
+      "Mobile Village/Porter",
+      "Mobile Village/Taster",
+      "Mobile Village/Cellar worker",
+      "Mobile Village/Stair walker",
+      "Mobile Village/Oarsman",
+      "Tidelight/Terrace taster",
+      "Creek/Cooper",
+      "Mobile Creek/Cooper"
+    ],
+    "Village": {
+      "workers": {
+        "Harvester": {
+          "groundErrorMm": 39.094,
+          "bothAirFrames": 282,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 1800,
+          "limitExcessDeg": 36.103,
+          "selfHitFrames": 0,
+          "gripErrorMm": 139.874,
+          "gripFrames": 541,
+          "footFrames": 2341,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 289,
+            "i": 0,
+            "heel": 39.1,
+            "toe": 39.1,
+            "root": [
+              6.477,
+              5,
+              -5.71
+            ]
+          },
+          "gripFrame": 244,
+          "gripSide": 1
+        },
+        "Porter": {
+          "groundErrorMm": 98.932,
+          "bothAirFrames": 655,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 23.32,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 2134,
+          "footFrames": 1800,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 1213,
+            "i": 1,
+            "heel": 98.9,
+            "toe": 98.9,
+            "root": [
+              3.8,
+              1.042,
+              1.806
+            ]
+          },
+          "gripFrame": 1491,
+          "gripSide": 0
+        },
+        "Taster": {
+          "groundErrorMm": 5.774,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 56.724,
+          "selfHitFrames": 377,
+          "gripErrorMm": 0,
+          "gripFrames": 1800,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 805,
+            "i": 0,
+            "heel": 5.8,
+            "toe": 5.8,
+            "root": [
+              -7.34,
+              1.1,
+              -0.12
+            ]
+          },
+          "gripFrame": 989,
+          "gripSide": 1
+        },
+        "Cellar worker": {
+          "groundErrorMm": 5.9,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 1800,
+          "limitExcessDeg": 2.189,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 0,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 1507,
+            "i": 1,
+            "heel": 5.9,
+            "toe": 5.9,
+            "root": [
+              6.67,
+              3.04,
+              -3.34
+            ]
+          }
+        },
+        "Stair walker": {
+          "groundErrorMm": 474.01,
+          "bothAirFrames": 202,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 0,
+          "footFrames": 1800,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 1128,
+            "i": 1,
+            "heel": 70.3,
+            "toe": 474,
+            "root": [
+              1.3,
+              1.563,
+              -0.232
+            ]
+          }
+        },
+        "Oarsman": {
+          "groundErrorMm": 301.455,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 111.343,
+          "selfHitFrames": 115,
+          "gripErrorMm": 27.671,
+          "gripFrames": 3600,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 1709,
+            "i": 0,
+            "heel": -301.5,
+            "toe": -183.6,
+            "root": [
+              -0.08,
+              -0.16,
+              0
+            ]
+          },
+          "gripFrame": 1004,
+          "gripSide": 0
+        },
+        "Cantina guest": {
+          "groundErrorMm": 5.804,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 0,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 698,
+            "i": 1,
+            "heel": 5.8,
+            "toe": 5.8,
+            "root": [
+              -7.76,
+              1.1,
+              0.14
+            ]
+          }
+        },
+        "Tasting group": {
+          "count": 3,
+          "bakedPoses": 24,
+          "testedVertices": 94464,
+          "intersecting": 1,
+          "instances": [
+            3
+          ]
+        }
+      },
+      "frames": 1800,
+      "obstacles": 22,
+      "failures": [
+        "Village/Harvester",
+        "Village/Porter",
+        "Village/Taster",
+        "Village/Cellar worker",
+        "Village/Stair walker",
+        "Village/Oarsman",
+        "crowd/static geometry"
+      ]
+    },
+    "mobile": {
+      "Village": {
+        "workers": {
+          "Harvester": {
+            "groundErrorMm": 39.094,
+            "bothAirFrames": 282,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 1800,
+            "limitExcessDeg": 36.103,
+            "selfHitFrames": 0,
+            "gripErrorMm": 139.874,
+            "gripFrames": 541,
+            "footFrames": 2341,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 289,
+              "i": 0,
+              "heel": 39.1,
+              "toe": 39.1,
+              "root": [
+                6.477,
+                5,
+                -5.71
+              ]
+            },
+            "gripFrame": 244,
+            "gripSide": 1
+          },
+          "Porter": {
+            "groundErrorMm": 98.932,
+            "bothAirFrames": 655,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 23.32,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 2134,
+            "footFrames": 1800,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 1213,
+              "i": 1,
+              "heel": 98.9,
+              "toe": 98.9,
+              "root": [
+                3.8,
+                1.042,
+                1.806
+              ]
+            },
+            "gripFrame": 1491,
+            "gripSide": 0
+          },
+          "Taster": {
+            "groundErrorMm": 5.774,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 56.724,
+            "selfHitFrames": 377,
+            "gripErrorMm": 0,
+            "gripFrames": 1800,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 805,
+              "i": 0,
+              "heel": 5.8,
+              "toe": 5.8,
+              "root": [
+                -7.34,
+                1.1,
+                -0.12
+              ]
+            },
+            "gripFrame": 989,
+            "gripSide": 1
+          },
+          "Cellar worker": {
+            "groundErrorMm": 5.9,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 1800,
+            "limitExcessDeg": 2.189,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 0,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 1507,
+              "i": 1,
+              "heel": 5.9,
+              "toe": 5.9,
+              "root": [
+                6.67,
+                3.04,
+                -3.34
+              ]
+            }
+          },
+          "Stair walker": {
+            "groundErrorMm": 474.01,
+            "bothAirFrames": 202,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 0,
+            "footFrames": 1800,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 1128,
+              "i": 1,
+              "heel": 70.3,
+              "toe": 474,
+              "root": [
+                1.3,
+                1.563,
+                -0.232
+              ]
+            }
+          },
+          "Oarsman": {
+            "groundErrorMm": 301.455,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 111.343,
+            "selfHitFrames": 115,
+            "gripErrorMm": 27.671,
+            "gripFrames": 3600,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 1709,
+              "i": 0,
+              "heel": -301.5,
+              "toe": -183.6,
+              "root": [
+                -0.08,
+                -0.16,
+                0
+              ]
+            },
+            "gripFrame": 1004,
+            "gripSide": 0
+          }
+        },
+        "frames": 1800,
+        "obstacles": 22,
+        "failures": [
+          "Village/Harvester",
+          "Village/Porter",
+          "Village/Taster",
+          "Village/Cellar worker",
+          "Village/Stair walker",
+          "Village/Oarsman"
+        ]
+      },
+      "Tidelight": {
+        "workers": {
+          "Pier hand": {
+            "groundErrorMm": 7.589,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 0,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 1403,
+              "i": 0,
+              "heel": 7.6,
+              "toe": 7.6,
+              "root": [
+                1.64,
+                0.732,
+                2.55
+              ]
+            }
+          }
+        },
+        "frames": 1800,
+        "obstacles": 1,
+        "failures": []
+      },
+      "Creek": {
+        "workers": {
+          "Cooper": {
+            "groundErrorMm": 8.838,
+            "bothAirFrames": 0,
+            "collisionFrames": 1800,
+            "minClearanceMm": -237.869,
+            "selfPropFrames": 0,
+            "missingGripFrames": 1800,
+            "limitExcessDeg": 2.189,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 0,
+            "footFrames": 3600,
+            "worstObstacle": "main cask",
+            "worstPart": "hand",
+            "worstFoot": {
+              "frame": 1005,
+              "i": 0,
+              "heel": 8.8,
+              "toe": 8.8,
+              "root": [
+                0.32,
+                0.101,
+                0.85
+              ]
+            },
+            "obstacleFrame": 1474
+          }
+        },
+        "frames": 1800,
+        "obstacles": 2,
+        "failures": [
+          "Creek/Cooper"
+        ]
+      }
+    },
+    "Tidelight": {
+      "workers": {
+        "Pier hand": {
+          "groundErrorMm": 7.589,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 0,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 1403,
+            "i": 0,
+            "heel": 7.6,
+            "toe": 7.6,
+            "root": [
+              1.64,
+              0.732,
+              2.55
+            ]
+          }
+        },
+        "Terrace taster": {
+          "groundErrorMm": 5.789,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 51.317,
+          "selfHitFrames": 398,
+          "gripErrorMm": 0,
+          "gripFrames": 1800,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 103,
+            "i": 1,
+            "heel": 5.8,
+            "toe": 5.8,
+            "root": [
+              -2.02,
+              2.88,
+              1.03
+            ]
+          },
+          "gripFrame": 477,
+          "gripSide": 1
+        }
+      },
+      "frames": 1800,
+      "obstacles": 1,
+      "failures": [
+        "Tidelight/Terrace taster"
+      ]
+    },
+    "Creek": {
+      "workers": {
+        "Cooper": {
+          "groundErrorMm": 8.838,
+          "bothAirFrames": 0,
+          "collisionFrames": 1800,
+          "minClearanceMm": -237.869,
+          "selfPropFrames": 0,
+          "missingGripFrames": 1800,
+          "limitExcessDeg": 2.189,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 0,
+          "footFrames": 3600,
+          "worstObstacle": "main cask",
+          "worstPart": "hand",
+          "worstFoot": {
+            "frame": 1005,
+            "i": 0,
+            "heel": 8.8,
+            "toe": 8.8,
+            "root": [
+              0.32,
+              0.101,
+              0.85
+            ]
+          },
+          "obstacleFrame": 1474
+        }
+      },
+      "frames": 1800,
+      "obstacles": 2,
+      "failures": [
+        "Creek/Cooper"
+      ]
+    }
+  },
+  "rig": {
+    "failures": [
+      "Harvester LOD0 elbow90 leftElbow",
+      "Harvester LOD0 elbow90wrist+80 leftElbow",
+      "Harvester LOD0 elbow90wrist-80 leftElbow",
+      "Harvester LOD0 knee120 leftKnee",
+      "Harvester LOD0 elbow90 rightElbow",
+      "Harvester LOD0 elbow90wrist+80 rightElbow",
+      "Harvester LOD0 elbow90wrist-80 rightElbow",
+      "Harvester LOD0 knee120 rightKnee",
+      "Harvester LOD1 elbow90 leftElbow",
+      "Harvester LOD1 elbow90wrist+80 leftElbow",
+      "Harvester LOD1 elbow90wrist-80 leftElbow",
+      "Harvester LOD1 knee120 leftKnee",
+      "Harvester LOD1 elbow90 rightElbow",
+      "Harvester LOD1 elbow90wrist+80 rightElbow",
+      "Harvester LOD1 elbow90wrist-80 rightElbow",
+      "Harvester LOD1 knee120 rightKnee",
+      "Porter LOD0 elbow90 leftElbow",
+      "Porter LOD0 elbow90wrist+80 leftElbow",
+      "Porter LOD0 elbow90wrist-80 leftElbow",
+      "Porter LOD0 knee120 leftKnee",
+      "Porter LOD0 elbow90 rightElbow",
+      "Porter LOD0 elbow90wrist+80 rightElbow",
+      "Porter LOD0 elbow90wrist-80 rightElbow",
+      "Porter LOD0 knee120 rightKnee",
+      "Porter LOD1 elbow90 leftElbow",
+      "Porter LOD1 elbow90wrist+80 leftElbow",
+      "Porter LOD1 elbow90wrist-80 leftElbow",
+      "Porter LOD1 knee120 leftKnee",
+      "Porter LOD1 elbow90 rightElbow",
+      "Porter LOD1 elbow90wrist+80 rightElbow",
+      "Porter LOD1 elbow90wrist-80 rightElbow",
+      "Porter LOD1 knee120 rightKnee",
+      "Taster LOD0 elbow90 leftElbow",
+      "Taster LOD0 elbow90wrist+80 leftElbow",
+      "Taster LOD0 elbow90wrist-80 leftElbow",
+      "Taster LOD0 knee120 leftKnee",
+      "Taster LOD0 elbow90 rightElbow",
+      "Taster LOD0 elbow90wrist+80 rightElbow",
+      "Taster LOD0 elbow90wrist-80 rightElbow",
+      "Taster LOD0 knee120 rightKnee",
+      "Taster LOD1 elbow90 leftElbow",
+      "Taster LOD1 elbow90wrist+80 leftElbow",
+      "Taster LOD1 elbow90wrist-80 leftElbow",
+      "Taster LOD1 knee120 leftKnee",
+      "Taster LOD1 elbow90 rightElbow",
+      "Taster LOD1 elbow90wrist+80 rightElbow",
+      "Taster LOD1 elbow90wrist-80 rightElbow",
+      "Taster LOD1 knee120 rightKnee",
+      "Cellar worker LOD0 elbow90 leftElbow",
+      "Cellar worker LOD0 elbow90wrist+80 leftElbow",
+      "Cellar worker LOD0 elbow90wrist-80 leftElbow",
+      "Cellar worker LOD0 knee120 leftKnee",
+      "Cellar worker LOD0 elbow90 rightElbow",
+      "Cellar worker LOD0 elbow90wrist+80 rightElbow",
+      "Cellar worker LOD0 elbow90wrist-80 rightElbow",
+      "Cellar worker LOD0 knee120 rightKnee",
+      "Cellar worker LOD1 elbow90 leftElbow",
+      "Cellar worker LOD1 elbow90wrist+80 leftElbow",
+      "Cellar worker LOD1 elbow90wrist-80 leftElbow",
+      "Cellar worker LOD1 knee120 leftKnee",
+      "Cellar worker LOD1 elbow90 rightElbow",
+      "Cellar worker LOD1 elbow90wrist+80 rightElbow",
+      "Cellar worker LOD1 elbow90wrist-80 rightElbow",
+      "Cellar worker LOD1 knee120 rightKnee",
+      "Stair walker LOD0 elbow90 leftElbow",
+      "Stair walker LOD0 elbow90wrist+80 leftElbow",
+      "Stair walker LOD0 elbow90wrist-80 leftElbow",
+      "Stair walker LOD0 knee120 leftKnee",
+      "Stair walker LOD0 elbow90 rightElbow",
+      "Stair walker LOD0 elbow90wrist+80 rightElbow",
+      "Stair walker LOD0 elbow90wrist-80 rightElbow",
+      "Stair walker LOD0 knee120 rightKnee",
+      "Stair walker LOD1 elbow90 leftElbow",
+      "Stair walker LOD1 elbow90wrist+80 leftElbow",
+      "Stair walker LOD1 elbow90wrist-80 leftElbow",
+      "Stair walker LOD1 knee120 leftKnee",
+      "Stair walker LOD1 elbow90 rightElbow",
+      "Stair walker LOD1 elbow90wrist+80 rightElbow",
+      "Stair walker LOD1 elbow90wrist-80 rightElbow",
+      "Stair walker LOD1 knee120 rightKnee",
+      "Oarsman LOD0 elbow90 leftElbow",
+      "Oarsman LOD0 elbow90wrist+80 leftElbow",
+      "Oarsman LOD0 elbow90wrist-80 leftElbow",
+      "Oarsman LOD0 knee120 leftKnee",
+      "Oarsman LOD0 elbow90 rightElbow",
+      "Oarsman LOD0 elbow90wrist+80 rightElbow",
+      "Oarsman LOD0 elbow90wrist-80 rightElbow",
+      "Oarsman LOD0 knee120 rightKnee",
+      "Oarsman LOD1 elbow90 leftElbow",
+      "Oarsman LOD1 elbow90wrist+80 leftElbow",
+      "Oarsman LOD1 elbow90wrist-80 leftElbow",
+      "Oarsman LOD1 knee120 leftKnee",
+      "Oarsman LOD1 elbow90 rightElbow",
+      "Oarsman LOD1 elbow90wrist+80 rightElbow",
+      "Oarsman LOD1 elbow90wrist-80 rightElbow",
+      "Oarsman LOD1 knee120 rightKnee",
+      "Cantina guest LOD0 elbow90 leftElbow",
+      "Cantina guest LOD0 elbow90wrist+80 leftElbow",
+      "Cantina guest LOD0 elbow90wrist-80 leftElbow",
+      "Cantina guest LOD0 knee120 leftKnee",
+      "Cantina guest LOD0 elbow90 rightElbow",
+      "Cantina guest LOD0 elbow90wrist+80 rightElbow",
+      "Cantina guest LOD0 elbow90wrist-80 rightElbow",
+      "Cantina guest LOD0 knee120 rightKnee",
+      "Cantina guest LOD1 elbow90 leftElbow",
+      "Cantina guest LOD1 elbow90wrist+80 leftElbow",
+      "Cantina guest LOD1 elbow90wrist-80 leftElbow",
+      "Cantina guest LOD1 knee120 leftKnee",
+      "Cantina guest LOD1 elbow90 rightElbow",
+      "Cantina guest LOD1 elbow90wrist+80 rightElbow",
+      "Cantina guest LOD1 elbow90wrist-80 rightElbow",
+      "Cantina guest LOD1 knee120 rightKnee",
+      "Cooper LOD0 elbow90 leftElbow",
+      "Cooper LOD0 elbow90wrist+80 leftElbow",
+      "Cooper LOD0 elbow90wrist-80 leftElbow",
+      "Cooper LOD0 knee120 leftKnee",
+      "Cooper LOD0 elbow90 rightElbow",
+      "Cooper LOD0 elbow90wrist+80 rightElbow",
+      "Cooper LOD0 elbow90wrist-80 rightElbow",
+      "Cooper LOD0 knee120 rightKnee",
+      "Cooper LOD1 elbow90 leftElbow",
+      "Cooper LOD1 elbow90wrist+80 leftElbow",
+      "Cooper LOD1 elbow90wrist-80 leftElbow",
+      "Cooper LOD1 knee120 leftKnee",
+      "Cooper LOD1 elbow90 rightElbow",
+      "Cooper LOD1 elbow90wrist+80 rightElbow",
+      "Cooper LOD1 elbow90wrist-80 rightElbow",
+      "Cooper LOD1 knee120 rightKnee",
+      "Pier hand LOD0 elbow90 leftElbow",
+      "Pier hand LOD0 elbow90wrist+80 leftElbow",
+      "Pier hand LOD0 elbow90wrist-80 leftElbow",
+      "Pier hand LOD0 knee120 leftKnee",
+      "Pier hand LOD0 elbow90 rightElbow",
+      "Pier hand LOD0 elbow90wrist+80 rightElbow",
+      "Pier hand LOD0 elbow90wrist-80 rightElbow",
+      "Pier hand LOD0 knee120 rightKnee",
+      "Pier hand LOD1 elbow90 leftElbow",
+      "Pier hand LOD1 elbow90wrist+80 leftElbow",
+      "Pier hand LOD1 elbow90wrist-80 leftElbow",
+      "Pier hand LOD1 knee120 leftKnee",
+      "Pier hand LOD1 elbow90 rightElbow",
+      "Pier hand LOD1 elbow90wrist+80 rightElbow",
+      "Pier hand LOD1 elbow90wrist-80 rightElbow",
+      "Pier hand LOD1 knee120 rightKnee",
+      "Terrace taster LOD0 elbow90 leftElbow",
+      "Terrace taster LOD0 elbow90wrist+80 leftElbow",
+      "Terrace taster LOD0 elbow90wrist-80 leftElbow",
+      "Terrace taster LOD0 knee120 leftKnee",
+      "Terrace taster LOD0 elbow90 rightElbow",
+      "Terrace taster LOD0 elbow90wrist+80 rightElbow",
+      "Terrace taster LOD0 elbow90wrist-80 rightElbow",
+      "Terrace taster LOD0 knee120 rightKnee",
+      "Terrace taster LOD1 elbow90 leftElbow",
+      "Terrace taster LOD1 elbow90wrist+80 leftElbow",
+      "Terrace taster LOD1 elbow90wrist-80 leftElbow",
+      "Terrace taster LOD1 knee120 leftKnee",
+      "Terrace taster LOD1 elbow90 rightElbow",
+      "Terrace taster LOD1 elbow90wrist+80 rightElbow",
+      "Terrace taster LOD1 elbow90wrist-80 rightElbow",
+      "Terrace taster LOD1 knee120 rightKnee"
+    ],
+    "bones": 20,
+    "tiers": [
+      {
+        "tier": 0,
+        "weights": {
+          "vertices": 5152,
+          "triangles": 9928,
+          "invalid": 0,
+          "four": 0
+        },
+        "poses": {
+          "elbow90": {
+            "leftElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 10,
+              "triangles": 92
+            },
+            "leftForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 64
+            },
+            "rightElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 11,
+              "triangles": 92
+            },
+            "rightForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 64
+            }
+          },
+          "wrist+80": {
+            "leftForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 64
+            },
+            "leftElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 92
+            },
+            "rightForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 64
+            },
+            "rightElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 92
+            }
+          },
+          "wrist-80": {
+            "leftForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 64
+            },
+            "leftElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 92
+            },
+            "rightForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 64
+            },
+            "rightElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 92
+            }
+          },
+          "elbow90wrist+80": {
+            "leftElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 10,
+              "triangles": 92
+            },
+            "leftForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 64
+            },
+            "rightElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 11,
+              "triangles": 92
+            },
+            "rightForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 64
+            }
+          },
+          "elbow90wrist-80": {
+            "leftElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 10,
+              "triangles": 92
+            },
+            "leftForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 64
+            },
+            "rightElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 11,
+              "triangles": 92
+            },
+            "rightForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 64
+            }
+          },
+          "knee120": {
+            "leftKnee": {
+              "areaRatio": 1,
+              "flippedTriangles": 14,
+              "triangles": 98
+            },
+            "rightKnee": {
+              "areaRatio": 1,
+              "flippedTriangles": 14,
+              "triangles": 98
+            }
+          },
+          "shoulder90": {
+            "leftShoulder": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 46
+            },
+            "rightShoulder": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 46
+            }
+          }
+        }
+      },
+      {
+        "tier": 1,
+        "weights": {
+          "vertices": 1328,
+          "triangles": 2488,
+          "invalid": 0,
+          "four": 0
+        },
+        "poses": {
+          "elbow90": {
+            "leftElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 6,
+              "triangles": 50
+            },
+            "leftForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 38
+            },
+            "rightElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 5,
+              "triangles": 50
+            },
+            "rightForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 38
+            }
+          },
+          "wrist+80": {
+            "leftForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 38
+            },
+            "leftElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 50
+            },
+            "rightForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 38
+            },
+            "rightElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 50
+            }
+          },
+          "wrist-80": {
+            "leftForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 38
+            },
+            "leftElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 50
+            },
+            "rightForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 38
+            },
+            "rightElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 50
+            }
+          },
+          "elbow90wrist+80": {
+            "leftElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 6,
+              "triangles": 50
+            },
+            "leftForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 38
+            },
+            "rightElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 5,
+              "triangles": 50
+            },
+            "rightForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 38
+            }
+          },
+          "elbow90wrist-80": {
+            "leftElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 6,
+              "triangles": 50
+            },
+            "leftForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 38
+            },
+            "rightElbow": {
+              "areaRatio": 1,
+              "flippedTriangles": 5,
+              "triangles": 50
+            },
+            "rightForearm": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 38
+            }
+          },
+          "knee120": {
+            "leftKnee": {
+              "areaRatio": 1,
+              "flippedTriangles": 6,
+              "triangles": 44
+            },
+            "rightKnee": {
+              "areaRatio": 1,
+              "flippedTriangles": 6,
+              "triangles": 44
+            }
+          },
+          "shoulder90": {
+            "leftShoulder": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 91
+            },
+            "rightShoulder": {
+              "areaRatio": 1,
+              "flippedTriangles": 0,
+              "triangles": 93
+            }
+          }
+        }
+      }
+    ],
+    "variants": {
+      "Harvester": {
+        "bones": 20,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 1,
+            "flippedTriangles": 91,
+            "weights": {
+              "vertices": 5152,
+              "triangles": 9928,
+              "invalid": 0,
+              "four": 0
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 1,
+            "flippedTriangles": 45,
+            "weights": {
+              "vertices": 1328,
+              "triangles": 2488,
+              "invalid": 0,
+              "four": 0
+            }
+          }
+        ]
+      },
+      "Porter": {
+        "bones": 20,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 1,
+            "flippedTriangles": 91,
+            "weights": {
+              "vertices": 5020,
+              "triangles": 9676,
+              "invalid": 0,
+              "four": 0
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 1,
+            "flippedTriangles": 45,
+            "weights": {
+              "vertices": 1312,
+              "triangles": 2460,
+              "invalid": 0,
+              "four": 0
+            }
+          }
+        ]
+      },
+      "Taster": {
+        "bones": 20,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 1,
+            "flippedTriangles": 91,
+            "weights": {
+              "vertices": 5226,
+              "triangles": 10072,
+              "invalid": 0,
+              "four": 0
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 1,
+            "flippedTriangles": 45,
+            "weights": {
+              "vertices": 1376,
+              "triangles": 2580,
+              "invalid": 0,
+              "four": 0
+            }
+          }
+        ]
+      },
+      "Cellar worker": {
+        "bones": 20,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 1,
+            "flippedTriangles": 91,
+            "weights": {
+              "vertices": 5152,
+              "triangles": 9928,
+              "invalid": 0,
+              "four": 0
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 1,
+            "flippedTriangles": 45,
+            "weights": {
+              "vertices": 1328,
+              "triangles": 2488,
+              "invalid": 0,
+              "four": 0
+            }
+          }
+        ]
+      },
+      "Stair walker": {
+        "bones": 20,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 1,
+            "flippedTriangles": 91,
+            "weights": {
+              "vertices": 5162,
+              "triangles": 9948,
+              "invalid": 0,
+              "four": 0
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 1,
+            "flippedTriangles": 45,
+            "weights": {
+              "vertices": 1344,
+              "triangles": 2520,
+              "invalid": 0,
+              "four": 0
+            }
+          }
+        ]
+      },
+      "Oarsman": {
+        "bones": 20,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 1,
+            "flippedTriangles": 91,
+            "weights": {
+              "vertices": 5152,
+              "triangles": 9928,
+              "invalid": 0,
+              "four": 0
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 1,
+            "flippedTriangles": 45,
+            "weights": {
+              "vertices": 1328,
+              "triangles": 2488,
+              "invalid": 0,
+              "four": 0
+            }
+          }
+        ]
+      },
+      "Cantina guest": {
+        "bones": 20,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 1,
+            "flippedTriangles": 91,
+            "weights": {
+              "vertices": 5162,
+              "triangles": 9948,
+              "invalid": 0,
+              "four": 0
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 1,
+            "flippedTriangles": 45,
+            "weights": {
+              "vertices": 1344,
+              "triangles": 2520,
+              "invalid": 0,
+              "four": 0
+            }
+          }
+        ]
+      },
+      "Cooper": {
+        "bones": 20,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 1,
+            "flippedTriangles": 91,
+            "weights": {
+              "vertices": 5020,
+              "triangles": 9676,
+              "invalid": 0,
+              "four": 0
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 1,
+            "flippedTriangles": 45,
+            "weights": {
+              "vertices": 1312,
+              "triangles": 2460,
+              "invalid": 0,
+              "four": 0
+            }
+          }
+        ]
+      },
+      "Pier hand": {
+        "bones": 20,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 1,
+            "flippedTriangles": 91,
+            "weights": {
+              "vertices": 5020,
+              "triangles": 9676,
+              "invalid": 0,
+              "four": 0
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 1,
+            "flippedTriangles": 45,
+            "weights": {
+              "vertices": 1312,
+              "triangles": 2460,
+              "invalid": 0,
+              "four": 0
+            }
+          }
+        ]
+      },
+      "Terrace taster": {
+        "bones": 20,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 1,
+            "flippedTriangles": 91,
+            "weights": {
+              "vertices": 5162,
+              "triangles": 9948,
+              "invalid": 0,
+              "four": 0
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 1,
+            "flippedTriangles": 45,
+            "weights": {
+              "vertices": 1344,
+              "triangles": 2520,
+              "invalid": 0,
+              "four": 0
+            }
+          }
+        ]
+      }
+    }
+  },
+  "physics": {
+    "failures": [
+      "Historical main has rigid hem weighting and no fixed-step solver."
+    ],
+    "fixedStep": false,
+    "cloth": {
+      "apron": {
+        "frames": 1800,
+        "vertices": 140,
+        "minClearanceMm": -67.99032,
+        "negativeFrames": 1797
+      },
+      "skirt": {
+        "frames": 1800,
+        "vertices": 140,
+        "minClearanceMm": -60.0052,
+        "negativeFrames": 1743
+      },
+      "scarf": {
+        "frames": 1800,
+        "vertices": 140,
+        "minClearanceMm": -71.04435,
+        "negativeFrames": 1798
+      }
+    }
+  }
+}

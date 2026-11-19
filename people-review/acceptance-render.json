@@ -1,0 +1,200 @@
+{
+  "mainCommit": "99339be",
+  "branchRuntimeCommit": "1d65831",
+  "priorToCreekProbe": "a710fd8",
+  "profile": {
+    "browser": "Chromium 155.0.8059.79 built on Debian GNU/Linux 13 (trixie)",
+    "viewport": [
+      390,
+      844
+    ],
+    "deviceScaleFactor": 1,
+    "renderer": "SwiftShader",
+    "touch": true,
+    "reducedMotion": true,
+    "endpoint": "Scene module request to first displayed populated canvas (ms)",
+    "coldBrowserPerTrial": true,
+    "order": [
+      "main",
+      "branch",
+      "branch",
+      "main",
+      "main",
+      "branch"
+    ],
+    "repetitionsPerRevision": {
+      "village": 6,
+      "craft": 6,
+      "creek": 3
+    }
+  },
+  "samplesMs": {
+    "main": {
+      "village": [
+        5242,
+        5502,
+        4493,
+        4818,
+        4568,
+        5437
+      ],
+      "craft": [
+        2370,
+        2601,
+        2427,
+        2453,
+        2848,
+        2540
+      ],
+      "creek": [
+        3969,
+        4590,
+        3967
+      ]
+    },
+    "branch": {
+      "village": [
+        4517,
+        4326,
+        4348,
+        4658,
+        5055,
+        5028
+      ],
+      "craft": [
+        2352,
+        2327,
+        2490,
+        2134,
+        2557,
+        2449
+      ],
+      "creek": [
+        2909,
+        2874,
+        3044
+      ]
+    }
+  },
+  "medianMs": {
+    "main": {
+      "village": 5030.0,
+      "craft": 2496.5,
+      "creek": 3969
+    },
+    "branch": {
+      "village": 4587.5,
+      "craft": 2400.5,
+      "creek": 2909
+    }
+  },
+  "preOptimizationCreekMs": [
+    [
+      "main",
+      4090
+    ],
+    [
+      "branch",
+      4234
+    ],
+    [
+      "branch",
+      3779
+    ],
+    [
+      "main",
+      4160
+    ],
+    [
+      "main",
+      3875
+    ],
+    [
+      "branch",
+      4831
+    ]
+  ],
+  "allMedianFirstFramesWithinMain": true,
+  "contextLoss": {
+    "restoredScenes": [
+      "Village",
+      "Tidelight Coast",
+      "Sip Creek"
+    ],
+    "villagePinNotes": 18,
+    "nonblankBeforeAndAfter": true,
+    "preserveDrawingBuffer": true,
+    "visibleFramebufferColorClears": 0,
+    "consoleErrors": 0,
+    "pageErrors": 0
+  },
+  "exclusivePhysics": {
+    "motionPreference": "no-preference",
+    "order": [
+      "Village",
+      "Tidelight Coast",
+      "Sip Creek"
+    ],
+    "monitoredWorkers": [
+      "Harvester",
+      "Pier hand",
+      "Cooper"
+    ],
+    "minimumActivePoseUpdatesPerObservation": 6,
+    "inactivePoseUpdates": 0,
+    "consoleErrors": 0
+  },
+  "motionEnabled": {
+    "motionPreference": "no-preference",
+    "repetitionsPerRevision": 3,
+    "samplesMs": {
+      "main": {
+        "village": [
+          10875,
+          10803,
+          10360
+        ],
+        "craft": [
+          6323,
+          6494,
+          6308
+        ],
+        "creek": [
+          4780,
+          5662,
+          4935
+        ]
+      },
+      "branch": {
+        "village": [
+          9688,
+          11857,
+          10766
+        ],
+        "craft": [
+          3077,
+          3264,
+          8025
+        ],
+        "creek": [
+          3837,
+          4030,
+          3959
+        ]
+      }
+    },
+    "medianMs": {
+      "main": {
+        "village": 10803,
+        "craft": 6323,
+        "creek": 4935
+      },
+      "branch": {
+        "village": 10766,
+        "craft": 3264,
+        "creek": 3959
+      }
+    },
+    "allMedianFirstFramesWithinMain": true
+  }
+}

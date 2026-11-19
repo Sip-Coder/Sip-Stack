@@ -2,7 +2,7 @@ import * as T from 'three';
 import { Sky } from 'three/addons/objects/Sky.js';
 
 // The same analytical sky supplies the visible background and filtered PBR radiance.
-export function coastalLight(renderer, scene, hemi, sun, sea) {
+export function coastalLight(renderer, scene, hemi, sun, sea, initialTier) {
   const sky = new Sky(),
     skyScene = new T.Scene();
   sky.scale.setScalar(320);
@@ -38,12 +38,32 @@ export function coastalLight(renderer, scene, hemi, sun, sea) {
     );
   const floatTarget = renderer.extensions.has('EXT_color_buffer_float');
   const gen = floatTarget ? new T.PMREMGenerator(renderer) : null;
-  const cube = new T.WebGLCubeRenderTarget(256, {
-    type: floatTarget ? T.HalfFloatType : T.UnsignedByteType,
-    generateMipmaps: true,
-    minFilter: T.LinearMipmapLinearFilter,
-  });
+  let mobile = initialTier === 'Mobile';
+  function skyTarget() {
+    return new T.WebGLCubeRenderTarget(mobile ? 128 : 256, {
+      type: floatTarget ? T.HalfFloatType : T.UnsignedByteType,
+      generateMipmaps: true,
+      minFilter: T.LinearMipmapLinearFilter,
+    });
+  }
+  let cube = skyTarget();
   const capture = new T.CubeCamera(0.1, 500, cube);
+  // The backdrop and rough-surface radiance have different angular resolutions.
+  // Both sample the same procedural atmosphere.
+  const probeScene = new T.Scene();
+  probeScene.background = cube.texture;
+  let probeCamera;
+  function radiance() {
+    if (!mobile) return cube.texture;
+    if (!probeCamera) {
+      const target = new T.WebGLCubeRenderTarget(64, {
+        type: T.HalfFloatType, generateMipmaps: false, minFilter: T.LinearFilter,
+      });
+      probeCamera = new T.CubeCamera(0.1, 1, target);
+    }
+    probeCamera.update(renderer, probeScene);
+    return probeCamera.renderTarget.texture;
+  }
   let env,
     pending = true;
   const a = new T.Color(),
@@ -113,7 +133,7 @@ export function coastalLight(renderer, scene, hemi, sun, sea) {
     capture.update(renderer, skyScene);
     scene.background = cube.texture;
     if (gen) {
-      env = gen.fromCubemap(cube.texture, env);
+      env = gen.fromCubemap(radiance(), env);
       scene.environment = env.texture;
     }
     renderer.autoClear = clear;
@@ -122,6 +142,18 @@ export function coastalLight(renderer, scene, hemi, sun, sea) {
   return {
     change,
     captureSky,
+    quality(tier) {
+      if (mobile === (tier === 'Mobile')) return;
+      mobile = tier === 'Mobile';
+      const previous = cube;
+      cube = skyTarget();
+      capture.renderTarget = cube;
+      probeScene.background = cube.texture;
+      previous.dispose();
+      env?.dispose();
+      env = undefined;
+      pending = true;
+    },
     restore() {
       pending = true;
     },

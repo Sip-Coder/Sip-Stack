@@ -5,6 +5,7 @@ import { buildHarbor } from './sip-craft-harbor.js';
 import { buildLand, stoneTexture } from './sip-craft-land.js';
 import { buildSea } from './sip-craft-water.js';
 import { makePipeline } from './sip-craft-render.js';
+import { primePeople, finishPeople, restorePeople } from '../life/scene-people.js';
 import { warmShaders } from './sip-warm.js';
 
 const duration = 18;
@@ -192,6 +193,7 @@ export function mountCraft(root) {
     sound = thunder($('thunder'));
   let tier = autoTier,
     visible = false,
+    contextGeneration = 0,
     lost = false,
     frameId = 0,
     last = null,
@@ -314,6 +316,7 @@ export function mountCraft(root) {
     }
     pipeline.draw(dt);
     canvas.style.visibility = 'visible';
+    finishPeople(renderer, land, camera, opaque);
     status.hidden = true;
     dirty = false;
     const b = free ? 3 : elapsed < 6 ? 0 : elapsed < 12 ? 1 : 2;
@@ -330,7 +333,7 @@ export function mountCraft(root) {
   }
   function frame(now) {
     frameId = 0;
-    if (!warmed || !visible || lost || document.hidden) return;
+    if (!warmed || !visible || lost || document.hidden || renderer.getContext().isContextLost()) return;
     const dt = last === null ? 0 : (now - last) / 1000;
     last = now;
     draw(dt);
@@ -437,6 +440,8 @@ export function mountCraft(root) {
   new ResizeObserver(requestDraw).observe(stage);
   canvas.addEventListener('webglcontextlost', (e) => {
     e.preventDefault();
+    contextGeneration++;
+    warmed = false;
     lost = true;
     stop();
     canvas.style.visibility = 'hidden';
@@ -444,17 +449,28 @@ export function mountCraft(root) {
     status.textContent = 'Restoring the coast…';
   });
   canvas.addEventListener('webglcontextrestored', () => {
+    const generation = contextGeneration;
     lost = false;
     sky.invalidate();
     applyTier();
-    requestDraw();
+    restorePeople(land);
+    resize();
+    sky.update();
+    warmShaders(renderer, [[land, camera, opaque], [water, camera, opaque]]).then(() => {
+      if (lost || generation !== contextGeneration) return;
+      warmed = true;
+      requestDraw();
+    });
   });
   applyTier();
   controlsUI();
   // Hold the first frame until the shaders are linked; the canvas stays hidden meanwhile.
   let warmed = false;
+  primePeople(land, tier === 2);
+  resize();
   sky.update(); // scene.environment is part of every lit shader's key
   warmShaders(renderer, [[land, camera, opaque], [water, camera, opaque]]).then((ms) => {
+    if (contextGeneration !== 0) return;
     warmed = true;
     console.info(`Tidelight shaders ready in ${Math.round(ms)} ms (tier ${tier})`);
     requestDraw();

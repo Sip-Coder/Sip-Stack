@@ -48,29 +48,17 @@ export function crate() {
   cargoPattern = g;
   return g.clone(true);
 }
-// A wrist carries the weight, while gravity keeps a basket or tasting stem
-// upright through the elbow stroke. Tilt the glass toward the drinker's face.
-function hangingGrip(hand, offset) {
-  const pivot = new T.Group(),
-    body = new T.Group();
-  hand.add(pivot);
-  pivot.add(body);
-  pivot.position.set(0, -0.084, 0.015);
-  body.position.y = offset;
-  const inverse = new T.Quaternion(),
-    yaw = new T.Quaternion(),
-    tilt = new T.Quaternion();
-  const axis = new T.Vector3(1, 0, 0);
-  function settle(actor, angle = 0) {
-    hand.getWorldQuaternion(inverse).invert();
-    actor.getWorldQuaternion(yaw);
-    pivot.quaternion.copy(inverse).multiply(yaw).multiply(tilt.setFromAxisAngle(axis, angle));
-  }
-  return { body, settle };
-}
-export function basket(parent) {
-  const grip = hangingGrip(parent, -0.37),
-    g = grip.body;
+// The prop pose is authoritative. IK brings the palm to its socket, leaving
+// the mass-spring lag independent of the arm that follows it.
+export function basket(actor) {
+  const socket=new T.Group(),g=new T.Group();actor.g.add(socket);socket.add(g);
+  g.position.y=-.37;
+  const grip={body:g,socket};
+  grip.settle=()=>{
+    const lag=actor.dynamics.lag;
+    socket.position.set(-.176+lag[0],1.20+lag[1],.36+lag[2]);
+    socket.rotation.z=-lag[0]*1.8;socket.rotation.x=lag[2]*1.8;
+  };
   const reeds = new Sections(),
     fruit = new Sections();
   for (let i = 0; i < 11; i++) {
@@ -119,8 +107,8 @@ export function basket(parent) {
   return grip;
 }
 export function tastingGlass(actor) {
-  const grip = hangingGrip(actor.hands[1], -0.047),
-    g = grip.body;
+  const goal=new T.Object3D(),g=new T.Group();
+  actor.g.add(goal);goal.add(g);g.position.y=-.047;
   const profile = [
     [0.044, 0],
     [0.044, 0.006],
@@ -158,17 +146,20 @@ export function tastingGlass(actor) {
     24,
   );
   mesh(g, wine.geometry(), finish('detail'));
-  const goal = new T.Object3D();
-  actor.g.add(goal);
-  const wrists = [null, goal];
-  return (t) => {
-    const sip = 0.5 - 0.5 * Math.cos(t * 1.23);
-    goal.position.set(0.21 - 0.15 * sip, 1.12 + 0.44 * sip, 0.25 - 0.112 * sip);
-    actor.grasp(wrists);
-    grip.settle(actor.g, -0.58 * sip);
+  const wrists=[null,goal],lip=new T.Vector3(),head=actor.skeleton.bones.find(b=>b.name==='head');
+  const taste=t=>{
+    const sip=.5-.5*Math.cos(t*1.23),lag=actor.dynamics.lag;
+    head.localToWorld(lip.set(.012,.047,.103));actor.g.worldToLocal(lip);
+    goal.position.set(.205,1.11,.28);
+    lip.y-=.119;lip.z+=.102;
+    goal.position.lerp(lip,sip).x+=lag[0];
+    goal.position.y+=lag[1];goal.position.z+=lag[2];
+    goal.rotation.x=-.75*sip;actor.grasp(wrists);
   };
+  taste.prop={object:g,radius:.053,center:new T.Vector3(0,.12,0),halfLength:.024};
+  return taste;
 }
-export function cutter(color, stripe, sail = false) {
+function cutterPattern(color, stripe, sail) {
   const root = new T.Group(),
     hull = new T.Group();
   root.add(hull);
@@ -177,14 +168,14 @@ export function cutter(color, stripe, sail = false) {
     uv = [],
     idx = [];
   const bands = [
-    [-0.115, 0.02, stripe],
-    [0.008, 0.44, stripe],
-    [0.111, 0.74, stripe],
-    [0.158, 0.82, color],
-    [0.207, 0.88, stripe],
-    [0.239, 0.92, color],
-    [0.287, 0.96, color],
-    [0.35, 1, color],
+    [-0.115, 0.02, 'stripe'],
+    [0.008, 0.44, 'stripe'],
+    [0.111, 0.74, 'stripe'],
+    [0.158, 0.82, 'paint'],
+    [0.207, 0.88, 'stripe'],
+    [0.239, 0.92, 'paint'],
+    [0.287, 0.96, 'paint'],
+    [0.35, 1, 'paint'],
     [0.375, 0.99, '#735137'],
     [0.366, 0.949, '#bc945f'],
     [0.28, 0.89, '#a57b52'],
@@ -192,10 +183,13 @@ export function cutter(color, stripe, sail = false) {
     [0.09, 0.43, '#875f40'],
     [0.087, 0, '#7b593e'],
   ];
+  const palette = {paint:color, stripe}, paintRanges=[], shellMaterial=finish('wood');
   for (const s of [-1, 1])
     for (let j = 1; j < bands.length; j++) {
       const n = p.length / 3,
-        tint = new T.Color(bands[j][2]);
+        band = bands[j][2],
+        tint = new T.Color(palette[band] ?? band);
+      if (band in palette) paintRanges.push({ start:idx.length, count:32*6, band });
       for (let i = 0; i <= 32; i++)
         for (let k = 0; k < 2; k++) {
           const u = i / 16 - 1,
@@ -219,14 +213,18 @@ export function cutter(color, stripe, sail = false) {
     g.setAttribute(name, new T.Float32BufferAttribute(a, n));
   g.setIndex(idx);
   g.computeVertexNormals();
-  mesh(hull, g, finish('wood'));
-  for (const x of [-0.58, -0.08, 0.46])
-    plank(hull, 0.16, 0.043, 0.76 * (1 - Math.abs(x) ** 1.78), x, 0.286, 0);
+  mesh(hull, g, shellMaterial);
+  const seat = new T.Vector3();
+  for (const x of [-0.58, -0.08, 0.46]) {
+    const thwart = plank(hull, 0.16, 0.043, 0.76 * (1 - Math.abs(x) ** 1.78), x, 0.286, 0);
+    if (x === -.08) seat.copy(thwart.position).y += thwart.geometry.parameters.height / 2;
+  }
+  const deckHeight = x => .204 + .094 * Math.abs(Math.round(x / .103) * .103) ** 3;
   // Bilge boards follow the waterplane right into the ends of the open hull.
   for (let i = -9; i <= 9; i++) {
     const x = i * 0.103,
       beam = 0.72 * (1 - Math.abs(x / 1.1) ** 1.78);
-    plank(hull, 0.103, 0.026, beam, x, 0.191 + 0.094 * Math.abs(x) ** 3, 0);
+    plank(hull, 0.103, 0.026, beam, x, deckHeight(x) - .013, 0);
   }
   for (let i = 0; i < 3; i++) {
     const points = [];
@@ -278,18 +276,18 @@ export function cutter(color, stripe, sail = false) {
       );
     }
   }
+  // Raised locks leave space for the rower's knees beneath the return stroke.
+  for(const sign of [-1,1]) plank(hull,.055,.061,.058,-.025,.390,sign*.402);
   batchParts(hull);
-  const oars = [],
-    grips = [];
   for (const s of [-1, 1]) {
     const lock = new T.Group();
-    lock.position.set(-0.06, 0.36, s * 0.385);
+    lock.position.set(-.025, .410, s * .393);
     root.add(lock);
     const stick = new Sections();
     stick.loft(
       [
-        [-0.31, 0.022, 0.023],
-        [-0.24, 0.021, 0.023],
+        [-0.227, 0.022, 0.023],
+        [-0.165, 0.021, 0.023],
         [0.32, 0.016, 0.017],
         [0.46, 0.019, 0.023],
         [0.57, 0.024, 0.056],
@@ -303,11 +301,38 @@ export function cutter(color, stripe, sail = false) {
     );
     mesh(lock, stick.geometry(), finish('wood'));
     const grip = new T.Object3D();
-    grip.position.z = -s * 0.285;
+    grip.position.z = -s * .201;
     lock.add(grip);
-    grips.push(grip);
-    oars.push(lock);
+    grip.name = 'Oar grip';
   }
+  const paintKey = JSON.stringify([color,stripe]);
+  const shell = hull.children.find(part=>part.material===shellMaterial);
+  shell.name='Painted planking';
+  return {root, seat, deckHeight, paintRanges, shells:new Map([[paintKey,shell.geometry]])};
+}
+
+const cutterPatterns = new Map();
+export function cutter(color, stripe, sail = false) {
+  // A boat gets its own complete transform hierarchy, including two oarlocks
+  // and two grip sockets. The mould, fixed fittings and oar geometry are shared.
+  if (!cutterPatterns.has(sail)) cutterPatterns.set(sail,cutterPattern(color,stripe,sail));
+  const pattern = cutterPatterns.get(sail), root = pattern.root.clone(true);
+  const shell = root.getObjectByName('Painted planking'), paintKey = JSON.stringify([color,stripe]);
+  if (!pattern.shells.has(paintKey)) {
+    const source = shell.geometry, painted = new T.BufferGeometry();
+    for (const [name,attribute] of Object.entries(source.attributes)) painted.setAttribute(name,attribute);
+    const colors = source.attributes.color.clone();
+    const shades = {paint:new T.Color(color),stripe:new T.Color(stripe)};
+    for (const {start,count,band} of pattern.paintRanges) {
+      const shade=shades[band];
+      for(let i=start;i<start+count;i++) colors.setXYZ(i,shade.r,shade.g,shade.b);
+    }
+    painted.setAttribute('color',colors);
+    pattern.shells.set(paintKey,painted);
+  }
+  shell.geometry = pattern.shells.get(paintKey);
+  const seat=pattern.seat.clone(), deckHeight=pattern.deckHeight;
+  const oars=root.children.slice(1), grips=oars.map(lock=>lock.getObjectByName('Oar grip'));
   function stroke(t, active) {
     for (let i = 0; i < 2; i++) {
       const s = i * 2 - 1;
@@ -320,7 +345,8 @@ export function cutter(color, stripe, sail = false) {
     }
   }
   stroke(0, false);
-  return { root, stroke, grips };
+  const shafts=oars.map((lock,i)=>({object:lock,radius:.027,axis:'z',center:new T.Vector3(0,0,(2*i-1)*.3615),halfLength:.5885}));
+  return { root, stroke, grips, seat, shafts, deckHeight };
 }
 // Sample the water under bow, stern, port and starboard in hull coordinates.
 export function floatHull(g, t, height, weather = 0, offset = 0) {

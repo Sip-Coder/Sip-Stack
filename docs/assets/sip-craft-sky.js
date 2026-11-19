@@ -16,28 +16,45 @@ function densityTexture() {
   const size = 64,
     data = new Uint8Array(size ** 3),
     random = seeded(6047);
+  // Each lattice plane is shared by every interpolated slice between it
+  // and its neighbour. Expand in X, then Y, then Z in the same order as
+  // trilinear interpolation. Keep the intermediate values in doubles.
   for (const cells of [4, 8, 16, 32, 64]) {
-    const grid = Float32Array.from({ length: cells ** 3 }, random);
-    const sample = (x, y, z) => grid[(x % cells) + cells * ((y % cells) + cells * (z % cells))];
-    const smooth = (t) => t * t * (3 - 2 * t);
+    const grid = new Float32Array(cells ** 3);
+    for (let i = 0; i < grid.length; i++) grid[i] = random();
+    const weight = 128 * (4 / cells);
+    if (cells === size) {
+      for (let i = 0; i < data.length; i++) data[i] += Math.round(grid[i] * weight);
+      continue;
+    }
+    const first = new Uint8Array(size), next = new Uint8Array(size), blend = new Float64Array(size);
+    for (let i = 0; i < size; i++) {
+      const value = i * cells / size, lo = Math.floor(value), t = value - lo;
+      first[i] = lo; next[i] = (lo + 1) % cells; blend[i] = t * t * (3 - 2 * t);
+    }
+    const rows = new Float64Array(cells * size);
+    const planes = new Float64Array(cells * size * size);
     const lerp = T.MathUtils.lerp;
-    for (let i = 0; i < data.length; i++) {
-      const x = ((i % size) * cells) / size,
-        y = (((i >> 6) % size) * cells) / size,
-        z = ((i >> 12) * cells) / size;
-      const a = Math.floor(x),
-        b = Math.floor(y),
-        c = Math.floor(z);
-      const u = smooth(x - a),
-        v = smooth(y - b),
-        w = smooth(z - c);
-      const slice = (k) =>
-        lerp(
-          lerp(sample(a, b, k), sample(a + 1, b, k), u),
-          lerp(sample(a, b + 1, k), sample(a + 1, b + 1, k), u),
-          v,
-        );
-      data[i] += Math.round(lerp(slice(c), slice(c + 1), w) * 128 * (4 / cells));
+    for (let z = 0; z < cells; z++) {
+      for (let y = 0; y < cells; y++) {
+        const offset = (z * cells + y) * cells;
+        for (let x = 0; x < size; x++) {
+          rows[y * size + x] = lerp(grid[offset + first[x]], grid[offset + next[x]], blend[x]);
+        }
+      }
+      for (let y = 0; y < size; y++) {
+        const from = first[y] * size, to = next[y] * size, offset = (z * size + y) * size;
+        for (let x = 0; x < size; x++) {
+          planes[offset + x] = lerp(rows[from + x], rows[to + x], blend[y]);
+        }
+      }
+    }
+    const area = size * size;
+    for (let z = 0; z < size; z++) {
+      const from = first[z] * area, to = next[z] * area;
+      for (let i = 0; i < area; i++) {
+        data[z * area + i] += Math.round(lerp(planes[from + i], planes[to + i], blend[z]) * weight);
+      }
     }
   }
   const tex = new T.Data3DTexture(data, size, size, size);

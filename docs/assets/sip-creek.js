@@ -14,6 +14,7 @@ import { cutter, floatHull } from '../life/harbor.js';
 import { tube } from '../life/forms.js';
 import { flock } from '../life/birds.js';
 import { insects, trout } from '../life/wildlife.js';
+import { primePeople, finishPeople, restorePeople } from '../life/scene-people.js';
 import { warmShaders } from './sip-warm.js';
 
 const tiers = ['Mobile', 'Medium', 'High'],
@@ -107,6 +108,7 @@ export function mountCreek(root) {
   skiff.root.position.set(1.35, 0, -13);
   skiff.root.rotation.y = 1.45;
   scene.add(skiff.root);
+  lantern.nav.box(skiff.root.name,0,0,1.1,.43,-.115,.375,0,skiff.root);
   const stakeZ = -14.38,
     stakeX = 2.25,
     stakeY = ground(stakeX, stakeZ);
@@ -286,6 +288,7 @@ export function mountCreek(root) {
   let tier = 0,
     light = 'afternoon',
     visible = false,
+    contextGeneration = 0,
     lost = false,
     playing = !reduced.matches,
     free = false,
@@ -326,7 +329,9 @@ export function mountCreek(root) {
     camera.updateProjectionMatrix();
   }
   function selectQuality() {
+    const wasMobile = tier === 0;
     tier = quality.value === 'auto' ? automaticTier(renderer, stage.clientWidth) : Number(quality.value);
+    if (wasMobile !== (tier === 0)) moodDirty = true;
     quality.options[0].textContent = 'Auto · ' + tiers[automaticTier(renderer, stage.clientWidth)];
     for (const { mesh, max, fractions } of densities) mesh.count = Math.ceil(max * fractions[tier]);
     renderer.shadowMap.enabled = tier > 0;
@@ -347,7 +352,7 @@ export function mountCreek(root) {
     queue();
   }
   function applyLight() {
-    sky.apply(light);
+    sky.apply(light, tier === 0);
     air.uniforms.mist.value = light === 'morning' ? 3.8 : 1;
     const m = lightSettings[light];
     sun.color.set(m.sun);
@@ -374,7 +379,7 @@ export function mountCreek(root) {
   }
   function draw(now) {
     frame = 0;
-    if (!warmed || !visible || lost || document.hidden) return;
+    if (!warmed || !visible || lost || document.hidden || renderer.getContext().isContextLost()) return;
     fit();
     const dt = last === null ? 0 : Math.max(0, (now - last) * 0.001);
     last = now;
@@ -394,7 +399,7 @@ export function mountCreek(root) {
     time.value = ambient;
     creek.update(ambient);
     const mobile = tier === 0;
-    lantern.update(ambient, camera, mobile);
+    lantern.update(ambient,camera,mobile,tier===2);
     floatHull(skiff.root, ambient, streamHeight, 0, 0.015);
     kingfisher(ambient, mobile, camera);
     finches(ambient, mobile, camera);
@@ -413,6 +418,7 @@ export function mountCreek(root) {
     renderer.setRenderTarget(null);
     if (first) {
       canvas.style.visibility = 'visible';
+      finishPeople(renderer, scene, camera, opaque);
       status.hidden = true;
       first = false;
     }
@@ -503,6 +509,8 @@ export function mountCreek(root) {
   });
   canvas.addEventListener('webglcontextlost', (e) => {
     e.preventDefault();
+    contextGeneration++;
+    warmed = false;
     lost = true;
     suspend();
     first = true;
@@ -511,10 +519,17 @@ export function mountCreek(root) {
     status.textContent = 'Restoring Sip Creek…';
   });
   canvas.addEventListener('webglcontextrestored', () => {
+    const generation = contextGeneration;
     lost = false;
     moodDirty = true;
     renderer.shadowMap.needsUpdate = true;
-    queue();
+    restorePeople(scene);
+    applyLight();
+    warmShaders(renderer, [[scene, camera, opaque], [overlay, camera, opaque]]).then(() => {
+      if (lost || generation !== contextGeneration) return;
+      warmed = true;
+      queue();
+    });
   });
   new ResizeObserver(() => {
     if (quality.value === 'auto' && tier !== automaticTier(renderer, stage.clientWidth)) selectQuality();
@@ -524,11 +539,13 @@ export function mountCreek(root) {
   buttons();
   // Hold the first frame until the shaders are linked; the canvas stays hidden meanwhile.
   let warmed = false;
+  primePeople(scene, tier === 2);
   if (moodDirty) applyLight(); // fog and scene.environment are part of every lit shader's key
   warmShaders(renderer, [
     [scene, camera, opaque],
     [overlay, camera, opaque],
   ]).then((ms) => {
+    if (contextGeneration !== 0) return;
     warmed = true;
     console.info(`Sip Creek shaders ready in ${Math.round(ms)} ms (tier ${tier})`);
     queue();

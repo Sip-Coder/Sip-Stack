@@ -8,9 +8,9 @@ export function warmShaders(renderer, jobs) {
   const started = performance.now();
   const waits = [];
   try {
-    for (const [scene, camera, target = null] of jobs) {
+    for (const [scene, camera, target = null, lightingScene = scene] of jobs) {
       renderer.setRenderTarget(target);
-      waits.push(renderer.compileAsync(scene, camera));
+      waits.push(renderer.compileAsync(scene, camera, lightingScene));
     }
   } catch (error) {
     waits.push(Promise.reject(error));

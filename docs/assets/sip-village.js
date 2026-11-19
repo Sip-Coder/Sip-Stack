@@ -9,9 +9,11 @@ import { coastalLight } from '../village/light.js';
 import { autoTier, pipeline } from '../village/renderer.js';
 import { duration, chapters, chapter, pose } from '../village/camera.js';
 import { PINS, LANES, LANE_X } from './sip-village-content.js';
+import { peopleNav } from '../life/nav.js';
 import { villageLife } from '../life/village.js';
 import { cutter, crate, clothPanel, tableService } from '../life/harbor.js';
 import { wind } from '../life/forms.js';
+import { primePeople, finishPeople, restorePeople } from '../life/scene-people.js';
 import { warmShaders } from './sip-warm.js';
 
 const motionMQ = matchMedia('(prefers-reduced-motion: reduce)');
@@ -55,8 +57,25 @@ const KIND = { plaster:['box','plaster'], wood:['box','wood'], rail:['box','meta
 
 // Kit collects many small parts and turns each kind into one InstancedMesh (few draw calls).
 class Kit {
-  constructor() { this.items = {}; }
-  push(kind, p, s, c, r) { (this.items[kind] ||= []).push([p, s, c, r]); }
+  constructor(nav,frame) { this.items = {}; this.nav = nav; this.frame=frame; this.tag = null; }
+  push(kind, p, s, c, r) {
+    (this.items[kind] ||= []).push([p, s, c, r]);
+    if (!this.nav || !this.tag) return;
+    const [x,y,z]=p, [w,h,d]=s;
+    if (kind === 'cyl' || kind === 'metal' || kind === 'cone') {
+      if (r && Math.abs(r[0])>1.4) this.nav.box(this.tag,x,z,w,h/2,y-w,y+w);
+      else this.nav.circle(this.tag,x,z,w,y-h/2,y+h/2);
+    } else if (['wood','box','rail'].includes(kind)) {
+      const pitch=Math.abs(r?.[0] || 0), cy=Math.cos(pitch), sy=Math.sin(pitch);
+      this.nav.box(this.tag,x,z,w/2,(d*cy+h*sy)/2,y-(h*cy+d*sy)/2,y+(h*cy+d*sy)/2,r?.[1] || 0);
+    }
+  }
+  floor(name,x0,x1,y0,y1,z0,z1,color,tread=false) {
+    const tag=this.tag; this.tag=null;
+    this.box(x0,x1,y0,y1,z0,z1,color);
+    this.tag=tag;
+    this.nav.surface(name,x0,x1,z0,z1,y1,tread,this.frame);
+  }
   box(x0, x1, y0, y1, z0, z1, c, kind = 'box') { this.push(kind, [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2], [Math.abs(x1 - x0), Math.abs(y1 - y0), Math.abs(z1 - z0)], c); }
   ball(x, y, z, r, c, sy = 1) { this.push(C.bloom.includes(c) ? 'flower' : 'ball', [x, y, z], [r, r * sy, r], c); }
   cyl(x, y, z, r, h, c, rot, kind = 'cyl') { this.push(kind, [x, y, z], [r, h, r], c, rot); }
@@ -201,7 +220,7 @@ function rocksAlong(k, axis, fixed, a0, a1, y0, y1, n, scale = 1) {
 
 /* ---------- the village ---------- */
 function buildWorld(scene) {
-  const k = new Kit(), slab = new THREE.Group(), ks = new Kit();
+  const nav = peopleNav(scene,'.vl-stage'), k = new Kit(nav), slab = new THREE.Group(), ks = new Kit(nav,slab);
   const kFor = x => (x >= 6 ? ks : k);
   const dyn = { canvas: [] };
 
@@ -213,16 +232,16 @@ function buildWorld(scene) {
   for (let i = 0; i < 40; i++) { const z = lerp(-9.8, 9.8, R()); k.push('rock', [10, lerp(-2.9, -1.4, R()), z], [.08, .1, .12 + R() * .15], jit('#9b8a76', .08), [R(), R(), R()]); }
 
   // terraces: quay A, B (houses + cantina yard), C (houses + vines), D (houses + vines)
-  k.box(-10, 10, -.9, 1, -1.5, 1.5, C.rock); k.box(-10, 10, 1, 1.05, -1.5, 1.5, C.pave);
-  k.box(-10, 10, -.9, 3, -4.5, -1.5, C.rock); k.box(-10, 2, 3, 3.05, -4.5, -1.5, C.pave); k.box(2, 10, 3, 3.04, -4.5, -1.5, '#d8c9ab');
-  k.box(-10, 2, -.9, 5, -7.5, -4.5, C.rock); k.box(-10, 2, 5, 5.05, -7.5, -4.5, C.pave);
-  k.box(2, 10, -.9, 4.5, -7.5, -4.5, C.rock); k.box(2, 10, 4.5, 4.62, -7.5, -4.5, C.subsoil); k.box(2, 10, 4.62, 5, -7.5, -4.5, C.topsoil);
-  k.box(-10, 2, -.9, 7, -10, -7.5, C.rock); k.box(-10, 2, 7, 7.05, -10, -7.5, C.pave);
+  k.box(-10, 10, -.9, 1, -1.5, 1.5, C.rock); k.floor('terrace',-10, 10, 1, 1.05, -1.5, 1.5, C.pave);
+  k.box(-10, 10, -.9, 3, -4.5, -1.5, C.rock); k.floor('terrace',-10, 2, 3, 3.05, -4.5, -1.5, C.pave); k.floor('terrace',2, 10, 3, 3.04, -4.5, -1.5, '#d8c9ab');
+  k.box(-10, 2, -.9, 5, -7.5, -4.5, C.rock); k.floor('terrace',-10, 2, 5, 5.05, -7.5, -4.5, C.pave);
+  k.box(2, 10, -.9, 4.5, -7.5, -4.5, C.rock); k.box(2, 10, 4.5, 4.62, -7.5, -4.5, C.subsoil); k.floor('terrace',2, 10, 4.62, 5, -7.5, -4.5, C.topsoil);
+  k.box(-10, 2, -.9, 7, -10, -7.5, C.rock); k.floor('terrace',-10, 2, 7, 7.05, -10, -7.5, C.pave);
   // D vines: layered so the cut face reads as strata (static half x2..6, sliding slab x6..10)
   for (const [kk, a, b] of [[k, 2, 6], [ks, 6, 10]]) {
     kk.box(a, b, -.9, 4.6, -10, -7.5, C.rock);
     kk.box(a, b, 4.6, 6.2, -10, -7.5, C.subsoil);
-    kk.box(a, b, 6.2, 7, -10, -7.5, C.topsoil);
+    kk.floor('terrace',a, b, 6.2, 7, -10, -7.5, C.topsoil);
     for (let i = 0; i < 26; i++) kk.push('rock', [lerp(a + .2, b - .2, R()), lerp(4.7, 6.1, R()), R() < .5 ? -7.5 : -10], [.12 + R() * .12, .1, .1], jit('#bfa98a', .06), [R(), R(), R()]);
   }
   for (let i = 0; i < 16; i++) ks.push('rock', [10, lerp(4.7, 6.1, R()), lerp(-9.8, -7.7, R())], [.1, .1, .12 + R() * .12], jit('#bfa98a', .06), [R(), R(), R()]);
@@ -248,8 +267,10 @@ function buildWorld(scene) {
   // stairs between levels (x .8..1.8)
   for (const [y0, y1, zs] of [[1, 3, .1], [3, 5, -2.9], [5, 7, -5.9]]) {
     const n = 8, dz = 1.6 / n;
-    for (let i = 0; i < n; i++) k.box(.8, 1.8, y0, y0 + (i + 1) * (y1 - y0) / n, zs - (i + 1) * dz, zs - i * dz, jit('#c9b99b', .03));
+    for (let i = 0; i < n; i++) k.floor('stair tread',.8, 1.8, y0, y0 + (i + 1) * (y1 - y0) / n, zs - (i + 1) * dz, zs - i * dz, jit('#c9b99b', .03),true);
+    k.tag='stair rail';
     k.box(1.8, 1.9, y0, y1 + .25, zs - 1.6, zs, '#b3a58c');
+    k.tag=null;
   }
 
   // houses (left side, stepping up the hill)
@@ -265,10 +286,14 @@ function buildWorld(scene) {
     { x: -3.7, z: -8.85, w: 3.4, d: 2.2, base: 7, floors: 5, color: '#e59a7c' },
     { x: -.35, z: -8.85, w: 2.5, d: 2.2, base: 7, floors: 3, color: '#f2dcae', bloom: 1 },
   ];
-  H.forEach((h, i) => house(k, { ...h, seed: 100 + i * 17 }));
+  H.forEach((h, i) => {
+    nav.box('house '+(i+1),h.x,h.z,h.w/2,h.d/2,h.base,h.base+h.floors*1.05);
+    house(k, { ...h, seed: 100 + i * 17 });
+  });
 
   // Maritime pines with forked limbs and layered, windswept crowns.
   const pine = (x, y, z, s = 1) => {
+    nav.circle('pine',x,z,.16*s,y,y+2.2*s);
     k.cyl(x, y + 1.1 * s, z, .1 * s, 2.2 * s, '#6b4b33', [.12, 0, -.1]);
     for(let i=0;i<8;i++) {
       const a=i*2.40, arm=(.34+R()*.39)*s, dx=Math.cos(a),dz=Math.sin(a);
@@ -287,7 +312,8 @@ function buildWorld(scene) {
   dyn.doors = {}; dyn.glow = {};
   Object.entries(LANE_X).forEach(([lane, c]) => {
     const lc = LANES[lane].color;
-    k.box(c - .7, c + .7, 3.04, 3.06, -4.45, -2.2, col(lc, .18));
+    k.floor('making lane',c - .7, c + .7, 3.04, 3.06, -4.45, -2.2, col(lc, .18));
+    k.tag='lane wall and door frame';
     k.box(c + .78, c + .82, 3.04, 3.3, -4.45, -2.6, '#b8aa90');
     k.box(c - .5, c + .5, 3, 4.5, -4.53, -4.4, '#ddd0b6');
     k.box(c - .38, c + .38, 3, 4.32, -4.47, -4.39, '#2b201a');
@@ -295,6 +321,7 @@ function buildWorld(scene) {
     const glow = new THREE.Mesh(new THREE.PlaneGeometry(.7, 1.25), new THREE.MeshBasicMaterial({ color: col(lc, .1), transparent: true, opacity: 0 }));
     glow.position.set(c, 3.66, -4.385); scene.add(glow); dyn.glow[lane] = glow;
     const pivot = new THREE.Group(); pivot.position.set(c - .38, 3, -4.36);
+    nav.box(lane+' door',.378,.02,.378,.052,.01,1.30,0,pivot);
     const door=new Kit();
     for(let j=0;j<6;j++)door.box(j*.126,j*.126+.122,.011,1.29,-.023,.023,col(lc,(j%3-1)*.018),'wood');
     for(const y of [.21,1.05]){
@@ -306,6 +333,7 @@ function buildWorld(scene) {
     door.build(pivot);
     scene.add(pivot); dyn.doors[lane] = pivot;
   });
+  k.tag='press and tank';
   { // white: basket press + small steel tank
     const c = LANE_X.white;
     k.cyl(c - .25, 3.3, -3.4, .3, .5, '#b58a5a'); for (let i = 0; i < 10; i++) { const a = i / 10 * PI * 2; k.box(c - .25 + Math.cos(a) * .3 - .02, c - .25 + Math.cos(a) * .3 + .02, 3.05, 3.56, -3.4 + Math.sin(a) * .3 - .02, -3.4 + Math.sin(a) * .3 + .02, '#7b5534'); }
@@ -313,25 +341,31 @@ function buildWorld(scene) {
     k.cyl(c + .38, 3.5, -3.9, .2, .9, C.steel, null, 'metal'); k.push('cone', [c + .38, 4.02, -3.9], [.2, .14, .2], '#b9c1c4');
   }
   { const c = LANE_X.rose; for (const [dx, dz] of [[-.28, -3.8], [.28, -3.5]]) { k.cyl(c + dx, 3.55, dz, .2, 1, C.steel, null, 'metal'); k.cyl(c + dx, 3.7, dz, .205, .12, '#e49a9a'); k.push('cone', [c + dx, 4.1, dz], [.2, .12, .2], '#b9c1c4'); } }
+  k.tag='red vat';
   { const c = LANE_X.red; k.cyl(c, 3.33, -3.65, .45, .6, '#8a5a36'); k.cyl(c, 3.335, -3.65, .46, .07, '#4b4b4b'); k.cyl(c, 3.62, -3.65, .42, .04, '#4a1622'); }
+  k.tag='bottle rack';
   { const c = LANE_X.sparkling;
     for (const s of [-1, 1]) { k.push('box', [c, 3.5, -3.55 + s * .17], [1.0, .95, .06], '#a07a50', [s * .32, 0, 0]);
       for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) { const y = 3.2 + j * .27; k.ball(c - .36 + i * .24, y, -3.55 + s * .23 + (y - 3.5) * Math.sin(s * .32), .045, '#22402c'); } }
   }
+  k.tag='barrel';
   { const c = LANE_X.fortified;
     [[3, 3.22], [2, 3.62], [1, 4.02]].forEach(([n, y]) => { for (let i = 0; i < n; i++) { const x = c + (i - (n - 1) / 2) * .42; k.cyl(x, y, -3.7, .2, .5, '#7b4a2a', [PI / 2, 0, 0]); k.cyl(x, y, -3.7, .205, .05, '#3d3a36', [PI / 2, 0, 0]); } });
     k.cyl(c - .5, 3.25, -2.8, .1, .38, '#c7a15a');
   }
+  k.tag='yard lamp and cistern';
   // yard lamp
   k.cyl(5.3, 3.75, -2.1, .03, 1.5, '#2f2f2c'); k.push('lamp', [5.3, 4.55, -2.1], [.11, .11, .11], '#fff');
   k.cyl(9.4, 3.35, -2.25, .32, .7, '#b9c6c3'); // yard cistern
 
+  k.tag=null;
   // ---- quay: café terrace, crates, rinse corner ----
-  k.box(-9.7, -5, 1.05, 1.1, -1.4, 1.4, '#c98b6b');
+  k.floor('cantina',-9.7, -5, 1.05, 1.1, -1.4, 1.4, '#c98b6b');
   for (let x = -9.6; x < -5; x += .5) k.ball(x, 1.25, 1.35, .14 + R() * .06, R() < .6 ? C.bloom[Math.floor(R() * 4)] : C.green);
   const table = (x, z, umbrella) => {
+    nav.circle('café table',x,z,.42,1.10,1.825);
     k.cyl(x, 1.45, z, .04, .7, '#3a3733'); k.cyl(x, 1.8, z, .42, .05, '#f3eee4');
-    for (const [dx, dz] of [[-.55, 0], [.55, 0], [0, -.55]]) { k.box(x+dx-.14,x+dx+.14,1.44,1.50,z+dz-.13,z+dz+.13,'#547264','wood');
+    for (const [dx, dz] of [[-.55, 0], [.55, 0], [0, -.55]]) { nav.box('café chair',x+dx,z+dz,.14,.14,1.10,1.8); k.box(x+dx-.14,x+dx+.14,1.44,1.50,z+dz-.13,z+dz+.13,'#547264','wood');
       for(const sx of [-.10,.10]) for(const sz of [-.10,.10]) k.push('wood',[x+dx+sx,1.285,z+dz+sz],[.028,.36,.029],'#655a45'); k.box(x + dx - .13, x + dx + .13, 1.5, 1.8, z + dz - .14, z + dz - .1, '#2f5b52'); }
     if (umbrella) { k.cyl(x, 2.3, z, .03, 1.5, '#f3eee4'); k.push('cone', [x, 3.05, z], [.95, .45, .95], '#f7f2e8'); k.push('cone', [x, 2.95, z], [.97, .18, .97], '#914C2C'); }
   };
@@ -344,21 +378,28 @@ function buildWorld(scene) {
     valance.position.set(ax,3.21,-.986);scene.add(valance);dyn.canvas.push(valance);
   }
   table(-8.6, .35, true); table(-8.3, -.85, true); table(-6.6, .5, false); table(-6.75, -.9, true);
+  k.tag='lamp';
   k.cyl(-5.4, 1.9, -1.2, .03, 1.7, '#2f2f2c'); k.push('lamp', [-5.4, 2.8, -1.2], [.11, .11, .11], '#fff');
+  k.tag='quay bollard';
   // bollards + crates + barrels near the quay edge
   for (const x of [-3.5, -.5, 2.5, 6, 9]) k.cyl(x, 1.25, 1.25, .12, .4, '#3d3b38');
+  k.tag='quay barrel';
   for (const [x, z] of [[2.6, -.9], [3.0, -.9], [2.8, -1.2]]) k.cyl(x, 1.33, z, .17, .55, '#7b4a2a');
+  k.tag='rinse equipment';
   // rinse corner: trough + settling tank
   k.box(7.6, 8.6, 1.05, 1.38, -1.25, -.7, '#9a948a'); k.box(7.65, 8.55, 1.3, 1.34, -1.2, -.75, '#7fbcc0');
   k.cyl(9.2, 1.6, -.9, .45, 1.1, '#b9c6c3', null, 'metal'); k.push('cone', [9.2, 2.25, -.9], [.45, .2, .45], '#9fb0b0');
+  k.tag=null;
   // pier (L)
   k.box(3, 4.6, -.9, .95, 1.5, 7, '#b5a68b'); k.box(4.6, 9.3, -.9, .95, 5.6, 7, '#b5a68b');
-  k.box(3, 4.6, .95, 1.0, 1.5, 7, '#cbbd9f'); k.box(4.6, 9.3, .95, 1.0, 5.6, 7, '#cbbd9f');
+  k.floor('pier',3, 4.6, .95, 1.0, 1.5, 7, '#cbbd9f'); k.floor('pier',4.6, 9.3, .95, 1.0, 5.6, 7, '#cbbd9f');
+  k.tag='pier fitting';
   for (const [x, z] of [[3.15, 3], [4.45, 4.5], [6, 6.85], [8, 6.85], [9.15, 5.75]]) k.cyl(x, 1.15, z, .1, .3, '#3d3b38');
   for (let i = 0; i < 5; i++) k.box(4.6, 4.66, .2 + i * .18, .23 + i * .18, 3.6, 4.0, '#6b5a45');
   k.cyl(4.4, 1.85, 6.75, .03, 1.7, '#2f2f2c'); k.push('lamp', [4.4, 2.75, 6.75], [.11, .11, .11], '#fff');
   for (const [x, z] of [[3.05, 2.6], [4.55, 3.0], [5.6, 7.05], [7.6, 7.05]]) { const t = new THREE.Mesh(new THREE.TorusGeometry(.17, .06, 6, 14), M.std); t.material = new THREE.MeshStandardMaterial({ color: '#222', roughness: .9 }); t.position.set(x, .7, z); t.rotation.y = Math.abs(x - 3.05) < .1 || Math.abs(x - 4.55) < .1 ? PI / 2 : 0; scene.add(t); }
 
+  k.tag=null;
   // laundry lines
   dyn.laundry = [];
   const line = (xa, xb, y, z) => {
@@ -371,13 +412,22 @@ function buildWorld(scene) {
   };
   line(-9.7, -4.8, 5.9, -1.55); line(-6.4, -3.1, 8.5, -4.55); line(-5.2, -.8, 10.6, -7.6);
 
+  const registerRow = (z,y) => {
+    if(y<7) nav.box('vine row',6.1,z,3.92,.17,y,y+.88);
+    else {
+      nav.box('vine row',4.09,z,1.91,.17,y,y+.88);
+      nav.box('vine row',8.01,z,2.01,.17,y,y+.88,0,slab);
+    }
+  };
   // vines on C and D (rows follow the terraces)
-  for (const z of [-5.25, -6.15, -7.0]) vineRow(() => k, z, 5, 2.5, 9.7);
-  for (const z of [-8.1, -8.9, -9.6]) vineRow(kFor, z, 7, 2.5, 9.7);
+  // Leave turning space for a loaded picking basket between the two working rows.
+  const harvestRows=[-5.16,-6.29,-7.0];
+  for (const z of harvestRows) { registerRow(z,5); vineRow(() => k, z, 5, 2.5, 9.7); }
+  for (const z of [-8.1, -8.9, -9.6]) { registerRow(z,7); vineRow(kFor, z, 7, 2.5, 9.7); }
 
   // drip effects (wet patches at each vine foot)
   dyn.dripA = new Kit(); dyn.dripB = new Kit();
-  for (const [z, top] of [[-5.25, 5], [-6.15, 5], [-7.0, 5], [-8.1, 7], [-8.9, 7], [-9.6, 7]])
+  for (const [z, top] of [...harvestRows.map(z=>[z,5]),[-8.1,7],[-8.9,7],[-9.6,7]])
     for (let x = 2.5; x <= 9.71; x += .6) { const kk = x >= 6 && top === 7 ? dyn.dripB : dyn.dripA; kk.cyl(x, top + .015, z + .12, .3, .025, '#2e2620'); kk.ball(x + .12, top + .1, z + .16, .05, '#8fe0f0'); kk.ball(x - .1, top + .07, z + .16, .04, '#8fe0f0'); }
   const dripA = dyn.dripA.build(new THREE.Group()), dripB = dyn.dripB.build(new THREE.Group());
   const bulb = new THREE.Mesh(new THREE.CircleGeometry(1, 24), new THREE.MeshBasicMaterial({ color: '#2c1d14', transparent: true, opacity: .55 }));
@@ -385,11 +435,14 @@ function buildWorld(scene) {
   dripA.visible = dripB.visible = false; scene.add(dripA); slab.add(dripB);
   dyn.drip = [dripA, dripB];
 
+  k.tag='soil auger';
   // Equip-grade cues: auger on the soil terrace, picking bins, lab bench, barrel workbench.
   k.cyl(7.25, 7.48, -8.25, .028, .95, '#3e4246', null, 'metal');
   k.box(6.95, 7.55, 7.9, 7.98, -8.32, -8.18, '#914C2C');
+  k.tag='picking bin';
   k.box(3.15, 3.55, 5.05, 5.32, -5.55, -5.2, '#b88a55');
   k.box(3.6, 4.0, 5.05, 5.28, -6.3, -5.95, '#a97a47');
+  k.tag='workbench';
   k.box(7.5, 8.75, 3.04, 3.5, -2.15, -1.58, '#efe6d4');
   k.cyl(7.75, 3.64, -1.85, .07, .24, '#d8e6da', null, 'metal');
   k.cyl(8.05, 3.62, -1.78, .055, .18, '#f3e0d8', null, 'metal');
@@ -398,6 +451,7 @@ function buildWorld(scene) {
   k.cyl(3.55, 3.66, -1.88, .16, .46, '#7b4a2a', [PI / 2, 0, 0]);
   k.box(3.95, 4.28, 3.46, 3.54, -2.05, -1.72, '#c4a574');
 
+  k.tag=null;
   landscape(scene,k,ks,R);
   k.build(scene); ks.build(slab); scene.add(slab); dyn.slab = slab;
 
@@ -406,7 +460,8 @@ function buildWorld(scene) {
   // boats
   dyn.boats = [];
   for (const [x, z, ry, c, s] of [[1.4, 3.2, .35, '#f4f1ea', '#2f6f9f'], [-2.6, 4.7, -.25, '#f4f1ea', '#914C2C'], [5.45, 3.6, PI / 2, '#eae4d6', '#1A5552'], [1.6, 7.2, .9, '#f4f1ea', '#2f6f9f'], [-6.8, 6.4, .4, '#efe9dc', '#3c7aa8'], [8.3, 8.05, 0, '#f6f2ea', '#1A5552'], [-3.6, 8.3, -.5, '#f4f1ea', '#914C2C']]) {
-    const fittings = cutter(c,s), b=fittings.root; b.position.set(x, .3, z); b.rotation.y = ry; scene.add(b); b.name="Village boat "+(dyn.boats.length+1);dyn.boats.push({b,stroke:fittings.stroke,grips:fittings.grips});
+    const fittings = cutter(c,s), b=fittings.root; b.position.set(x, .3, z); b.rotation.y = ry; scene.add(b); b.name="Village boat "+(dyn.boats.length+1);dyn.boats.push({b,stroke:fittings.stroke,grips:fittings.grips,seat:fittings.seat,shafts:fittings.shafts,deckHeight:fittings.deckHeight});
+    nav.box(b.name,0,0,1.1,.43,-.115,.375,0,b);
   }
   dyn.caseBoat = dyn.boats[5].b;
   // buoys
@@ -424,7 +479,7 @@ function buildWorld(scene) {
     const m=crate();scene.add(m);
     const qa = new THREE.Vector3(6.25 + (i % 2) * .42, 1.05 + Math.floor(i / 4) * .27, -.25 + (Math.floor(i / 2) % 2) * .34);
     const bo = new THREE.Vector3((i % 4 - 1.5) * .4, .42 + Math.floor(i / 4) * .27, ((i % 2) - .5) * .32);
-    m.position.copy(qa); dyn.cases.push({ m, qa, bo });
+    m.position.copy(qa); nav.box('wine case',0,0,.205,.156,-.009,.248,0,m); dyn.cases.push({ m, qa, bo });
   }
 
   // rinse loop: spill (off) vs. pipe loop (on)
@@ -450,7 +505,7 @@ function buildWorld(scene) {
   // lamps (night)
   dyn.lamps = [[-5.4, 2.7, -1.0], [5.3, 4.4, -1.9], [4.4, 2.6, 6.6]].map(p => { const l = new THREE.PointLight('#ffc27a', 0, 9, 1.4); l.position.set(...p); scene.add(l); return l; });
 
-  dyn.life=villageLife(scene,dyn.boats,swell,H);
+  dyn.life=villageLife(scene,dyn.boats,swell,H,nav);
   return dyn;
 }
 
@@ -463,7 +518,7 @@ export function mountVillage(root, { onPin } = {}) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(47, 1, .12, 390);
   const state = { drip: false, cut: false, reuse: false, loaded: false, pour: 0, door: null, light: 'golden', orbit: still(), pin: null };
-  let dirty=true, warmed=false;
+  let dirty=true, warmed=false, contextGeneration=0;
   let shown = false, stageVisible = false, craftActive = document.body.dataset.craftVisible === 'true';
   const otherSceneActive = () => craftActive || document.body.dataset.creekVisible === 'true';
   const tw = {}; // tweens: key -> {from,to,t0,dur,apply}
@@ -488,7 +543,7 @@ export function mountVillage(root, { onPin } = {}) {
     sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -20, right: 20, top: 20, bottom: -20, near: 1, far: 90 }); sun.shadow.bias = -.0006; sun.shadow.normalBias = .03;
     scene.add(sun, sun.target);
     dyn = buildWorld(scene);
-    lighting=coastalLight(renderer,scene,hemi,sun,dyn.sea.uniforms);
+    lighting=coastalLight(renderer,scene,hemi,sun,dyn.sea.uniforms,automatic);
     post=pipeline(renderer,scene,camera,dyn.sea,sun);
     post.quality(automatic); quality.options[0].textContent='Auto · '+automatic;
     controls = new OrbitControls(camera, renderer.domElement);
@@ -618,7 +673,14 @@ export function mountVillage(root, { onPin } = {}) {
   });
   track.addEventListener('input',()=>guided(track.valueAsNumber,false));
   $('.vl-sun',deck).addEventListener('input',e=>setLight(e.target.valueAsNumber/100));
-  quality.addEventListener('change',()=>{post?.quality(quality.value==='auto'?automatic:quality.value);if(dyn)ambient(T);flightStamp=null;renderStill();});
+  quality.addEventListener('change', () => {
+    const tier = quality.value === 'auto' ? automatic : quality.value;
+    post?.quality(tier);
+    lighting?.quality(tier);
+    if (dyn) ambient(T);
+    flightStamp = null;
+    renderStill();
+  });
   function syncToggles() {
     const on = { drip: state.drip, cut: state.cut, reuse: state.reuse, cases: state.loaded, pour: state.pour > 0 };
     toggles.querySelectorAll('button[data-t]').forEach(b => b.setAttribute('aria-pressed', String(!!on[b.dataset.t])));
@@ -765,11 +827,12 @@ export function mountVillage(root, { onPin } = {}) {
     }
   }
   function draw() {
-    if(!warmed) return;
+    if(!warmed || renderer.getContext().isContextLost()) return;
     if(!state.orbit) pose(elapsed,camera,controls.target);
     else controls.update();
     lighting.captureSky(); post.render(); placePins();
     renderer.domElement.style.visibility='visible';status.hidden=true;
+    finishPeople(renderer, scene, camera, post.target);
   }
   function animate() {
     if(still() && !playing && !dirty) { clock.getDelta(); return; }
@@ -851,18 +914,26 @@ export function mountVillage(root, { onPin } = {}) {
   fit(); setLight(.5); syncTransport(); syncToggles();
   if(controls) { if(state.orbit) resetView(true); else pose(0,camera,controls.target); }
   renderer?.domElement.addEventListener('webglcontextlost',e=>{
-    e.preventDefault();lost=true;syncLoop();renderer.domElement.style.visibility='hidden';
+    e.preventDefault();contextGeneration++;lost=true;warmed=false;syncLoop();renderer.domElement.style.visibility='hidden';
     status.hidden=false;status.textContent='Restoring the village…';
   });
   renderer?.domElement.addEventListener('webglcontextrestored',()=>{
-    lost=false;lighting.restore();renderer.shadowMap.needsUpdate=true;syncLoop();renderStill();
+    const generation = contextGeneration;
+    lost=false;lighting.restore();renderer.shadowMap.needsUpdate=true;
+    restorePeople(scene);
+    warmShaders(renderer, [[scene, camera, post.target]]).then(() => {
+      if (lost || generation !== contextGeneration) return;
+      warmed = true; dirty = true; syncLoop(); renderStill();
+    });
   });
   if (dyn) ambient(T); // place people and props even when motion is reduced
   // Hold the first frame until the shaders are linked; the canvas stays hidden meanwhile.
   if (!renderer) warmed = true;
   else {
+    primePeople(scene, automatic === 'High');
     lighting.captureSky(); // scene.environment is part of every lit shader's key
     warmShaders(renderer, [[scene, camera, post.target]]).then(ms => {
+    if (contextGeneration !== 0) return;
     warmed = true; console.info(`Village shaders ready in ${Math.round(ms)} ms (${automatic} tier)`);
     dirty = true; renderStill();
   });
