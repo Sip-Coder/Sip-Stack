@@ -1,0 +1,150 @@
+.vl-stage {
+  isolation: isolate;
+}
+.vl-stage .vl-canvas {
+  visibility: hidden;
+}
+.vl-stage[data-guided='true'] .vl-pins {
+  visibility: hidden;
+}
+.vl-stage .vl-pins button {
+  animation: none;
+}
+.vl-stage .vl-pins button::after {
+  animation: none;
+  border: 0;
+}
+.vl-chapter {
+  position: absolute;
+  bottom: 1rem;
+  left: 1.15rem;
+  color: #fffaf0;
+  display: grid;
+  gap: 0.15rem;
+  pointer-events: none;
+  text-shadow:
+    0 1px 4px #18211b,
+    0 2px 15px #121a19;
+}
+.vl-chapter b {
+  font: 500 clamp(1.25rem, 2.6vw, 2.1rem) / 1.08 var(--serif);
+}
+.vl-stage[data-guided='false'] .vl-chapter,
+.vl-stage.no-gl .vl-chapter {
+  display: none;
+}
+.vl-deck {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.7rem 1rem;
+  padding: 0.72rem 0.18rem;
+  border-bottom: 1px solid #cfc2ae;
+  font: 550 0.75rem var(--sans);
+}
+.vl-transport,
+.vl-track,
+.vl-settings,
+.vl-settings label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.vl-deck button,
+.vl-quality {
+  background: #fffaf0;
+  color: var(--ink);
+  border: 1px solid #b1a38f;
+  border-radius: 6px;
+  padding: 0.42rem 0.62rem;
+  font: inherit;
+  cursor: pointer;
+}
+.vl-deck button[data-act='play'],
+.vl-deck button[aria-pressed='true'] {
+  background: var(--teal);
+  color: #fff;
+  border-color: var(--teal);
+}
+.vl-deck button:focus-visible,
+.vl-deck input:focus-visible,
+.vl-quality:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 3px;
+}
+.vl-deck input {
+  accent-color: var(--teal);
+  min-width: 0;
+  cursor: pointer;
+}
+.vl-track {
+  flex: 1 1 160px;
+}
+.vl-track input {
+  flex: 1;
+  width: 5rem;
+}
+.vl-track output {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.vl-settings {
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.vl-settings label {
+  gap: 0.4rem;
+}
+.vl-sun {
+  width: 5rem;
+}
+.vl-settings output {
+  min-width: 5.1rem;
+}
+.vl-stage.no-gl + .vl-deck {
+  display: none;
+}
+.vl-leaders {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.vl-leaders line {
+  stroke: #fff5e4;
+  stroke-width: 1.35;
+  filter: drop-shadow(0 1px 1px #372d23);
+}
+@media (max-width: 680px) {
+  .vl-stage {
+    height: clamp(350px, 64svh, 540px);
+  }
+  .vl-deck {
+    gap: 0.55rem;
+  }
+  .vl-track {
+    flex-basis: 100%;
+  }
+  .vl-settings {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.3rem;
+  }
+  .vl-chapter {
+    bottom: 0.85rem;
+    left: 0.8rem;
+  }
+}
+/* Pin coordinates are in screen pixels. Scaling their translation on hover
+   moves the target out from under the pointer. */
+.vl-stage .vl-pin:is(:hover, :focus-visible, .active) {
+  scale: 1;
+  box-shadow:
+    0 0 0 2px #f4ddad,
+    0 2px 5px #332c21a6;
+}
+.vl-stage .vl-pin::before,
+.vl-stage .vl-pin::after {
+  pointer-events: none;
+}
