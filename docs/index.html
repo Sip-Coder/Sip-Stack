@@ -619,16 +619,24 @@
       <div class="creek-stage" aria-label="A quiet Sip Studies creek and tasting shelter">
         <div class="creek-overlay"><span>WATER FIRST, ALWAYS</span><span>SIP CREEK / A MOMENT BY THE WATER</span></div>
         <p class="creek-loading" role="status">Finding the creek…</p>
-        <div class="creek-hint"><span>Drag to look · pinch to zoom</span><span>AN ORIGINAL SIP STUDIES SCENE</span></div>
+        <div class="creek-hint"><span class="creek-beat">The spring</span><span>AN ORIGINAL SIP STUDIES SCENE</span></div>
       </div>
       <div class="creek-controls">
         <div class="creek-light" role="group" aria-label="Light over Sip Creek">
+          <button type="button" data-light="morning" aria-pressed="false">Morning</button>
           <button type="button" data-light="afternoon" aria-pressed="true">Afternoon</button>
           <button type="button" data-light="golden" aria-pressed="false">Golden</button>
           <button type="button" data-light="blue" aria-pressed="false">Blue</button>
           <button type="button" data-light="night" aria-pressed="false">Night</button>
         </div>
-        <div class="creek-actions"><button type="button" class="creek-pause" aria-pressed="false">Pause motion</button><button type="button" class="creek-reset">Reset view</button></div>
+        <div class="creek-actions" role="group" aria-label="Creek flight controls">
+          <button type="button" class="creek-pause" aria-pressed="false">Pause</button>
+          <button type="button" class="creek-replay">Replay</button>
+          <label class="creek-scrub">Flight <input class="creek-time" type="range" min="0" max="20" step=".1" value="0" aria-label="Flight time in seconds"></label>
+          <button type="button" class="creek-orbit" aria-pressed="false">Free orbit</button>
+          <button type="button" class="creek-reset">Reset view</button>
+          <label class="creek-tier">Quality <select class="creek-quality"><option value="auto">Auto</option><option value="2">High</option><option value="1">Medium</option><option value="0">Mobile</option></select></label>
+        </div>
       </div>
       <p class="creek-caption"><span>Craft playground — a little pause beyond the teaching village.</span><span>Water first. Wine follows.</span></p>
     </section>

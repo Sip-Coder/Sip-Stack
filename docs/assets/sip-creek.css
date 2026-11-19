@@ -21,3 +21,8 @@
 .creek-caption{display:flex;justify-content:space-between;gap:16px;font:11px/1.7 Inter,sans-serif;color:#746d69}
 .creek-caption span:last-child{font-style:italic}
 @media(max-width:600px){.creek{padding:0 14px;margin-top:56px}.creek-heading{display:block}.creek-heading>p{margin-top:16px}.creek-overlay,.creek-hint{left:18px;right:18px}.creek-overlay span:last-child,.creek-hint span:last-child{display:none}.creek-controls{gap:14px}.creek-light{width:100%}.creek-controls button{min-height:44px;padding:9px 13px}.creek-caption{display:block}.creek-caption span{display:block}}
+.creek-scrub,.creek-tier{display:inline-flex;align-items:center;gap:7px;font:500 11px Inter,sans-serif}
+.creek-scrub{padding:0 6px}.creek-time{width:clamp(80px,9vw,145px);min-height:40px;accent-color:#1a5552}
+.creek-quality{min-height:40px;padding:0 8px;color:inherit;background:transparent;border:1px solid #1a555240;border-radius:8px;font:inherit}
+.creek-actions :focus-visible{outline:3px solid #914c2c;outline-offset:3px}
+@media(max-width:600px){.creek-stage{height:clamp(440px,145vw,72svh)}.creek-time,.creek-quality{min-height:44px}}

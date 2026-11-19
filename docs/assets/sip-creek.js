@@ -1,427 +1,455 @@
-// Sip Creek · an original Sip Studies waterside miniature.
-// This renderer belongs only to the additional creek playground.
-import * as THREE from 'three';
+import * as T from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
+import { contacts, landscape, seeded, V } from './sip-creek-land.js';
+import { atmosphere, materials, lightSettings } from './sip-creek-materials.js';
+import { grove } from './sip-creek-grove.js';
+import { stream } from './sip-creek-water.js';
+import { cellar } from './sip-creek-cellar.js';
 
-const PI = Math.PI;
-const clamp = THREE.MathUtils.clamp;
-const mix = THREE.MathUtils.lerp;
-const smooth = (a, b, x) => { const t = clamp((x-a)/(b-a), 0, 1); return t*t*(3-2*t); };
-function random(seed) { return () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }; }
-const bend = z => .68 * Math.sin(z * .23) + .25 * Math.sin(z * .52);
-function ground(x, z) {
-  const d = Math.abs(x - bend(z));
-  const bank = smooth(1.8, 4.2, d);
-  return mix(-.52, .38 + .12*Math.sin(z*.38) + .05*Math.sin(x*1.1+z*.8), bank)
-    + smooth(3.3, 10, d) * (1.1 + .16*Math.cos(z*.4))
-    + (Math.sin(x*1.8+z*.7)*Math.cos(z*1.35-x*.4))*.035;
+const tiers = ['Mobile', 'Medium', 'High'],
+  duration = 20;
+function automaticTier(renderer, w) {
+  const gl = renderer.getContext(),
+    info = gl.getExtension('WEBGL_debug_renderer_info');
+  const gpu = info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : '';
+  if (w < 600 || /SwiftShader|llvmpipe|Mali-G5|Adreno.*[34]\d\d/i.test(gpu)) return 0;
+  if (matchMedia('(pointer: coarse)').matches || devicePixelRatio > 2 || /Intel|Iris|UHD/i.test(gpu))
+    return 1;
+  return renderer.capabilities.maxTextureSize >= 8192 ? 2 : 1;
 }
-
-const moods = {
-  afternoon: { top:'#396b72', horizon:'#a8c9b8', fog:'#a0bfae', water:'#15443f', skyWater:'#70a59a', sun:'#fff0c9', hemi:'#d8e6da', ground:'#887d71', hemiPower:1.25, sunPower:2.85, lamp:1.3, sparkle:.9 },
-  golden: { top:'#858092', horizon:'#edd4a8', fog:'#c7b49e', water:'#285957', skyWater:'#f6cf91', sun:'#ffc77c', hemi:'#ffe4bf', ground:'#765b4a', hemiPower:1.1, sunPower:2.9, lamp:2.0, sparkle:1.1 },
-  blue: { top:'#354c68', horizon:'#817985', fog:'#657b80', water:'#244d58', skyWater:'#8ba9bb', sun:'#b4cde7', hemi:'#a6c6d8', ground:'#514f60', hemiPower:1.0, sunPower:1.45, lamp:2.6, sparkle:1.0 },
-  night: { top:'#132c42', horizon:'#3e5766', fog:'#273e4c', water:'#163c48', skyWater:'#719ba4', sun:'#a4c8dc', hemi:'#789cb9', ground:'#303e50', hemiPower:.65, sunPower:.65, lamp:4.2, sparkle:.75 },
-};
+const spline = (points) => new T.CatmullRomCurve3(points.map((p) => V(...p)));
+const flight = spline([
+  [-0.83, 3.3, 12.8],
+  [-0.16, 2.1, 8.3],
+  [1.34, 2.12, 4.0],
+  [0.74, 1.79, -0.55],
+  [-1.12, 2.09, -4.8],
+  [-2.13, 2.32, -7.75],
+  [0.05, 2.65, -9.86],
+  [1.66, 2.14, -10.93],
+]);
+const gaze = spline([
+  [0.67, 1.55, 5.28],
+  [0.65, 0.89, 3.05],
+  [0.2, 0.55, -1.92],
+  [-1.0, 0.55, -3.22],
+  [-2.83, 1.79, -10.4],
+  [-5.67, 2.14, -10.32],
+  [3.39, 1.93, -14.5],
+  [3.69, 1.53, -14.06],
+]);
+const beats = ['The spring', 'The stepping stones', 'The vineyard edge', 'The cooper’s barrel'];
+const quad = 'varying vec2 uv0;void main(){uv0=uv;gl_Position=vec4(position.xy,0.,1.);}';
 
 export function mountCreek(root) {
-  const stage = root.querySelector('.creek-stage');
-  const status = root.querySelector('.creek-loading');
+  const find = (s) => root.querySelector(s),
+    stage = find('.creek-stage'),
+    status = find('.creek-loading');
+  const play = find('.creek-pause'),
+    orbit = find('.creek-orbit'),
+    slider = find('.creek-time'),
+    beat = find('.creek-beat'),
+    quality = find('.creek-quality');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const mobile = matchMedia('(pointer: coarse)').matches || innerWidth < 650;
-  // Preserve the last completed image during compositing and avoid resizing on every show.
-  const renderer = new THREE.WebGLRenderer({ antialias: !mobile, preserveDrawingBuffer: true, powerPreference:'high-performance' });
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, mobile ? 1.15 : 1.4));
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const renderer = new T.WebGLRenderer({
+    antialias: false,
+    preserveDrawingBuffer: true,
+    powerPreference: 'high-performance',
+  });
+  renderer.outputColorSpace = T.SRGBColorSpace;
+  renderer.toneMapping = T.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.01;
+  renderer.autoClear = false;
+  renderer.shadowMap.type = T.PCFSoftShadowMap;
   renderer.shadowMap.autoUpdate = false;
   const canvas = renderer.domElement;
-  canvas.tabIndex = 0;
-  canvas.setAttribute('aria-label', 'Sip Creek, a waterside tasting shelter. Drag to look, pinch to zoom, or use the arrow and plus and minus keys.');
-  // Show the loading state until a completed image has been submitted.
   canvas.style.visibility = 'hidden';
-  status.hidden = false;
+  canvas.tabIndex = 0;
+  canvas.setAttribute(
+    'aria-label',
+    'Sip Creek guided flight. In Free orbit, drag or use arrow keys to orbit, and plus or minus to zoom.',
+  );
   stage.prepend(canvas);
-
-  const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2('#c1d7c8', .023);
-  const camera = new THREE.PerspectiveCamera(42, 1, .08, 100);
-  const home = new THREE.Vector3(1.1, 1.60, 10.8);
-  const homeTarget = new THREE.Vector3(-.45, .95, -5.1);
-  camera.position.copy(home);
+  const scene = new T.Scene(),
+    overlay = new T.Scene(),
+    camera = new T.PerspectiveCamera(49, 1, 0.075, 135);
   const controls = new OrbitControls(camera, canvas);
-  controls.target.copy(homeTarget);
-  controls.enableDamping = false; controls.enablePan = false;
-  controls.minDistance = 11; controls.maxDistance = 26;
-  controls.minPolarAngle = .8; controls.maxPolarAngle = 1.535;
-  controls.minAzimuthAngle = -.55; controls.maxAzimuthAngle = .55;
-  controls.update();
-
-  // On touch/small screens use a single full-scene output instead of the 11 bloom
-  // targets. Both paths retain the refraction pass and animated water glints.
-  const halfFloat = renderer.extensions.has('EXT_color_buffer_float') || renderer.extensions.has('EXT_color_buffer_half_float');
-  let composer, bloom, focusPass;
-  if (!mobile && halfFloat) {
-    // Read scene depth from the compositor's own target: no extra scene render.
-    // Both ping-pong targets get independent depth textures through clone().
-    const depth=new THREE.DepthTexture(1,1,THREE.UnsignedIntType);
-    const sceneTarget=new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,depthBuffer:true,depthTexture:depth});
-    composer = new EffectComposer(renderer,sceneTarget);
-    // DepthTexture.clone() shares its source; give the second framebuffer an
-    // independent attachment so sampling one never aliases the write target.
-    composer.renderTarget2.depthTexture=new THREE.DepthTexture(1,1,THREE.UnsignedIntType);
-    composer.addPass(new RenderPass(scene, camera));
-    // A modest, depth-aware lens blur: near reeds and distant hills soften,
-    // while the water and shelter around the focus distance remain crisp.
-    focusPass=new ShaderPass({
-      uniforms:{tDiffuse:{value:null},tDepth:{value:null},pixel:{value:new THREE.Vector2(1,1)},focus:{value:16},nearClip:{value:camera.near},farClip:{value:camera.far}},
-      vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-      fragmentShader:`uniform sampler2D tDiffuse,tDepth;uniform vec2 pixel;uniform float focus,nearClip,farClip;varying vec2 vUv;
-        float distanceAt(vec2 p){float d=texture2D(tDepth,clamp(p,vec2(.001),vec2(.999))).x;return nearClip*farClip/(farClip-d*(farClip-nearClip));}
-        void main(){float center=distanceAt(vUv);float radius=clamp((abs(center-focus)-2.5)*.68,0.,6.0);vec4 color=texture2D(tDiffuse,vUv);float total=1.;
-          vec2 offsets[8];offsets[0]=vec2(1.,0.);offsets[1]=vec2(-1.,0.);offsets[2]=vec2(0.,1.);offsets[3]=vec2(0.,-1.);offsets[4]=vec2(.707,.707);offsets[5]=vec2(-.707,.707);offsets[6]=vec2(.707,-.707);offsets[7]=vec2(-.707,-.707);
-          for(int i=0;i<8;i++){vec2 uv=clamp(vUv+offsets[i]*pixel*radius,vec2(.001),vec2(.999));float sampleDistance=distanceAt(uv);float weight=mix(.55,1.,exp(-abs(center-sampleDistance)*.18));color+=texture2D(tDiffuse,uv)*weight;total+=weight;}
-          gl_FragColor=vec4(color.rgb/total,1.);}`
-    });
-    focusPass.material.depthTest=false;focusPass.material.depthWrite=false;
-    const renderFocus=focusPass.render.bind(focusPass);
-    focusPass.render=(renderer,writeBuffer,readBuffer,deltaTime,maskActive)=>{focusPass.uniforms.tDepth.value=readBuffer.depthTexture;renderFocus(renderer,writeBuffer,readBuffer,deltaTime,maskActive);};
-    composer.addPass(focusPass);
-    bloom = new UnrealBloomPass(new THREE.Vector2(1,1), .30, .5, 1.18);
-    composer.addPass(bloom);
-    const output = new OutputPass();
-    output.material.depthTest = false; output.material.depthWrite = false;
-    composer.addPass(output);
+  controls.enabled = false;
+  controls.enablePan = false;
+  controls.minDistance = 1.15;
+  controls.maxDistance = 15;
+  controls.maxPolarAngle = Math.PI * 0.485;
+  const rng = seeded(381799),
+    time = { value: 0 },
+    daylight = { value: 1 },
+    densities = [];
+  function detail(mesh, fractions) {
+    densities.push({ mesh, max: mesh.count, fractions });
   }
-  // RGBA8 refraction is broadly supported and avoids a mobile float attachment.
-  const refraction = new THREE.WebGLRenderTarget(1, 1, { type:THREE.UnsignedByteType, depthBuffer:true });
-
-  const light = new THREE.HemisphereLight('#d8e6da','#887d71',1.5); scene.add(light);
-  const sun = new THREE.DirectionalLight('#fff0c9',3.1);
-  // Low upstream light makes ripples catch the same source that casts shadows.
-  sun.position.set(-3, 5, -22); sun.castShadow = true;
-  sun.shadow.mapSize.set(mobile ? 512 : 1024, mobile ? 512 : 1024);
-  Object.assign(sun.shadow.camera, {left:-13,right:13,top:13,bottom:-13,near:.1,far:50});
-  sun.shadow.bias = -.0004; sun.shadow.normalBias = .03;
-  sun.target.position.set(0,0,-5); scene.add(sun, sun.target);
-  const mat = (color, extra={}) => new THREE.MeshStandardMaterial({color, roughness:.86, ...extra});
-  const sand = mat('#c9ab7d'), clay = mat('#914c2c'), mauve = mat('#817985');
-  const teal = mat('#1a5552'), pale = mat('#d8e6da'), wood = mat('#554139');
-  const lamp = mat('#ffdda2', {emissive:'#ffc076',emissiveIntensity:.22});
-  function add(geometry, material, x,y,z, parent=scene) {
-    const m = new THREE.Mesh(geometry, material); m.position.set(x,y,z);
-    m.castShadow = true; m.receiveShadow = true; parent.add(m); return m;
-  }
-  function box(w,h,d, material,x,y,z,parent) { return add(new THREE.BoxGeometry(w,h,d),material,x,y,z,parent); }
-  function sphere(material,x,y,z,sx,sy,sz,parent) {
-    const mesh=add(new THREE.SphereGeometry(1,16,12),material,x,y,z,parent); mesh.scale.set(sx,sy,sz); return mesh;
-  }
-  function cylinder(r1,r2,h,material,x,y,z,parent,segments=12) {return add(new THREE.CylinderGeometry(r1,r2,h,segments),material,x,y,z,parent);}
-  const rng = random(49107);
-  // Two quiet painted ridges close the horizon and layer the background behind
-  // the shelter. Their shallow valley keeps the view following the water.
-  function ridge(z, color, phase, height) {
-    const silhouette=new THREE.Shape();silhouette.moveTo(-30,-4);
-    for(let x=-30;x<=30;x+=1.5){const valley=smooth(2,12,Math.abs(x));const y=1.35+valley*height+.32*Math.sin(x*.27+phase)+.16*Math.sin(x*.67-phase);silhouette.lineTo(x,y);}
-    silhouette.lineTo(30,-4);silhouette.closePath();
-    const mesh=add(new THREE.ShapeGeometry(silhouette),new THREE.MeshBasicMaterial({color,fog:false,side:THREE.DoubleSide}),0,0,z);mesh.castShadow=false;mesh.receiveShadow=false;return mesh;
-  }
-  const farRidge=ridge(-31,'#a1c2b3',.7,3.4),nearRidge=ridge(-26,'#789e8c',2.1,2.5);
-
-  // A continuous sculpted bed rises naturally into two banks. Color varies by
-  // height, so the wet creek edge reads as soil rather than a hard seam.
-  const nx=80,nz=128, positions=[], terrainColors=[], indices=[];
-  const soil=new THREE.Color('#a58b69'), bank=new THREE.Color('#8c9b79'), bed=new THREE.Color('#31574d');
-  for(let iz=0;iz<=nz;iz++) for(let ix=0;ix<=nx;ix++) {
-    const x=mix(-12,12,ix/nx),z=mix(-23,13,iz/nz), y=ground(x,z), d=Math.abs(x-bend(z));
-    positions.push(x,y,z);
-    const col=bed.clone().lerp(soil,smooth(1.7,3.1,d)).lerp(bank,smooth(2.9,5.8,d)*.76);
-    const wetEdge=1-smooth(.05,.7,Math.abs(d-2.65));
-    col.multiplyScalar((.92 + .08*Math.sin(x*2.7+z*1.6))*(1-.15*wetEdge)); terrainColors.push(col.r,col.g,col.b);
-    if(ix<nx && iz<nz) {const a=iz*(nx+1)+ix,b=a+nx+1;indices.push(a,b,a+1,b,b+1,a+1);}
-  }
-  const terrain = new THREE.BufferGeometry(); terrain.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));terrain.setAttribute('color',new THREE.Float32BufferAttribute(terrainColors,3));terrain.setIndex(indices);terrain.computeVertexNormals();
-  add(terrain,new THREE.MeshStandardMaterial({vertexColors:true,roughness:1}),0,0,0);
-
-  // A bed of individually colored rounded pebbles is visible through the water.
-  const pebbleGeometry = new THREE.SphereGeometry(1,12,8);
-  // Subtle irregularity makes the bed look water-worn rather than stamped discs.
-  const pebbleVertices=pebbleGeometry.attributes.position;
-  for(let i=0;i<pebbleVertices.count;i++){const x=pebbleVertices.getX(i),y=pebbleVertices.getY(i),z=pebbleVertices.getZ(i);const n=1+.055*Math.sin(x*9+z*6)*Math.cos(y*8-z*5);pebbleVertices.setXYZ(i,x*n,y*n,z*n);}pebbleGeometry.computeVertexNormals();
-  const pebbles = new THREE.InstancedMesh(pebbleGeometry,mat('#ffffff',{roughness:.95}),mobile?230:400);
-  const dummy = new THREE.Object3D(); const pebbleColors=['#665e63','#9b856d','#c0ad91','#41635b','#915e48','#a5b9a6'];
-  for(let i=0;i<pebbles.count;i++) {
-    const z=mix(-22,12,rng()),x=bend(z)+mix(-2.45,2.45,rng()),r=mix(.055,.22,rng());
-    dummy.position.set(x,ground(x,z)+r*.33,z);dummy.rotation.set(rng()*.5,rng()*PI,0);dummy.scale.set(r*(1+rng()),r*(.55+rng()*.20),r*(1+rng()));dummy.updateMatrix();
-    pebbles.setMatrixAt(i,dummy.matrix);pebbles.setColorAt(i,new THREE.Color(pebbleColors[Math.floor(rng()*pebbleColors.length)]));
-  }
-  pebbles.receiveShadow=true;scene.add(pebbles);
-
-  // Contact shadows are individual, quiet translucent discs under the largest rocks.
-  const shadowMaterial=new THREE.ShaderMaterial({transparent:true,depthWrite:false,vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`varying vec2 vUv;void main(){float d=length(vUv-.5)*2.;gl_FragColor=vec4(.055,.105,.085,pow(max(0.,1.-d),1.6)*.48);}`});
-  const stoneColors=['#817985','#909a91','#a7998f','#72817c'];
-  const rockGeometry=new THREE.SphereGeometry(1,24,16),rockVertices=rockGeometry.attributes.position;
-  for(let i=0;i<rockVertices.count;i++){const x=rockVertices.getX(i),y=rockVertices.getY(i),z=rockVertices.getZ(i);const n=1+.08*Math.sin(x*5.7+z*3.5)*Math.cos(y*5.2-z*4.1);rockVertices.setXYZ(i,x*n,y*n,z*n);}rockGeometry.computeVertexNormals();
-  for(let i=0;i<30;i++) {
-    const z=mix(-20,10,rng()), side=rng()<.5?-1:1, x=bend(z)+side*mix(2.05,5.5,rng());
-    const r=mix(.27,.82,rng()),y=ground(x,z);
-    const sh=add(new THREE.CircleGeometry(1,20),shadowMaterial,x,y+.025,z);sh.rotation.x=-PI/2;sh.scale.set(r*1.5,r,1);sh.castShadow=false;sh.receiveShadow=false;
-    const stone=add(rockGeometry,mat(stoneColors[i%stoneColors.length]),x,y+r*.41,z);stone.scale.set(r*1.3,r*.64,r*.9);stone.rotation.set(rng()*.12,rng()*PI,rng()*.14);
-  }
-  // Tufts are batched: soft mint blades and deeper evergreen blades.
-  // Three tapered, gently bent blades form each tuft, with no cone silhouette.
-  const blades=[];
-  for(let k=0;k<3;k++){const a=k*PI/3,c=Math.cos(a),sn=Math.sin(a);blades.push(-c*.35,0,-sn*.35,c*.35,0,sn*.35,c*.55,.45,sn*.55,-c*.35,0,-sn*.35,c*.55,.45,sn*.55,-c*.55,.45,-sn*.55,-c*.55,.45,-sn*.55,c*.55,.45,sn*.55,c*.18,1,sn*.18);}
-  const tuftGeometry=new THREE.BufferGeometry();tuftGeometry.setAttribute('position',new THREE.Float32BufferAttribute(blades,3));tuftGeometry.computeVertexNormals();
-  const tufts = new THREE.InstancedMesh(tuftGeometry,mat('#ffffff',{side:THREE.DoubleSide}),mobile?650:1100);
-  for(let i=0;i<tufts.count;i++) {
-    const z=mix(-23,12,rng()),side=rng()<.5?-1:1,x=bend(z)+side*mix(2.45,10.5,rng());
-    const h=mix(.10,.44,rng());dummy.position.set(x,ground(x,z)+h*.43,z);dummy.rotation.set((rng()-.5)*.25,rng()*PI,(rng()-.5)*.3);dummy.scale.set(.10+rng()*.09,h,.10+rng()*.09);dummy.updateMatrix();
-    tufts.setMatrixAt(i,dummy.matrix);tufts.setColorAt(i,new THREE.Color(['#769e82','#658b73','#527f68','#a2baa0'][i%4]));
-  }
-  tufts.receiveShadow=true;scene.add(tufts);
-  // Rounded low shrubs, clustered instead of a repeated wallpaper pattern.
-  for(let i=0;i<28;i++) {
-    const z=mix(-21,10,rng()),side=rng()<.5?-1:1,x=bend(z)+side*mix(3.7,10,rng()),r=mix(.23,.7,rng()),y=ground(x,z);
-    const leaf=mat(['#7d9e83','#98b89c','#6d907d','#b6d0b3'][i%4]);
-    for(let n=0;n<3;n++)sphere(leaf,x+(rng()-.5)*r,y+r*.45,z+(rng()-.5)*r,r*.63,r*.56,r*.60);
-  }
-
-  // Layered riverbank trees frame the view and give the creek a near, middle,
-  // and far distance.  Batched rounded foliage keeps this affordable on phones.
-  const treeSites=[[-7.5,7,4.1], [7.8,5,4.5], [-7.6,-13,4.0], [7.3,-11,4.5], [-8.5,-20,4.7], [8.5,-20,4.0]];
-  const leavesPerTree=mobile?42:72;
-  const canopy=new THREE.InstancedMesh(new THREE.SphereGeometry(1,10,8),mat('#ffffff',{roughness:1}),treeSites.length*leavesPerTree);
-  const leafPalette=['#426f5c','#527e65','#668b70','#799b7f','#9bb69a'];
-  function branch(x1,y1,z1,x2,y2,z2,r){
-    const length=Math.hypot(x2-x1,y2-y1,z2-z1),mid=new THREE.Vector3((x1+x2)/2,(y1+y2)/2,(z1+z2)/2);
-    const b=add(new THREE.CylinderGeometry(r*.55,r,length,8),wood,mid.x,mid.y,mid.z);
-    b.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(x2-x1,y2-y1,z2-z1).normalize());return b;
-  }
-  treeSites.forEach(([x,z,height],treeIndex)=>{
-    const y=ground(x,z),crown=y+height;
-    cylinder(.13,.27,height,wood,x,y+height/2,z,undefined,10);
-    for(let j=0;j<5;j++){const a=j*PI*2/5+treeIndex*.7;branch(x,y+height*.58,z,x+Math.cos(a)*1.25,crown+.25,z+Math.sin(a)*.9,.09);}
-    for(let j=0;j<leavesPerTree;j++){
-      const a=rng()*PI*2,r=Math.sqrt(rng())*1.9;
-      dummy.position.set(x+Math.cos(a)*r,crown+(rng()-.5)*1.6,z+Math.sin(a)*r*.75);
-      dummy.rotation.set(rng()*.4,rng()*PI,0);
-      const size=mix(.22,.48,rng());dummy.scale.set(size*1.35,size*.62,size*.85);
-      dummy.updateMatrix();const index=treeIndex*leavesPerTree+j;canopy.setMatrixAt(index,dummy.matrix);canopy.setColorAt(index,new THREE.Color(leafPalette[Math.floor(rng()*leafPalette.length)]));
-    }
+  const contact = contacts();
+  const { soil, rock, wood, mineral } = materials(time, daylight, contact);
+  const updateLOD = landscape(scene, rng, soil, rock, detail, contact);
+  grove(scene, rng, time, wood, detail, contact);
+  contact.stamp(3.8, -14, 2.35, 1.54, 0.82);
+  const lantern = cellar(scene, wood, rng);
+  const hdr =
+    renderer.extensions.has('EXT_color_buffer_float') ||
+    renderer.extensions.has('EXT_color_buffer_half_float');
+  const type = hdr ? T.HalfFloatType : T.UnsignedByteType;
+  const sky = atmosphere(scene, renderer, daylight, hdr);
+  const hemi = new T.HemisphereLight('#f2e8c8', '#777353', 1.15);
+  const sun = new T.DirectionalLight();
+  sun.castShadow = true;
+  Object.assign(sun.shadow.camera, { left: -15, right: 15, top: 18, bottom: -18, near: 0.5, far: 70 });
+  sun.shadow.normalBias = 0.022;
+  sun.shadow.bias = -0.00017;
+  scene.add(hemi, sun, sun.target);
+  // Leaves drifting on the water share the forest's illumination.
+  const leafLight = new T.HemisphereLight();
+  overlay.add(leafLight);
+  const opaque = new T.WebGLRenderTarget(1, 1, {
+    type,
+    depthTexture: new T.DepthTexture(1, 1, T.UnsignedIntType),
   });
-  canopy.castShadow=true;canopy.receiveShadow=true;scene.add(canopy);
-  // Near-bank leaves and seed heads frame the water and strengthen the macro scale.
-  const broadleaf=mat('#75967c',{side:THREE.DoubleSide});
-  for(const [x,z] of [[-4.3,7],[-3.35,3.9],[4.35,6.2],[3.8,1.8],[-3.65,-1.6],[3.7,-5.2]]){
-    const y=ground(x,z);
-    for(let j=0;j<5;j++){
-      const angle=(j-2)*.38;
-      const blade=sphere(broadleaf,x+Math.sin(angle)*.18,y+.20,z+Math.cos(angle)*.12,.08,.35,.14);
-      blade.rotation.z=-angle*.9;blade.rotation.x=.17;
-    }
-    for(let j=0;j<3;j++){
-      const dx=(j-1)*.12;branch(x+dx,y,z,x+dx*2,y+.72,z,.018);
-      sphere(mauve,x+dx*2,y+.74,z,.035,.12,.035);
-    }
-  }
-
-  // Close leaves and reeds frame the stream. The desktop lens pass softens
-  // their near tips while retaining the shelter and middle water in focus.
-  const foreground=new THREE.InstancedMesh(new THREE.SphereGeometry(1,12,8),mat('#ffffff',{side:THREE.DoubleSide}),24);
-  for(let i=0;i<24;i++){
-    const side=i<12?-1:1,j=i%12,z=7.0+(j%3)*.38,x=bend(z)+side*(2.8+Math.floor(j/3)*.20),y=ground(x,z),h=.45+(j%4)*.13;
-    dummy.position.set(x,y+h*.42,z);dummy.rotation.set(.15,0,side*(.28+(j%4)*.15));dummy.scale.set(.065,h*.55,.13);dummy.updateMatrix();foreground.setMatrixAt(i,dummy.matrix);
-    foreground.setColorAt(i,new THREE.Color(['#305d4d','#476f57','#71947a','#8da98a'][j%4]));
-  }
-  foreground.receiveShadow=true;scene.add(foreground);
-
-  // Sip's open tasting shelter sits on the left bank; a vine pergola and a
-  // water-first table make the miniature its own place, not a borrowed house.
-  const shelter=new THREE.Group();shelter.position.set(-5.2,ground(-5.2,-7.1),-7.1);scene.add(shelter);
-  box(4.35,.25,3.35,sand,0,.12,0,shelter);
-  for(const x of [-1.8,1.8]) for(const z of [-1.25,1.25]) box(.14,2.45,.14,wood,x,1.45,z,shelter);
-  box(4.35,.18,3.4,clay,0,2.67,0,shelter).rotation.z=-.07;
-  box(4.5,.07,3.55,sand,0,2.78,0,shelter).rotation.z=-.07;
-  for(let z=-1.3;z<=1.31;z+=.52)box(4.1,.07,.055,wood,0,2.55,z,shelter);
-  // The rear wall and luminous windows give the open shelter a warm focal point.
-  box(3.45,1.55,.13,sand,0,1.42,-1.26,shelter);
-  box(.78,1.37,.05,teal,0,1.10,-1.17,shelter);
-  for(const x of [-1.15,1.15]) {
-    box(.66,.68,.08,wood,x,1.64,-1.16,shelter);
-    box(.51,.54,.09,lamp,x,1.64,-1.10,shelter);
-    box(.035,.56,.10,wood,x,1.64,-1.04,shelter);
-  }
-  box(3.6,.12,.12,wood,0,.92,-1.25,shelter);
-  for(let x=-1.65;x<=1.7;x+=.37)box(.05,.8,.05,wood,x,.53,-1.25,shelter);
-  // Round table, carafe and two small cups; the glass is water-colored.
-  cylinder(.74,.74,.10,sand,0,.88,.15,shelter,28);cylinder(.075,.16,.75,wood,0,.46,.15,shelter);
-  const glass=mat('#b8ded7',{roughness:.22,metalness:.08});
-  cylinder(.11,.16,.35,glass,-.15,1.11,.13,shelter,18);
-  cylinder(.06,.09,.16,glass,.22,1.02,.3,shelter,12);
-  cylinder(.06,.09,.16,glass,-.43,1.02,.38,shelter,12);
-  for(const x of [-1.7,1.7]) {
-    const bulb=sphere(lamp,x,2.27,.88,.12,.12,.12,shelter);bulb.castShadow=false;
-  }
-  const warm=new THREE.PointLight('#ffbf7e',2,12,2);warm.position.set(-5.2,shelter.position.y+2.3,-6.2);scene.add(warm);
-  // Trellis rails and grape clusters to signal a working vineyard.
-  const tx=-7.6,tz=-12,ty=ground(tx,tz);
-  for(let i=0;i<5;i++)box(.11,1.8,.11,wood,tx+i*.95,ty+.9,tz);
-  for(const y of [.7,1.3])box(4,.055,.055,wood,tx+1.9,ty+y,tz);
-  for(let i=0;i<13;i++) {
-    const x=tx+i*.3;sphere(teal,x,ty+1.35,tz,.25,.20,.19);
-    if(i%2===0) sphere(mat('#756278'),x,ty+1.02,tz+.1,.085,.15,.08);
-  }
-  // Weathered stepping stones lead from the bank toward the table.
-  for(let i=0;i<6;i++) {const z=-3.4-i*.54,x=-2.8-i*.36,y=ground(x,z);const stone=sphere(mauve,x,y+.055,z,.32,.09,.25);stone.rotation.y=i*.7;}
-
-  const skyUniforms={top:{value:new THREE.Color(moods.afternoon.top)},horizon:{value:new THREE.Color(moods.afternoon.horizon)}};
-  const skyMaterial=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,depthTest:false,uniforms:skyUniforms,vertexShader:`varying vec3 vP;void main(){vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`uniform vec3 top,horizon;varying vec3 vP;void main(){float t=smoothstep(-.15,.65,normalize(vP).y);gl_FragColor=vec4(mix(horizon,top,t),1.);\n${composer?'':'#include <tonemapping_fragment>\n#include <colorspace_fragment>'}}`});
-  // Keep the whole sky inside the 100-unit far plane even at maximum orbit zoom.
-  const sky=new THREE.Mesh(new THREE.SphereGeometry(60,32,20),skyMaterial);sky.renderOrder=-100;scene.add(sky);
-
-  // Refraction samples a separate scene-color target; the visible water remains
-  // a single continuous stream with small normal waves and sparse sun glints.
-  const waterUniforms = {
-    time:{value:0}, viewport:{value:new THREE.Vector2(1,1)}, refract:{value:refraction.texture},
-    tint:{value:new THREE.Color(moods.afternoon.water)}, reflection:{value:new THREE.Color(moods.afternoon.skyWater)},
-    glint:{value:moods.afternoon.sparkle}, sunDir:{value:new THREE.Vector3(-3,5,-17).normalize()},
-  };
-  const wpos=[], windices=[], wu=56,wv=160;
-  for(let j=0;j<=wv;j++)for(let i=0;i<=wu;i++) {
-    const z=mix(-23,13,j/wv),x=bend(z)+mix(-2.85,2.85,i/wu);wpos.push(x,0,z);
-    if(i<wu && j<wv){const a=j*(wu+1)+i,b=a+wu+1;windices.push(a,a+1,b,b,a+1,b+1);}
-  }
-  const waterGeometry=new THREE.BufferGeometry();waterGeometry.setAttribute('position',new THREE.Float32BufferAttribute(wpos,3));waterGeometry.setIndex(windices);waterGeometry.computeVertexNormals();
-  const directChunks = composer ? '' : '\n#include <tonemapping_fragment>\n#include <colorspace_fragment>\n';
-  const waterMaterial = new THREE.ShaderMaterial({uniforms:waterUniforms,side:THREE.DoubleSide,vertexShader:`
-    uniform float time; varying vec3 worldP; varying vec3 normalW;
-    float wave(vec2 p){return sin(p.x*2.8+p.y*.8-time*1.7)*.028 + sin(p.y*2.3-p.x*.7-time*1.15)*.018 + sin(p.x*5.3+p.y*3.8-time*2.1)*.008;}
-    void main(){vec3 p=position;p.y+=wave(p.xz);float e=.025;vec2 q=p.xz;vec3 n=normalize(vec3(wave(q-vec2(e,0.))-wave(q+vec2(e,0.)),2.*e,wave(q-vec2(0.,e))-wave(q+vec2(0.,e))));vec4 w=modelMatrix*vec4(p,1.);worldP=w.xyz;normalW=normalize(mat3(modelMatrix)*n);gl_Position=projectionMatrix*viewMatrix*w;}`,
-    fragmentShader:`uniform float time,glint;uniform sampler2D refract;uniform vec2 viewport;uniform vec3 tint,reflection,sunDir;varying vec3 worldP,normalW;
-    void main(){vec3 n=normalize(normalW),view=normalize(cameraPosition-worldP);float fresnel=pow(clamp(1.-max(dot(n,view),0.),0.,1.),3.);
-      // Analytic micro-ripples are evaluated per fragment for fine, moving
-      // refraction and specular highlights between the water mesh vertices.
-      float a=worldP.x*8.0+worldP.z*3.5-time*1.9,b=worldP.z*10.0-worldP.x*3.2-time*1.35;
-      vec2 fine=vec2(cos(a)*.020-cos(b)*.010,cos(a)*.009+cos(b)*.031);
-      n=normalize(n+vec3(-fine.x,0.,-fine.y));
-      vec2 uv=gl_FragCoord.xy/viewport+n.xz*.020;vec3 bottom=texture2D(refract,clamp(uv,vec2(.001),vec2(.999))).rgb;
-      float edge=abs(worldP.x-(.68*sin(worldP.z*.23)+.25*sin(worldP.z*.52)));
-      float shallow=smoothstep(1.55,2.75,edge);
-      vec3 water=mix(bottom*vec3(.82,1.04,.96),tint,mix(.24,.12,shallow));water=mix(water,reflection,.08+fresnel*.38);
-      vec3 halfVec=normalize(view+sunDir);float sun=pow(max(dot(n,halfVec),0.),320.)*glint*.62;
-      float sparkle=pow(max(0.,sin(worldP.x*15.+sin(worldP.z*5.+time*1.1)) * sin(worldP.z*15.-time*2.)),40.) * glint * .32;
-      vec2 causticP=worldP.xz+n.xz*.35+vec2(time*.07,-time*.13);
-      float caustic=pow(.5+.5*sin(causticP.x*5.+sin(causticP.y*3.)),8.)*pow(.5+.5*cos(causticP.y*5.-time*.55),6.);
-      water+=vec3(.22,.38,.28)*caustic*(1.-fresnel)*.16;
-      water+=vec3(1.,.88,.58)*(sun+sparkle);gl_FragColor=vec4(water,1.);${directChunks}}`});
-  const water=new THREE.Mesh(waterGeometry,waterMaterial);water.position.y=.015;water.receiveShadow=true;scene.add(water);
-
-  // Original lobed grape leaves drift downstream in the clear water.
-  const leafShape=new THREE.Shape();leafShape.moveTo(0,-.34);leafShape.bezierCurveTo(-.13,-.24,-.26,-.28,-.30,-.07);leafShape.lineTo(-.16,-.08);leafShape.bezierCurveTo(-.35,.02,-.29,.16,-.18,.20);leafShape.lineTo(-.10,.10);leafShape.bezierCurveTo(-.14,.30,-.05,.36,0,.29);leafShape.bezierCurveTo(.05,.36,.14,.30,.10,.10);leafShape.lineTo(.18,.20);leafShape.bezierCurveTo(.29,.16,.35,.02,.16,-.08);leafShape.lineTo(.30,-.07);leafShape.bezierCurveTo(.26,-.28,.13,-.24,0,-.34);leafShape.closePath();
-  const leafGeo=new THREE.ShapeGeometry(leafShape,12), leafMats=[mat('#edd4a8',{side:THREE.DoubleSide}),mat('#c9a46e',{side:THREE.DoubleSide}),mat('#b7ba86',{side:THREE.DoubleSide})];
-  const floating=[];
-  for(let i=0;i<12;i++) {
-    const leaf=add(leafGeo,leafMats[i%3],0,.06,0);leaf.rotation.x=-PI/2;const size=mix(.45,.9,rng());leaf.scale.setScalar(size);leaf.castShadow=false;
-    floating.push({leaf,phase:rng(),offset:mix(-1.5,1.5,rng()),speed:mix(.13,.25,rng()),rot:rng()*PI*2});
-  }
-  // A few skimming glints around the near water give depth without foam.
-  const glintGeo=new THREE.BufferGeometry(),glintPositions=new Float32Array(40*3);
-  for(let i=0;i<40;i++){const z=mix(-17,11,rng());glintPositions[i*3]=bend(z)+mix(-2.2,2.2,rng());glintPositions[i*3+1]=.08;glintPositions[i*3+2]=z;}
-  glintGeo.setAttribute('position',new THREE.BufferAttribute(glintPositions,3));
-  const glintMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{time:waterUniforms.time,strength:waterUniforms.glint},vertexShader:`uniform float time;varying float vA;void main(){vA=.5+.5*sin(time*2.2+position.x*4.+position.z*3.);vec4 p=modelViewMatrix*vec4(position,1.);gl_PointSize=clamp(25./-p.z,1.,4.5);gl_Position=projectionMatrix*p;}`,fragmentShader:`uniform float strength;varying float vA;void main(){float d=length(gl_PointCoord-.5);float a=(1.-smoothstep(.08,.5,d))*pow(vA,6.)*.7;gl_FragColor=vec4(vec3(1.,.89,.68)*strength,a);}`});
-  const glints=new THREE.Points(glintGeo,glintMat);scene.add(glints);
-
-  const colors={top:new THREE.Color(moods.afternoon.top),horizon:new THREE.Color(moods.afternoon.horizon),fog:new THREE.Color(moods.afternoon.fog),water:new THREE.Color(moods.afternoon.water),skyWater:new THREE.Color(moods.afternoon.skyWater),sun:new THREE.Color(moods.afternoon.sun),hemi:new THREE.Color(moods.afternoon.hemi),ground:new THREE.Color(moods.afternoon.ground)};
-  const targetColors=Object.fromEntries(Object.entries(colors).map(([key,value])=>[key,value.clone()]));
-  let mood=moods.afternoon, elapsed=0, visible=false, lost=false, paused=reduced.matches, last=0, fittedWidth=0, fittedHeight=0, hasFrame=false;
-  let hemiPower=mood.hemiPower,sunPower=mood.sunPower,lampPower=mood.lamp,sparkle=mood.sparkle;
-  let interacting=false;const driftAxis=new THREE.Vector3(0,1,0),driftOffset=new THREE.Vector3();
-  controls.addEventListener('start',()=>{interacting=true;});controls.addEventListener('end',()=>{interacting=false;});
-  const pauseButton=root.querySelector('.creek-pause');
-  function selectLight(name) {
-    if(!moods[name]) return;
-    mood=moods[name];Object.keys(targetColors).forEach(key=>targetColors[key].set(mood[key]));
-    root.querySelectorAll('.creek-light button[data-light]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.light===name)));
-    if(paused && visible && !lost)paint(0,true);
-  }
-  function showPause() {pauseButton.setAttribute('aria-pressed',String(paused));pauseButton.textContent=paused?'Resume motion':'Pause motion';}
-  function syncLoop(){last=performance.now();renderer.setAnimationLoop(visible&&!lost&&!paused?frame:null);}
-  function paint(dt=0,immediate=false) {
-    if(!paused)elapsed+=dt;
-    const blend=immediate ? 1 : 1-Math.exp(-dt*2.1);
-    Object.keys(colors).forEach(key=>colors[key].lerp(targetColors[key],blend));
-    hemiPower=mix(hemiPower,mood.hemiPower,blend);sunPower=mix(sunPower,mood.sunPower,blend);lampPower=mix(lampPower,mood.lamp,blend);sparkle=mix(sparkle,mood.sparkle,blend);
-    skyUniforms.top.value.copy(colors.top);skyUniforms.horizon.value.copy(colors.horizon);scene.fog.color.copy(colors.fog);
-    farRidge.material.color.copy(colors.fog).multiplyScalar(1.02);nearRidge.material.color.copy(colors.fog).multiplyScalar(.68);
-    waterUniforms.tint.value.copy(colors.water);waterUniforms.reflection.value.copy(colors.skyWater);waterUniforms.glint.value=sparkle;waterUniforms.time.value=elapsed;
-    light.color.copy(colors.hemi);light.groundColor.copy(colors.ground);light.intensity=hemiPower;sun.color.copy(colors.sun);sun.intensity=sunPower;lamp.emissiveIntensity=lampPower;warm.intensity=lampPower*3.2;
-    floating.forEach(({leaf,phase,offset,speed,rot})=>{const z=10-((phase*30+elapsed*speed)%30);leaf.position.set(bend(z)+offset,.075+Math.sin(elapsed*1.5+phase*20)*.015,z);leaf.rotation.z=rot+Math.sin(elapsed*.35+phase*10)*.18;});
-    controls.update();
-    if(focusPass)focusPass.uniforms.focus.value=camera.position.distanceTo(controls.target);
-    const wasAutoClear=renderer.autoClear;
-    try {
-      renderer.autoClear=false;renderer.shadowMap.needsUpdate=true;
-      // Clear only the offscreen refraction target; never expose an intermediate
-      // empty default framebuffer while the scene is being composed.
-      water.visible=false;renderer.setRenderTarget(refraction);renderer.clear(true,true,true);renderer.render(scene,camera);water.visible=true;
-      renderer.setRenderTarget(null);
-      if(composer) composer.render();
-      else {
-        // The opaque sky covers every pixel; clear depth only before the direct
-        // mobile render so stale depth cannot hide the next completed frame.
-        renderer.clearDepth();renderer.render(scene,camera);
+  const creek = stream(overlay, rng, time, sky.uniforms, mineral, opaque, camera);
+  const composer = new EffectComposer(renderer, new T.WebGLRenderTarget(1, 1, { type }));
+  const air = new T.ShaderMaterial({
+    depthTest: true,
+    depthFunc: T.AlwaysDepth,
+    depthWrite: true,
+    vertexShader: quad,
+    uniforms: {
+      ...sky.uniforms,
+      opaqueColor: { value: opaque.texture },
+      opaqueDepth: { value: opaque.depthTexture },
+      mineral,
+      time,
+      inverseProjection: { value: camera.projectionMatrixInverse },
+      cameraWorld: { value: camera.matrixWorld },
+      texel: { value: new T.Vector2() },
+      mist: { value: 1 },
+      occlusion: { value: 1 },
+      nearFar: { value: new T.Vector2(camera.near, camera.far) },
+      haze: { value: new T.Color() },
+    },
+    fragmentShader: `varying vec2 uv0;uniform sampler2D opaqueColor,opaqueDepth,mineral;
+    uniform vec2 texel,nearFar;uniform mat4 inverseProjection,cameraWorld;uniform vec3 haze,solar,lightDir;
+    uniform float daylight,time,occlusion,mist;
+    float eye(float d){return nearFar.x*nearFar.y/(nearFar.y-d*(nearFar.y-nearFar.x));}
+    void main(){
+      float raw=texture2D(opaqueDepth,uv0).r,d=eye(raw);
+      vec3 rgb=texture2D(opaqueColor,uv0).rgb;
+      vec4 q=inverseProjection*vec4(uv0*2.-1.,raw*2.-1.,1.);vec3 local=q.xyz/q.w;
+      vec3 ray=normalize(mat3(cameraWorld)*local),origin=cameraWorld[3].xyz;
+      float shade=0.;
+      if(occlusion>.5 && raw<.9998){
+        vec3 tangentCross=cross(dFdx(local),dFdy(local));
+        vec3 N=tangentCross*inversesqrt(max(dot(tangentCross,tangentCross),1e-20));
+        for(int i=0;i<8;i++){
+          float a=float(i)*2.39996;vec2 offset=vec2(cos(a),sin(a))*clamp(82./d,2.,24.)*(.44+.08*float(i))*texel;
+          vec2 uv=clamp(uv0+offset,0.,1.);float ds=texture2D(opaqueDepth,uv).r;
+          vec4 h=inverseProjection*vec4(uv*2.-1.,ds*2.-1.,1.);vec3 delta=h.xyz/h.w-local;
+          float len=length(delta);shade+=max(dot(N,delta/max(.001,len))-.12,0.)*(1.-smoothstep(.04,.68,len));
+        }
       }
-      // The canvas is revealed only after a complete frame has been submitted.
-      if(!hasFrame){canvas.style.visibility='visible';status.hidden=true;hasFrame=true;}
-    } finally {water.visible=true;renderer.setRenderTarget(null);renderer.autoClear=wasAutoClear;}
-  }
-  function frame(now) {
-    if(!visible || lost || paused)return;
-    if(now-last < (mobile ? 1000/30 : 1000/45))return;
-    const dt=Math.min((now-last)/1000,.05);last=now;
-    // A bounded, very slow sway composes with the visitor's chosen orbit;
-    // it never runs during a drag or while motion is paused.
-    if(!interacting){const angle=(Math.sin((elapsed+dt)*.25)-Math.sin(elapsed*.25))*.025;driftOffset.copy(camera.position).sub(controls.target).applyAxisAngle(driftAxis,angle);const theta=Math.atan2(driftOffset.x,driftOffset.z);if(theta>=controls.minAzimuthAngle&&theta<=controls.maxAzimuthAngle)camera.position.copy(controls.target).add(driftOffset);}
-    paint(dt);
-  }
-  function fit() {
-    const w=stage.clientWidth,h=stage.clientHeight;
-    if(!w||!h||(w===fittedWidth&&h===fittedHeight))return false;
-    fittedWidth=w;fittedHeight=h;renderer.setSize(w,h,false);if(composer)composer.setSize(w,h);
-    renderer.getDrawingBufferSize(waterUniforms.viewport.value);
-    if(focusPass)focusPass.uniforms.pixel.value.set(1/waterUniforms.viewport.value.x,1/waterUniforms.viewport.value.y);
-    refraction.setSize(Math.max(1,Math.round(w*(mobile?.50:.65))),Math.max(1,Math.round(h*(mobile?.50:.65))));
-    camera.aspect=w/h;camera.fov=THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(THREE.MathUtils.degToRad(42)/2)*Math.max(1,1.0/camera.aspect)));camera.updateProjectionMatrix();
-    if(visible&&!lost)paint(0,paused);return true;
-  }
-  new ResizeObserver(fit).observe(stage);
-  root.querySelectorAll('.creek-light button[data-light]').forEach(button=>button.addEventListener('click',()=>selectLight(button.dataset.light)));
-  pauseButton.addEventListener('click',()=>{paused=!paused;showPause();syncLoop();});
-  root.querySelector('.creek-reset').addEventListener('click',()=>{camera.position.copy(home);controls.target.copy(homeTarget);controls.update();if(paused&&visible&&!lost)paint(0,true);});
-  controls.addEventListener('change',()=>{if(paused&&visible&&!lost)requestAnimationFrame(()=>{if(paused&&visible&&!lost)paint(0,true);});});
-  reduced.addEventListener('change',()=>{paused=reduced.matches;showPause();syncLoop();if(paused&&visible&&!lost)paint(0,true);});
-  canvas.addEventListener('keydown',event=>{
-    const offset=camera.position.clone().sub(controls.target),spherical=new THREE.Spherical().setFromVector3(offset);
-    if(event.key==='ArrowLeft')spherical.theta=Math.max(controls.minAzimuthAngle,spherical.theta-.10);
-    else if(event.key==='ArrowRight')spherical.theta=Math.min(controls.maxAzimuthAngle,spherical.theta+.10);
-    else if(event.key==='ArrowUp')spherical.phi=Math.max(controls.minPolarAngle,spherical.phi-.07);
-    else if(event.key==='ArrowDown')spherical.phi=Math.min(controls.maxPolarAngle,spherical.phi+.07);
-    else if(event.key==='+'||event.key==='=')spherical.radius=Math.max(controls.minDistance,spherical.radius-1);
-    else if(event.key==='-')spherical.radius=Math.min(controls.maxDistance,spherical.radius+1);
-    else return;
-    event.preventDefault();camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(spherical));controls.update();
+      rgb*=1.-shade*.10;
+      // Integrate low mist and the illuminated gaps in the canopy along the view ray.
+      float span=min(length(local),38.),fog=0.,shafts=0.;
+      for(int j=0;j<6;j++){
+        vec3 p=origin+ray*(float(j)+.5)*span/6.;
+        float valley=exp(-abs(p.x-sin(p.z*.24))* .32);
+        float low=exp(-max(p.y-.5,0.)*.95)*valley;
+        vec2 cookie=(p.xz-lightDir.xz*p.y/max(.18,lightDir.y))*.084;
+        float gap=smoothstep(.44,.66,texture2D(mineral,cookie+sin(time*.11)*.009).r);
+        fog+=low;shafts+=gap*(.12+low)*exp(-max(p.y-6.,0.)*.75);
+      }
+      fog=1.-exp(-fog*span*.0019*mist);rgb=mix(rgb,haze,fog);
+      rgb+=solar*daylight*shafts*span*.0017*(.35+.65*pow(max(dot(ray,lightDir),0.),3.));
+      gl_FragColor=vec4(rgb,1.);gl_FragDepth=raw;
+    }`,
   });
-  canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();lost=true;hasFrame=false;renderer.setAnimationLoop(null);canvas.style.visibility='hidden';status.hidden=false;status.textContent='Graphics paused. Restoring Sip Creek… Refresh if it does not return.';});
-  canvas.addEventListener('webglcontextrestored',()=>{lost=false;syncLoop();if(visible)paint(0,paused);});
-  showPause();selectLight('afternoon');fit();
-  return {setVisible(value){if(value===visible)return;visible=value;syncLoop();if(value&&!lost&&!fit())paint(0,paused);}};
+  const background = new ShaderPass(air);
+  composer.addPass(background);
+  // Preserve the copied opaque depth in this buffer while drawing water and spray.
+  const waterPass = {
+    enabled: true,
+    needsSwap: false,
+    setSize() {},
+    render(r, write, read) {
+      r.setRenderTarget(read);
+      r.render(overlay, camera);
+    },
+  };
+  composer.addPass(waterPass);
+  const bloom = new UnrealBloomPass(new T.Vector2(1, 1), 0.19, 0.35, 1.18);
+  composer.addPass(bloom);
+  const aa = new SMAAPass(1, 1);
+  aa.clear = true;
+  composer.addPass(aa);
+  if (type === T.UnsignedByteType) {
+    for (const rt of [
+      aa.edgesRT,
+      aa.weightsRT,
+      bloom.renderTargetBright,
+      ...bloom.renderTargetsHorizontal,
+      ...bloom.renderTargetsVertical,
+    ])
+      rt.texture.type = type;
+  }
+  const grade = new ShaderPass({
+    uniforms: { tDiffuse: { value: null } },
+    vertexShader: quad,
+    fragmentShader: `
+    varying vec2 uv0;uniform sampler2D tDiffuse;
+    void main(){vec3 c=texture2D(tDiffuse,uv0).rgb;float l=dot(c,vec3(.2126,.7152,.0722));
+      c*=mix(vec3(.956,.985,1.026),vec3(1.035,1.006,.966),smoothstep(.03,1.35,l));
+      c*=1.-.11*dot(uv0-.5,uv0-.5);gl_FragColor=vec4(c,1.);}`,
+  });
+  grade.material.depthTest = false;
+  grade.material.depthWrite = false;
+  composer.addPass(grade);
+  const output = new OutputPass();
+  output.material.depthTest = false;
+  output.material.depthWrite = false;
+  output.clear = false;
+  composer.addPass(output);
+
+  let tier = 0,
+    light = 'afternoon',
+    visible = false,
+    lost = false,
+    playing = !reduced.matches,
+    free = false,
+    first = true,
+    frame = 0,
+    last = null,
+    elapsed = 0,
+    ambient = 0;
+  let width = 0,
+    height = 0,
+    tick = -1,
+    chapter = -1,
+    moodDirty = true;
+  const look = V(0, 0, 0),
+    offset = V(0, 0, 0),
+    spherical = new T.Spherical();
+  function fit() {
+    const w = stage.clientWidth,
+      h = stage.clientHeight;
+    if (!w || !h || (w === width && h === height)) return;
+    width = w;
+    height = h;
+    const ratio = Math.min(
+      devicePixelRatio || 1,
+      [1, 1.35, 1.65][tier],
+      Math.sqrt([420000, 920000, 1800000][tier] / (w * h)),
+    );
+    renderer.setPixelRatio(ratio);
+    renderer.setSize(w, h, false);
+    composer.setPixelRatio(ratio);
+    composer.setSize(w, h);
+    const px = renderer.getDrawingBufferSize(creek.uniforms.viewport.value);
+    opaque.setSize(px.x, px.y);
+    air.uniforms.texel.value.set(1 / px.x, 1 / px.y);
+    bloom.setSize(px.x * (tier === 0 ? 0.5 : 0.75), px.y * (tier === 0 ? 0.5 : 0.75));
+    camera.aspect = w / h;
+    camera.fov = w / h < 0.9 ? 59 : 47;
+    camera.updateProjectionMatrix();
+  }
+  function selectQuality() {
+    tier = quality.value === 'auto' ? automaticTier(renderer, stage.clientWidth) : Number(quality.value);
+    quality.options[0].textContent = 'Auto · ' + tiers[automaticTier(renderer, stage.clientWidth)];
+    for (const { mesh, max, fractions } of densities) mesh.count = Math.ceil(max * fractions[tier]);
+    renderer.shadowMap.enabled = tier > 0;
+    sun.shadow.mapSize.setScalar(tier === 2 ? 2048 : 1024);
+    sun.shadow.map?.dispose();
+    sun.shadow.map = null;
+    renderer.shadowMap.needsUpdate = true;
+    air.uniforms.occlusion.value = tier > 0 ? 1 : 0;
+    creek.uniforms.reflectSteps.value = [0, 0, 16][tier];
+    width = 0;
+    queue();
+  }
+  function selectLight(name) {
+    light = name;
+    moodDirty = true;
+    for (const b of root.querySelectorAll('[data-light]'))
+      b.setAttribute('aria-pressed', String(b.dataset.light === name));
+    queue();
+  }
+  function applyLight() {
+    sky.apply(light);
+    air.uniforms.mist.value = light === 'morning' ? 3.8 : 1;
+    const m = lightSettings[light];
+    sun.color.set(m.sun);
+    sun.intensity = m.strength;
+    sun.target.position.set(0, 0.7, -4);
+    sun.position.copy(sky.uniforms.lightDir.value).multiplyScalar(32).add(sun.target.position);
+    hemi.color.set(m.air);
+    hemi.groundColor.set(light === 'night' ? '#495465' : '#84785c');
+    hemi.intensity = m.ambient;
+    leafLight.color.copy(hemi.color);
+    leafLight.groundColor.copy(hemi.groundColor);
+    leafLight.intensity = m.ambient * 1.6;
+    air.uniforms.haze.value.copy(scene.fog.color);
+    lantern(light === 'night' || light === 'blue');
+    renderer.shadowMap.needsUpdate = true;
+    moodDirty = false;
+  }
+  function pose() {
+    const u = elapsed / duration,
+      e = 0.42 * u + 0.58 * u * u * (3 - 2 * u);
+    flight.getPoint(e, camera.position);
+    gaze.getPoint(e, look);
+    camera.lookAt(look);
+  }
+  function draw(now) {
+    frame = 0;
+    if (!visible || lost || document.hidden) return;
+    fit();
+    const dt = last === null ? 0 : Math.max(0, (now - last) * 0.001);
+    last = now;
+    if (playing) {
+      ambient += dt;
+      if (!free) {
+        elapsed = Math.min(duration, elapsed + dt);
+        if (elapsed === duration) {
+          playing = false;
+          buttons();
+        }
+      }
+    }
+    if (!free) pose();
+    if (moodDirty) applyLight();
+    updateLOD(camera, tier);
+    time.value = ambient;
+    creek.update(ambient);
+    renderer.setRenderTarget(opaque);
+    renderer.clear();
+    renderer.render(scene, camera);
+    composer.render(0);
+    renderer.setRenderTarget(null);
+    if (first) {
+      canvas.style.visibility = 'visible';
+      status.hidden = true;
+      first = false;
+    }
+    const step = Math.round(elapsed * 10);
+    if (step !== tick) {
+      slider.value = String(step / 10);
+      tick = step;
+    }
+    const which = free ? 4 : elapsed < 5.3 ? 0 : elapsed < 11 ? 1 : elapsed < 16.3 ? 2 : 3;
+    if (chapter !== which) {
+      beat.textContent = free ? 'Free orbit · drag to look' : beats[which];
+      chapter = which;
+    }
+    if (playing) queue();
+  }
+  function queue() {
+    if (!frame && visible && !lost && !document.hidden) frame = requestAnimationFrame(draw);
+  }
+  function suspend() {
+    cancelAnimationFrame(frame);
+    frame = 0;
+    last = null;
+  }
+  function buttons() {
+    play.textContent = playing ? 'Pause' : 'Play';
+    play.setAttribute('aria-pressed', String(!playing));
+    orbit.setAttribute('aria-pressed', String(free));
+    slider.disabled = free;
+    controls.enabled = free;
+  }
+  function guide(t, run) {
+    elapsed = ambient = t;
+    free = false;
+    playing = run;
+    last = null;
+    buttons();
+    queue();
+  }
+  orbit.addEventListener('click', () => {
+    if (free) {
+      guide(elapsed, playing);
+      return;
+    }
+    free = true;
+    controls.target.copy(look);
+    buttons();
+    controls.update();
+    queue();
+  });
+  play.addEventListener('click', () => {
+    if (!free && elapsed === duration) {
+      guide(0, true);
+      return;
+    }
+    playing = !playing;
+    last = null;
+    buttons();
+    queue();
+  });
+  find('.creek-replay').addEventListener('click', () => guide(0, true));
+  find('.creek-reset').addEventListener('click', () => guide(0, playing));
+  slider.addEventListener('input', () => guide(slider.valueAsNumber, false));
+  quality.addEventListener('change', selectQuality);
+  for (const b of root.querySelectorAll('[data-light]'))
+    b.addEventListener('click', () => selectLight(b.dataset.light));
+  controls.addEventListener('change', queue);
+  canvas.addEventListener('keydown', (event) => {
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', '+', '=', '-'].includes(event.key)) return;
+    event.preventDefault();
+    if (!free) orbit.click();
+    spherical.setFromVector3(offset.copy(camera.position).sub(controls.target));
+    if (event.key === 'ArrowLeft') spherical.theta -= 0.09;
+    if (event.key === 'ArrowRight') spherical.theta += 0.09;
+    if (event.key === 'ArrowUp') spherical.phi -= 0.08;
+    if (event.key === 'ArrowDown') spherical.phi += 0.08;
+    if (event.key === '+' || event.key === '=') spherical.radius *= 0.9;
+    if (event.key === '-') spherical.radius *= 1.1;
+    camera.position.copy(controls.target).add(offset.setFromSpherical(spherical));
+    controls.update();
+    queue();
+  });
+  reduced.addEventListener('change', () => {
+    if (reduced.matches) {
+      playing = false;
+      buttons();
+      queue();
+    }
+  });
+  canvas.addEventListener('webglcontextlost', (e) => {
+    e.preventDefault();
+    lost = true;
+    suspend();
+    first = true;
+    canvas.style.visibility = 'hidden';
+    status.hidden = false;
+    status.textContent = 'Restoring Sip Creek…';
+  });
+  canvas.addEventListener('webglcontextrestored', () => {
+    lost = false;
+    moodDirty = true;
+    renderer.shadowMap.needsUpdate = true;
+    queue();
+  });
+  new ResizeObserver(() => {
+    if (quality.value === 'auto' && tier !== automaticTier(renderer, stage.clientWidth)) selectQuality();
+    else queue();
+  }).observe(stage);
+  selectQuality();
+  buttons();
+  return {
+    setVisible(value) {
+      visible = value;
+      if (value) queue();
+      else suspend();
+    },
+  };
 }
