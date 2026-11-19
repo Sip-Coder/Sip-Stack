@@ -276,6 +276,7 @@ export function createDynamics({ root, rig, style, build = 1, waist = 1, clothCo
   const springs = [rig.hair, rig.straps].filter((v) => v?.length > 1).map((ids) => springChain(ids, rig));
   const panels = [],
     anchors = style === 'scarf' ? [neck, neck] : style === 'apron' || style === 'skirt' ? [hem] : [];
+  if (anchors.length) root.userData.hasPeopleGarment = true;
   function preparePanels() {
     for (let i = 0; i < anchors.length; i++)
       panels.push(createPanel(root, style, i === 0 ? -1 : 1, build, waist, clothColor, bind[anchors[i]].y));

@@ -144,6 +144,19 @@ function garmentRig(mesh, kind, cols, rows, wrapped) {
   return { chains, normal, setLOD, update, joint };
 }
 
+let warmGeometry;
+export function warmGarmentMesh() {
+  if (!warmGeometry) {
+    warmGeometry = new T.PlaneGeometry(1, 1);
+    warmGeometry.setAttribute('color', new T.Float32BufferAttribute(new Float32Array(12).fill(1), 3));
+  }
+  const mesh = new T.Mesh(warmGeometry, finish('cloth'));
+  mesh.name = 'Garment shader warm-up';
+  mesh.castShadow = mesh.receiveShadow = true;
+  mesh.visible = false;
+  return mesh;
+}
+
 export function createPanel(root, kind, side, build, waist, color, anchorY) {
   const skirt = kind === 'skirt',
     apron = kind === 'apron',
