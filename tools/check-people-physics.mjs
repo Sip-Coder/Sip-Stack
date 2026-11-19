@@ -232,6 +232,9 @@ async function windowRun(name, spikes) {
   let increasing = true;
   for (let i = 7; i < avg.length; i++) if (avg[i] <= avg[i - 1]) increasing = false;
   const warmed = times.subarray(120, frames).sort();
+  const mean = (ms() - startMs) / (frames - 120);
+  let overBudget = 0;
+  for (const cost of warmed) if (cost > 2.000001) overBudget++;
   const result = {
     frames,
     simulatedSeconds: t,
@@ -246,7 +249,11 @@ async function windowRun(name, spikes) {
     tenSecondMeanEnergies: Array.from(avg, round),
     boundedEnergy: late <= Math.max(0.012, 3 * early) && !(increasing && avg[11] > 1.25 * avg[6] + 0.005),
     nanFrames: nan,
-    meanPhysicsMs: round((ms() - startMs) / (frames - 120)),
+    meanPhysicsMs: round(mean),
+    meanBudgetMet: mean <= 2,
+    sampledFramesOver2ms: overBudget,
+    fractionOver2ms: round(overBudget / warmed.length),
+    everyMeasuredFrameWithinBudget: overBudget === 0,
     p95PhysicsMs: round(warmed[Math.floor(warmed.length * 0.95)]),
     p99PhysicsMs: round(warmed[Math.floor(warmed.length * 0.99)]),
     peakMeasuredMs: round(warmed[warmed.length - 1]),
