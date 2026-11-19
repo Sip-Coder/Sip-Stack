@@ -368,10 +368,16 @@ export function worker(parent, variant, unit, job) {
     F(
       hip,
       '#53473e',
-      torso.slice(1, -1).map(([y, w, d, x, z, ...rest]) => [y, w + 0.006, d + 0.007, x, z, ...rest]),
-      24,
+      torso.slice(1, -1).map(([y, w, d, x, z, ...rest]) => [y, w + 0.014, d + 0.018, x, z, ...rest]),
+      30,
       (p, a, r) => {
-        if (Math.cos(a) > 0.65) p[1] -= 0.08 * (1 - r / 6);
+        // Drop only the front neckline. Match the chest circumference at the
+        // bottom of the V so the linen stays inside the wool as the ribs turn.
+        if (r === 5) {
+          const cut = Math.max(0, Math.cos(a)) ** 8;
+          p[1] -= 0.137 * cut;
+          p[2] += 0.061 * cut;
+        }
         return p;
       },
     );

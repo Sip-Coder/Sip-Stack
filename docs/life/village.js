@@ -56,6 +56,12 @@ export function villageLife(scene, boats, swell) {
   cargo.scale.setScalar(1.45);
   cargo.position.set(0, -0.05, 0.36);
   docker.hip.add(cargo);
+  const handles = [-1, 1].map((side) => {
+    const grip = new T.Object3D();
+    grip.position.set(side * 0.2, 0.24, -0.052);
+    cargo.add(grip);
+    return grip;
+  });
   const rake = new T.Mesh(
     new T.CylinderGeometry(0.017, 0.021, 0.92, 10),
     new T.MeshStandardMaterial({ color: '#785c44' }),
@@ -132,6 +138,7 @@ export function villageLife(scene, boats, swell) {
     docker.g.rotation.y = Math.atan2(sign * (b[0] - a[0]), sign * (b[2] - a[2]));
     cargo.visible = forward;
     docker.pose(t, forward ? 'carry' : 'walk', dockHeight);
+    if (forward) docker.grasp(handles);
     host.g.position.set(-7.34, 1.1, -0.12);
     host.g.rotation.y = 0.88;
     host.pose(t, 'taste');
