@@ -1,0 +1,3247 @@
+{
+  "scene": {
+    "failures": [],
+    "Village": {
+      "workers": {
+        "Harvester": {
+          "groundErrorMm": 16.495,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 2430,
+          "footFrames": 2386,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 98,
+            "i": 1,
+            "heel": 16.5,
+            "toe": 0,
+            "root": [
+              6.643,
+              5,
+              -5.7
+            ],
+            "foot": [
+              6.46,
+              0,
+              -5.82
+            ]
+          },
+          "gripFrame": 1185,
+          "gripSide": 1
+        },
+        "Porter": {
+          "groundErrorMm": 16.498,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 2102,
+          "footFrames": 1988,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 92,
+            "i": 1,
+            "heel": 16.5,
+            "toe": 0,
+            "root": [
+              3.8,
+              1.05,
+              1.115
+            ],
+            "foot": [
+              3.84,
+              0,
+              1.002
+            ]
+          },
+          "gripFrame": 1533,
+          "gripSide": 1
+        },
+        "Taster": {
+          "groundErrorMm": 0,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 1800,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 594,
+            "i": 0,
+            "heel": 0,
+            "toe": 0,
+            "root": [
+              -7.3,
+              1.1,
+              0.03
+            ],
+            "foot": [
+              -7.263,
+              0,
+              -0.015
+            ]
+          },
+          "gripFrame": 968,
+          "gripSide": 1
+        },
+        "Cellar worker": {
+          "groundErrorMm": 0,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 3600,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 28,
+            "i": 1,
+            "heel": 0,
+            "toe": 0,
+            "root": [
+              6.32,
+              3.06,
+              -2.9
+            ],
+            "foot": [
+              6.255,
+              0,
+              -2.902
+            ]
+          },
+          "gripFrame": 1590,
+          "gripSide": 1
+        },
+        "Stair walker": {
+          "groundErrorMm": 0,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0.416,
+          "gripFrames": 1046,
+          "footFrames": 1854,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 862,
+            "i": 1,
+            "heel": 0,
+            "toe": 0,
+            "root": [
+              1.045,
+              4.04,
+              -2.412
+            ],
+            "foot": [
+              1.097,
+              4.05,
+              -2.464
+            ]
+          },
+          "gripFrame": 1365,
+          "gripSide": 0
+        },
+        "Oarsman": {
+          "groundErrorMm": 0.002,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 3600,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 1194,
+            "i": 1,
+            "heel": 0,
+            "toe": 0,
+            "root": [
+              -0.08,
+              -0.181,
+              0
+            ],
+            "foot": [
+              0.142,
+              0,
+              -0.063
+            ]
+          },
+          "gripFrame": 503,
+          "gripSide": 0
+        },
+        "Cantina guest": {
+          "groundErrorMm": 0,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 0,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 14,
+            "i": 0,
+            "heel": 0,
+            "toe": 0,
+            "root": [
+              -7.85,
+              1.1,
+              -0.17
+            ],
+            "foot": [
+              -7.882,
+              0,
+              -0.123
+            ]
+          }
+        },
+        "Tasting group": {
+          "count": 3,
+          "bakedPoses": 24,
+          "testedVertices": 83808,
+          "intersecting": 0,
+          "instances": []
+        }
+      },
+      "frames": 1800,
+      "obstacles": 360,
+      "failures": []
+    },
+    "mobile": {
+      "Village": {
+        "workers": {
+          "Harvester": {
+            "groundErrorMm": 16.495,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 2430,
+            "footFrames": 2386,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 98,
+              "i": 1,
+              "heel": 16.5,
+              "toe": 0,
+              "root": [
+                6.643,
+                5,
+                -5.7
+              ],
+              "foot": [
+                6.46,
+                0,
+                -5.821
+              ]
+            },
+            "gripFrame": 1166,
+            "gripSide": 0
+          },
+          "Porter": {
+            "groundErrorMm": 16.498,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 2102,
+            "footFrames": 1988,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 92,
+              "i": 1,
+              "heel": 16.5,
+              "toe": 0,
+              "root": [
+                3.8,
+                1.05,
+                1.115
+              ],
+              "foot": [
+                3.841,
+                0,
+                1.001
+              ]
+            },
+            "gripFrame": 419,
+            "gripSide": 0
+          },
+          "Taster": {
+            "groundErrorMm": 0,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 1800,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 12,
+              "i": 0,
+              "heel": 0,
+              "toe": 0,
+              "root": [
+                -7.3,
+                1.1,
+                0.03
+              ],
+              "foot": [
+                -7.263,
+                0,
+                -0.015
+              ]
+            },
+            "gripFrame": 409,
+            "gripSide": 1
+          },
+          "Cellar worker": {
+            "groundErrorMm": 0,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 3600,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 28,
+              "i": 0,
+              "heel": 0,
+              "toe": 0,
+              "root": [
+                6.32,
+                3.06,
+                -2.9
+              ],
+              "foot": [
+                6.385,
+                0,
+                -2.898
+              ]
+            },
+            "gripFrame": 1437,
+            "gripSide": 0
+          },
+          "Stair walker": {
+            "groundErrorMm": 0,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0.394,
+            "gripFrames": 1046,
+            "footFrames": 1854,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 959,
+              "i": 0,
+              "heel": 0,
+              "toe": 0,
+              "root": [
+                1.63,
+                4.238,
+                -2.572
+              ],
+              "foot": [
+                1.682,
+                4.25,
+                -2.552
+              ]
+            },
+            "gripFrame": 1365,
+            "gripSide": 0
+          },
+          "Oarsman": {
+            "groundErrorMm": 0.002,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 3600,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 242,
+              "i": 1,
+              "heel": 0,
+              "toe": 0,
+              "root": [
+                -0.08,
+                -0.181,
+                0
+              ],
+              "foot": [
+                0.142,
+                0,
+                -0.063
+              ]
+            },
+            "gripFrame": 221,
+            "gripSide": 1
+          },
+          "Cantina guest": {
+            "groundErrorMm": 0,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 0,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 18,
+              "i": 0,
+              "heel": 0,
+              "toe": 0,
+              "root": [
+                -7.85,
+                1.1,
+                -0.17
+              ],
+              "foot": [
+                -7.882,
+                0,
+                -0.123
+              ]
+            }
+          },
+          "Tasting group": {
+            "count": 3,
+            "bakedPoses": 24,
+            "testedVertices": 83808,
+            "intersecting": 0,
+            "instances": []
+          }
+        },
+        "frames": 1800,
+        "obstacles": 360,
+        "failures": []
+      },
+      "Tidelight": {
+        "workers": {
+          "Pier hand": {
+            "groundErrorMm": 0,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 0,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 1150,
+              "i": 0,
+              "heel": 0,
+              "toe": 0,
+              "root": [
+                1.64,
+                0.731,
+                2.54
+              ],
+              "foot": [
+                1.591,
+                0,
+                2.557
+              ]
+            }
+          },
+          "Terrace taster": {
+            "groundErrorMm": 0,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 1800,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 59,
+              "i": 0,
+              "heel": 0,
+              "toe": 0,
+              "root": [
+                -2.1,
+                2.88,
+                1.15
+              ],
+              "foot": [
+                -2.084,
+                0,
+                1.105
+              ]
+            },
+            "gripFrame": 1341,
+            "gripSide": 1
+          }
+        },
+        "frames": 1800,
+        "obstacles": 77,
+        "failures": []
+      },
+      "Creek": {
+        "workers": {
+          "Cooper": {
+            "groundErrorMm": 0,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 3600,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 517,
+              "i": 1,
+              "heel": 0,
+              "toe": 0,
+              "root": [
+                0.215,
+                0.098,
+                0
+              ],
+              "foot": [
+                0.18,
+                0,
+                0.092
+              ]
+            },
+            "gripFrame": 981,
+            "gripSide": 0
+          }
+        },
+        "frames": 1800,
+        "obstacles": 5,
+        "failures": []
+      }
+    },
+    "Tidelight": {
+      "workers": {
+        "Pier hand": {
+          "groundErrorMm": 0,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 0,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 1150,
+            "i": 0,
+            "heel": 0,
+            "toe": 0,
+            "root": [
+              1.64,
+              0.731,
+              2.54
+            ],
+            "foot": [
+              1.591,
+              0,
+              2.557
+            ]
+          }
+        },
+        "Terrace taster": {
+          "groundErrorMm": 0,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 1800,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 12,
+            "i": 1,
+            "heel": 0,
+            "toe": 0,
+            "root": [
+              -2.1,
+              2.88,
+              1.15
+            ],
+            "foot": [
+              -2.116,
+              0,
+              1.195
+            ]
+          },
+          "gripFrame": 802,
+          "gripSide": 1
+        }
+      },
+      "frames": 1800,
+      "obstacles": 77,
+      "failures": []
+    },
+    "Creek": {
+      "workers": {
+        "Cooper": {
+          "groundErrorMm": 0,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 3600,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 517,
+            "i": 1,
+            "heel": 0,
+            "toe": 0,
+            "root": [
+              0.215,
+              0.098,
+              0
+            ],
+            "foot": [
+              0.18,
+              0,
+              0.092
+            ]
+          },
+          "gripFrame": 981,
+          "gripSide": 0
+        }
+      },
+      "frames": 1800,
+      "obstacles": 5,
+      "failures": []
+    },
+    "navigation": {
+      "failures": [],
+      "routePoints": 3,
+      "minimumRouteClearance": 0.007559736271131767,
+      "maximumTurnRate": 3.4000000000000785,
+      "nearestPersonClearance": 0.000397186428858054,
+      "movingDoorAngle": 1.5707963267948963
+    }
+  },
+  "rig": {
+    "failures": [],
+    "bones": 86,
+    "tiers": [
+      {
+        "tier": 0,
+        "weights": {
+          "vertices": 11972,
+          "triangles": 23296,
+          "invalid": 0,
+          "four": 4308
+        },
+        "poses": {
+          "elbow90": {
+            "leftElbow": {
+              "areaRatio": 1.02521,
+              "flippedTriangles": 0,
+              "triangles": 349
+            },
+            "leftForearm": {
+              "areaRatio": 1.00174,
+              "flippedTriangles": 0,
+              "triangles": 327
+            },
+            "rightElbow": {
+              "areaRatio": 1.02521,
+              "flippedTriangles": 0,
+              "triangles": 347
+            },
+            "rightForearm": {
+              "areaRatio": 1.00174,
+              "flippedTriangles": 0,
+              "triangles": 327
+            }
+          },
+          "wrist+80": {
+            "leftForearm": {
+              "areaRatio": 1.00181,
+              "flippedTriangles": 0,
+              "triangles": 327
+            },
+            "leftElbow": {
+              "areaRatio": 1.00409,
+              "flippedTriangles": 0,
+              "triangles": 349
+            },
+            "rightForearm": {
+              "areaRatio": 0.99623,
+              "flippedTriangles": 0,
+              "triangles": 327
+            },
+            "rightElbow": {
+              "areaRatio": 0.99589,
+              "flippedTriangles": 0,
+              "triangles": 347
+            }
+          },
+          "wrist-80": {
+            "leftForearm": {
+              "areaRatio": 0.99623,
+              "flippedTriangles": 0,
+              "triangles": 327
+            },
+            "leftElbow": {
+              "areaRatio": 0.99589,
+              "flippedTriangles": 0,
+              "triangles": 349
+            },
+            "rightForearm": {
+              "areaRatio": 1.00181,
+              "flippedTriangles": 0,
+              "triangles": 327
+            },
+            "rightElbow": {
+              "areaRatio": 1.00409,
+              "flippedTriangles": 0,
+              "triangles": 347
+            }
+          },
+          "elbow90wrist+80": {
+            "leftElbow": {
+              "areaRatio": 1.02944,
+              "flippedTriangles": 0,
+              "triangles": 349
+            },
+            "leftForearm": {
+              "areaRatio": 1.00696,
+              "flippedTriangles": 0,
+              "triangles": 327
+            },
+            "rightElbow": {
+              "areaRatio": 1.02079,
+              "flippedTriangles": 0,
+              "triangles": 347
+            },
+            "rightForearm": {
+              "areaRatio": 0.99412,
+              "flippedTriangles": 0,
+              "triangles": 327
+            }
+          },
+          "elbow90wrist-80": {
+            "leftElbow": {
+              "areaRatio": 1.02079,
+              "flippedTriangles": 0,
+              "triangles": 349
+            },
+            "leftForearm": {
+              "areaRatio": 0.99412,
+              "flippedTriangles": 0,
+              "triangles": 327
+            },
+            "rightElbow": {
+              "areaRatio": 1.02944,
+              "flippedTriangles": 0,
+              "triangles": 347
+            },
+            "rightForearm": {
+              "areaRatio": 1.00696,
+              "flippedTriangles": 0,
+              "triangles": 327
+            }
+          },
+          "knee120": {
+            "leftKnee": {
+              "areaRatio": 1.02742,
+              "flippedTriangles": 0,
+              "triangles": 336
+            },
+            "rightKnee": {
+              "areaRatio": 1.02742,
+              "flippedTriangles": 0,
+              "triangles": 336
+            }
+          },
+          "shoulder90": {
+            "leftShoulder": {
+              "areaRatio": 0.94217,
+              "flippedTriangles": 0,
+              "triangles": 341
+            },
+            "rightShoulder": {
+              "areaRatio": 0.94217,
+              "flippedTriangles": 0,
+              "triangles": 343
+            }
+          }
+        }
+      },
+      {
+        "tier": 1,
+        "weights": {
+          "vertices": 3803,
+          "triangles": 7266,
+          "invalid": 0,
+          "four": 1025
+        },
+        "poses": {
+          "elbow90": {
+            "leftElbow": {
+              "areaRatio": 1.05709,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "leftForearm": {
+              "areaRatio": 1.00935,
+              "flippedTriangles": 0,
+              "triangles": 84
+            },
+            "rightElbow": {
+              "areaRatio": 1.05709,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "rightForearm": {
+              "areaRatio": 1.00935,
+              "flippedTriangles": 0,
+              "triangles": 82
+            }
+          },
+          "wrist+80": {
+            "leftForearm": {
+              "areaRatio": 0.89029,
+              "flippedTriangles": 0,
+              "triangles": 84
+            },
+            "leftElbow": {
+              "areaRatio": 0.93745,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "rightForearm": {
+              "areaRatio": 0.88534,
+              "flippedTriangles": 0,
+              "triangles": 82
+            },
+            "rightElbow": {
+              "areaRatio": 0.92996,
+              "flippedTriangles": 0,
+              "triangles": 99
+            }
+          },
+          "wrist-80": {
+            "leftForearm": {
+              "areaRatio": 0.88534,
+              "flippedTriangles": 0,
+              "triangles": 84
+            },
+            "leftElbow": {
+              "areaRatio": 0.92996,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "rightForearm": {
+              "areaRatio": 0.89029,
+              "flippedTriangles": 0,
+              "triangles": 82
+            },
+            "rightElbow": {
+              "areaRatio": 0.93745,
+              "flippedTriangles": 0,
+              "triangles": 99
+            }
+          },
+          "elbow90wrist+80": {
+            "leftElbow": {
+              "areaRatio": 0.99133,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "leftForearm": {
+              "areaRatio": 0.90559,
+              "flippedTriangles": 0,
+              "triangles": 84
+            },
+            "rightElbow": {
+              "areaRatio": 0.98232,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "rightForearm": {
+              "areaRatio": 0.88781,
+              "flippedTriangles": 0,
+              "triangles": 82
+            }
+          },
+          "elbow90wrist-80": {
+            "leftElbow": {
+              "areaRatio": 0.98232,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "leftForearm": {
+              "areaRatio": 0.88781,
+              "flippedTriangles": 0,
+              "triangles": 84
+            },
+            "rightElbow": {
+              "areaRatio": 0.99133,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "rightForearm": {
+              "areaRatio": 0.90559,
+              "flippedTriangles": 0,
+              "triangles": 82
+            }
+          },
+          "knee120": {
+            "leftKnee": {
+              "areaRatio": 1.10184,
+              "flippedTriangles": 0,
+              "triangles": 96
+            },
+            "rightKnee": {
+              "areaRatio": 1.10184,
+              "flippedTriangles": 0,
+              "triangles": 96
+            }
+          },
+          "shoulder90": {
+            "leftShoulder": {
+              "areaRatio": 0.86373,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "rightShoulder": {
+              "areaRatio": 0.86373,
+              "flippedTriangles": 0,
+              "triangles": 99
+            }
+          }
+        }
+      }
+    ],
+    "variants": {
+      "Harvester": {
+        "bones": 86,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94217,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11972,
+              "triangles": 23296,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86373,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3803,
+              "triangles": 7266,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Porter": {
+        "bones": 86,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94322,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11676,
+              "triangles": 22708,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86628,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3675,
+              "triangles": 7014,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Taster": {
+        "bones": 89,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94379,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11796,
+              "triangles": 22944,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86488,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3720,
+              "triangles": 7100,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Cellar worker": {
+        "bones": 86,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94267,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11972,
+              "triangles": 23296,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86548,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3803,
+              "triangles": 7266,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Stair walker": {
+        "bones": 89,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94596,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11796,
+              "triangles": 22944,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86663,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3720,
+              "triangles": 7100,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Oarsman": {
+        "bones": 86,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94424,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11972,
+              "triangles": 23296,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86654,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3803,
+              "triangles": 7266,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Cantina guest": {
+        "bones": 89,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.9422,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11796,
+              "triangles": 22944,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86317,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3720,
+              "triangles": 7100,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Cooper": {
+        "bones": 86,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94536,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11676,
+              "triangles": 22708,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86697,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3675,
+              "triangles": 7014,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Pier hand": {
+        "bones": 86,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94577,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11676,
+              "triangles": 22708,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86714,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3675,
+              "triangles": 7014,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Terrace taster": {
+        "bones": 89,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94279,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11796,
+              "triangles": 22944,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86372,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3720,
+              "triangles": 7100,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      }
+    }
+  },
+  "motion": {
+    "failures": [],
+    "desktop": {
+      "Village": {
+        "seconds": 126,
+        "workers": {
+          "Harvester": {
+            "contacts": 201,
+            "maxStanceSlipM": 0.0005,
+            "flatMeanSpeedMps": 1.1294,
+            "flatMaxSpeedMps": 1.2
+          },
+          "Porter": {
+            "contacts": 247,
+            "maxStanceSlipM": 0.0005,
+            "flatMeanSpeedMps": 1.1262,
+            "flatMaxSpeedMps": 1.18
+          },
+          "Taster": {
+            "contacts": 2,
+            "maxStanceSlipM": 0,
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          },
+          "Cellar worker": {
+            "contacts": 2,
+            "maxStanceSlipM": 0,
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          },
+          "Stair walker": {
+            "contacts": 249,
+            "maxStanceSlipM": 0.0002,
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          },
+          "Oarsman": {
+            "contacts": 2,
+            "maxStanceSlipM": 0,
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          },
+          "Cantina guest": {
+            "contacts": 2,
+            "maxStanceSlipM": 0,
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          }
+        },
+        "stairs": {
+          "contacts": 122,
+          "missingOrRepeated": 0,
+          "soleOutside": 0,
+          "minAscentToeMarginM": 0.0215,
+          "nosingCrossings": 245,
+          "minSwingClearanceM": 0.0713,
+          "riserIntersections": 0,
+          "maxPenetrationM": 0,
+          "maxPelvisDropM": 0,
+          "midFlightFrames": 606,
+          "minPitchDeg": 9.9589,
+          "maxPitchDeg": 11.3419,
+          "ascentTime": 20,
+          "ascentHeight": 5.9333,
+          "railFrames": 2133,
+          "missingRailFrames": 0,
+          "maxRailGapM": 0.023,
+          "minHandRailClearanceM": 0.0026,
+          "maxStanceKneeDeg": 81.7268,
+          "descentContacts": 60,
+          "descentNosingCrossings": 120,
+          "minDescentSwingClearanceM": 0.0718,
+          "maxDescentStanceKneeDeg": 80.5381,
+          "maxDescentPelvisRiseM": 0,
+          "midStepSeconds": 33.6,
+          "midStepIntervals": 60,
+          "ascentTreads": 60,
+          "descentTreads": 60,
+          "physicalTreads": 60,
+          "verticalMps": 0.2967,
+          "midFlightStepsPerSecond": 1.7857
+        },
+        "failures": []
+      },
+      "Tidelight": {
+        "seconds": 60,
+        "workers": {
+          "Pier hand": {
+            "contacts": 2,
+            "maxStanceSlipM": 0,
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          },
+          "Terrace taster": {
+            "contacts": 2,
+            "maxStanceSlipM": 0,
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          }
+        },
+        "failures": []
+      },
+      "Creek": {
+        "seconds": 60,
+        "workers": {
+          "Cooper": {
+            "contacts": 2,
+            "maxStanceSlipM": 0,
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          }
+        },
+        "failures": []
+      }
+    },
+    "Village": {
+      "seconds": 126,
+      "workers": {
+        "Harvester": {
+          "contacts": 201,
+          "maxStanceSlipM": 0.0005,
+          "flatMeanSpeedMps": 1.1294,
+          "flatMaxSpeedMps": 1.2
+        },
+        "Porter": {
+          "contacts": 247,
+          "maxStanceSlipM": 0.0005,
+          "flatMeanSpeedMps": 1.1262,
+          "flatMaxSpeedMps": 1.18
+        },
+        "Taster": {
+          "contacts": 2,
+          "maxStanceSlipM": 0,
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        },
+        "Cellar worker": {
+          "contacts": 2,
+          "maxStanceSlipM": 0,
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        },
+        "Stair walker": {
+          "contacts": 249,
+          "maxStanceSlipM": 0.0002,
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        },
+        "Oarsman": {
+          "contacts": 2,
+          "maxStanceSlipM": 0,
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        },
+        "Cantina guest": {
+          "contacts": 2,
+          "maxStanceSlipM": 0,
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        }
+      },
+      "stairs": {
+        "contacts": 122,
+        "missingOrRepeated": 0,
+        "soleOutside": 0,
+        "minAscentToeMarginM": 0.0215,
+        "nosingCrossings": 245,
+        "minSwingClearanceM": 0.0713,
+        "riserIntersections": 0,
+        "maxPenetrationM": 0,
+        "maxPelvisDropM": 0,
+        "midFlightFrames": 606,
+        "minPitchDeg": 9.9589,
+        "maxPitchDeg": 11.3419,
+        "ascentTime": 20,
+        "ascentHeight": 5.9333,
+        "railFrames": 2133,
+        "missingRailFrames": 0,
+        "maxRailGapM": 0.023,
+        "minHandRailClearanceM": 0.0026,
+        "maxStanceKneeDeg": 81.75,
+        "descentContacts": 60,
+        "descentNosingCrossings": 120,
+        "minDescentSwingClearanceM": 0.0718,
+        "maxDescentStanceKneeDeg": 80.5293,
+        "maxDescentPelvisRiseM": 0,
+        "midStepSeconds": 33.6,
+        "midStepIntervals": 60,
+        "ascentTreads": 60,
+        "descentTreads": 60,
+        "physicalTreads": 60,
+        "verticalMps": 0.2967,
+        "midFlightStepsPerSecond": 1.7857
+      },
+      "failures": []
+    },
+    "Tidelight": {
+      "seconds": 60,
+      "workers": {
+        "Pier hand": {
+          "contacts": 2,
+          "maxStanceSlipM": 0,
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        },
+        "Terrace taster": {
+          "contacts": 2,
+          "maxStanceSlipM": 0,
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        }
+      },
+      "failures": []
+    },
+    "Creek": {
+      "seconds": 60,
+      "workers": {
+        "Cooper": {
+          "contacts": 2,
+          "maxStanceSlipM": 0,
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        }
+      },
+      "failures": []
+    }
+  },
+  "physics": {
+    "failures": [
+      "Village steady: 284 measured frames exceeded 2 ms",
+      "Village spikes: 272 measured frames exceeded 2 ms",
+      "Tidelight steady: 11 measured frames exceeded 2 ms",
+      "Tidelight spikes: 27 measured frames exceeded 2 ms",
+      "Creek steady: 15 measured frames exceeded 2 ms",
+      "Creek spikes: 17 measured frames exceeded 2 ms"
+    ],
+    "throttle": 4,
+    "cloth": {
+      "apron": {
+        "frames": 1800,
+        "invertedFrames": 0,
+        "minClearanceMm": 2.99997,
+        "negativeFrames": 0,
+        "perFrameTenthsMmInt16LE": "HgAeAB4AHgA4AE8AYABPAC0AKAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAEYAJQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC4AVQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACQALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAkAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgA5AFEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAgAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAfACEAJgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtADgAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJwBPAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgAuAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ARwBUAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAC0AHgAeAB4AHgAeAB4AHgAeAB4AFQGhAIUAcgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCcAKgAowAhAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAjAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgBlAC4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCVAHEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgAeAC0AZgBbAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4AHgAeAB4AHgAjADYAOgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ATQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgA2AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAN8A6wDHAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAKMAiwCJAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAA4BEAHyAJYAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAJoAawAuAB4AHgAeAB4AHgAeACAAHgAgAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCjAMsAYQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACoAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeANkAnAAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCzALUAHgAeACIAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgB8AI8AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACUAWAAvAEEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgArADQALQAtAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AHwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AQwAkAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACEALQBAAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAjAC0AOwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAoAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAqAFUAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACoAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACgALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAfAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQA3AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAgACkAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACkAQABEAIoANQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACYALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgAxAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AOgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIwAeAB4AHgAeAB4AHgAeAB4A"
+      },
+      "skirt": {
+        "frames": 1800,
+        "invertedFrames": 0,
+        "minClearanceMm": 2.99998,
+        "negativeFrames": 0,
+        "perFrameTenthsMmInt16LE": "HgAeAB4AHgAeAB4AHgAeACQAHwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACgAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACkAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AQwA1AC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAC0ALAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAfAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACYAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgArAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4A"
+      },
+      "scarf": {
+        "frames": 1800,
+        "invertedFrames": 0,
+        "minClearanceMm": 86.23211,
+        "negativeFrames": 0,
+        "perFrameTenthsMmInt16LE": "iwV5BVUFKwUDBeAEwgSpBJQEgwR2BG4EYQRLBDgEKQQeBBgEFwQbBCEEKgQuBCwEIwQSBPwD6APXA84DzgPYA+gD+wMPBCMENwRJBFoEaQR0BH4EhQSMBJAEjAR/BGMEQwQoBBYEDwQRBBoEJgQzBEAESwRVBFsEXgRfBF4EXARbBFoEVwRSBEwERAQqBA8E/APxA+wD6QPoA+YD5APgA9sD0wPLA8MDvQO5A7cDtQOwA6cDmAOJA34DeAN6A4ADiQOVA6EDrgO7A8gD1APhA+0D+gMJBBoELwQ5BDwENQQhBAYE7APYA9AD0wPhA/YDDQQmBD4EUwRkBHEEegR/BIAEfwR8BHsEeQR0BGgEUgRDBDsEOQQ7BD4EQgREBEUERARABDsENQQwBCwEKwQrBCoEJQQcBA0E/APwA+oD6wPwA/gDAgQNBBgEIgQtBDcEQQRLBFcEZQR1BIIEhQR9BGUESAQuBBwEFAQXBCMELQQuBDIEOAQ/BEcEUARaBGMEbAR2BHYEcQRrBGQEWgQ5BBgE/gPsA+UD6QPzA/4DCgQUBBsEHwQgBBwEFwQPBAYE/gP4A/MD7gPoA+MD4gPkA+gD7QPyA/gD/QMDBAkEEAQXBB4EKAQ1BEQEVQRjBGcEYARIBC0EFQQGBAIEBwQQBB0EKgQvBDYEPgRIBFMEWwRbBFsEWgRbBFkEUgRJBD0EMAQjBBkEEgQMBBAEGgQlBDEEPwRJBE4ETwROBEkEQwQ9BDgENAQvBCcEHwQaBBgEGQQcBCAEJAQpBDAENwRABEkEUQRaBGUEcwSDBJIEjQSGBH0EcQRbBEEELwQmBCcELgQ5BEYEUQRcBGQEagRtBG4EbgRuBG8EbwRsBGYEXARPBEIEOAQzBDIENQQ7BEIETARWBGEEbQR5BHYEbARgBFUETARDBDkELgQeBA0E/APvA+YD4wPlA+sD8gP7AwUEDgQXBB4EJQQpBC0EMgQ1BDQEMAQnBBME/APqA98D2wPcA+AD5QPpA+4D8gP1A/UD9QP1A/UD9gP5A/oD+APzA+oD4QPZA9cD2gPhA+oD8wP+AwkEFgQkBDMEQwRTBGYEXwRaBFgEVAROBEUEOAQqBBwEDwQHBAYECwQUBCEEMARABFAEYARvBHwEhQSKBI4EkASMBIAEZgRKBDIEIQQXBBIEEAQRBBQEFwQaBB0EIAQiBCMEJQQpBC0EMgQ3BDYEMAQlBBoEFAQTBBYEHQQkBCwENAQ9BEYEUARaBGUEZQRWBEkEPgQzBCUEFQQBBOwD2APJA78DugO4A7oDvQPAA8MDxgPKA84D0QPWA9wD5APxA/UD8gPmA8wDrAONA3YDaANmA2wDegOLA5wDrQO8A8cDzwPUA9UD1QPUA9MD1QPXA9kD2wPfA+YD8QP9AwoEFwQjBDAEPQRKBFgEZwRzBGkEYQRbBFcEVAROBEUENwQnBBoEEgQQBBMEGgQiBCwENwRCBEwEVgRgBGkEdASABI0EnASiBJ0EjQRuBEgEIwQEBPAD6QPqA/QDAwQTBCMEMQQ9BEUESQRKBEcEQQQ7BDYEMQQpBCMEIAQgBCQEKQQtBDEENgQ8BEIESgRGBDcEJQQTBAIE9APqA+ED1APGA7QDoAORA4YDggOCA4YDiwOSA5oDogOqA7IDuQPBA8oD1QPhA+sD6wPhA8oDrwOZA4wDiQOOA5gDpgO2A8UD1APgA+oD8gP4A/4DDgQPBBYEHgQXBB0EIAQmBC0ENQQ+BEUESgRPBFUEXARdBFsEXgReBF0EXgRgBGIEYARWBDsEKwQWBAAE6wPZA80DygPPA90D7wMEBBwEMgRGBFgEZwR1BH8EhgSJBIcEfARlBEoEMwQjBBsEGAQaBCEEKQQyBDkEQARFBEgESARJBEkESgRMBE4ESwREBDoELwQmBCAEEQQKBAgECgQMBA8EEAQPBAwEBwQABPkD8gPtA+cD3wPSA8MDtQOqA6QDpAOoA60DswO6A8EDygPSA9sD5APvA/wDFQQeBC4EPQQyBC0EFATzA9UDvQOuA6cDqgO2A8sD5gMBBBoEMARABE0EVgRbBF0EXQReBFwEVgRNBEYEQAQ9BD4EQgRHBE8EVgReBGAEXwRaBFMESgRABDYELgQoBCMEHQQUBAsEBQQEBAQECAQOBBQEGwQjBCoEMQQ3BD4ERgRRBF0EbAR5BHwEeARtBFIENAQbBAkEAQQEBA8EHwQvBEAETgRZBGEEZgRoBGgEZwRmBGkEXARaBFEESwRHBEYERARBBEMERwRLBE8EUgRTBFEETgRKBEkERQRBBD4EOgQnBCAEFwQRBA0ECgQHBAQEAgQABAAEAgQGBBQEHwQtBD4EUQRjBHMEfQRnBFsEOwQWBPID1APBA7kDvAPIA9oD7gMEBBgEKAQ0BDsEPgQ+BDkEMwQsBCcEIgQdBBkEFwQXBBYEFQQVBBUEFwQbBCAEJwQwBDsESgRVBFEETgRKBEQEOgQtBBwEDwQGBAIEAgQGBAwEEwQdBCgENARBBE4EXARqBHkEhwSUBJ4EjQSGBGwEUQQ8BC0EJAQfBB8EIgQnBCwEMQQ1BDgEOwQ/BEsETgRTBFYEVgRDBEMEQARCBEQERQRFBEIEQAQ/BD8EQwRMBF8EbwSCBJcEowScBJQEiQRqBFEENwQeBAYE8APdA9EDzQPOA9cD4wPyAwIEEQQfBCkEMAQ1BDgEOQQ4BDEEIQQDBOMDyAOyA6UDoAOgA6EDowOkA6UDpgOmA6YDpAOhA6ADoAOiA6IDnwOYA5IDkAOTA5oDowOtA7kDxQPSA+AD7QP7AwkEFwQnBDkETQRoBGQEUwRKBD4ENQQuBCoEKAQoBCgEKgQuBDQEOwREBFAEXwR0BIEEjQSZBKEEkwSCBGMEPwQbBP0D5APSA8sDywPUA+ED8AP9AwkEFQQgBCcEKwQsBCsEKQQmBCIEFwQMBAUEAgQGBA0EFgQdBCYELwQ5BEIESgRSBFoEYQRqBGUEVARFBDYEJgQWBAgE/APxA+oD5APfA9wD2gPZA9kD2gPbA9wD3wPlA+0D9wP+A/oD6wPLA6YDhgNuA2EDXgNkA28DfQOKA5YDoAOoA6wDrgOuA64DrwO4A7cDsAO0A7UDtwO8A8UD0APbA+UD8AP6AwYEEgQgBDEERQRnBHsEeQRzBG4EWQRNBDwEKgQXBAUE9QPpA+UD6QP2AwsEJAQ9BFMEZwR6BIoElwSfBJsEkgSEBG4EVgRCBDQEKwQoBCgEKwQqBCcEJAQiBB8EHQQdBB8EJAQoBCgEJQQcBBMEDwQPBBMEGQQfBCUELAQzBDsERAROBFsEYARRBEUEOAQqBBkEAwTuA9wDzwPIA8YDyAPLA9AD1gPaA94D4wPnA+oD7wP0A/gD9gPtA9gDwgOvA6MDmwOXA5YDlwOaA50DoAOiA6QDpgOqA68DtQO6A7sDugO5A7sDwgPNA9kD5QPxA/4DCgQYBCYENAREBFcEbARvBGYEXQRSBEYEPAQ0BC8ELAQsBCwELgQxBDcEPgRGBE8EVwRiBHAEfwSKBIkEfQRjBEcELgQdBBMEDgQNBA0EDwQSBBUEFwQZBBoEHQQgBCUEKAQoBCQEHAQTBA0EDQQQBBUEHAQjBCoEMgQ6BEIESwRWBGQEdQRrBGEEVgRJBDkEKwQgBBgEEwQRBA8EDgQPBBEEFAQZBB8EJgQvBDgEQwRLBEgEPAQiBAYE7gPdA9UD0QPQA9ED0gPUA9UD1wPYA9kD3APgA+UD6gPtA+wD6APlA+QD5wPuA/UD/QMFBAwEFAQcBCUELgQ6BEgEWARnBGgEXwRVBEsEPgQ3BDgENQQzBDIEMwQ1BDoEQARIBFMEYQRxBH4EfAR3BHEEZwROBDcEKAQfBBsEHAQeBCIEJgQqBC0ELgQuBC8EMQQzBDUENAQwBCkEIQQcBBoEGwQeBCMEKQQvBDYEPwRHBFAEWwRoBHgEigSJBIMEewRxBGcEUwRFBD4EPgRBBEcETgRVBF0EYwRnBGoEbQRwBHIEdARyBG0EZgRfBFoEUwRLBEcERQRFBEYERgRHBEYERARCBEAEPwQ+BDwEOAQwBCUEGgQRBAwECgQKBAsEDQQPBBMEFwQdBCMEKQQyBD0ERwRIBEEELAQWBAME9wPyA/ID9AP3A/sD/wMBBAIEAwQEBAUECAQKBAwECwQIBAEE+gP1A/QD9gP5A/4DAwQJBBAEGAQhBC0EOgRKBFwEVwRSBEwERQQ8BDUELwQsBCsEKwQtBDEENgQ8BEQETQRXBGQEdASGBJgEowSjBJkEgARmBFAEQQQ3BDIEMgQ0BDcEOgQ9BEAEQgRDBEUESARMBFAEUARNBEYEPgQ5BDcEOQQ9BEIESAROBFUEWwRiBGkEcgR+BIsEiQSABHUEaARYBEkEPAQyBCsEJQQhBB0EGgQZBBoEHAQgBCUELAQzBDwEQQQ9BC8EFAT0A9gDxAO4A7EDrQOqA6gDpwOlA6QDogOgA6EDowOmA6gDpwOiA54DnAOfA6QDrAO0A7wDxAPNA9cD4QPrA/cDBQQXBCsEPQRHBEcEOgQqBB4EGgQfBCgENAQ/BEIERgRMBFQEXQRpBHgEiQSYBKQEowSYBH4EYQRJBDcELQQpBCgEKAQqBCwELQQuBC8ELwQxBDQEOAQ8BD0EOAQuBCQEHQQcBB4EJAQqBDIEOQQ/BEYETQRUBFwEZwR0BIMEjwSPBIUEbQRRBDsELAQmBCYEKwQvBCoEJwQmBCgEKwQwBDYEPQRFBEoERAQ1BBgE+APbA8QDtgOsA6YDoQOcA5gDlQORA40D"
+      }
+    },
+    "scenes": {
+      "Village": {
+        "steady": {
+          "frames": 3600,
+          "simulatedSeconds": 119.99999999999575,
+          "steps": 7200,
+          "hash": "c51f226b",
+          "droppedSteps": 0,
+          "maxSubsteps": 1,
+          "maxParticleSpeed": 0.16903,
+          "maxEnergy": 1.29629,
+          "maxEarlyMeanEnergy": 0.68148,
+          "maxLateMeanEnergy": 0.69283,
+          "tenSecondMeanEnergies": [
+            0.68206,
+            0.66137,
+            0.67729,
+            0.64679,
+            0.68148,
+            0.6635,
+            0.66525,
+            0.6708,
+            0.67366,
+            0.65466,
+            0.69283,
+            0.65442
+          ],
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 1.10632,
+          "meanBudgetMet": true,
+          "sampledFramesOver2ms": 284,
+          "fractionOver2ms": 0.08161,
+          "everyMeasuredFrameWithinBudget": false,
+          "p95PhysicsMs": 2.8,
+          "p99PhysicsMs": 11.8,
+          "peakMeasuredMs": 33,
+          "repeatHash": "c51f226b",
+          "deterministic": true
+        },
+        "spikes": {
+          "frames": 3113,
+          "simulatedSeconds": 120,
+          "steps": 6676,
+          "hash": "4fda9daa",
+          "droppedSteps": 1834,
+          "maxSubsteps": 4,
+          "maxParticleSpeed": 0.20511,
+          "maxEnergy": 1.28035,
+          "maxEarlyMeanEnergy": 0.6942,
+          "maxLateMeanEnergy": 0.70449,
+          "tenSecondMeanEnergies": [
+            0.67261,
+            0.6942,
+            0.61684,
+            0.68025,
+            0.6395,
+            0.6753,
+            0.67787,
+            0.65097,
+            0.66301,
+            0.65604,
+            0.64673,
+            0.70449
+          ],
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 1.21443,
+          "meanBudgetMet": true,
+          "sampledFramesOver2ms": 272,
+          "fractionOver2ms": 0.09088,
+          "everyMeasuredFrameWithinBudget": false,
+          "p95PhysicsMs": 2.6,
+          "p99PhysicsMs": 15.1,
+          "peakMeasuredMs": 44.4,
+          "repeatHash": "4fda9daa",
+          "deterministic": true
+        }
+      },
+      "Tidelight": {
+        "steady": {
+          "frames": 3600,
+          "simulatedSeconds": 119.99999999999575,
+          "steps": 3600,
+          "hash": "687f59f5",
+          "droppedSteps": 0,
+          "maxSubsteps": 1,
+          "maxParticleSpeed": 0.06139,
+          "maxEnergy": 0.0071,
+          "maxEarlyMeanEnergy": 0.0018,
+          "maxLateMeanEnergy": 0.00173,
+          "tenSecondMeanEnergies": [
+            0.00154,
+            0.0017,
+            0.00143,
+            0.0018,
+            0.00148,
+            0.00175,
+            0.00155,
+            0.00173,
+            0.00158,
+            0.0017,
+            0.00157,
+            0.00169
+          ],
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 0.0833,
+          "meanBudgetMet": true,
+          "sampledFramesOver2ms": 11,
+          "fractionOver2ms": 0.00316,
+          "everyMeasuredFrameWithinBudget": false,
+          "p95PhysicsMs": 0.6,
+          "p99PhysicsMs": 1,
+          "peakMeasuredMs": 4.4,
+          "repeatHash": "687f59f5",
+          "deterministic": true
+        },
+        "spikes": {
+          "frames": 3113,
+          "simulatedSeconds": 120,
+          "steps": 3338,
+          "hash": "daf838d4",
+          "droppedSteps": 524,
+          "maxSubsteps": 4,
+          "maxParticleSpeed": 0.05576,
+          "maxEnergy": 0.00709,
+          "maxEarlyMeanEnergy": 0.00189,
+          "maxLateMeanEnergy": 0.00189,
+          "tenSecondMeanEnergies": [
+            0.00138,
+            0.00189,
+            0.00154,
+            0.00187,
+            0.00155,
+            0.00123,
+            0.00189,
+            0.00159,
+            0.00177,
+            0.00179,
+            0.00119,
+            0.00172
+          ],
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 0.14691,
+          "meanBudgetMet": true,
+          "sampledFramesOver2ms": 27,
+          "fractionOver2ms": 0.00902,
+          "everyMeasuredFrameWithinBudget": false,
+          "p95PhysicsMs": 0.7,
+          "p99PhysicsMs": 1.8,
+          "peakMeasuredMs": 30.4,
+          "repeatHash": "daf838d4",
+          "deterministic": true
+        }
+      },
+      "Creek": {
+        "steady": {
+          "frames": 3600,
+          "simulatedSeconds": 119.99999999999575,
+          "steps": 3600,
+          "hash": "7aa7a316",
+          "droppedSteps": 0,
+          "maxSubsteps": 1,
+          "maxParticleSpeed": 0.03493,
+          "maxEnergy": 0.0095,
+          "maxEarlyMeanEnergy": 0.00254,
+          "maxLateMeanEnergy": 0.00257,
+          "tenSecondMeanEnergies": [
+            0.0025,
+            0.00218,
+            0.00251,
+            0.00209,
+            0.00254,
+            0.00204,
+            0.00257,
+            0.00188,
+            0.00255,
+            0.00187,
+            0.00253,
+            0.00199
+          ],
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 0.10195,
+          "meanBudgetMet": true,
+          "sampledFramesOver2ms": 15,
+          "fractionOver2ms": 0.00431,
+          "everyMeasuredFrameWithinBudget": false,
+          "p95PhysicsMs": 0.4,
+          "p99PhysicsMs": 0.9,
+          "peakMeasuredMs": 26.8,
+          "repeatHash": "7aa7a316",
+          "deterministic": true
+        },
+        "spikes": {
+          "frames": 3113,
+          "simulatedSeconds": 120,
+          "steps": 3338,
+          "hash": "e0a7b6dd",
+          "droppedSteps": 262,
+          "maxSubsteps": 4,
+          "maxParticleSpeed": 0.03979,
+          "maxEnergy": 0.00915,
+          "maxEarlyMeanEnergy": 0.00269,
+          "maxLateMeanEnergy": 0.00252,
+          "tenSecondMeanEnergies": [
+            0.00262,
+            0.00194,
+            0.00199,
+            0.00269,
+            0.00229,
+            0.00264,
+            0.00214,
+            0.00185,
+            0.00249,
+            0.0023,
+            0.00252,
+            0.00226
+          ],
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 0.11697,
+          "meanBudgetMet": true,
+          "sampledFramesOver2ms": 17,
+          "fractionOver2ms": 0.00568,
+          "everyMeasuredFrameWithinBudget": false,
+          "p95PhysicsMs": 0.6,
+          "p99PhysicsMs": 1.4,
+          "peakMeasuredMs": 22.1,
+          "repeatHash": "e0a7b6dd",
+          "deterministic": true
+        }
+      }
+    },
+    "heap": {
+      "available": true,
+      "framesPerWindow": 420,
+      "retainedGrowthBytes": 0,
+      "rawDeltas": [
+        0,
+        0
+      ]
+    },
+    "recovered": {
+      "before": "7ba94774",
+      "after": "7ba94774",
+      "bufferInvalidated": true,
+      "recoverySteps": 0
+    }
+  },
+  "reference": "411f01d",
+  "pairedPhysics": {
+    "failures": [
+      "Village steady: 304 measured frames exceeded 2 ms",
+      "Village spikes: 39 measured frames exceeded 2 ms",
+      "Tidelight steady: 8 measured frames exceeded 2 ms",
+      "Tidelight spikes: 4 measured frames exceeded 2 ms",
+      "Creek spikes: 1 measured frames exceeded 2 ms"
+    ],
+    "throttle": 4,
+    "cloth": {
+      "apron": {
+        "frames": 1800,
+        "invertedFrames": 0,
+        "minClearanceMm": 2.99997,
+        "negativeFrames": 0,
+        "perFrameTenthsMmInt16LE": "HgAeAB4AHgA4AE8AYABPAC0AKAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAEYAJQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC4AVQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACQALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAkAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgA5AFEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAgAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAfACEAJgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtADgAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJwBPAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgAuAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ARwBUAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAC0AHgAeAB4AHgAeAB4AHgAeAB4AFQGhAIUAcgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCcAKgAowAhAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAjAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgBlAC4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCVAHEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgAeAC0AZgBbAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4AHgAeAB4AHgAjADYAOgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ATQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgA2AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAN8A6wDHAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAKMAiwCJAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAA4BEAHyAJYAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAJoAawAuAB4AHgAeAB4AHgAeACAAHgAgAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCjAMsAYQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACoAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeANkAnAAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCzALUAHgAeACIAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgB8AI8AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACUAWAAvAEEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgArADQALQAtAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AHwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AQwAkAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACEALQBAAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAjAC0AOwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAoAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAqAFUAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACoAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACgALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAfAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQA3AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAgACkAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACkAQABEAIoANQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACYALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgAxAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AOgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIwAeAB4AHgAeAB4AHgAeAB4A"
+      },
+      "skirt": {
+        "frames": 1800,
+        "invertedFrames": 0,
+        "minClearanceMm": 2.99998,
+        "negativeFrames": 0,
+        "perFrameTenthsMmInt16LE": "HgAeAB4AHgAeAB4AHgAeACQAHwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACgAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACkAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AQwA1AC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAC0ALAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAfAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACYAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgArAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4A"
+      },
+      "scarf": {
+        "frames": 1800,
+        "invertedFrames": 0,
+        "minClearanceMm": 86.23211,
+        "negativeFrames": 0,
+        "perFrameTenthsMmInt16LE": "iwV5BVUFKwUDBeAEwgSpBJQEgwR2BG4EYQRLBDgEKQQeBBgEFwQbBCEEKgQuBCwEIwQSBPwD6APXA84DzgPYA+gD+wMPBCMENwRJBFoEaQR0BH4EhQSMBJAEjAR/BGMEQwQoBBYEDwQRBBoEJgQzBEAESwRVBFsEXgRfBF4EXARbBFoEVwRSBEwERAQqBA8E/APxA+wD6QPoA+YD5APgA9sD0wPLA8MDvQO5A7cDtQOwA6cDmAOJA34DeAN6A4ADiQOVA6EDrgO7A8gD1APhA+0D+gMJBBoELwQ5BDwENQQhBAYE7APYA9AD0wPhA/YDDQQmBD4EUwRkBHEEegR/BIAEfwR8BHsEeQR0BGgEUgRDBDsEOQQ7BD4EQgREBEUERARABDsENQQwBCwEKwQrBCoEJQQcBA0E/APwA+oD6wPwA/gDAgQNBBgEIgQtBDcEQQRLBFcEZQR1BIIEhQR9BGUESAQuBBwEFAQXBCMELQQuBDIEOAQ/BEcEUARaBGMEbAR2BHYEcQRrBGQEWgQ5BBgE/gPsA+UD6QPzA/4DCgQUBBsEHwQgBBwEFwQPBAYE/gP4A/MD7gPoA+MD4gPkA+gD7QPyA/gD/QMDBAkEEAQXBB4EKAQ1BEQEVQRjBGcEYARIBC0EFQQGBAIEBwQQBB0EKgQvBDYEPgRIBFMEWwRbBFsEWgRbBFkEUgRJBD0EMAQjBBkEEgQMBBAEGgQlBDEEPwRJBE4ETwROBEkEQwQ9BDgENAQvBCcEHwQaBBgEGQQcBCAEJAQpBDAENwRABEkEUQRaBGUEcwSDBJIEjQSGBH0EcQRbBEEELwQmBCcELgQ5BEYEUQRcBGQEagRtBG4EbgRuBG8EbwRsBGYEXARPBEIEOAQzBDIENQQ7BEIETARWBGEEbQR5BHYEbARgBFUETARDBDkELgQeBA0E/APvA+YD4wPlA+sD8gP7AwUEDgQXBB4EJQQpBC0EMgQ1BDQEMAQnBBME/APqA98D2wPcA+AD5QPpA+4D8gP1A/UD9QP1A/UD9gP5A/oD+APzA+oD4QPZA9cD2gPhA+oD8wP+AwkEFgQkBDMEQwRTBGYEXwRaBFgEVAROBEUEOAQqBBwEDwQHBAYECwQUBCEEMARABFAEYARvBHwEhQSKBI4EkASMBIAEZgRKBDIEIQQXBBIEEAQRBBQEFwQaBB0EIAQiBCMEJQQpBC0EMgQ3BDYEMAQlBBoEFAQTBBYEHQQkBCwENAQ9BEYEUARaBGUEZQRWBEkEPgQzBCUEFQQBBOwD2APJA78DugO4A7oDvQPAA8MDxgPKA84D0QPWA9wD5APxA/UD8gPmA8wDrAONA3YDaANmA2wDegOLA5wDrQO8A8cDzwPUA9UD1QPUA9MD1QPXA9kD2wPfA+YD8QP9AwoEFwQjBDAEPQRKBFgEZwRzBGkEYQRbBFcEVAROBEUENwQnBBoEEgQQBBMEGgQiBCwENwRCBEwEVgRgBGkEdASABI0EnASiBJ0EjQRuBEgEIwQEBPAD6QPqA/QDAwQTBCMEMQQ9BEUESQRKBEcEQQQ7BDYEMQQpBCMEIAQgBCQEKQQtBDEENgQ8BEIESgRGBDcEJQQTBAIE9APqA+ED1APGA7QDoAORA4YDggOCA4YDiwOSA5oDogOqA7IDuQPBA8oD1QPhA+sD6wPhA8oDrwOZA4wDiQOOA5gDpgO2A8UD1APgA+oD8gP4A/4DDgQPBBYEHgQXBB0EIAQmBC0ENQQ+BEUESgRPBFUEXARdBFsEXgReBF0EXgRgBGIEYARWBDsEKwQWBAAE6wPZA80DygPPA90D7wMEBBwEMgRGBFgEZwR1BH8EhgSJBIcEfARlBEoEMwQjBBsEGAQaBCEEKQQyBDkEQARFBEgESARJBEkESgRMBE4ESwREBDoELwQmBCAEEQQKBAgECgQMBA8EEAQPBAwEBwQABPkD8gPtA+cD3wPSA8MDtQOqA6QDpAOoA60DswO6A8EDygPSA9sD5APvA/wDFQQeBC4EPQQyBC0EFATzA9UDvQOuA6cDqgO2A8sD5gMBBBoEMARABE0EVgRbBF0EXQReBFwEVgRNBEYEQAQ9BD4EQgRHBE8EVgReBGAEXwRaBFMESgRABDYELgQoBCMEHQQUBAsEBQQEBAQECAQOBBQEGwQjBCoEMQQ3BD4ERgRRBF0EbAR5BHwEeARtBFIENAQbBAkEAQQEBA8EHwQvBEAETgRZBGEEZgRoBGgEZwRmBGkEXARaBFEESwRHBEYERARBBEMERwRLBE8EUgRTBFEETgRKBEkERQRBBD4EOgQnBCAEFwQRBA0ECgQHBAQEAgQABAAEAgQGBBQEHwQtBD4EUQRjBHMEfQRnBFsEOwQWBPID1APBA7kDvAPIA9oD7gMEBBgEKAQ0BDsEPgQ+BDkEMwQsBCcEIgQdBBkEFwQXBBYEFQQVBBUEFwQbBCAEJwQwBDsESgRVBFEETgRKBEQEOgQtBBwEDwQGBAIEAgQGBAwEEwQdBCgENARBBE4EXARqBHkEhwSUBJ4EjQSGBGwEUQQ8BC0EJAQfBB8EIgQnBCwEMQQ1BDgEOwQ/BEsETgRTBFYEVgRDBEMEQARCBEQERQRFBEIEQAQ/BD8EQwRMBF8EbwSCBJcEowScBJQEiQRqBFEENwQeBAYE8APdA9EDzQPOA9cD4wPyAwIEEQQfBCkEMAQ1BDgEOQQ4BDEEIQQDBOMDyAOyA6UDoAOgA6EDowOkA6UDpgOmA6YDpAOhA6ADoAOiA6IDnwOYA5IDkAOTA5oDowOtA7kDxQPSA+AD7QP7AwkEFwQnBDkETQRoBGQEUwRKBD4ENQQuBCoEKAQoBCgEKgQuBDQEOwREBFAEXwR0BIEEjQSZBKEEkwSCBGMEPwQbBP0D5APSA8sDywPUA+ED8AP9AwkEFQQgBCcEKwQsBCsEKQQmBCIEFwQMBAUEAgQGBA0EFgQdBCYELwQ5BEIESgRSBFoEYQRqBGUEVARFBDYEJgQWBAgE/APxA+oD5APfA9wD2gPZA9kD2gPbA9wD3wPlA+0D9wP+A/oD6wPLA6YDhgNuA2EDXgNkA28DfQOKA5YDoAOoA6wDrgOuA64DrwO4A7cDsAO0A7UDtwO8A8UD0APbA+UD8AP6AwYEEgQgBDEERQRnBHsEeQRzBG4EWQRNBDwEKgQXBAUE9QPpA+UD6QP2AwsEJAQ9BFMEZwR6BIoElwSfBJsEkgSEBG4EVgRCBDQEKwQoBCgEKwQqBCcEJAQiBB8EHQQdBB8EJAQoBCgEJQQcBBMEDwQPBBMEGQQfBCUELAQzBDsERAROBFsEYARRBEUEOAQqBBkEAwTuA9wDzwPIA8YDyAPLA9AD1gPaA94D4wPnA+oD7wP0A/gD9gPtA9gDwgOvA6MDmwOXA5YDlwOaA50DoAOiA6QDpgOqA68DtQO6A7sDugO5A7sDwgPNA9kD5QPxA/4DCgQYBCYENAREBFcEbARvBGYEXQRSBEYEPAQ0BC8ELAQsBCwELgQxBDcEPgRGBE8EVwRiBHAEfwSKBIkEfQRjBEcELgQdBBMEDgQNBA0EDwQSBBUEFwQZBBoEHQQgBCUEKAQoBCQEHAQTBA0EDQQQBBUEHAQjBCoEMgQ6BEIESwRWBGQEdQRrBGEEVgRJBDkEKwQgBBgEEwQRBA8EDgQPBBEEFAQZBB8EJgQvBDgEQwRLBEgEPAQiBAYE7gPdA9UD0QPQA9ED0gPUA9UD1wPYA9kD3APgA+UD6gPtA+wD6APlA+QD5wPuA/UD/QMFBAwEFAQcBCUELgQ6BEgEWARnBGgEXwRVBEsEPgQ3BDgENQQzBDIEMwQ1BDoEQARIBFMEYQRxBH4EfAR3BHEEZwROBDcEKAQfBBsEHAQeBCIEJgQqBC0ELgQuBC8EMQQzBDUENAQwBCkEIQQcBBoEGwQeBCMEKQQvBDYEPwRHBFAEWwRoBHgEigSJBIMEewRxBGcEUwRFBD4EPgRBBEcETgRVBF0EYwRnBGoEbQRwBHIEdARyBG0EZgRfBFoEUwRLBEcERQRFBEYERgRHBEYERARCBEAEPwQ+BDwEOAQwBCUEGgQRBAwECgQKBAsEDQQPBBMEFwQdBCMEKQQyBD0ERwRIBEEELAQWBAME9wPyA/ID9AP3A/sD/wMBBAIEAwQEBAUECAQKBAwECwQIBAEE+gP1A/QD9gP5A/4DAwQJBBAEGAQhBC0EOgRKBFwEVwRSBEwERQQ8BDUELwQsBCsEKwQtBDEENgQ8BEQETQRXBGQEdASGBJgEowSjBJkEgARmBFAEQQQ3BDIEMgQ0BDcEOgQ9BEAEQgRDBEUESARMBFAEUARNBEYEPgQ5BDcEOQQ9BEIESAROBFUEWwRiBGkEcgR+BIsEiQSABHUEaARYBEkEPAQyBCsEJQQhBB0EGgQZBBoEHAQgBCUELAQzBDwEQQQ9BC8EFAT0A9gDxAO4A7EDrQOqA6gDpwOlA6QDogOgA6EDowOmA6gDpwOiA54DnAOfA6QDrAO0A7wDxAPNA9cD4QPrA/cDBQQXBCsEPQRHBEcEOgQqBB4EGgQfBCgENAQ/BEIERgRMBFQEXQRpBHgEiQSYBKQEowSYBH4EYQRJBDcELQQpBCgEKAQqBCwELQQuBC8ELwQxBDQEOAQ8BD0EOAQuBCQEHQQcBB4EJAQqBDIEOQQ/BEYETQRUBFwEZwR0BIMEjwSPBIUEbQRRBDsELAQmBCYEKwQvBCoEJwQmBCgEKwQwBDYEPQRFBEoERAQ1BBgE+APbA8QDtgOsA6YDoQOcA5gDlQORA40D"
+      }
+    },
+    "scenes": {
+      "Village": {
+        "steady": {
+          "frames": 3600,
+          "simulatedSeconds": 119.99999999999575,
+          "steps": 7200,
+          "hash": "c51f226b",
+          "droppedSteps": 0,
+          "maxSubsteps": 1,
+          "maxParticleSpeed": 0.16903,
+          "maxEnergy": 1.29629,
+          "maxEarlyMeanEnergy": 0.68148,
+          "maxLateMeanEnergy": 0.69283,
+          "tenSecondMeanEnergies": [
+            0.68206,
+            0.66137,
+            0.67729,
+            0.64679,
+            0.68148,
+            0.6635,
+            0.66525,
+            0.6708,
+            0.67366,
+            0.65466,
+            0.69283,
+            0.65442
+          ],
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 0.80756,
+          "meanBudgetMet": true,
+          "sampledFramesOver2ms": 304,
+          "fractionOver2ms": 0.08736,
+          "everyMeasuredFrameWithinBudget": false,
+          "p95PhysicsMs": 2.7,
+          "p99PhysicsMs": 5.2,
+          "peakMeasuredMs": 76.5,
+          "repeatHash": "c51f226b",
+          "deterministic": true
+        },
+        "spikes": {
+          "frames": 3113,
+          "simulatedSeconds": 120,
+          "steps": 6676,
+          "hash": "4fda9daa",
+          "droppedSteps": 1834,
+          "maxSubsteps": 4,
+          "maxParticleSpeed": 0.20511,
+          "maxEnergy": 1.28035,
+          "maxEarlyMeanEnergy": 0.6942,
+          "maxLateMeanEnergy": 0.70449,
+          "tenSecondMeanEnergies": [
+            0.67261,
+            0.6942,
+            0.61684,
+            0.68025,
+            0.6395,
+            0.6753,
+            0.67787,
+            0.65097,
+            0.66301,
+            0.65604,
+            0.64673,
+            0.70449
+          ],
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 0.5567,
+          "meanBudgetMet": true,
+          "sampledFramesOver2ms": 39,
+          "fractionOver2ms": 0.01303,
+          "everyMeasuredFrameWithinBudget": false,
+          "p95PhysicsMs": 1.4,
+          "p99PhysicsMs": 2.2,
+          "peakMeasuredMs": 6,
+          "repeatHash": "4fda9daa",
+          "deterministic": true
+        }
+      },
+      "Tidelight": {
+        "steady": {
+          "frames": 3600,
+          "simulatedSeconds": 119.99999999999575,
+          "steps": 3600,
+          "hash": "687f59f5",
+          "droppedSteps": 0,
+          "maxSubsteps": 1,
+          "maxParticleSpeed": 0.06139,
+          "maxEnergy": 0.0071,
+          "maxEarlyMeanEnergy": 0.0018,
+          "maxLateMeanEnergy": 0.00173,
+          "tenSecondMeanEnergies": [
+            0.00154,
+            0.0017,
+            0.00143,
+            0.0018,
+            0.00148,
+            0.00175,
+            0.00155,
+            0.00173,
+            0.00158,
+            0.0017,
+            0.00157,
+            0.00169
+          ],
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 0.04299,
+          "meanBudgetMet": true,
+          "sampledFramesOver2ms": 8,
+          "fractionOver2ms": 0.0023,
+          "everyMeasuredFrameWithinBudget": false,
+          "p95PhysicsMs": 0.1,
+          "p99PhysicsMs": 0.9,
+          "peakMeasuredMs": 3,
+          "repeatHash": "687f59f5",
+          "deterministic": true
+        },
+        "spikes": {
+          "frames": 3113,
+          "simulatedSeconds": 120,
+          "steps": 3338,
+          "hash": "daf838d4",
+          "droppedSteps": 524,
+          "maxSubsteps": 4,
+          "maxParticleSpeed": 0.05576,
+          "maxEnergy": 0.00709,
+          "maxEarlyMeanEnergy": 0.00189,
+          "maxLateMeanEnergy": 0.00189,
+          "tenSecondMeanEnergies": [
+            0.00138,
+            0.00189,
+            0.00154,
+            0.00187,
+            0.00155,
+            0.00123,
+            0.00189,
+            0.00159,
+            0.00177,
+            0.00179,
+            0.00119,
+            0.00172
+          ],
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 0.05489,
+          "meanBudgetMet": true,
+          "sampledFramesOver2ms": 4,
+          "fractionOver2ms": 0.00134,
+          "everyMeasuredFrameWithinBudget": false,
+          "p95PhysicsMs": 0.4,
+          "p99PhysicsMs": 0.8,
+          "peakMeasuredMs": 4.1,
+          "repeatHash": "daf838d4",
+          "deterministic": true
+        }
+      },
+      "Creek": {
+        "steady": {
+          "frames": 3600,
+          "simulatedSeconds": 119.99999999999575,
+          "steps": 3600,
+          "hash": "7aa7a316",
+          "droppedSteps": 0,
+          "maxSubsteps": 1,
+          "maxParticleSpeed": 0.03493,
+          "maxEnergy": 0.0095,
+          "maxEarlyMeanEnergy": 0.00254,
+          "maxLateMeanEnergy": 0.00257,
+          "tenSecondMeanEnergies": [
+            0.0025,
+            0.00218,
+            0.00251,
+            0.00209,
+            0.00254,
+            0.00204,
+            0.00257,
+            0.00188,
+            0.00255,
+            0.00187,
+            0.00253,
+            0.00199
+          ],
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 0.02626,
+          "meanBudgetMet": true,
+          "sampledFramesOver2ms": 0,
+          "fractionOver2ms": 0,
+          "everyMeasuredFrameWithinBudget": true,
+          "p95PhysicsMs": 0.1,
+          "p99PhysicsMs": 0.7,
+          "peakMeasuredMs": 1.4,
+          "repeatHash": "7aa7a316",
+          "deterministic": true
+        },
+        "spikes": {
+          "frames": 3113,
+          "simulatedSeconds": 120,
+          "steps": 3338,
+          "hash": "e0a7b6dd",
+          "droppedSteps": 262,
+          "maxSubsteps": 4,
+          "maxParticleSpeed": 0.03979,
+          "maxEnergy": 0.00915,
+          "maxEarlyMeanEnergy": 0.00269,
+          "maxLateMeanEnergy": 0.00252,
+          "tenSecondMeanEnergies": [
+            0.00262,
+            0.00194,
+            0.00199,
+            0.00269,
+            0.00229,
+            0.00264,
+            0.00214,
+            0.00185,
+            0.00249,
+            0.0023,
+            0.00252,
+            0.00226
+          ],
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 0.0305,
+          "meanBudgetMet": true,
+          "sampledFramesOver2ms": 1,
+          "fractionOver2ms": 0.00033,
+          "everyMeasuredFrameWithinBudget": false,
+          "p95PhysicsMs": 0.1,
+          "p99PhysicsMs": 0.8,
+          "peakMeasuredMs": 3,
+          "repeatHash": "e0a7b6dd",
+          "deterministic": true
+        }
+      }
+    },
+    "heap": {
+      "available": true,
+      "framesPerWindow": 420,
+      "retainedGrowthBytes": 0,
+      "rawDeltas": [
+        4636,
+        0
+      ]
+    },
+    "recovered": {
+      "before": "7ba94774",
+      "after": "7ba94774",
+      "bufferInvalidated": true,
+      "recoverySteps": 0
+    }
+  },
+  "reverseOrderPhysics": {
+    "base": {
+      "failures": [
+        "Village steady: 114 measured frames exceeded 2 ms",
+        "Village spikes: 102 measured frames exceeded 2 ms",
+        "Tidelight steady: 2 measured frames exceeded 2 ms",
+        "Tidelight spikes: 1 measured frames exceeded 2 ms",
+        "Creek steady: 2 measured frames exceeded 2 ms",
+        "Creek spikes: 1 measured frames exceeded 2 ms"
+      ],
+      "throttle": 4,
+      "cloth": {
+        "apron": {
+          "frames": 1800,
+          "invertedFrames": 0,
+          "minClearanceMm": 2.99997,
+          "negativeFrames": 0,
+          "perFrameTenthsMmInt16LE": "pACqAFoAlACAAFcAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAHYAsgCzAIwAZgAkAB4AHgAeAB4AHgAeAB4AIQAnADAAHgAeAB4AHgAeAB4APgA/AEcALQAtAB4AHgAhAD0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACkARQA3ACIAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAHIA8ADIAC4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AHgAeAB4AHgAeAB4AZABvAHoAWwCBAG4AZQA/AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKQAuACcAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAzAI8AjgCUAHAAUAAtADcARAAeAB4AHgAeACEAMQA3AB4AHgAeAB4AHgAeAFYAfQB+AIUALQAeAB4AHgA5ACAAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAsAEwAWQBQAD8AKAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgBDALQAsAB+AEkALgAeAB4ANgAeAB4AHgAeAB4AIAAvAB4AHgAeAB4AHgAeAFoAYgBmAEwAXAB6AIEAcgAeAB4AHgAeAB4AHgAeACAAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgArAE0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCGAIYAiABjAIgAawBlAFgAHgAeAB4AHgAeAB4AIAAeAB4AHgAeAB4AHgA6ADwANgA2AB4AKAAeAB4AHgBMAB4AHgAeAB4AIgAtACMAHgAeAB4AHgAeADMAOwA0ACwAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AQQDBAL8AvwAwAB4AHgAeACYAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACEAKwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAE4APgAxAB4AHgAeAB4AIQAlAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AfwCfAKIAfQB6ADgAIgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJgAeADAAXwAeAB4AHgAiAB4AHwAmAB4AHgAeAB4AHgAeACAAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AeQDXALoAOgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AOwBKAFkAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIQAjAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeADYAsQC1AMIATAAeAB4AHgAeAB4AHgAeAB4AOwBIAEkALQAeAB4AHgAeAB4AJAAfAB8AJQAeACcAHgAeAC0ARgAeAB4AHgA+AHUALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAtADkAcQAeAB4AHgA+ACcAaQAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAGkAhwAeAB4AHgAeAB4AHgAeAHkAUgAtAC0ALQAtAC0ALQAvADkASwAvAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAwACAAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAwAB4AHgAoAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ALQAtAB4ALwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAyADEAMgA1AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AHgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAwADMAHgAeAB4AHgAeAB4AHgAeAB4AHgBJAHIAaAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB8AHgAeAB4AHgAeAB4AHgAeAB4AHgAfAC0ALQAeADUAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AmQAeAB4AHgAeAB4AHgAeAB4AHgBpAFoAeQCSAEcAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4ANAAtACMAJwA5ADMAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AjgB7AB4AHgAeAB4AHgAjAB4AHgAeAB4APwBQAC8AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AMQBOAHMAnACcAB4ALgAeAB4AHgAeAB4AHgAeAB4AHgAtADoAHgAeADMATQB4AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAuAFgAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAMQAEAFTAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeALgALQAeAB4AHgAeAB4AHgApAB4AHgAeAB4AHgAeAB4AHgAeAB4AKAAeAB4AHgAsADkALQBKAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeADwAVgBRAEYAMAAeAB4AHgAeAB4AHgAeAB4AHgAeAJgAEwGtAC0AHgAeAB4AHgAeAB4AHgAjACkAHgAeAB4AHgAeAB4AHgAnAB4AHgAlAD4ASQBVAB4AHgAeAB4AHgAeAB4AHgAeAB4AJAAeAB4AHgAeAB4AYQBpAG0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4A9wClAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAEAASABBAF8ALAAeAB4AHgAeAB4AHgAeAB4AHgAeAGAAXwBXACQAIwAhAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAD4ArgC/ANMAVgAtAB8AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeADoALQBEAGgALgAeAB4AHgAeAB4AHgAeAB4AHgAtAEgARwBPACgAXQBiAEgAVQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AWQCjAKAAJgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeADsAiACTAKUAKwAeAB4AHgAeAB4AHgAeAB4AHgAeADYAnwCjACYAHgAeACQAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHwAeAB4AHgBaAIcAaQB0AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAzADkAMQAsAB4AHgAeACIALgAiAB4AHgAeAB4AHgAeAB4AHgAeAFYAbQBtAHsAHgBTAC0AMAAgAB4AHgAeAB4AHgAeAB4AHgAeAB4AJAA6ADcALgAeAB4AHgAeACYALgAeAB4AHgAeAB4AHgAeAB4AHgAxAB4AHgAeAB4AagA8AC0ASQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AfgCHAI0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeADUAewCRAKUAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAHAAfQCEAB4AHgAeAB4AMwAwAB4AHgAeAB4AHgAeAB4AHgAeAB4ARwBBAEsAHgBnAEgALQA8AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeADAAZwBrAGkAXQAkAB4AHgAeAB4AHgAeAB4AHgAeAB4A8gCyAEYAJgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ASwCYAJMAdgAtAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgA7AEYASwAtAB4AHgAeAB4AHgAeAB4AHgAeADUAtAC9AJ0ALQAnAC0ALAAkAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgBwAHIAcgAtAC0AHwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIwBhAGIA"
+        },
+        "skirt": {
+          "frames": 1800,
+          "invertedFrames": 0,
+          "minClearanceMm": 2.99998,
+          "negativeFrames": 0,
+          "perFrameTenthsMmInt16LE": "cQCCACEAIgAeAB4AKgAeAB4AHgAfAB8AIAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgBVAGMAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHwApAD4AQABFAFIAMgAeAB4AIAAlACcAKQAvAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACcALgBUAGAAVAAeACUALQAtADEAPQAeAB4AHgAeAB4AHgAeAB4ATQBPAH0AdQByAHAAegCGAFoATgBOAFQAXABmAHMAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAF8AaAAxACAALQAtAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgB9ADkARwBKAEQARQBPAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ATABlAC0AHgAeAB4ALQAtAB4AHgAeAB4AHgAeAB4AHgAeAIcAYQBmAGIAZABsAHkAQAAsACwAMgA3ADwAQwAeAB4AHgAeAB4AHgAeAB4AHgBtAB4AHgAeAC0ANwBeAGsALQAeAC0ALQAtAC0AHgAeAB4AHgAeAB4AHgAeAB4AZQBoAIwAhgCDAIYAjQBMADYALQA3ADsAPwBGAB4AHgAeAB4AHgAeAB4AHgAeAFkAHgAeAB4AHgAtAFsAZQAsACQALQAtAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgBxAEsAUwBPAE0AUwBfAB4AHgAeACUAJgAkACQAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AUwBlACsAHgAeAC0ALQAtAB4AHgAeAB4AHgAeAB4AHgAeAHQAbwBmAGYAagByAFMAKQAhACcALQAvADMAJwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ARgBfAHAAHgAnAC0ALQAtAC8AHgAeAB4AHgAeAB4AHgAeACoAZgCTAIwAiACCAIwAcgBGADoAOwBBAEkAUgBfAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQBJAF4AUQAeACoALQAtAC0ALQAeAB4AHgAeAB4AHgAeAB4AhQBhAGgAXQBYAFcAXgAzAB4AHgAeACEAIAAfAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAEcAZAAtAB4AHgAeACIALQAeAB4AHgAeAB4AHgAeAB4AHgCEAEcAXABXAFYAXABqADcAJQAnAC0AMAAzADgAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtADsAYABuADQAHgAtAC0ALQAzADsAHgAeAB4AHgAeAB4AHgAeAFEAUwCCAHsAbgB7AIQAawBSAE0AUABTAFcAXQBIAB4AHgAeAB4AHgAeAB4AHgBxAB4AHgAeAB4ALQBZAGYALQAmACEALQAtAC0AHgAeAB4AHgAeAB4AHgAeAB4AOAAeACEAMwAyADQAPgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAEsAZAAtAB4AHgAeAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgB3AHcAewB3AHoAHgAeAB4AHgAtADkAUABeAH4AlABtAE4ALAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAqACsAJgAgACkAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AVwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ANQBLAHcAjQCCAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQBgAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACsAPAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ASAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIwAtAEYAWgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAEEAUQBlAI0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACwAOgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgA/AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAoAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AgAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB8AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQBOAGoAjgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKAArACcAKwBIAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ALQBVAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAH4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AkQAtAHAAbAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQBaAGMAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AlgB8AG4AZwBoAHEAXwApAB4AKAAtAB4AHgAeAB4AHgAeAB4AHgAeAHYAdwAkAC8AOQBcAGQAcQAeAB4AJwAtAB4AHgAeAB4AHgAeAB4AHgBhAGUAjgCKAIoAmgCZAFUAPgAtADUAHgAeAB4AHgAeAB4AHgAeAB4AfAB8AB4AHgAtADwAXgBoAB4AJwAtACkAHgAeAB4AHgAeAB4AHgAeAIwAbABWAEgAQABBAC4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgA+AB4AHgAeAB4ALQBgAGQAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AlAB5AGkAYQBgAGcAVwAhAB4AIwAqAB4AHgAeAB4AHgAeAB4AHgAeAHsAewAeAC0ALgBRAGIAcwAeACAALQAtAB4AHgAeAB4AHgAeAB4AHgBwAHQAnACYAJYAnwCOAEoALQAtADIAHgAeAB4AHgAeAB4AHgAeAB4AegB6AB4AHgAtAEEAXgBrAB4AJAAtAC0AHgAeAB4AHgAeAB4AHgAeAJsAggBwAGUAYABiAE8AHgAeAB4AIAAeAB4AHgAeAB4AHgAeAB4AHgBaAD0AHgAeAB4ANQBgAGoAIgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AlQB4AGYAXABYAF0ATgAeAB4AHgAjAB4AHgAeAB4AHgAeAB4AHgAeAGIAcQAeAB4ALQA9AGAAbAAeACYALQAtAB4AHgAeAB4AHgAeAB4AHgCKAI0AhwCBAIAAhQB2ADYAJgApAC0AHgAeAB4AHgAeAB4AHgAeAB4AegB5AB4ALQAtAEgAXwBuAB4AIQAtAC0AHgAeAB4AHgAeAB4AHgAeAIAAhACQAIkAiACKAHoAOAAmACgALQAeAB4AHgAeAB4AHgAeAB4AHgAyAIEAHgAeAC0AQABhAG0AHgApAC0ALQAeAB4AHgAeAB4AHgAeAB4AkAB5AGUAWQBSAFUARwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJQAeAB4AHgAvAGAAZwAkAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCFAHwAawBjAGAAZwBdACIAHgAhACkAHgAeAB4AHgAeAB4AHgAeAB4ANAB4AB4ALQAvAFAAYQByAB4AIAAtAC0AHgAeAB4AHgAeAB4AHgAeAGkAbACUAI8AjACaAJ0AWABCADUAPQAeAB4AHgAeAB4AHgAeAB4AHgAwAHoAHgAtAC0ASgBiAHAAHgAkAC0ALQAeAB4AHgAeAB4AHgAeAB4AUQB8AGgAWgBRAFIARQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAnAFYAYwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAGsAVwBNAEoAUgBMAB4AHgAeACMAHgAeAB4AHgAeAB4AHgAeAB4AHgB5AB4ALQAxAFMAYgB0AB4AIAAtAC0AHgAeAB4AHgAeAB4AHgAeAF8A"
+        },
+        "scarf": {
+          "frames": 1800,
+          "invertedFrames": 0,
+          "minClearanceMm": 86.83156,
+          "negativeFrames": 0,
+          "perFrameTenthsMmInt16LE": "iwV0BVIFKwUDBdkEswSVBH8EcARmBGAEWARJBDoELQQhBBcEEAQNBA4EFwQcBBwEGQQOBAIE9gPtA+wD8gP+Aw4EIAQxBEEETwRcBGcEcQR5BIQEhgSFBH0EaARSBD4EMgQvBDEENwQ+BEUETARRBFQEVQRVBFQEUgRRBFcEVgROBEIEMQQhBBMECwQHBP8D/QP9A/wD+QP1A+8D5gPdA9MDyQPDA7gDsAOnA5oDkQOJA4YDiQOPA5gDowOuA7gDwwPMA9YD3wPpA/MDCgQMBA8EDQT9A+cD1gPKA8gDzwPdA+0D/wMPBB4EKwQ1BDwEQQREBEYETwRQBE8ESwRCBDoENQQzBDUEOwRDBE0EVgRYBFcEUwRNBEUEPAQzBC8EKAQiBBsEEQQJBAMEAgQFBAsEEQQZBCEEKQQxBDkEPwRHBE8EWARqBHAEcwRtBFgEPQQmBBcEEAQSBBkEJAQwBDwERwRPBFUEWARaBFoEWARgBF8EWAROBEAEMQQlBBsEFQQVBBoEIQQqBDYEOwQ9BDwENwQvBCYEIgQYBA8EBgT7A/ID7QPrA+0D8APzA/cD+gP+AwIEBgQLBBAEFwQfBDQENwQ6BDUEIgQJBPUD5wPiA+cD8gMABA8EHQQoBDIEOAQ6BDsEOAQ1BDcENQQvBCcEGwQRBAsECQQLBA4EEQQVBBsEIQQpBDIEPQRLBFgETwRMBEUEOwQwBCIEFQQMBAcEBgQHBAkEDQQSBBgEIAQpBDUEQgRRBF4EdgR9BIEEdQRkBEkEMgQhBBcEFgQcBCgENgREBFAEWARdBF8EXgRaBFQEUwRPBEoERAQ7BDUEMgQyBDUEOQQ9BEEERgRMBFQEXQRoBHUEggSLBIcEfQRyBGUEVQRHBD4EOAQ2BDUENAQ0BDYEOQQ9BEIESARQBFoEZQR5BH4EeQRsBFsEOwQeBAgE+QP2A/0DBwQSBBsEIQQkBCMEHwQYBA8EBAT/A/YD7QPkA9cDzgPIA8YDxwPKA84D0wPYA90D4gPnA+0D9AP9AwcEHAQjBCgEJgQVBAIE8wPqA+sD9AMCBBEEIAQjBCkEMAQ7BEgEWAReBGUEZARfBFoEUwRKBEYERgRDBDwEOwQ9BEIERgRKBEwETARMBEoESQRIBE0ETQRKBEMENwQrBCIEHgQgBCUELQQ1BD4ERwRQBFkEYgRrBHUEfgSRBJgEmgSUBHwEXgRCBC0EIgQhBCcEMgRABE4EWwRlBGoEcARzBG8EagRqBGQEXARSBEYEPAQvBBsEDwQIBAUEAwQBBP4D+QPzA+oD4QPXA84DygPDA7sDsQOiA5UDiwOGA4cDiQONA5IDmAOfA6cDrwO3A78DyQPTA+4D7gPwA+4D3APEA68DoQOcA6EDsAPEA9sD8wMIBBwEKwQ4BEAERwRKBFUEVARWBFQEUARQBFMEUgRLBEkESwRPBFIEVARUBFEESwRFBD8EOQQ7BDgENQQvBCMEGAQRBA8EEgQaBCMELQQ4BEIETARVBF0EZgRvBHkEigSPBI8EhgRtBE8ENQQjBBoEGQQcBCUELwQ6BEUETgRVBFkEXARcBFsEXwReBFcETQRABDQEKAQQBAEE9wPyA/AD7gPrA+YD4APYA9ADzwPEA70DuQOpA6oDqQOpA6cDpAOgA5oDlQOSA5IDlgOfA6wD1gPWA+oDAgQWBCEECgT6A9gDtgOXA3wDawNkA2cDcgOGA6ED1gPqAwsEKARBBFUEYwRsBHEEdgR5BHQEbQRkBFUEQAQ1BDIEQwRHBE4EVARaBFsEWARSBEkEQAQ2BDAEKQQeBBEEBAT6A/YDAgQJBBYEJAQ2BEUEUgRcBGQEagRxBHUEdwRxBGoEVAQ4BB8EGQQKBAoEFgQmBDUEQwRQBFkEXgRhBGEEXARVBE8ESwQ9BDkEPwQ9BDsEOQQxBCsEJwQiBB4EGQQTBAwEBAT8A/QD7gPqA+YD4QPZA88DxwPCA8ADvwO9A7wDuwO7A70DwwPKA9QD4QPxAwMELwQtBBgEIAQTBAAE7gPiA9oD1wPWA9kD4QPsA/oDCQQbBC0ETwRZBGcEbwRwBF8ETQQ1BCEEEQQDBPcD7gPoA+YD7AP5AwoELAQ3BEcEUQRXBFkEVwRWBFIESQQ7BCwEGwQLBP4D+AP5AwoEFQQnBDYERgRUBGEEawR0BHoEegRzBF4ERQQrBBUEBQT+AxIEFAQiBDYESQRZBGQEagRrBGkEYwRaBFIESgREBDwEMwQrBDMENAQ1BDcEPARBBEcETwRZBGUEbgRjBFYESQQ9BC4EJAQZBB0EFgQRBA8EDwQQBBIEFQQYBBwEIAQmBCoELgQ0BDsEQQRABD0EMAQcBAgE+APrA+MD3gPbA9oD2wPdA+QD6gPxA/oDAwQNBCYEKAQnBBwECgT3A+kD2gPMA8EDuAOxA68DswPAA9QD7gMMBD4EUQRmBGQEYwRkBGgEawRqBGUEWgRNBD4EMwQtBC4ENAQ/BFoEagR/BI8EmwSUBIoEYwRKBC8EHgQPBPID2gPMA8gDzwPeAwYEEgQqBD4ETwRcBGUEaQRqBGoEaARfBFQERwQ5BC0EJgQmBDYEQAROBFoEZwR1BIAEigSSBJoEngSSBIgEfQRuBFcERQQ7BEoETARRBFEEVARYBF4EZARqBHEEdwR7BHIEZwRZBE8ERgRKBDEEIgQbBBsEHgQgBB8EHgQaBBQEDQQEBPsD8QPqA+MD1QPWA8wDxAO+A7wDvAO9A74DvQO8A7wDvgPDA8kD0QPcA+sD/AMkBAcECwQDBPgD7APjA98D3gPhA+cD7wP4AwUEEgQgBDAEPwRdBGYEeAR4BG8EYARLBDkELgQhBAcE9APpA+UD5wPwA/4DDwQyBD0ETgRZBGEEaARtBHEEdwR7BHoEdgRwBGoEZQRlBGgEbgSDBIwEmQSnBLEEtwS5BLYEjgR2BEwEIgT4A9cDvwOwA60DtQPcA+YDBAQlBEQEXgRxBH0EgwSBBHsEdgRuBGMEVQQ9BCEEDQQOBAYEBwQLBA8EEQQOBAcE/APuA+AD0APBA7ADpgOZA4sDgAOCA34DggOIA5EDmgOiA6oDsgO6A8EDyQPPA9cD3wPYA9sDzAPTA7ADpwOsA7cDwwPQA98D7gP9AwkEFgQgBCgEMAQ5BEIESgRSBFEEUQRTBFcEXARaBFMETwRNBEsESQRHBEUEQwRDBEQEOQQ5BCsEFwQIBAMEBQQPBCQEMAQ8BEQESwRPBEMENgQpBB0EEwQJBAEE+gP0A+4D6wPpA/UD8gPxA+gD4QPhA+YD7QP1AwAEDAQYBCUEMQQ8BEcEUgRlBFgEQwQvBBwEDQQCBPoD8wPtA+gD5wPmA+cD6QPrA+4D8wMGBAUEBQT+A+gD0QO9A64DpwOkA6MDogOhA6ADngObA5gDlQOZA5MDkgOSA5IDlQOZA6ADqQOzA74DygPWA+ID7gP7AwoEGgQ7BEMESQRBBDMEKgQoBCUEJQQoBC8ENwRABEsEWARmBHQEigSTBJUEjQSHBIIEdQRpBF4EUwRHBDoELQQfBBEEBQT6A/MD9gP0A/AD6QPdA9QD0QPUA9wD5gPxA/0DCQQUBB8EKQQyBDoERwRKBEoERQQ5BC0EJAQfBBwEGwQbBBwEHwQiBCYEKgQvBDUERARGBEYEPAQxBCsEKAQoBCwEMQQ3BDwENwQvBCUEGgQOBAYE+wPxA+gD3wPZA9YD1gPWA9cD2QPcA+AD5gPsA/MD+wMGBB8EIwQpBCgEGQQIBPoD8gPxA/UD+wMBBAcEDQQQBBMEFAQTBBgEFgQVBBMEDwQOBBAEEwQWBBoEHgQjBCkEMQQ7BEcEVQRMBEgEPgQwBBsEBwT6A/MD8QP1A/wDBQQQBBwEKgQ5BEcEVARmBGwEcwRuBGQEXgRaBFgEVgRUBFMEUwRPBEoEQwQ7BDQELgQxBC8EKgQhBBQECQQDBAIEBgQMBBUEHwQrBDkESARWBGQEcQSABHQEaARcBFIESwRIBEYERQRFBEUESARKBE8EVwRgBGwEcgR1BG8EYwRPBD0ELwQoBCYEKwQzBDsERgRSBF8EWQRRBEYEQAQ0BCkEHgQTBAsEBgQDBAAE/wP+AwAEAgQGBAoEDwQXBCAENgQ7BEAEPgQuBBwEDQQDBAEEBAQJBA0EDwQQBA8EDQQJBAMEAgT9A/gD8gPsA+kD6QPqA+0D8APzA/gD/wMIBBIEHQQrBDwETQREBDYEIgQRBAUE/wP/AwMECgQTBB8ELAQ6BEkEWQRpBIAEhQSFBH0EdgRyBGwEZAReBFkEVAROBEcEQAQ4BDAEKQQlBCoEKgQnBCEEFgQOBAsEDQQUBB4EKQQ1BEEETgRbBGgEdAR/BI4ElASZBI4EgAR1BGwEZQReBFcEUQRNBEwETQRRBFYEXgRiBGQEXwRVBEcENgQoBCAEHAQdBB8EHQQXBBAEBgT7A+8D4gPZA8wDwgO4A68DqAOkA6MDogOiA6MDpQOpA64DtAO7A8MDzgPnA+sD8QPwA+ID0QPEA70DvgPDA8sD1APdA+YD7QPzA/gD+wMGBAUECQQMBA8EEwQZBCEEKQQxBDkEQgRNBFkEaARkBFcETARLBEUEOwQvBB4EEAQIBAUECQQRBB0EKwQ6BEoEWQRnBHMEfQSNBJEEkQSGBHgEaQReBFYEUQRMBEgERARABDoENAQuBCkELAQpBCQEHgQTBAoEBgQGBAsEEQQZBCIELQQ4BEMETwRbBFsESgQ2BCIEDwT9A+8D5QPeA9gD1APSA9ED0QPRA9ID1APXA90D8APuA+4D5wPTA7wD"
+        }
+      },
+      "scenes": {
+        "Village": {
+          "steady": {
+            "frames": 3600,
+            "simulatedSeconds": 119.99999999999575,
+            "steps": 7200,
+            "hash": "9fb9d5de",
+            "droppedSteps": 0,
+            "maxSubsteps": 1,
+            "maxParticleSpeed": 0.16978,
+            "maxEnergy": 1.27024,
+            "maxEarlyMeanEnergy": 0.67967,
+            "maxLateMeanEnergy": 0.69241,
+            "tenSecondMeanEnergies": [
+              0.68447,
+              0.66038,
+              0.67635,
+              0.64952,
+              0.67967,
+              0.66158,
+              0.6684,
+              0.67022,
+              0.67123,
+              0.65716,
+              0.69241,
+              0.65247
+            ],
+            "boundedEnergy": true,
+            "nanFrames": 0,
+            "meanPhysicsMs": 0.69701,
+            "meanBudgetMet": true,
+            "sampledFramesOver2ms": 114,
+            "fractionOver2ms": 0.03276,
+            "everyMeasuredFrameWithinBudget": false,
+            "p95PhysicsMs": 1.7,
+            "p99PhysicsMs": 3.5,
+            "peakMeasuredMs": 83.9,
+            "repeatHash": "9fb9d5de",
+            "deterministic": true
+          },
+          "spikes": {
+            "frames": 3113,
+            "simulatedSeconds": 120,
+            "steps": 6676,
+            "hash": "90e06bea",
+            "droppedSteps": 1834,
+            "maxSubsteps": 4,
+            "maxParticleSpeed": 0.20276,
+            "maxEnergy": 1.2857,
+            "maxEarlyMeanEnergy": 0.68963,
+            "maxLateMeanEnergy": 0.70332,
+            "tenSecondMeanEnergies": [
+              0.67538,
+              0.68963,
+              0.62038,
+              0.67739,
+              0.64329,
+              0.67208,
+              0.68152,
+              0.64835,
+              0.66438,
+              0.65355,
+              0.64753,
+              0.70332
+            ],
+            "boundedEnergy": true,
+            "nanFrames": 0,
+            "meanPhysicsMs": 0.66478,
+            "meanBudgetMet": true,
+            "sampledFramesOver2ms": 102,
+            "fractionOver2ms": 0.03408,
+            "everyMeasuredFrameWithinBudget": false,
+            "p95PhysicsMs": 1.6,
+            "p99PhysicsMs": 4.7,
+            "peakMeasuredMs": 89.5,
+            "repeatHash": "90e06bea",
+            "deterministic": true
+          }
+        },
+        "Tidelight": {
+          "steady": {
+            "frames": 3600,
+            "simulatedSeconds": 119.99999999999575,
+            "steps": 3600,
+            "hash": "556dd5d6",
+            "droppedSteps": 0,
+            "maxSubsteps": 1,
+            "maxParticleSpeed": 0.06077,
+            "maxEnergy": 0.00701,
+            "maxEarlyMeanEnergy": 0.00178,
+            "maxLateMeanEnergy": 0.00173,
+            "tenSecondMeanEnergies": [
+              0.00153,
+              0.0017,
+              0.00144,
+              0.00178,
+              0.00148,
+              0.00176,
+              0.00153,
+              0.00173,
+              0.00159,
+              0.00169,
+              0.00157,
+              0.00171
+            ],
+            "boundedEnergy": true,
+            "nanFrames": 0,
+            "meanPhysicsMs": 0.06129,
+            "meanBudgetMet": true,
+            "sampledFramesOver2ms": 2,
+            "fractionOver2ms": 0.00057,
+            "everyMeasuredFrameWithinBudget": false,
+            "p95PhysicsMs": 0.5,
+            "p99PhysicsMs": 0.9,
+            "peakMeasuredMs": 2.5,
+            "repeatHash": "556dd5d6",
+            "deterministic": true
+          },
+          "spikes": {
+            "frames": 3113,
+            "simulatedSeconds": 120,
+            "steps": 3338,
+            "hash": "4db0cf67",
+            "droppedSteps": 524,
+            "maxSubsteps": 4,
+            "maxParticleSpeed": 0.05564,
+            "maxEnergy": 0.00712,
+            "maxEarlyMeanEnergy": 0.0019,
+            "maxLateMeanEnergy": 0.00188,
+            "tenSecondMeanEnergies": [
+              0.00137,
+              0.0019,
+              0.00153,
+              0.00188,
+              0.00155,
+              0.00124,
+              0.00188,
+              0.0016,
+              0.00177,
+              0.00178,
+              0.00119,
+              0.00172
+            ],
+            "boundedEnergy": true,
+            "nanFrames": 0,
+            "meanPhysicsMs": 0.0561,
+            "meanBudgetMet": true,
+            "sampledFramesOver2ms": 1,
+            "fractionOver2ms": 0.00033,
+            "everyMeasuredFrameWithinBudget": false,
+            "p95PhysicsMs": 0.4,
+            "p99PhysicsMs": 0.9,
+            "peakMeasuredMs": 2.7,
+            "repeatHash": "4db0cf67",
+            "deterministic": true
+          }
+        },
+        "Creek": {
+          "steady": {
+            "frames": 3600,
+            "simulatedSeconds": 119.99999999999575,
+            "steps": 3600,
+            "hash": "19c8bbd1",
+            "droppedSteps": 0,
+            "maxSubsteps": 1,
+            "maxParticleSpeed": 0.08843,
+            "maxEnergy": 0.00924,
+            "maxEarlyMeanEnergy": 0.00257,
+            "maxLateMeanEnergy": 0.00257,
+            "tenSecondMeanEnergies": [
+              0.00254,
+              0.00216,
+              0.00252,
+              0.0021,
+              0.00257,
+              0.00205,
+              0.00257,
+              0.00192,
+              0.00251,
+              0.00192,
+              0.00245,
+              0.00204
+            ],
+            "boundedEnergy": true,
+            "nanFrames": 0,
+            "meanPhysicsMs": 0.02899,
+            "meanBudgetMet": true,
+            "sampledFramesOver2ms": 2,
+            "fractionOver2ms": 0.00057,
+            "everyMeasuredFrameWithinBudget": false,
+            "p95PhysicsMs": 0.1,
+            "p99PhysicsMs": 0.7,
+            "peakMeasuredMs": 2.8,
+            "repeatHash": "19c8bbd1",
+            "deterministic": true
+          },
+          "spikes": {
+            "frames": 3113,
+            "simulatedSeconds": 120,
+            "steps": 3338,
+            "hash": "f97cd25c",
+            "droppedSteps": 262,
+            "maxSubsteps": 4,
+            "maxParticleSpeed": 0.08843,
+            "maxEnergy": 0.00897,
+            "maxEarlyMeanEnergy": 0.00265,
+            "maxLateMeanEnergy": 0.00242,
+            "tenSecondMeanEnergies": [
+              0.00266,
+              0.00208,
+              0.00184,
+              0.00265,
+              0.00235,
+              0.00257,
+              0.00233,
+              0.00177,
+              0.0024,
+              0.00238,
+              0.00241,
+              0.00242
+            ],
+            "boundedEnergy": true,
+            "nanFrames": 0,
+            "meanPhysicsMs": 0.0283,
+            "meanBudgetMet": true,
+            "sampledFramesOver2ms": 1,
+            "fractionOver2ms": 0.00033,
+            "everyMeasuredFrameWithinBudget": false,
+            "p95PhysicsMs": 0.1,
+            "p99PhysicsMs": 0.7,
+            "peakMeasuredMs": 3.8,
+            "repeatHash": "f97cd25c",
+            "deterministic": true
+          }
+        }
+      },
+      "heap": {
+        "available": true,
+        "framesPerWindow": 420,
+        "retainedGrowthBytes": 0,
+        "rawDeltas": [
+          0,
+          0
+        ]
+      },
+      "recovered": {
+        "before": "fbc348cd",
+        "after": "fbc348cd",
+        "bufferInvalidated": true,
+        "recoverySteps": 0
+      }
+    },
+    "branch": {
+      "failures": [
+        "Village steady: 72 measured frames exceeded 2 ms",
+        "Village spikes: 36 measured frames exceeded 2 ms",
+        "Tidelight steady: 9 measured frames exceeded 2 ms",
+        "Creek steady: 4 measured frames exceeded 2 ms",
+        "Creek spikes: 1 measured frames exceeded 2 ms"
+      ],
+      "throttle": 4,
+      "cloth": {
+        "apron": {
+          "frames": 1800,
+          "invertedFrames": 0,
+          "minClearanceMm": 2.99997,
+          "negativeFrames": 0,
+          "perFrameTenthsMmInt16LE": "HgAeAB4AHgA4AE8AYABPAC0AKAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAEYAJQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC4AVQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACQALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAkAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgA5AFEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAgAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAfACEAJgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtADgAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJwBPAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgAuAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ARwBUAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAC0AHgAeAB4AHgAeAB4AHgAeAB4AFQGhAIUAcgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCcAKgAowAhAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAjAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgBlAC4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCVAHEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgAeAC0AZgBbAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4AHgAeAB4AHgAjADYAOgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ATQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgA2AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAN8A6wDHAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAKMAiwCJAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAA4BEAHyAJYAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAJoAawAuAB4AHgAeAB4AHgAeACAAHgAgAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCjAMsAYQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACoAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeANkAnAAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCzALUAHgAeACIAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgB8AI8AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACUAWAAvAEEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgArADQALQAtAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AHwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AQwAkAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACEALQBAAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAjAC0AOwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAoAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAqAFUAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACoAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACgALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAfAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQA3AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAgACkAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACkAQABEAIoANQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACYALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgAxAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AOgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIwAeAB4AHgAeAB4AHgAeAB4A"
+        },
+        "skirt": {
+          "frames": 1800,
+          "invertedFrames": 0,
+          "minClearanceMm": 2.99998,
+          "negativeFrames": 0,
+          "perFrameTenthsMmInt16LE": "HgAeAB4AHgAeAB4AHgAeACQAHwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACgAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACkAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AQwA1AC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAC0ALAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAfAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACYAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgArAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4A"
+        },
+        "scarf": {
+          "frames": 1800,
+          "invertedFrames": 0,
+          "minClearanceMm": 86.23211,
+          "negativeFrames": 0,
+          "perFrameTenthsMmInt16LE": "iwV5BVUFKwUDBeAEwgSpBJQEgwR2BG4EYQRLBDgEKQQeBBgEFwQbBCEEKgQuBCwEIwQSBPwD6APXA84DzgPYA+gD+wMPBCMENwRJBFoEaQR0BH4EhQSMBJAEjAR/BGMEQwQoBBYEDwQRBBoEJgQzBEAESwRVBFsEXgRfBF4EXARbBFoEVwRSBEwERAQqBA8E/APxA+wD6QPoA+YD5APgA9sD0wPLA8MDvQO5A7cDtQOwA6cDmAOJA34DeAN6A4ADiQOVA6EDrgO7A8gD1APhA+0D+gMJBBoELwQ5BDwENQQhBAYE7APYA9AD0wPhA/YDDQQmBD4EUwRkBHEEegR/BIAEfwR8BHsEeQR0BGgEUgRDBDsEOQQ7BD4EQgREBEUERARABDsENQQwBCwEKwQrBCoEJQQcBA0E/APwA+oD6wPwA/gDAgQNBBgEIgQtBDcEQQRLBFcEZQR1BIIEhQR9BGUESAQuBBwEFAQXBCMELQQuBDIEOAQ/BEcEUARaBGMEbAR2BHYEcQRrBGQEWgQ5BBgE/gPsA+UD6QPzA/4DCgQUBBsEHwQgBBwEFwQPBAYE/gP4A/MD7gPoA+MD4gPkA+gD7QPyA/gD/QMDBAkEEAQXBB4EKAQ1BEQEVQRjBGcEYARIBC0EFQQGBAIEBwQQBB0EKgQvBDYEPgRIBFMEWwRbBFsEWgRbBFkEUgRJBD0EMAQjBBkEEgQMBBAEGgQlBDEEPwRJBE4ETwROBEkEQwQ9BDgENAQvBCcEHwQaBBgEGQQcBCAEJAQpBDAENwRABEkEUQRaBGUEcwSDBJIEjQSGBH0EcQRbBEEELwQmBCcELgQ5BEYEUQRcBGQEagRtBG4EbgRuBG8EbwRsBGYEXARPBEIEOAQzBDIENQQ7BEIETARWBGEEbQR5BHYEbARgBFUETARDBDkELgQeBA0E/APvA+YD4wPlA+sD8gP7AwUEDgQXBB4EJQQpBC0EMgQ1BDQEMAQnBBME/APqA98D2wPcA+AD5QPpA+4D8gP1A/UD9QP1A/UD9gP5A/oD+APzA+oD4QPZA9cD2gPhA+oD8wP+AwkEFgQkBDMEQwRTBGYEXwRaBFgEVAROBEUEOAQqBBwEDwQHBAYECwQUBCEEMARABFAEYARvBHwEhQSKBI4EkASMBIAEZgRKBDIEIQQXBBIEEAQRBBQEFwQaBB0EIAQiBCMEJQQpBC0EMgQ3BDYEMAQlBBoEFAQTBBYEHQQkBCwENAQ9BEYEUARaBGUEZQRWBEkEPgQzBCUEFQQBBOwD2APJA78DugO4A7oDvQPAA8MDxgPKA84D0QPWA9wD5APxA/UD8gPmA8wDrAONA3YDaANmA2wDegOLA5wDrQO8A8cDzwPUA9UD1QPUA9MD1QPXA9kD2wPfA+YD8QP9AwoEFwQjBDAEPQRKBFgEZwRzBGkEYQRbBFcEVAROBEUENwQnBBoEEgQQBBMEGgQiBCwENwRCBEwEVgRgBGkEdASABI0EnASiBJ0EjQRuBEgEIwQEBPAD6QPqA/QDAwQTBCMEMQQ9BEUESQRKBEcEQQQ7BDYEMQQpBCMEIAQgBCQEKQQtBDEENgQ8BEIESgRGBDcEJQQTBAIE9APqA+ED1APGA7QDoAORA4YDggOCA4YDiwOSA5oDogOqA7IDuQPBA8oD1QPhA+sD6wPhA8oDrwOZA4wDiQOOA5gDpgO2A8UD1APgA+oD8gP4A/4DDgQPBBYEHgQXBB0EIAQmBC0ENQQ+BEUESgRPBFUEXARdBFsEXgReBF0EXgRgBGIEYARWBDsEKwQWBAAE6wPZA80DygPPA90D7wMEBBwEMgRGBFgEZwR1BH8EhgSJBIcEfARlBEoEMwQjBBsEGAQaBCEEKQQyBDkEQARFBEgESARJBEkESgRMBE4ESwREBDoELwQmBCAEEQQKBAgECgQMBA8EEAQPBAwEBwQABPkD8gPtA+cD3wPSA8MDtQOqA6QDpAOoA60DswO6A8EDygPSA9sD5APvA/wDFQQeBC4EPQQyBC0EFATzA9UDvQOuA6cDqgO2A8sD5gMBBBoEMARABE0EVgRbBF0EXQReBFwEVgRNBEYEQAQ9BD4EQgRHBE8EVgReBGAEXwRaBFMESgRABDYELgQoBCMEHQQUBAsEBQQEBAQECAQOBBQEGwQjBCoEMQQ3BD4ERgRRBF0EbAR5BHwEeARtBFIENAQbBAkEAQQEBA8EHwQvBEAETgRZBGEEZgRoBGgEZwRmBGkEXARaBFEESwRHBEYERARBBEMERwRLBE8EUgRTBFEETgRKBEkERQRBBD4EOgQnBCAEFwQRBA0ECgQHBAQEAgQABAAEAgQGBBQEHwQtBD4EUQRjBHMEfQRnBFsEOwQWBPID1APBA7kDvAPIA9oD7gMEBBgEKAQ0BDsEPgQ+BDkEMwQsBCcEIgQdBBkEFwQXBBYEFQQVBBUEFwQbBCAEJwQwBDsESgRVBFEETgRKBEQEOgQtBBwEDwQGBAIEAgQGBAwEEwQdBCgENARBBE4EXARqBHkEhwSUBJ4EjQSGBGwEUQQ8BC0EJAQfBB8EIgQnBCwEMQQ1BDgEOwQ/BEsETgRTBFYEVgRDBEMEQARCBEQERQRFBEIEQAQ/BD8EQwRMBF8EbwSCBJcEowScBJQEiQRqBFEENwQeBAYE8APdA9EDzQPOA9cD4wPyAwIEEQQfBCkEMAQ1BDgEOQQ4BDEEIQQDBOMDyAOyA6UDoAOgA6EDowOkA6UDpgOmA6YDpAOhA6ADoAOiA6IDnwOYA5IDkAOTA5oDowOtA7kDxQPSA+AD7QP7AwkEFwQnBDkETQRoBGQEUwRKBD4ENQQuBCoEKAQoBCgEKgQuBDQEOwREBFAEXwR0BIEEjQSZBKEEkwSCBGMEPwQbBP0D5APSA8sDywPUA+ED8AP9AwkEFQQgBCcEKwQsBCsEKQQmBCIEFwQMBAUEAgQGBA0EFgQdBCYELwQ5BEIESgRSBFoEYQRqBGUEVARFBDYEJgQWBAgE/APxA+oD5APfA9wD2gPZA9kD2gPbA9wD3wPlA+0D9wP+A/oD6wPLA6YDhgNuA2EDXgNkA28DfQOKA5YDoAOoA6wDrgOuA64DrwO4A7cDsAO0A7UDtwO8A8UD0APbA+UD8AP6AwYEEgQgBDEERQRnBHsEeQRzBG4EWQRNBDwEKgQXBAUE9QPpA+UD6QP2AwsEJAQ9BFMEZwR6BIoElwSfBJsEkgSEBG4EVgRCBDQEKwQoBCgEKwQqBCcEJAQiBB8EHQQdBB8EJAQoBCgEJQQcBBMEDwQPBBMEGQQfBCUELAQzBDsERAROBFsEYARRBEUEOAQqBBkEAwTuA9wDzwPIA8YDyAPLA9AD1gPaA94D4wPnA+oD7wP0A/gD9gPtA9gDwgOvA6MDmwOXA5YDlwOaA50DoAOiA6QDpgOqA68DtQO6A7sDugO5A7sDwgPNA9kD5QPxA/4DCgQYBCYENAREBFcEbARvBGYEXQRSBEYEPAQ0BC8ELAQsBCwELgQxBDcEPgRGBE8EVwRiBHAEfwSKBIkEfQRjBEcELgQdBBMEDgQNBA0EDwQSBBUEFwQZBBoEHQQgBCUEKAQoBCQEHAQTBA0EDQQQBBUEHAQjBCoEMgQ6BEIESwRWBGQEdQRrBGEEVgRJBDkEKwQgBBgEEwQRBA8EDgQPBBEEFAQZBB8EJgQvBDgEQwRLBEgEPAQiBAYE7gPdA9UD0QPQA9ED0gPUA9UD1wPYA9kD3APgA+UD6gPtA+wD6APlA+QD5wPuA/UD/QMFBAwEFAQcBCUELgQ6BEgEWARnBGgEXwRVBEsEPgQ3BDgENQQzBDIEMwQ1BDoEQARIBFMEYQRxBH4EfAR3BHEEZwROBDcEKAQfBBsEHAQeBCIEJgQqBC0ELgQuBC8EMQQzBDUENAQwBCkEIQQcBBoEGwQeBCMEKQQvBDYEPwRHBFAEWwRoBHgEigSJBIMEewRxBGcEUwRFBD4EPgRBBEcETgRVBF0EYwRnBGoEbQRwBHIEdARyBG0EZgRfBFoEUwRLBEcERQRFBEYERgRHBEYERARCBEAEPwQ+BDwEOAQwBCUEGgQRBAwECgQKBAsEDQQPBBMEFwQdBCMEKQQyBD0ERwRIBEEELAQWBAME9wPyA/ID9AP3A/sD/wMBBAIEAwQEBAUECAQKBAwECwQIBAEE+gP1A/QD9gP5A/4DAwQJBBAEGAQhBC0EOgRKBFwEVwRSBEwERQQ8BDUELwQsBCsEKwQtBDEENgQ8BEQETQRXBGQEdASGBJgEowSjBJkEgARmBFAEQQQ3BDIEMgQ0BDcEOgQ9BEAEQgRDBEUESARMBFAEUARNBEYEPgQ5BDcEOQQ9BEIESAROBFUEWwRiBGkEcgR+BIsEiQSABHUEaARYBEkEPAQyBCsEJQQhBB0EGgQZBBoEHAQgBCUELAQzBDwEQQQ9BC8EFAT0A9gDxAO4A7EDrQOqA6gDpwOlA6QDogOgA6EDowOmA6gDpwOiA54DnAOfA6QDrAO0A7wDxAPNA9cD4QPrA/cDBQQXBCsEPQRHBEcEOgQqBB4EGgQfBCgENAQ/BEIERgRMBFQEXQRpBHgEiQSYBKQEowSYBH4EYQRJBDcELQQpBCgEKAQqBCwELQQuBC8ELwQxBDQEOAQ8BD0EOAQuBCQEHQQcBB4EJAQqBDIEOQQ/BEYETQRUBFwEZwR0BIMEjwSPBIUEbQRRBDsELAQmBCYEKwQvBCoEJwQmBCgEKwQwBDYEPQRFBEoERAQ1BBgE+APbA8QDtgOsA6YDoQOcA5gDlQORA40D"
+        }
+      },
+      "scenes": {
+        "Village": {
+          "steady": {
+            "frames": 3600,
+            "simulatedSeconds": 119.99999999999575,
+            "steps": 7200,
+            "hash": "c51f226b",
+            "droppedSteps": 0,
+            "maxSubsteps": 1,
+            "maxParticleSpeed": 0.16903,
+            "maxEnergy": 1.29629,
+            "maxEarlyMeanEnergy": 0.68148,
+            "maxLateMeanEnergy": 0.69283,
+            "tenSecondMeanEnergies": [
+              0.68206,
+              0.66137,
+              0.67729,
+              0.64679,
+              0.68148,
+              0.6635,
+              0.66525,
+              0.6708,
+              0.67366,
+              0.65466,
+              0.69283,
+              0.65442
+            ],
+            "boundedEnergy": true,
+            "nanFrames": 0,
+            "meanPhysicsMs": 0.63302,
+            "meanBudgetMet": true,
+            "sampledFramesOver2ms": 72,
+            "fractionOver2ms": 0.02069,
+            "everyMeasuredFrameWithinBudget": false,
+            "p95PhysicsMs": 1.5,
+            "p99PhysicsMs": 2.6,
+            "peakMeasuredMs": 8.7,
+            "repeatHash": "c51f226b",
+            "deterministic": true
+          },
+          "spikes": {
+            "frames": 3113,
+            "simulatedSeconds": 120,
+            "steps": 6676,
+            "hash": "4fda9daa",
+            "droppedSteps": 1834,
+            "maxSubsteps": 4,
+            "maxParticleSpeed": 0.20511,
+            "maxEnergy": 1.28035,
+            "maxEarlyMeanEnergy": 0.6942,
+            "maxLateMeanEnergy": 0.70449,
+            "tenSecondMeanEnergies": [
+              0.67261,
+              0.6942,
+              0.61684,
+              0.68025,
+              0.6395,
+              0.6753,
+              0.67787,
+              0.65097,
+              0.66301,
+              0.65604,
+              0.64673,
+              0.70449
+            ],
+            "boundedEnergy": true,
+            "nanFrames": 0,
+            "meanPhysicsMs": 0.54066,
+            "meanBudgetMet": true,
+            "sampledFramesOver2ms": 36,
+            "fractionOver2ms": 0.01203,
+            "everyMeasuredFrameWithinBudget": false,
+            "p95PhysicsMs": 1.3,
+            "p99PhysicsMs": 2.1,
+            "peakMeasuredMs": 7.1,
+            "repeatHash": "4fda9daa",
+            "deterministic": true
+          }
+        },
+        "Tidelight": {
+          "steady": {
+            "frames": 3600,
+            "simulatedSeconds": 119.99999999999575,
+            "steps": 3600,
+            "hash": "687f59f5",
+            "droppedSteps": 0,
+            "maxSubsteps": 1,
+            "maxParticleSpeed": 0.06139,
+            "maxEnergy": 0.0071,
+            "maxEarlyMeanEnergy": 0.0018,
+            "maxLateMeanEnergy": 0.00173,
+            "tenSecondMeanEnergies": [
+              0.00154,
+              0.0017,
+              0.00143,
+              0.0018,
+              0.00148,
+              0.00175,
+              0.00155,
+              0.00173,
+              0.00158,
+              0.0017,
+              0.00157,
+              0.00169
+            ],
+            "boundedEnergy": true,
+            "nanFrames": 0,
+            "meanPhysicsMs": 0.07756,
+            "meanBudgetMet": true,
+            "sampledFramesOver2ms": 9,
+            "fractionOver2ms": 0.00259,
+            "everyMeasuredFrameWithinBudget": false,
+            "p95PhysicsMs": 0.4,
+            "p99PhysicsMs": 0.9,
+            "peakMeasuredMs": 60.5,
+            "repeatHash": "687f59f5",
+            "deterministic": true
+          },
+          "spikes": {
+            "frames": 3113,
+            "simulatedSeconds": 120,
+            "steps": 3338,
+            "hash": "daf838d4",
+            "droppedSteps": 524,
+            "maxSubsteps": 4,
+            "maxParticleSpeed": 0.05576,
+            "maxEnergy": 0.00709,
+            "maxEarlyMeanEnergy": 0.00189,
+            "maxLateMeanEnergy": 0.00189,
+            "tenSecondMeanEnergies": [
+              0.00138,
+              0.00189,
+              0.00154,
+              0.00187,
+              0.00155,
+              0.00123,
+              0.00189,
+              0.00159,
+              0.00177,
+              0.00179,
+              0.00119,
+              0.00172
+            ],
+            "boundedEnergy": true,
+            "nanFrames": 0,
+            "meanPhysicsMs": 0.05142,
+            "meanBudgetMet": true,
+            "sampledFramesOver2ms": 0,
+            "fractionOver2ms": 0,
+            "everyMeasuredFrameWithinBudget": true,
+            "p95PhysicsMs": 0.4,
+            "p99PhysicsMs": 0.9,
+            "peakMeasuredMs": 1.7,
+            "repeatHash": "daf838d4",
+            "deterministic": true
+          }
+        },
+        "Creek": {
+          "steady": {
+            "frames": 3600,
+            "simulatedSeconds": 119.99999999999575,
+            "steps": 3600,
+            "hash": "7aa7a316",
+            "droppedSteps": 0,
+            "maxSubsteps": 1,
+            "maxParticleSpeed": 0.03493,
+            "maxEnergy": 0.0095,
+            "maxEarlyMeanEnergy": 0.00254,
+            "maxLateMeanEnergy": 0.00257,
+            "tenSecondMeanEnergies": [
+              0.0025,
+              0.00218,
+              0.00251,
+              0.00209,
+              0.00254,
+              0.00204,
+              0.00257,
+              0.00188,
+              0.00255,
+              0.00187,
+              0.00253,
+              0.00199
+            ],
+            "boundedEnergy": true,
+            "nanFrames": 0,
+            "meanPhysicsMs": 0.03247,
+            "meanBudgetMet": true,
+            "sampledFramesOver2ms": 4,
+            "fractionOver2ms": 0.00115,
+            "everyMeasuredFrameWithinBudget": false,
+            "p95PhysicsMs": 0.1,
+            "p99PhysicsMs": 0.8,
+            "peakMeasuredMs": 3,
+            "repeatHash": "7aa7a316",
+            "deterministic": true
+          },
+          "spikes": {
+            "frames": 3113,
+            "simulatedSeconds": 120,
+            "steps": 3338,
+            "hash": "e0a7b6dd",
+            "droppedSteps": 262,
+            "maxSubsteps": 4,
+            "maxParticleSpeed": 0.03979,
+            "maxEnergy": 0.00915,
+            "maxEarlyMeanEnergy": 0.00269,
+            "maxLateMeanEnergy": 0.00252,
+            "tenSecondMeanEnergies": [
+              0.00262,
+              0.00194,
+              0.00199,
+              0.00269,
+              0.00229,
+              0.00264,
+              0.00214,
+              0.00185,
+              0.00249,
+              0.0023,
+              0.00252,
+              0.00226
+            ],
+            "boundedEnergy": true,
+            "nanFrames": 0,
+            "meanPhysicsMs": 0.0296,
+            "meanBudgetMet": true,
+            "sampledFramesOver2ms": 1,
+            "fractionOver2ms": 0.00033,
+            "everyMeasuredFrameWithinBudget": false,
+            "p95PhysicsMs": 0.1,
+            "p99PhysicsMs": 0.7,
+            "peakMeasuredMs": 3.1,
+            "repeatHash": "e0a7b6dd",
+            "deterministic": true
+          }
+        }
+      },
+      "heap": {
+        "available": true,
+        "framesPerWindow": 420,
+        "retainedGrowthBytes": 0,
+        "rawDeltas": [
+          0,
+          0
+        ]
+      },
+      "recovered": {
+        "before": "7ba94774",
+        "after": "7ba94774",
+        "bufferInvalidated": true,
+        "recoverySteps": 0
+      }
+    }
+  },
+  "baselineMotion": {
+    "failures": [
+      "Village/Harvester stance slip",
+      "Village/Oarsman stance slip",
+      "Stair cadence",
+      "Stair descent or stance knee",
+      "Stair contact sequence or sole bounds",
+      "Stair swing or nosing clearance",
+      "Stair pelvis or trunk pitch",
+      "Stair ascent speed",
+      "Stair rail contact",
+      "Desktop Village/Harvester stance slip",
+      "Desktop Village/Oarsman stance slip",
+      "Desktop Stair cadence",
+      "Desktop Stair descent or stance knee",
+      "Desktop Stair contact sequence or sole bounds",
+      "Desktop Stair swing or nosing clearance",
+      "Desktop Stair pelvis or trunk pitch",
+      "Desktop Stair ascent speed",
+      "Desktop Stair rail contact",
+      "Tidelight/Terrace taster stance slip",
+      "Desktop Tidelight/Terrace taster stance slip",
+      "Creek/Cooper stance slip",
+      "Desktop Creek/Cooper stance slip"
+    ],
+    "desktop": {
+      "Village": {
+        "seconds": 81,
+        "workers": {
+          "Harvester": {
+            "contacts": 122,
+            "maxStanceSlipM": 0.4888,
+            "slipSample": {
+              "frame": 1097,
+              "i": 1,
+              "start": [
+                4.516394096649645,
+                5,
+                -5.57677792565487
+              ],
+              "center": [
+                4.327714822879694,
+                5.004464624529354,
+                -5.80130577227558
+              ],
+              "hold": [
+                4.345740720017953,
+                0,
+                -5.775418806999453
+              ],
+              "target": [
+                4.345740720017953,
+                0,
+                -5.775418806999453
+              ]
+            },
+            "flatMeanSpeedMps": 1.0089,
+            "flatMaxSpeedMps": 1.0333
+          },
+          "Porter": {
+            "contacts": 197,
+            "maxStanceSlipM": 0.0005,
+            "flatMeanSpeedMps": 1.1827,
+            "flatMaxSpeedMps": 1.2
+          },
+          "Taster": {
+            "contacts": 2,
+            "maxStanceSlipM": 0,
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          },
+          "Cellar worker": {
+            "contacts": 2,
+            "maxStanceSlipM": 0,
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          },
+          "Stair walker": {
+            "contacts": 204,
+            "maxStanceSlipM": 0.0005,
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          },
+          "Oarsman": {
+            "contacts": 2,
+            "maxStanceSlipM": 0.4134,
+            "slipSample": {
+              "frame": 462,
+              "i": 0,
+              "start": [
+                -0.05545033080011397,
+                0.20410271633799992,
+                0.01031702678042734
+              ],
+              "center": [
+                0.18846025643390618,
+                0.2044633577016391,
+                0.05545033080011419
+              ],
+              "hold": [
+                0.1583776187688051,
+                0,
+                0.05545033080011363
+              ],
+              "target": [
+                0.1583776187688051,
+                0,
+                0.05545033080011363
+              ]
+            },
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          },
+          "Cantina guest": {
+            "contacts": 2,
+            "maxStanceSlipM": 0,
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          }
+        },
+        "stairs": {
+          "contacts": 123,
+          "missingOrRepeated": 25,
+          "soleOutside": 0,
+          "minAscentToeMarginM": 0.0356,
+          "nosingCrossings": 198,
+          "minSwingClearanceM": -0.3506,
+          "riserIntersections": 458,
+          "maxPenetrationM": 0.2797,
+          "maxPelvisDropM": 0.0167,
+          "midFlightFrames": 505,
+          "minPitchDeg": -0.5769,
+          "maxPitchDeg": 0.7019,
+          "ascentTime": 16.6,
+          "ascentHeight": 14.2713,
+          "railFrames": 0,
+          "missingRailFrames": 1371,
+          "maxRailGapM": 0,
+          "minHandRailClearanceM": null,
+          "maxStanceKneeDeg": 129.8811,
+          "descentContacts": 59,
+          "descentNosingCrossings": 96,
+          "minDescentSwingClearanceM": -0.111,
+          "maxDescentStanceKneeDeg": 129.8811,
+          "maxDescentPelvisRiseM": 0.182,
+          "midStepSeconds": 23.3667,
+          "midStepIntervals": 59,
+          "examples": {
+            "nosing": [
+              28,
+              0,
+              null,
+              null,
+              1,
+              -0.3075
+            ],
+            "riser": [
+              35,
+              1,
+              null,
+              0,
+              [
+                1.1878508677264985,
+                1.3288180126217393,
+                0.06132140057242097
+              ],
+              [
+                1.1784457109151694,
+                1.333106479068859,
+                0.02839661253527516
+              ]
+            ],
+            "sequence": [
+              39,
+              1,
+              null,
+              1,
+              1,
+              1
+            ]
+          },
+          "ascentTreads": 24,
+          "descentTreads": 24,
+          "physicalTreads": 24,
+          "verticalMps": 0.8597,
+          "midFlightStepsPerSecond": 2.525
+        },
+        "failures": [
+          "Village/Harvester stance slip",
+          "Village/Oarsman stance slip",
+          "Stair cadence",
+          "Stair descent or stance knee",
+          "Stair contact sequence or sole bounds",
+          "Stair swing or nosing clearance",
+          "Stair pelvis or trunk pitch",
+          "Stair ascent speed",
+          "Stair rail contact"
+        ]
+      },
+      "Tidelight": {
+        "seconds": 60,
+        "workers": {
+          "Pier hand": {
+            "contacts": 2,
+            "maxStanceSlipM": 0,
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          },
+          "Terrace taster": {
+            "contacts": 2,
+            "maxStanceSlipM": 0.2963,
+            "slipSample": {
+              "frame": 1,
+              "i": 0,
+              "start": [
+                -1.9005564122166478,
+                2.88,
+                1.23
+              ],
+              "center": [
+                -1.902375815333692,
+                2.8799999999999994,
+                1.0818655189776885
+              ],
+              "hold": [
+                -1.8781127418542483,
+                0,
+                1.0806319828348392
+              ],
+              "target": [
+                -1.8781127418542483,
+                0,
+                1.0806319828348392
+              ]
+            },
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          }
+        },
+        "failures": [
+          "Tidelight/Terrace taster stance slip"
+        ]
+      },
+      "Creek": {
+        "seconds": 60,
+        "workers": {
+          "Cooper": {
+            "contacts": 2,
+            "maxStanceSlipM": 0.6587,
+            "slipSample": {
+              "frame": 1068,
+              "i": 1,
+              "start": [
+                0.0919408214201598,
+                0.09799999999999998,
+                0.08880637594378449
+              ],
+              "center": [
+                0.6583009303755247,
+                0.09799999999999992,
+                0.30443036693914216
+              ],
+              "hold": [
+                0.7119751136382495,
+                0,
+                0.30443036693914083
+              ],
+              "target": [
+                0.7119751136382495,
+                0,
+                0.30443036693914083
+              ]
+            },
+            "flatMeanSpeedMps": null,
+            "flatMaxSpeedMps": null
+          }
+        },
+        "failures": [
+          "Creek/Cooper stance slip"
+        ]
+      }
+    },
+    "Village": {
+      "seconds": 81,
+      "workers": {
+        "Harvester": {
+          "contacts": 122,
+          "maxStanceSlipM": 0.4886,
+          "slipSample": {
+            "frame": 1097,
+            "i": 1,
+            "start": [
+              4.516228229391478,
+              5,
+              -5.576792112626734
+            ],
+            "center": [
+              4.327714822879695,
+              5.004464624529353,
+              -5.80130577227558
+            ],
+            "hold": [
+              4.345740720017953,
+              0,
+              -5.775418806999453
+            ],
+            "target": [
+              4.345740720017953,
+              0,
+              -5.775418806999453
+            ]
+          },
+          "flatMeanSpeedMps": 1.0089,
+          "flatMaxSpeedMps": 1.0333
+        },
+        "Porter": {
+          "contacts": 197,
+          "maxStanceSlipM": 0.0005,
+          "flatMeanSpeedMps": 1.1827,
+          "flatMaxSpeedMps": 1.2
+        },
+        "Taster": {
+          "contacts": 2,
+          "maxStanceSlipM": 0,
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        },
+        "Cellar worker": {
+          "contacts": 2,
+          "maxStanceSlipM": 0,
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        },
+        "Stair walker": {
+          "contacts": 204,
+          "maxStanceSlipM": 0.0005,
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        },
+        "Oarsman": {
+          "contacts": 2,
+          "maxStanceSlipM": 0.4134,
+          "slipSample": {
+            "frame": 1536,
+            "i": 0,
+            "start": [
+              -0.05545033080011397,
+              0.20410271633799992,
+              0.01031702678042734
+            ],
+            "center": [
+              0.18846025643390618,
+              0.20446335770163931,
+              0.055450330800114855
+            ],
+            "hold": [
+              0.1583776187688051,
+              0,
+              0.05545033080011363
+            ],
+            "target": [
+              0.1583776187688051,
+              0,
+              0.05545033080011363
+            ]
+          },
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        },
+        "Cantina guest": {
+          "contacts": 2,
+          "maxStanceSlipM": 0,
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        }
+      },
+      "stairs": {
+        "contacts": 123,
+        "missingOrRepeated": 25,
+        "soleOutside": 0,
+        "minAscentToeMarginM": 0.0356,
+        "nosingCrossings": 198,
+        "minSwingClearanceM": -0.3506,
+        "riserIntersections": 460,
+        "maxPenetrationM": 0.2797,
+        "maxPelvisDropM": 0.017,
+        "midFlightFrames": 505,
+        "minPitchDeg": -0.5769,
+        "maxPitchDeg": 0.7019,
+        "ascentTime": 16.6,
+        "ascentHeight": 14.2701,
+        "railFrames": 0,
+        "missingRailFrames": 1371,
+        "maxRailGapM": 0,
+        "minHandRailClearanceM": null,
+        "maxStanceKneeDeg": 129.8026,
+        "descentContacts": 59,
+        "descentNosingCrossings": 96,
+        "minDescentSwingClearanceM": -0.111,
+        "maxDescentStanceKneeDeg": 129.8026,
+        "maxDescentPelvisRiseM": 0.1841,
+        "midStepSeconds": 23.3667,
+        "midStepIntervals": 59,
+        "examples": {
+          "nosing": [
+            28,
+            0,
+            null,
+            null,
+            1,
+            -0.3075
+          ],
+          "riser": [
+            35,
+            1,
+            null,
+            0,
+            [
+              1.1878498803758164,
+              1.3288180126217395,
+              0.06132140057242089
+            ],
+            [
+              1.1784444861186585,
+              1.3331064790688587,
+              0.02839661253527548
+            ]
+          ],
+          "sequence": [
+            39,
+            1,
+            null,
+            1,
+            1,
+            1
+          ]
+        },
+        "ascentTreads": 24,
+        "descentTreads": 24,
+        "physicalTreads": 24,
+        "verticalMps": 0.8596,
+        "midFlightStepsPerSecond": 2.525
+      },
+      "failures": [
+        "Village/Harvester stance slip",
+        "Village/Oarsman stance slip",
+        "Stair cadence",
+        "Stair descent or stance knee",
+        "Stair contact sequence or sole bounds",
+        "Stair swing or nosing clearance",
+        "Stair pelvis or trunk pitch",
+        "Stair ascent speed",
+        "Stair rail contact"
+      ]
+    },
+    "Tidelight": {
+      "seconds": 60,
+      "workers": {
+        "Pier hand": {
+          "contacts": 2,
+          "maxStanceSlipM": 0,
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        },
+        "Terrace taster": {
+          "contacts": 2,
+          "maxStanceSlipM": 0.2963,
+          "slipSample": {
+            "frame": 3,
+            "i": 0,
+            "start": [
+              -1.9005564122166478,
+              2.88,
+              1.23
+            ],
+            "center": [
+              -1.9023758153336918,
+              2.88,
+              1.0818655189776885
+            ],
+            "hold": [
+              -1.8781127418542483,
+              0,
+              1.0806319828348392
+            ],
+            "target": [
+              -1.8781127418542483,
+              0,
+              1.0806319828348392
+            ]
+          },
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        }
+      },
+      "failures": [
+        "Tidelight/Terrace taster stance slip"
+      ]
+    },
+    "Creek": {
+      "seconds": 60,
+      "workers": {
+        "Cooper": {
+          "contacts": 2,
+          "maxStanceSlipM": 0.6587,
+          "slipSample": {
+            "frame": 1068,
+            "i": 1,
+            "start": [
+              0.0919408214201598,
+              0.09799999999999998,
+              0.08880637594378449
+            ],
+            "center": [
+              0.6583009303755247,
+              0.09799999999999992,
+              0.30443036693914216
+            ],
+            "hold": [
+              0.7119751136382495,
+              0,
+              0.30443036693914083
+            ],
+            "target": [
+              0.7119751136382495,
+              0,
+              0.30443036693914083
+            ]
+          },
+          "flatMeanSpeedMps": null,
+          "flatMaxSpeedMps": null
+        }
+      },
+      "failures": [
+        "Creek/Cooper stance slip"
+      ]
+    }
+  },
+  "baselinePhysics": {
+    "Village": {
+      "steady": {
+        "meanPhysicsMs": 0.61193,
+        "p95PhysicsMs": 1.5,
+        "p99PhysicsMs": 2.7,
+        "peakMeasuredMs": 43.7,
+        "sampledFramesOver2ms": 66
+      },
+      "spikes": {
+        "meanPhysicsMs": 0.56776,
+        "p95PhysicsMs": 1.4,
+        "p99PhysicsMs": 2.3,
+        "peakMeasuredMs": 8.5,
+        "sampledFramesOver2ms": 46
+      }
+    },
+    "Tidelight": {
+      "steady": {
+        "meanPhysicsMs": 0.05813,
+        "p95PhysicsMs": 0.3,
+        "p99PhysicsMs": 1,
+        "peakMeasuredMs": 6.1,
+        "sampledFramesOver2ms": 10
+      },
+      "spikes": {
+        "meanPhysicsMs": 0.06372,
+        "p95PhysicsMs": 0.5,
+        "p99PhysicsMs": 0.9,
+        "peakMeasuredMs": 3.1,
+        "sampledFramesOver2ms": 2
+      }
+    },
+    "Creek": {
+      "steady": {
+        "meanPhysicsMs": 0.0323,
+        "p95PhysicsMs": 0.1,
+        "p99PhysicsMs": 0.8,
+        "peakMeasuredMs": 3.6,
+        "sampledFramesOver2ms": 3
+      },
+      "spikes": {
+        "meanPhysicsMs": 0.02636,
+        "p95PhysicsMs": 0.1,
+        "p99PhysicsMs": 0.7,
+        "peakMeasuredMs": 1.2,
+        "sampledFramesOver2ms": 0
+      }
+    }
+  }
+}

@@ -117,6 +117,10 @@ def measure(browser, url, package, restore, activity=False, motion=False):
             names = {"vl": "Harvester", "craft": "Pier hand", "creek": "Cooper"}
             for prefix, actor in names.items():
                 page.locator("." + prefix + "-stage").evaluate("e=>e.scrollIntoView({block:'center'})")
+                if prefix == "creek":
+                    # The guided flight stops at 20 s. A preceding restore can
+                    # use that time before we revisit the scene for tick counts.
+                    page.locator(".creek-replay").evaluate("button => button.click()")
                 start = page.evaluate("name=>workerTicks[name] || 0", actor)
                 page.wait_for_function("([k,n])=>workerTicks[k] >= n+3", arg=[actor, start], timeout=60000)
                 snapshot = page.evaluate("() => ({...workerTicks})")
