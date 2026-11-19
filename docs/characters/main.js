@@ -151,13 +151,17 @@ export function mountCharacters(host) {
   slowCheck.addEventListener('change', () => {
     slow = slowCheck.checked;
   });
+  const mobileDisplay = matchMedia('(pointer:coarse), (max-width:739px)');
   function quality() {
-    const auto = matchMedia('(pointer:coarse)').matches || innerWidth < 740 ? 'mobile' : 'high';
+    const auto = mobileDisplay.matches ? 'mobile' : 'high';
     actualTier = tierSelect.value === 'auto' ? auto : tierSelect.value;
     tierSelect.options[0].textContent = 'Auto · ' + (auto === 'high' ? 'High' : 'Mobile');
     stage.quality(actualTier);
   }
   tierSelect.addEventListener('change', quality);
+  mobileDisplay.addEventListener('change', () => {
+    if (tierSelect.value === 'auto') quality();
+  });
   find('[data-setting=light]').addEventListener('change', (e) =>
     stage.lighting(e.target.selectedIndex === 1),
   );
