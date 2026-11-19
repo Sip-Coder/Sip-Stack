@@ -1,5 +1,5 @@
 // Sew profile rings with different circumference samples without duplicating
-// vertices. Skin weights and the angle-weighted boundary normals stay shared.
+// vertices. Skin weights and the area-weighted boundary normals stay shared.
 function stitch(body, lower, upper, angles) {
   let i = 0,
     j = 0;

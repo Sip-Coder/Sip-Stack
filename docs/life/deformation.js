@@ -136,7 +136,7 @@ function applyWeights(g, fields, r) {
     joints = new Int16Array(4),
     weights = new Float64Array(4);
   const touched = new Uint16Array(r.bones.length),
-    scores = new Float64Array(24);
+    scores = new Float64Array(Math.max(...Array.from(fields.values(), (field) => field.records.length)));
   let count = 0;
   function sample(field, x, y, z, mix) {
     if (mix <= 0) return;
