@@ -4,7 +4,7 @@
 
 ## Scene comparisons
 
-Before images use main at `99339be`. After images use the updated scene modules. Each pair follows the same named actor at the same scene time and camera offset. The desktop viewport is 1120 × 740 and the portrait viewport is 412 × 800. Images show the scene canvas at its rendered resolution. Desktop uses High quality. Portrait uses Auto except for Tidelight Coast and the Village guest and gathering, where High makes all subjects visible in the baseline.
+Before images use main at `99339be`. After images and the reel capture the worker geometry and poses committed through `f854651`. Subsequent performance changes share cutter geometry, streamline cloth collision queries and adjust Mobile environment lighting. The render report measures those changes as well. Each pair follows the same named actor at the same scene time and camera offset. The desktop viewport is 1120 × 740 and the portrait viewport is 412 × 800. Images show the scene canvas at its rendered resolution. Desktop uses High quality. Portrait uses Auto except for Tidelight Coast and the Village guest and gathering, where High makes all subjects visible in the baseline.
 
 | Subject | Before · desktop | After · desktop | Before · portrait | After · portrait |
 | --- | --- | --- | --- | --- |
