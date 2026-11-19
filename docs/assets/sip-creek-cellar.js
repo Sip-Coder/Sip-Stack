@@ -111,18 +111,28 @@ export function cellar(scene, wood, rng) {
   label.width = label.height = 512;
   const c = label.getContext('2d');
   const face = c.createImageData(512, 512);
-  for (let y = 0; y < 512; y++)
-    for (let x = 0; x < 512; x++) {
-      const plank = Math.floor((x + 15) / 94),
-        u = (x + 15) % 94;
-      const bend = 3.8 * Math.sin(y * 0.008 + plank) + 2.3 * Math.sin(y * 0.024 + x * 0.008);
-      const pores = Math.sin((x + bend) * 1.17) + 0.6 * Math.cos(x * 0.38 + y * 0.013 + plank);
-      const rings = Math.sin(Math.hypot((x + plank * 34) * 0.83, (y - 188 - plank * 96) * 0.24) * 0.45);
-      const seam = u < 2 ? -0.32 : u < 4 ? 0.06 : 0;
-      const tone = 0.88 + plank * 0.021 + 0.026 * pores + 0.029 * rings + 0.085 * rng() + seam;
-      const i = (y * 512 + x) * 4;
-      face.data.set([181 * tone, 144 * tone, 98 * tone, 255], i);
+  // Each scanline crosses six planks. The end-grain centre and low
+  // frequency bend are constant across the width of each plank.
+  for (let y = 0; y < 512; y++) {
+    for (let plank = 0; plank < 6; plank++) {
+      const start = plank * 94 - 15, end = Math.min(512, start + 94);
+      const slowBend = 3.8 * Math.sin(y * .008 + plank);
+      const dy = (y - 188 - plank * 96) * .24;
+      for (let x = Math.max(0, start); x < end; x++) {
+        const u = x - start;
+        const bend = slowBend + 2.3 * Math.sin(y * .024 + x * .008);
+        const pores = Math.sin((x + bend) * 1.17) + .6 * Math.cos(x * .38 + y * .013 + plank);
+        const rings = Math.sin(Math.hypot((x + plank * 34) * .83, dy) * .45);
+        const seam = u < 2 ? -.32 : u < 4 ? .06 : 0;
+        const tone = .88 + plank * .021 + .026 * pores + .029 * rings + .085 * rng() + seam;
+        const i = (y * 512 + x) * 4;
+        face.data[i] = 181 * tone;
+        face.data[i + 1] = 144 * tone;
+        face.data[i + 2] = 98 * tone;
+        face.data[i + 3] = 255;
+      }
     }
+  }
   c.putImageData(face, 0, 0);
   c.translate(256, 256);
   c.strokeStyle = c.fillStyle = '#483421';

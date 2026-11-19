@@ -5,42 +5,45 @@ import * as T from 'three';
 function grainTexture() {
   const size = 256,
     bytes = new Uint8Array(size * size * 4);
-  function noise(x, y, cells) {
-    const ix = Math.floor(x * cells),
-      iy = Math.floor(y * cells);
-    const hash = (i, j) => {
-      let h = Math.imul((i % cells) + 13, 374761393) ^ Math.imul((j % cells) + 71, 668265263);
-      h = Math.imul(h ^ (h >>> 13), 1274126177);
-      return ((h ^ (h >>> 16)) >>> 0) / 4294967295;
-    };
-    const a = x * cells - ix,
-      b = y * cells - iy;
-    const u = a * a * (3 - 2 * a),
-      v = b * b * (3 - 2 * b);
-    return T.MathUtils.lerp(
-      T.MathUtils.lerp(hash(ix, iy), hash(ix + 1, iy), u),
-      T.MathUtils.lerp(hash(ix, iy + 1), hash(ix + 1, iy + 1), u),
-      v,
-    );
-  }
-  for (let j = 0; j < size; j++)
-    for (let i = 0; i < size; i++) {
-      const x = i / size,
-        y = j / size,
-        k = (i + j * size) * 4;
-      const cloud = noise(x, y, 5) * 0.5 + noise(x, y, 13) * 0.31 + noise(x, y, 37) * 0.19;
-      const grit = noise(x, y, 122),
-        relief = noise(x, y, 41) * 0.46 + grit * 0.54;
-      bytes.set(
-        [
-          255 * cloud,
-          255 * relief,
-          255 * (grit * 0.6 + cloud * 0.4),
-          255 * (0.76 + 0.24 * Math.min(1, relief * 1.66)),
-        ],
-        k,
-      );
+  const lerp = T.MathUtils.lerp;
+  // Sample a lattice row once along X. All 256 scanlines interpolate pairs
+  // of these rows using the original double-precision lattice values.
+  function octave(cells) {
+    const rows = new Float64Array(cells * size);
+    const lattice = new Float64Array(cells + 1);
+    const samples = new Float64Array(size);
+    for (let j = 0; j < cells; j++) {
+      for (let i = 0; i < cells; i++) {
+        let h = Math.imul(i + 13, 374761393) ^ Math.imul(j + 71, 668265263);
+        h = Math.imul(h ^ (h >>> 13), 1274126177);
+        lattice[i] = ((h ^ (h >>> 16)) >>> 0) / 4294967295;
+      }
+      lattice[cells] = lattice[0];
+      for (let i = 0; i < size; i++) {
+        const x = i * cells / size, left = Math.floor(x), a = x - left;
+        rows[j * size + i] = lerp(lattice[left], lattice[left + 1], a * a * (3 - 2 * a));
+      }
     }
+    return (j) => {
+      const y = j * cells / size, lo = Math.floor(y), b = y - lo;
+      const bottom = lo * size, top = ((lo + 1) % cells) * size, v = b * b * (3 - 2 * b);
+      for (let i = 0; i < size; i++) samples[i] = lerp(rows[bottom + i], rows[top + i], v);
+      return samples;
+    };
+  }
+  const fields = [5, 13, 37, 122, 41].map(octave);
+  for (let j = 0; j < size; j++) {
+    const [low, mid, high, grit, pores] = fields.map(sample => sample(j));
+    for (let i = 0; i < size; i++) {
+      const k = (i + j * size) * 4;
+      const cloud = low[i] * .5 + mid[i] * .31 + high[i] * .19;
+      const relief = pores[i] * .46 + grit[i] * .54;
+      bytes[k] = 255 * cloud;
+      bytes[k + 1] = 255 * relief;
+      bytes[k + 2] = 255 * (grit[i] * .6 + cloud * .4);
+      bytes[k + 3] = 255 * (.76 + .24 * Math.min(1, relief * 1.66));
+    }
+  }
   const map = new T.DataTexture(bytes, size, size);
   map.wrapS = map.wrapT = T.RepeatWrapping;
   map.magFilter = T.LinearFilter;
