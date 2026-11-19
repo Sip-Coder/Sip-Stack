@@ -36,3 +36,12 @@ Before images use main at `99339be`. After images use the updated scene modules.
 The rig plates render the same procedurally generated pier hand in a separate, evenly lit view. Each joint plate shows elbow flexion, negative and positive wrist roll, combined elbow flexion and wrist roll, shoulder abduction, and knee flexion. The mesh comparison holds camera, pose and lighting constant. Its portrait version also shows each tier at a measured camera distance. The baseline generator supplies two mesh tiers. The updated pier hand uses 23,296 triangles at LOD0, 7,266 at LOD1 and 2,378 at LOD2.
 
 The navigation comparisons use the same viewing offsets in both builds. The after views use `?debug=people`. The scene’s live counter appears at the lower left of each canvas export. All six captures at 2.4 seconds show zero intersections and zero contact errors. A single frame shows conditions at its capture time. The full-loop checks are in [check-people.mjs](../tools/check-people.mjs).
+
+## Acceptance measurements
+
+| Run | Report |
+| --- | --- |
+| Main at `99339be` | [Scene, rig and physics baseline](acceptance-main-99339be.json) |
+| This branch | [Scene, rig and physics results](acceptance-branch.json) |
+| Mobile physics under 4× CPU throttling | [Isolated timing run](acceptance-physics-isolated.json) |
+| Mobile first frame and recovery | [Render timing and context recovery](acceptance-render.json) |
