@@ -283,6 +283,11 @@ export function peopleOverlay(root, nav, viewport) {
       // Materials can be shared by multiple instances. Tint only this actor's
       // visible render layers, restoring their actual material after recovery.
       const invalid = r.obstacles.size > 0 || r.footError > 0.02 * (r.agent.actor?.g.scale.y ?? 1);
+      if (r.agent.instance) {
+        const { mesh, index } = r.agent.instance;
+        mesh.setColorAt(index, palette.setHex(invalid ? bad : 0xffffff));
+        mesh.instanceColor.needsUpdate = true;
+      }
       for (const mesh of r.agent.actor ? [r.agent.actor.low, ...r.agent.actor.layers] : []) {
         if (!mesh?.isMesh) continue;
         if (invalid && !mesh.userData.navOriginal) {
