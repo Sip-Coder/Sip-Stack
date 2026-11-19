@@ -73,7 +73,8 @@ function heatFields(r) {
       [a.arm, a.armTwist, a.elbow, a.foreTwist, a.deltoid, a.elbowTip, a.hand],
       [
         at(r.chest, 0.127, 0, a.x * 0.51, 0.9),
-        at(a.deltoid, 0.046, 0, -a.s * 0.017),
+        at(a.deltoid, 0.046, 0, -a.s * 0.017, 2.0),
+        at(a.deltoid, -0.04, 0, -a.s * 0.021, 2.8),
         at(a.arm, -0.065),
         at(a.armTwist, -0.016),
         at(a.armTwist, -0.106),
@@ -134,34 +135,68 @@ function applyWeights(g, fields, r) {
   const sums = new Float64Array(r.bones.length),
     joints = new Int16Array(4),
     weights = new Float64Array(4);
+  const touched = new Uint16Array(r.bones.length),
+    scores = new Float64Array(24);
+  let count = 0;
+  function sample(field, x, y, z, mix) {
+    if (mix <= 0) return;
+    const divisor = -0.5 / (field.sigma * field.sigma);
+    let total = 0;
+    for (let i = 0; i < field.records.length; i++) {
+      const n = field.records[i];
+      const value = n.amplitude * Math.exp(divisor * ((x - n.x) ** 2 + (y - n.y) ** 2 + (z - n.z) ** 2));
+      scores[i] = value;
+      total += value;
+    }
+    if (total === 0) return;
+    for (let i = 0; i < field.records.length; i++) {
+      const joint = field.records[i].joint;
+      if (sums[joint] === 0) touched[count++] = joint;
+      sums[joint] += (mix * scores[i]) / total;
+    }
+  }
   for (let i = 0; i < p.count; i++) {
     const owner = si.getX(i),
       f = fields.get(owner);
     if (!f) continue;
     const x = p.getX(i),
       y = p.getY(i),
-      z = p.getZ(i);
-    const samples = f.records,
-      divisor = -0.5 / (f.sigma * f.sigma);
-    sums.fill(0);
-    for (const n of samples) {
-      sums[n.joint] += n.amplitude * Math.exp(divisor * ((x - n.x) ** 2 + (y - n.y) ** 2 + (z - n.z) ** 2));
+      z = p.getZ(i),
+      side = r.sides[x < 0 ? 0 : 1];
+    // Relax the neighbouring ribcage and iliac crest into the limb fields
+    // across a finite band, sharing boundary weights at the sewn openings.
+    let blend = 0,
+      other;
+    if (f === fields.get(r.chest)) {
+      if (y > 1.17) {
+        blend =
+          T.MathUtils.smoothstep(y, 1.17, 1.36) *
+          T.MathUtils.smoothstep(Math.abs(x), Math.abs(side.x) * 0.36, Math.abs(side.x) * 0.88);
+        other = fields.get(side.arm);
+      } else if (y < 0.98) {
+        blend =
+          (1 - T.MathUtils.smoothstep(y, 0.82, 0.98)) * T.MathUtils.smoothstep(Math.abs(x), 0.018, 0.12);
+        other = fields.get(side.thigh);
+      }
     }
+    count = 0;
+    sample(f, x, y, z, 1 - blend);
+    if (blend > 0) sample(other, x, y, z, blend);
     weights.fill(0);
     joints.fill(owner);
-    for (const n of samples) {
-      const w = sums[n.joint];
-      if (!w) continue;
-      sums[n.joint] = 0;
+    for (let j = 0; j < count; j++) {
+      const joint = touched[j],
+        w = sums[joint];
+      sums[joint] = 0;
       let k = 0;
       while (k < 4 && weights[k] > w) k++;
       if (k === 4) continue;
-      for (let j = 3; j > k; j--) {
-        weights[j] = weights[j - 1];
-        joints[j] = joints[j - 1];
+      for (let a = 3; a > k; a--) {
+        weights[a] = weights[a - 1];
+        joints[a] = joints[a - 1];
       }
       weights[k] = w;
-      joints[k] = n.joint;
+      joints[k] = joint;
     }
     const total = weights[0] + weights[1] + weights[2] + weights[3];
     if (total === 0) continue;

@@ -137,7 +137,7 @@ export function extendRig(config) {
       bones[a.shin].rotation.set(knee, 0, 0);
       bones[a.elbowTip].rotation.x = elbow * 0.5;
       bones[a.kneecap].rotation.x = knee * 0.49;
-      bones[a.deltoid].quaternion.copy(bones[a.arm].quaternion).invert().slerp(identity, 0.68);
+      bones[a.deltoid].quaternion.copy(bones[a.arm].quaternion).invert().slerp(identity, 0.42);
       bones[a.glute].quaternion.identity().slerp(bones[a.thigh].quaternion, 0.3);
     }
     deformation.driveCorrectives();
