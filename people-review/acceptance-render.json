@@ -127,5 +127,21 @@
     "visibleFramebufferColorClears": 0,
     "consoleErrors": 0,
     "pageErrors": 0
+  },
+  "exclusivePhysics": {
+    "motionPreference": "no-preference",
+    "order": [
+      "Village",
+      "Tidelight Coast",
+      "Sip Creek"
+    ],
+    "monitoredWorkers": [
+      "Harvester",
+      "Pier hand",
+      "Cooper"
+    ],
+    "minimumActivePoseUpdatesPerObservation": 6,
+    "inactivePoseUpdates": 0,
+    "consoleErrors": 0
   }
 }

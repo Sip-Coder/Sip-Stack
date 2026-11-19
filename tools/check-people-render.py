@@ -15,9 +15,9 @@ from urllib.parse import urlsplit
 from playwright.sync_api import sync_playwright
 
 
-def measure(browser, url, package, restore, activity=False):
+def measure(browser, url, package, restore, activity=False, motion=False):
     context = browser.new_context(viewport={"width": 390, "height": 844},
-                                  has_touch=True, is_mobile=True, reduced_motion="no-preference" if activity else "reduce")
+                                  has_touch=True, is_mobile=True, reduced_motion="no-preference" if activity or motion else "reduce")
 
     def resolve(route):
         request = route.request.url
@@ -145,6 +145,7 @@ if __name__ == "__main__":
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--restore", action="store_true")
     parser.add_argument("--activity", action="store_true", help="Verify exclusive physics updates with motion enabled")
+    parser.add_argument("--motion", action="store_true", help="Measure cold starts with animation enabled")
     options = parser.parse_args()
     package = Path(os.environ.get("THREE_ROOT", "node_modules/three")).resolve()
     assert json.loads((package / "package.json").read_text())["version"] == "0.170.0"
@@ -155,7 +156,7 @@ if __name__ == "__main__":
                 browser = driver.chromium.launch(executable_path=os.environ.get("CHROME", "/usr/bin/chromium"),
                     args=["--enable-unsafe-swiftshader","--use-angle=swiftshader","--disable-dev-shm-usage","--no-sandbox"])
                 try:
-                    timing = measure(browser, url, package, options.restore, options.activity)
+                    timing = measure(browser, url, package, options.restore, options.activity, options.motion)
                     results[url].append(timing)
                     print(json.dumps({"run": run + 1, "url": url, "ms": timing}), flush=True)
                 finally:
