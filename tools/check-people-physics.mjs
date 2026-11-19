@@ -354,6 +354,8 @@ export default async function runPhysics({ baseline = false } = {}) {
       a.repeatHash = b.hash;
       a.deterministic = a.hash === b.hash && a.steps === b.steps;
       scenes[scene][k] = a;
+      if (!a.everyMeasuredFrameWithinBudget)
+        failures.push(`${scene} ${k}: ${a.sampledFramesOver2ms} measured frames exceeded 2 ms`);
       if (
         !a.steps ||
         a.nanFrames ||
