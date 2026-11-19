@@ -193,6 +193,7 @@ export function mountCraft(root) {
     sound = thunder($('thunder'));
   let tier = autoTier,
     visible = false,
+    contextGeneration = 0,
     lost = false,
     frameId = 0,
     last = null,
@@ -439,6 +440,7 @@ export function mountCraft(root) {
   new ResizeObserver(requestDraw).observe(stage);
   canvas.addEventListener('webglcontextlost', (e) => {
     e.preventDefault();
+    contextGeneration++;
     warmed = false;
     lost = true;
     stop();
@@ -447,13 +449,14 @@ export function mountCraft(root) {
     status.textContent = 'Restoring the coast…';
   });
   canvas.addEventListener('webglcontextrestored', () => {
+    const generation = contextGeneration;
     lost = false;
     sky.invalidate();
     applyTier();
     restorePeople(land);
     sky.update();
     warmShaders(renderer, [[land, camera, opaque], [water, camera, opaque]]).then(() => {
-      if (lost) return;
+      if (lost || generation !== contextGeneration) return;
       warmed = true;
       requestDraw();
     });
@@ -465,6 +468,7 @@ export function mountCraft(root) {
   primePeople(land, tier === 2);
   sky.update(); // scene.environment is part of every lit shader's key
   warmShaders(renderer, [[land, camera, opaque], [water, camera, opaque]]).then((ms) => {
+    if (contextGeneration !== 0) return;
     warmed = true;
     console.info(`Tidelight shaders ready in ${Math.round(ms)} ms (tier ${tier})`);
     requestDraw();

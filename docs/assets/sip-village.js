@@ -518,7 +518,7 @@ export function mountVillage(root, { onPin } = {}) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(47, 1, .12, 390);
   const state = { drip: false, cut: false, reuse: false, loaded: false, pour: 0, door: null, light: 'golden', orbit: still(), pin: null };
-  let dirty=true, warmed=false;
+  let dirty=true, warmed=false, contextGeneration=0;
   let shown = false, stageVisible = false, craftActive = document.body.dataset.craftVisible === 'true';
   const otherSceneActive = () => craftActive || document.body.dataset.creekVisible === 'true';
   const tw = {}; // tweens: key -> {from,to,t0,dur,apply}
@@ -907,14 +907,15 @@ export function mountVillage(root, { onPin } = {}) {
   fit(); setLight(.5); syncTransport(); syncToggles();
   if(controls) { if(state.orbit) resetView(true); else pose(0,camera,controls.target); }
   renderer?.domElement.addEventListener('webglcontextlost',e=>{
-    e.preventDefault();lost=true;warmed=false;syncLoop();renderer.domElement.style.visibility='hidden';
+    e.preventDefault();contextGeneration++;lost=true;warmed=false;syncLoop();renderer.domElement.style.visibility='hidden';
     status.hidden=false;status.textContent='Restoring the village…';
   });
   renderer?.domElement.addEventListener('webglcontextrestored',()=>{
+    const generation = contextGeneration;
     lost=false;lighting.restore();renderer.shadowMap.needsUpdate=true;
     restorePeople(scene);
     warmShaders(renderer, [[scene, camera, post.target]]).then(() => {
-      if (lost) return;
+      if (lost || generation !== contextGeneration) return;
       warmed = true; dirty = true; syncLoop(); renderStill();
     });
   });
@@ -925,6 +926,7 @@ export function mountVillage(root, { onPin } = {}) {
     primePeople(scene, automatic === 'High');
     lighting.captureSky(); // scene.environment is part of every lit shader's key
     warmShaders(renderer, [[scene, camera, post.target]]).then(ms => {
+    if (contextGeneration !== 0) return;
     warmed = true; console.info(`Village shaders ready in ${Math.round(ms)} ms (${automatic} tier)`);
     dirty = true; renderStill();
   });

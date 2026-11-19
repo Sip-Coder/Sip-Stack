@@ -288,6 +288,7 @@ export function mountCreek(root) {
   let tier = 0,
     light = 'afternoon',
     visible = false,
+    contextGeneration = 0,
     lost = false,
     playing = !reduced.matches,
     free = false,
@@ -506,6 +507,7 @@ export function mountCreek(root) {
   });
   canvas.addEventListener('webglcontextlost', (e) => {
     e.preventDefault();
+    contextGeneration++;
     warmed = false;
     lost = true;
     suspend();
@@ -515,13 +517,14 @@ export function mountCreek(root) {
     status.textContent = 'Restoring Sip Creek…';
   });
   canvas.addEventListener('webglcontextrestored', () => {
+    const generation = contextGeneration;
     lost = false;
     moodDirty = true;
     renderer.shadowMap.needsUpdate = true;
     restorePeople(scene);
     applyLight();
     warmShaders(renderer, [[scene, camera, opaque], [overlay, camera, opaque]]).then(() => {
-      if (lost) return;
+      if (lost || generation !== contextGeneration) return;
       warmed = true;
       queue();
     });
@@ -540,6 +543,7 @@ export function mountCreek(root) {
     [scene, camera, opaque],
     [overlay, camera, opaque],
   ]).then((ms) => {
+    if (contextGeneration !== 0) return;
     warmed = true;
     console.info(`Sip Creek shaders ready in ${Math.round(ms)} ms (tier ${tier})`);
     queue();
