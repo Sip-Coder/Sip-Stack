@@ -1,0 +1,1457 @@
+{
+  "scene": {
+    "failures": [],
+    "Village": {
+      "workers": {
+        "Harvester": {
+          "groundErrorMm": 16.498,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 2341,
+          "footFrames": 2467,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 1672,
+            "i": 1,
+            "heel": 16.5,
+            "toe": 0,
+            "root": [
+              5.477,
+              5,
+              -5.7
+            ],
+            "foot": [
+              5.259,
+              0,
+              -5.825
+            ]
+          },
+          "gripFrame": 747,
+          "gripSide": 0
+        },
+        "Porter": {
+          "groundErrorMm": 16.498,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 1988,
+          "footFrames": 1982,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 28,
+            "i": 1,
+            "heel": 16.5,
+            "toe": 0,
+            "root": [
+              4.786,
+              1.05,
+              0.669
+            ],
+            "foot": [
+              4.964,
+              0,
+              0.773
+            ]
+          },
+          "gripFrame": 495,
+          "gripSide": 1
+        },
+        "Taster": {
+          "groundErrorMm": 0,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 1800,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 300,
+            "i": 0,
+            "heel": 0,
+            "toe": 0,
+            "root": [
+              -7.3,
+              1.1,
+              0.03
+            ],
+            "foot": [
+              -7.262,
+              0,
+              -0.016
+            ]
+          },
+          "gripFrame": 541,
+          "gripSide": 1
+        },
+        "Cellar worker": {
+          "groundErrorMm": 0,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 3600,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 3,
+            "i": 1,
+            "heel": 0,
+            "toe": 0,
+            "root": [
+              6.32,
+              3.06,
+              -2.9
+            ],
+            "foot": [
+              6.255,
+              0,
+              -2.902
+            ]
+          },
+          "gripFrame": 337,
+          "gripSide": 0
+        },
+        "Stair walker": {
+          "groundErrorMm": 16.498,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 0,
+          "footFrames": 1984,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 551,
+            "i": 1,
+            "heel": 16.5,
+            "toe": 0,
+            "root": [
+              1.28,
+              6.75,
+              -7.241
+            ],
+            "foot": [
+              1.156,
+              0,
+              -7.166
+            ]
+          }
+        },
+        "Oarsman": {
+          "groundErrorMm": 0.002,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 3600,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 1737,
+            "i": 1,
+            "heel": 0,
+            "toe": 0,
+            "root": [
+              -0.08,
+              -0.124,
+              0
+            ],
+            "foot": [
+              0.158,
+              0,
+              -0.055
+            ]
+          },
+          "gripFrame": 1345,
+          "gripSide": 0
+        },
+        "Cantina guest": {
+          "groundErrorMm": 0,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 0,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 10,
+            "i": 1,
+            "heel": 0,
+            "toe": 0,
+            "root": [
+              -7.85,
+              1.1,
+              -0.17
+            ],
+            "foot": [
+              -7.819,
+              0,
+              -0.215
+            ]
+          }
+        },
+        "Tasting group": {
+          "count": 3,
+          "bakedPoses": 24,
+          "testedVertices": 83808,
+          "intersecting": 0,
+          "instances": []
+        }
+      },
+      "frames": 1800,
+      "obstacles": 273,
+      "failures": []
+    },
+    "mobile": {
+      "Village": {
+        "workers": {
+          "Harvester": {
+            "groundErrorMm": 16.498,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 2341,
+            "footFrames": 2467,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 1672,
+              "i": 1,
+              "heel": 16.5,
+              "toe": 0,
+              "root": [
+                5.477,
+                5,
+                -5.7
+              ],
+              "foot": [
+                5.259,
+                0,
+                -5.825
+              ]
+            },
+            "gripFrame": 1347,
+            "gripSide": 0
+          },
+          "Porter": {
+            "groundErrorMm": 16.498,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 1988,
+            "footFrames": 1982,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 28,
+              "i": 1,
+              "heel": 16.5,
+              "toe": 0,
+              "root": [
+                4.786,
+                1.05,
+                0.669
+              ],
+              "foot": [
+                4.964,
+                0,
+                0.773
+              ]
+            },
+            "gripFrame": 490,
+            "gripSide": 0
+          },
+          "Taster": {
+            "groundErrorMm": 0,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 1800,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 1131,
+              "i": 1,
+              "heel": 0,
+              "toe": 0,
+              "root": [
+                -7.3,
+                1.1,
+                0.03
+              ],
+              "foot": [
+                -7.338,
+                0,
+                0.076
+              ]
+            },
+            "gripFrame": 1222,
+            "gripSide": 1
+          },
+          "Cellar worker": {
+            "groundErrorMm": 0,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 3600,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 2,
+              "i": 0,
+              "heel": 0,
+              "toe": 0,
+              "root": [
+                6.32,
+                3.06,
+                -2.9
+              ],
+              "foot": [
+                6.385,
+                0,
+                -2.898
+              ]
+            },
+            "gripFrame": 1442,
+            "gripSide": 1
+          },
+          "Stair walker": {
+            "groundErrorMm": 16.498,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 0,
+            "footFrames": 1984,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 551,
+              "i": 1,
+              "heel": 16.5,
+              "toe": 0,
+              "root": [
+                1.28,
+                6.75,
+                -7.241
+              ],
+              "foot": [
+                1.156,
+                0,
+                -7.166
+              ]
+            }
+          },
+          "Oarsman": {
+            "groundErrorMm": 0.002,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 3600,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 1254,
+              "i": 1,
+              "heel": 0,
+              "toe": 0,
+              "root": [
+                -0.08,
+                -0.124,
+                0
+              ],
+              "foot": [
+                0.158,
+                0,
+                -0.055
+              ]
+            },
+            "gripFrame": 640,
+            "gripSide": 0
+          },
+          "Cantina guest": {
+            "groundErrorMm": 0,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 0,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 1,
+              "i": 0,
+              "heel": 0,
+              "toe": 0,
+              "root": [
+                -7.85,
+                1.1,
+                -0.17
+              ],
+              "foot": [
+                -7.881,
+                0,
+                -0.125
+              ]
+            }
+          },
+          "Tasting group": {
+            "count": 3,
+            "bakedPoses": 24,
+            "testedVertices": 83808,
+            "intersecting": 0,
+            "instances": []
+          }
+        },
+        "frames": 1800,
+        "obstacles": 269,
+        "failures": []
+      },
+      "Tidelight": {
+        "workers": {
+          "Pier hand": {
+            "groundErrorMm": 0,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 0,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 314,
+              "i": 0,
+              "heel": 0,
+              "toe": 0,
+              "root": [
+                1.64,
+                0.731,
+                2.54
+              ],
+              "foot": [
+                1.59,
+                0,
+                2.557
+              ]
+            }
+          },
+          "Terrace taster": {
+            "groundErrorMm": 0,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 1800,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 348,
+              "i": 0,
+              "heel": 0,
+              "toe": 0,
+              "root": [
+                -1.89,
+                2.88,
+                1.16
+              ],
+              "foot": [
+                -1.878,
+                0,
+                1.081
+              ]
+            },
+            "gripFrame": 677,
+            "gripSide": 1
+          }
+        },
+        "frames": 1800,
+        "obstacles": 41,
+        "failures": []
+      },
+      "Creek": {
+        "workers": {
+          "Cooper": {
+            "groundErrorMm": 0,
+            "bothAirFrames": 0,
+            "collisionFrames": 0,
+            "minClearanceMm": 0,
+            "selfPropFrames": 0,
+            "missingGripFrames": 0,
+            "limitExcessDeg": 0,
+            "selfHitFrames": 0,
+            "gripErrorMm": 0,
+            "gripFrames": 3600,
+            "footFrames": 3600,
+            "worstObstacle": null,
+            "worstPart": null,
+            "worstFoot": {
+              "frame": 288,
+              "i": 0,
+              "heel": 0,
+              "toe": 0,
+              "root": [
+                0.63,
+                0.098,
+                0.2
+              ],
+              "foot": [
+                -0.092,
+                0,
+                -0.035
+              ]
+            },
+            "gripFrame": 81,
+            "gripSide": 1
+          }
+        },
+        "frames": 1800,
+        "obstacles": 5,
+        "failures": []
+      }
+    },
+    "Tidelight": {
+      "workers": {
+        "Pier hand": {
+          "groundErrorMm": 0,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 0,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 314,
+            "i": 0,
+            "heel": 0,
+            "toe": 0,
+            "root": [
+              1.64,
+              0.731,
+              2.54
+            ],
+            "foot": [
+              1.59,
+              0,
+              2.557
+            ]
+          }
+        },
+        "Terrace taster": {
+          "groundErrorMm": 0,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 1800,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 624,
+            "i": 1,
+            "heel": 0,
+            "toe": 0,
+            "root": [
+              -1.89,
+              2.88,
+              1.16
+            ],
+            "foot": [
+              -1.904,
+              0,
+              1.229
+            ]
+          },
+          "gripFrame": 1752,
+          "gripSide": 1
+        }
+      },
+      "frames": 1800,
+      "obstacles": 41,
+      "failures": []
+    },
+    "Creek": {
+      "workers": {
+        "Cooper": {
+          "groundErrorMm": 0,
+          "bothAirFrames": 0,
+          "collisionFrames": 0,
+          "minClearanceMm": 0,
+          "selfPropFrames": 0,
+          "missingGripFrames": 0,
+          "limitExcessDeg": 0,
+          "selfHitFrames": 0,
+          "gripErrorMm": 0,
+          "gripFrames": 3600,
+          "footFrames": 3600,
+          "worstObstacle": null,
+          "worstPart": null,
+          "worstFoot": {
+            "frame": 288,
+            "i": 0,
+            "heel": 0,
+            "toe": 0,
+            "root": [
+              0.63,
+              0.098,
+              0.2
+            ],
+            "foot": [
+              -0.092,
+              0,
+              -0.035
+            ]
+          },
+          "gripFrame": 1205,
+          "gripSide": 1
+        }
+      },
+      "frames": 1800,
+      "obstacles": 5,
+      "failures": []
+    },
+    "navigation": {
+      "failures": [],
+      "routePoints": 3,
+      "minimumRouteClearance": 0.007559736271131767,
+      "maximumTurnRate": 3.4000000000000785,
+      "nearestPersonClearance": 0.000397186428858054,
+      "movingDoorAngle": 1.5707963267948963
+    }
+  },
+  "rig": {
+    "failures": [],
+    "bones": 86,
+    "tiers": [
+      {
+        "tier": 0,
+        "weights": {
+          "vertices": 11972,
+          "triangles": 23296,
+          "invalid": 0,
+          "four": 4308
+        },
+        "poses": {
+          "elbow90": {
+            "leftElbow": {
+              "areaRatio": 1.02521,
+              "flippedTriangles": 0,
+              "triangles": 349
+            },
+            "leftForearm": {
+              "areaRatio": 1.00174,
+              "flippedTriangles": 0,
+              "triangles": 327
+            },
+            "rightElbow": {
+              "areaRatio": 1.02521,
+              "flippedTriangles": 0,
+              "triangles": 347
+            },
+            "rightForearm": {
+              "areaRatio": 1.00174,
+              "flippedTriangles": 0,
+              "triangles": 327
+            }
+          },
+          "wrist+80": {
+            "leftForearm": {
+              "areaRatio": 1.00181,
+              "flippedTriangles": 0,
+              "triangles": 327
+            },
+            "leftElbow": {
+              "areaRatio": 1.00409,
+              "flippedTriangles": 0,
+              "triangles": 349
+            },
+            "rightForearm": {
+              "areaRatio": 0.99623,
+              "flippedTriangles": 0,
+              "triangles": 327
+            },
+            "rightElbow": {
+              "areaRatio": 0.99589,
+              "flippedTriangles": 0,
+              "triangles": 347
+            }
+          },
+          "wrist-80": {
+            "leftForearm": {
+              "areaRatio": 0.99623,
+              "flippedTriangles": 0,
+              "triangles": 327
+            },
+            "leftElbow": {
+              "areaRatio": 0.99589,
+              "flippedTriangles": 0,
+              "triangles": 349
+            },
+            "rightForearm": {
+              "areaRatio": 1.00181,
+              "flippedTriangles": 0,
+              "triangles": 327
+            },
+            "rightElbow": {
+              "areaRatio": 1.00409,
+              "flippedTriangles": 0,
+              "triangles": 347
+            }
+          },
+          "elbow90wrist+80": {
+            "leftElbow": {
+              "areaRatio": 1.02944,
+              "flippedTriangles": 0,
+              "triangles": 349
+            },
+            "leftForearm": {
+              "areaRatio": 1.00696,
+              "flippedTriangles": 0,
+              "triangles": 327
+            },
+            "rightElbow": {
+              "areaRatio": 1.02079,
+              "flippedTriangles": 0,
+              "triangles": 347
+            },
+            "rightForearm": {
+              "areaRatio": 0.99412,
+              "flippedTriangles": 0,
+              "triangles": 327
+            }
+          },
+          "elbow90wrist-80": {
+            "leftElbow": {
+              "areaRatio": 1.02079,
+              "flippedTriangles": 0,
+              "triangles": 349
+            },
+            "leftForearm": {
+              "areaRatio": 0.99412,
+              "flippedTriangles": 0,
+              "triangles": 327
+            },
+            "rightElbow": {
+              "areaRatio": 1.02944,
+              "flippedTriangles": 0,
+              "triangles": 347
+            },
+            "rightForearm": {
+              "areaRatio": 1.00696,
+              "flippedTriangles": 0,
+              "triangles": 327
+            }
+          },
+          "knee120": {
+            "leftKnee": {
+              "areaRatio": 1.02742,
+              "flippedTriangles": 0,
+              "triangles": 336
+            },
+            "rightKnee": {
+              "areaRatio": 1.02742,
+              "flippedTriangles": 0,
+              "triangles": 336
+            }
+          },
+          "shoulder90": {
+            "leftShoulder": {
+              "areaRatio": 0.94217,
+              "flippedTriangles": 0,
+              "triangles": 341
+            },
+            "rightShoulder": {
+              "areaRatio": 0.94217,
+              "flippedTriangles": 0,
+              "triangles": 343
+            }
+          }
+        }
+      },
+      {
+        "tier": 1,
+        "weights": {
+          "vertices": 3803,
+          "triangles": 7266,
+          "invalid": 0,
+          "four": 1025
+        },
+        "poses": {
+          "elbow90": {
+            "leftElbow": {
+              "areaRatio": 1.05709,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "leftForearm": {
+              "areaRatio": 1.00935,
+              "flippedTriangles": 0,
+              "triangles": 84
+            },
+            "rightElbow": {
+              "areaRatio": 1.05709,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "rightForearm": {
+              "areaRatio": 1.00935,
+              "flippedTriangles": 0,
+              "triangles": 82
+            }
+          },
+          "wrist+80": {
+            "leftForearm": {
+              "areaRatio": 0.89029,
+              "flippedTriangles": 0,
+              "triangles": 84
+            },
+            "leftElbow": {
+              "areaRatio": 0.93745,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "rightForearm": {
+              "areaRatio": 0.88534,
+              "flippedTriangles": 0,
+              "triangles": 82
+            },
+            "rightElbow": {
+              "areaRatio": 0.92996,
+              "flippedTriangles": 0,
+              "triangles": 99
+            }
+          },
+          "wrist-80": {
+            "leftForearm": {
+              "areaRatio": 0.88534,
+              "flippedTriangles": 0,
+              "triangles": 84
+            },
+            "leftElbow": {
+              "areaRatio": 0.92996,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "rightForearm": {
+              "areaRatio": 0.89029,
+              "flippedTriangles": 0,
+              "triangles": 82
+            },
+            "rightElbow": {
+              "areaRatio": 0.93745,
+              "flippedTriangles": 0,
+              "triangles": 99
+            }
+          },
+          "elbow90wrist+80": {
+            "leftElbow": {
+              "areaRatio": 0.99133,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "leftForearm": {
+              "areaRatio": 0.90559,
+              "flippedTriangles": 0,
+              "triangles": 84
+            },
+            "rightElbow": {
+              "areaRatio": 0.98232,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "rightForearm": {
+              "areaRatio": 0.88781,
+              "flippedTriangles": 0,
+              "triangles": 82
+            }
+          },
+          "elbow90wrist-80": {
+            "leftElbow": {
+              "areaRatio": 0.98232,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "leftForearm": {
+              "areaRatio": 0.88781,
+              "flippedTriangles": 0,
+              "triangles": 84
+            },
+            "rightElbow": {
+              "areaRatio": 0.99133,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "rightForearm": {
+              "areaRatio": 0.90559,
+              "flippedTriangles": 0,
+              "triangles": 82
+            }
+          },
+          "knee120": {
+            "leftKnee": {
+              "areaRatio": 1.10184,
+              "flippedTriangles": 0,
+              "triangles": 96
+            },
+            "rightKnee": {
+              "areaRatio": 1.10184,
+              "flippedTriangles": 0,
+              "triangles": 96
+            }
+          },
+          "shoulder90": {
+            "leftShoulder": {
+              "areaRatio": 0.86373,
+              "flippedTriangles": 0,
+              "triangles": 99
+            },
+            "rightShoulder": {
+              "areaRatio": 0.86373,
+              "flippedTriangles": 0,
+              "triangles": 99
+            }
+          }
+        }
+      }
+    ],
+    "variants": {
+      "Harvester": {
+        "bones": 86,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94217,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11972,
+              "triangles": 23296,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86373,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3803,
+              "triangles": 7266,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Porter": {
+        "bones": 86,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94322,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11676,
+              "triangles": 22708,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86628,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3675,
+              "triangles": 7014,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Taster": {
+        "bones": 89,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94379,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11796,
+              "triangles": 22944,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86488,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3720,
+              "triangles": 7100,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Cellar worker": {
+        "bones": 86,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94267,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11972,
+              "triangles": 23296,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86548,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3803,
+              "triangles": 7266,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Stair walker": {
+        "bones": 89,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94596,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11796,
+              "triangles": 22944,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86663,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3720,
+              "triangles": 7100,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Oarsman": {
+        "bones": 86,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94424,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11972,
+              "triangles": 23296,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86654,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3803,
+              "triangles": 7266,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Cantina guest": {
+        "bones": 89,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.9422,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11796,
+              "triangles": 22944,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86317,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3720,
+              "triangles": 7100,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Cooper": {
+        "bones": 86,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94536,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11676,
+              "triangles": 22708,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86697,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3675,
+              "triangles": 7014,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Pier hand": {
+        "bones": 86,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94577,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11676,
+              "triangles": 22708,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86714,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3675,
+              "triangles": 7014,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      },
+      "Terrace taster": {
+        "bones": 89,
+        "tiers": [
+          {
+            "tier": 0,
+            "minAreaRatio": 0.94279,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 11796,
+              "triangles": 22944,
+              "invalid": 0,
+              "four": 4308
+            }
+          },
+          {
+            "tier": 1,
+            "minAreaRatio": 0.86372,
+            "flippedTriangles": 0,
+            "weights": {
+              "vertices": 3720,
+              "triangles": 7100,
+              "invalid": 0,
+              "four": 1025
+            }
+          }
+        ]
+      }
+    }
+  },
+  "physics": {
+    "failures": [],
+    "throttle": 4,
+    "cloth": {
+      "apron": {
+        "frames": 1800,
+        "invertedFrames": 0,
+        "minClearanceMm": 2.99998,
+        "negativeFrames": 0,
+        "perFrameTenthsMmInt16LE": "pACqAFoAlACAAFcAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAHYAsgCzAIwAZgAkAB4AHgAeAB4AHgAeAB4AIQAnADAAHgAeAB4AHgAeAB4APgA/AEcALQAtAB4AHgAhAD0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACkARQA3ACIAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAHIA8ADIAC4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AHgAeAB4AHgAeAB4AZABvAHoAWwCBAG4AZQA/AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKQAuACcAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAzAI8AjgCUAHAAUAAtADcARAAeAB4AHgAeACEAMQA3AB4AHgAeAB4AHgAeAFYAfQB+AIUALQAeAB4AHgA5ACAAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAsAEwAWQBQAD8AKAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgBDALQAsAB+AEkALgAeAB4ANgAeAB4AHgAeAB4AIAAvAB4AHgAeAB4AHgAeAFoAYgBmAEwAXAB6AIEAcgAeAB4AHgAeAB4AHgAeACAAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgArAE0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCGAIYAiABjAIgAawBlAFgAHgAeAB4AHgAeAB4AIAAeAB4AHgAeAB4AHgA6ADwANgA2AB4AKAAeAB4AHgBMAB4AHgAeAB4AIgAtACMAHgAeAB4AHgAeADMAOwA0ACwAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AQQDBAL8AvwAwAB4AHgAeACYAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACEAKwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAE4APgAxAB4AHgAeAB4AIQAlAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AfwCfAKIAfQB6ADgAIgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJgAeADAAXwAeAB4AHgAiAB4AHwAmAB4AHgAeAB4AHgAeACAAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AeQDXALoAOgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AOwBKAFkAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIQAjAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeADYAsQC1AMIATAAeAB4AHgAeAB4AHgAeAB4AOwBIAEkALQAeAB4AHgAeAB4AJAAfAB8AJQAeACcAHgAeAC0ARgAeAB4AHgA+AHUALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQAtADkAcQAeAB4AHgA+ACcAaQAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAGkAhwAeAB4AHgAeAB4AHgAeAHkAUgAtAC0ALQAtAC0ALQAvADkASwAvAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAwACAAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAwAB4AHgAoAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ALQAtAB4ALwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACEAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAyADEAMgA1AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AHgAtAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAwADMAHgAeAB4AHgAeAB4AHgAeAB4AHgBJAHIAaAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB8AHgAeAB4AHgAeAB4AHgAeAB4AHgAfAC0ALQAeADUAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AmQAeAB4AHgAeAB4AHgAeAB4AHgBpAFoAeQCSAEcAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAB4ANAAtACMAJwA5ADMAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AjgB7AB4AHgAeAB4AHgAjAB4AHgAeAB4APwBQAC8AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AMQBOAHMAnACcAB4ALgAeAB4AHgAeAB4AHgAeAB4AHgAtADoAHgAeADMATQB4AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAC0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAuAFgAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAMQAEAFTAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeALgALQAeAB4AHgAeAB4AHgApAB4AHgAeAB4AHgAeAB4AHgAeAB4AKAAeAB4AHgAsADkALQBKAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeADwAVgBRAEYAMAAeAB4AHgAeAB4AHgAeAB4AHgAeAJgAEwGtAC0AHgAeAB4AHgAeAB4AHgAjACkAHgAeAB4AHgAeAB4AHgAnAB4AHgAlAD4ASQBVAB4AHgAeAB4AHgAeAB4AHgAeAB4AJAAeAB4AHgAeAB4AYQBpAG0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4A9wClAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAEAASABBAF8ALAAeAB4AHgAeAB4AHgAeAB4AHgAeAGAAXwBXACQAIwAhAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAD4ArgC/ANMAVgAtAB8AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeADoALQBEAGgALgAeAB4AHgAeAB4AHgAeAB4AHgAtAEgARwBPACgAXQBiAEgAVQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AWQCjAKAAJgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeADsAiACTAKUAKwAeAB4AHgAeAB4AHgAeAB4AHgAeADYAnwCjACYAHgAeACQAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHwAeAB4AHgBaAIcAaQB0AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAzADkAMQAsAB4AHgAeACIALgAiAB4AHgAeAB4AHgAeAB4AHgAeAFYAbQBtAHsAHgBTAC0AMAAgAB4AHgAeAB4AHgAeAB4AHgAeAB4AJAA6ADcALgAeAB4AHgAeACYALgAeAB4AHgAeAB4AHgAeAB4AHgAxAB4AHgAeAB4AagA8AC0ASQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AfgCHAI0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeADUAewCRAKUAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAHAAfQCEAB4AHgAeAB4AMwAwAB4AHgAeAB4AHgAeAB4AHgAeAB4ARwBBAEsAHgBnAEgALQA8AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeADAAZwBrAGkAXQAkAB4AHgAeAB4AHgAeAB4AHgAeAB4A8gCyAEYAJgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ASwCYAJMAdgAtAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgA7AEYASwAtAB4AHgAeAB4AHgAeAB4AHgAeADUAtAC9AJ0ALQAnAC0ALAAkAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgBwAHIAcgAtAC0AHwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIwBhAGIA"
+      },
+      "skirt": {
+        "frames": 1800,
+        "invertedFrames": 0,
+        "minClearanceMm": 2.99998,
+        "negativeFrames": 0,
+        "perFrameTenthsMmInt16LE": "cQCCACEAIgAeAB4AKgAeAB4AHgAfAB8AIAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgBVAGMAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHwApAD4AQABFAFIAMgAeAB4AIAAlACcAKQAvAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACcALgBUAGAAVAAeACUALQAtADEAPQAeAB4AHgAeAB4AHgAeAB4ATQBPAH0AdQByAHAAegCGAFoATgBOAFQAXABmAHMAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAF8AaAAxACAALQAtAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgB9ADkARwBKAEQARQBPAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ATABlAC0AHgAeAB4ALQAtAB4AHgAeAB4AHgAeAB4AHgAeAIcAYQBmAGIAZABsAHkAQAAsACwAMgA3ADwAQwAeAB4AHgAeAB4AHgAeAB4AHgBtAB4AHgAeAC0ANwBeAGsALQAeAC0ALQAtAC0AHgAeAB4AHgAeAB4AHgAeAB4AZQBoAIwAhgCDAIYAjQBMADYALQA3ADsAPwBGAB4AHgAeAB4AHgAeAB4AHgAeAFkAHgAeAB4AHgAtAFsAZQAsACQALQAtAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgBxAEsAUwBPAE0AUwBfAB4AHgAeACUAJgAkACQAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AUwBlACsAHgAeAC0ALQAtAB4AHgAeAB4AHgAeAB4AHgAeAHQAbwBmAGYAagByAFMAKQAhACcALQAvADMAJwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ARgBfAHAAHgAnAC0ALQAtAC8AHgAeAB4AHgAeAB4AHgAeACoAZgCTAIwAiACCAIwAcgBGADoAOwBBAEkAUgBfAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQBJAF4AUQAeACoALQAtAC0ALQAeAB4AHgAeAB4AHgAeAB4AhQBhAGgAXQBYAFcAXgAzAB4AHgAeACEAIAAfAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAEcAZAAtAB4AHgAeACIALQAeAB4AHgAeAB4AHgAeAB4AHgCEAEcAXABXAFYAXABqADcAJQAnAC0AMAAzADgAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtADsAYABuADQAHgAtAC0ALQAzADsAHgAeAB4AHgAeAB4AHgAeAFEAUwCCAHsAbgB7AIQAawBSAE0AUABTAFcAXQBIAB4AHgAeAB4AHgAeAB4AHgBxAB4AHgAeAB4ALQBZAGYALQAmACEALQAtAC0AHgAeAB4AHgAeAB4AHgAeAB4AOAAeACEAMwAyADQAPgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAEsAZAAtAB4AHgAeAC0ALQAeAB4AHgAeAB4AHgAeAB4AHgB3AHcAewB3AHoAHgAeAB4AHgAtADkAUABeAH4AlABtAE4ALAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAqACsAJgAgACkAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0AVwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ANQBLAHcAjQCCAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQBgAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACsAPAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ASAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AIwAtAEYAWgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAtAEEAUQBlAI0AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeACwAOgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgA/AB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAoAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AgAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB8AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQBOAGoAjgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AKAArACcAKwBIAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAC0ALQBVAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAH4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AkQAtAHAAbAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4ALQBaAGMAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AlgB8AG4AZwBoAHEAXwApAB4AKAAtAB4AHgAeAB4AHgAeAB4AHgAeAHYAdwAkAC8AOQBcAGQAcQAeAB4AJwAtAB4AHgAeAB4AHgAeAB4AHgBhAGUAjgCKAIoAmgCZAFUAPgAtADUAHgAeAB4AHgAeAB4AHgAeAB4AfAB8AB4AHgAtADwAXgBoAB4AJwAtACkAHgAeAB4AHgAeAB4AHgAeAIwAbABWAEgAQABBAC4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgA+AB4AHgAeAB4ALQBgAGQAHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AlAB5AGkAYQBgAGcAVwAhAB4AIwAqAB4AHgAeAB4AHgAeAB4AHgAeAHsAewAeAC0ALgBRAGIAcwAeACAALQAtAB4AHgAeAB4AHgAeAB4AHgBwAHQAnACYAJYAnwCOAEoALQAtADIAHgAeAB4AHgAeAB4AHgAeAB4AegB6AB4AHgAtAEEAXgBrAB4AJAAtAC0AHgAeAB4AHgAeAB4AHgAeAJsAggBwAGUAYABiAE8AHgAeAB4AIAAeAB4AHgAeAB4AHgAeAB4AHgBaAD0AHgAeAB4ANQBgAGoAIgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AlQB4AGYAXABYAF0ATgAeAB4AHgAjAB4AHgAeAB4AHgAeAB4AHgAeAGIAcQAeAB4ALQA9AGAAbAAeACYALQAtAB4AHgAeAB4AHgAeAB4AHgCKAI0AhwCBAIAAhQB2ADYAJgApAC0AHgAeAB4AHgAeAB4AHgAeAB4AegB5AB4ALQAtAEgAXwBuAB4AIQAtAC0AHgAeAB4AHgAeAB4AHgAeAIAAhACQAIkAiACKAHoAOAAmACgALQAeAB4AHgAeAB4AHgAeAB4AHgAyAIEAHgAeAC0AQABhAG0AHgApAC0ALQAeAB4AHgAeAB4AHgAeAB4AkAB5AGUAWQBSAFUARwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AJQAeAB4AHgAvAGAAZwAkAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgCFAHwAawBjAGAAZwBdACIAHgAhACkAHgAeAB4AHgAeAB4AHgAeAB4ANAB4AB4ALQAvAFAAYQByAB4AIAAtAC0AHgAeAB4AHgAeAB4AHgAeAGkAbACUAI8AjACaAJ0AWABCADUAPQAeAB4AHgAeAB4AHgAeAB4AHgAwAHoAHgAtAC0ASgBiAHAAHgAkAC0ALQAeAB4AHgAeAB4AHgAeAB4AUQB8AGgAWgBRAFIARQAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAnAFYAYwAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAGsAVwBNAEoAUgBMAB4AHgAeACMAHgAeAB4AHgAeAB4AHgAeAB4AHgB5AB4ALQAxAFMAYgB0AB4AIAAtAC0AHgAeAB4AHgAeAB4AHgAeAF8A"
+      },
+      "scarf": {
+        "frames": 1800,
+        "invertedFrames": 0,
+        "minClearanceMm": 86.83148,
+        "negativeFrames": 0,
+        "perFrameTenthsMmInt16LE": "iwV0BVIFKwUDBdkEswSVBH8EcARmBGAEWARJBDoELQQhBBcEEAQNBA4EFwQcBBwEGQQOBAIE9gPtA+wD8gP+Aw4EIAQxBEEETwRcBGcEcQR5BIQEhgSFBH0EaARSBD4EMgQvBDEENwQ+BEUETARRBFQEVQRVBFQEUgRRBFcEVgROBEIEMQQhBBMECwQHBP8D/QP9A/wD+QP1A+8D5gPdA9MDyQPDA7gDsAOnA5oDkQOJA4YDiQOPA5gDowOuA7gDwwPMA9YD3wPpA/MDCgQMBA8EDQT9A+cD1gPKA8gDzwPdA+0D/wMPBB4EKwQ1BDwEQQREBEYETwRQBE8ESwRCBDoENQQzBDUEOwRDBE0EVgRYBFcEUwRNBEUEPAQzBC8EKAQiBBsEEQQJBAMEAgQFBAsEEQQZBCEEKQQxBDkEPwRHBE8EWARqBHAEcwRtBFgEPQQmBBcEEAQSBBkEJAQwBDwERwRPBFUEWARaBFoEWARgBF8EWAROBEAEMQQlBBsEFQQVBBoEIQQqBDYEOwQ9BDwENwQvBCYEIgQYBA8EBgT7A/ID7QPrA+0D8APzA/cD+gP+AwIEBgQLBBAEFwQfBDQENwQ6BDUEIgQJBPUD5wPiA+cD8gMABA8EHQQoBDIEOAQ6BDsEOAQ1BDcENQQvBCcEGwQRBAsECQQLBA4EEQQVBBsEIQQpBDIEPQRLBFgETwRMBEUEOwQwBCIEFQQMBAcEBgQHBAkEDQQSBBgEIAQpBDUEQgRRBF4EdgR9BIEEdQRkBEkEMgQhBBcEFgQcBCgENgREBFAEWARdBF8EXgRaBFQEUwRPBEoERAQ7BDUEMgQyBDUEOQQ9BEEERgRMBFQEXQRoBHUEggSLBIcEfQRyBGUEVQRHBD4EOAQ2BDUENAQ0BDYEOQQ9BEIESARQBFoEZQR5BH4EeQRsBFsEOwQeBAgE+QP2A/0DBwQSBBsEIQQkBCMEHwQYBA8EBAT/A/YD7QPkA9cDzgPIA8YDxwPKA84D0wPYA90D4gPnA+0D9AP9AwcEHAQjBCgEJgQVBAIE8wPqA+sD9AMCBBEEIAQjBCkEMAQ7BEgEWAReBGUEZARfBFoEUwRKBEYERgRDBDwEOwQ9BEIERgRKBEwETARMBEoESQRIBE0ETQRKBEMENwQrBCIEHgQgBCUELQQ1BD4ERwRQBFkEYgRrBHUEfgSRBJgEmgSUBHwEXgRCBC0EIgQhBCcEMgRABE4EWwRlBGoEcARzBG8EagRqBGQEXARSBEYEPAQvBBsEDwQIBAUEAwQBBP4D+QPzA+oD4QPXA84DygPDA7sDsQOiA5UDiwOGA4cDiQONA5IDmAOfA6cDrwO3A78DyQPTA+4D7gPwA+4D3APEA68DoQOcA6EDsAPEA9sD8wMIBBwEKwQ4BEAERwRKBFUEVARWBFQEUARQBFMEUgRLBEkESwRPBFIEVARUBFEESwRFBD8EOQQ7BDgENQQvBCMEGAQRBA8EEgQaBCMELQQ4BEIETARVBF0EZgRvBHkEigSPBI8EhgRtBE8ENQQjBBoEGQQcBCUELwQ6BEUETgRVBFkEXARcBFsEXwReBFcETQRABDQEKAQQBAEE9wPyA/AD7gPrA+YD4APYA9ADzwPEA70DuQOpA6oDqQOpA6cDpAOgA5oDlQOSA5IDlgOfA6wD1gPWA+oDAgQWBCEECgT6A9gDtgOXA3wDawNkA2cDcgOGA6ED1gPqAwsEKARBBFUEYwRsBHEEdgR5BHQEbQRkBFUEQAQ1BDIEQwRHBE4EVARaBFsEWARSBEkEQAQ2BDAEKQQeBBEEBAT6A/YDAgQJBBYEJAQ2BEUEUgRcBGQEagRxBHUEdwRxBGoEVAQ4BB8EGQQKBAoEFgQmBDUEQwRQBFkEXgRhBGEEXARVBE8ESwQ9BDkEPwQ9BDsEOQQxBCsEJwQiBB4EGQQTBAwEBAT8A/QD7gPqA+YD4QPZA88DxwPCA8ADvwO9A7wDuwO7A70DwwPKA9QD4QPxAwMELwQtBBgEIAQTBAAE7gPiA9oD1wPWA9kD4QPsA/oDCQQbBC0ETwRZBGcEbwRwBF8ETQQ1BCEEEQQDBPcD7gPoA+YD7AP5AwoELAQ3BEcEUQRXBFkEVwRWBFIESQQ7BCwEGwQLBP4D+AP5AwoEFQQnBDYERgRUBGEEawR0BHoEegRzBF4ERQQrBBUEBQT+AxIEFAQiBDYESQRZBGQEagRrBGkEYwRaBFIESgREBDwEMwQrBDMENAQ1BDcEPARBBEcETwRZBGUEbgRjBFYESQQ9BC4EJAQZBB0EFgQRBA8EDwQQBBIEFQQYBBwEIAQmBCoELgQ0BDsEQQRABD0EMAQcBAgE+APrA+MD3gPbA9oD2wPdA+QD6gPxA/oDAwQNBCYEKAQnBBwECgT3A+kD2gPMA8EDuAOxA68DswPAA9QD7gMMBD4EUQRmBGQEYwRkBGgEawRqBGUEWgRNBD4EMwQtBC4ENAQ/BFoEagR/BI8EmwSUBIoEYwRKBC8EHgQPBPID2gPMA8gDzwPeAwYEEgQqBD4ETwRcBGUEaQRqBGoEaARfBFQERwQ5BC0EJgQmBDYEQAROBFoEZwR1BIAEigSSBJoEngSSBIgEfQRuBFcERQQ7BEoETARRBFEEVARYBF4EZARqBHEEdwR7BHIEZwRZBE8ERgRKBDEEIgQbBBsEHgQgBB8EHgQaBBQEDQQEBPsD8QPqA+MD1QPWA8wDxAO+A7wDvAO9A74DvQO8A7wDvgPDA8kD0QPcA+sD/AMkBAcECwQDBPgD7APjA98D3gPhA+cD7wP4AwUEEgQgBDAEPwRdBGYEeAR4BG8EYARLBDkELgQhBAcE9APpA+UD5wPwA/4DDwQyBD0ETgRZBGEEaARtBHEEdwR7BHoEdgRwBGoEZQRlBGgEbgSDBIwEmQSnBLEEtwS5BLYEjgR2BEwEIgT4A9cDvwOwA60DtQPcA+YDBAQlBEQEXgRxBH0EgwSBBHsEdgRuBGMEVQQ9BCEEDQQOBAYEBwQLBA8EEQQOBAcE/APuA+AD0APBA7ADpgOZA4sDgAOCA34DggOIA5EDmgOiA6oDsgO6A8EDyQPPA9cD3wPYA9sDzAPTA7ADpwOsA7cDwwPQA98D7gP9AwkEFgQgBCgEMAQ5BEIESgRSBFEEUQRTBFcEXARaBFMETwRNBEsESQRHBEUEQwRDBEQEOQQ5BCsEFwQIBAMEBQQPBCQEMAQ8BEQESwRPBEMENgQpBB0EEwQJBAEE+gP0A+4D6wPpA/UD8gPxA+gD4QPhA+YD7QP1AwAEDAQYBCUEMQQ8BEcEUgRlBFgEQwQvBBwEDQQCBPoD8wPtA+gD5wPmA+cD6QPrA+4D8wMGBAUEBQT+A+gD0QO9A64DpwOkA6MDogOhA6ADngObA5gDlQOZA5MDkgOSA5IDlQOZA6ADqQOzA74DygPWA+ID7gP7AwoEGgQ7BEMESQRBBDMEKgQoBCUEJQQoBC8ENwRABEsEWARmBHQEigSTBJUEjQSHBIIEdQRpBF4EUwRHBDoELQQfBBEEBQT6A/MD9gP0A/AD6QPdA9QD0QPUA9wD5gPxA/0DCQQUBB8EKQQyBDoERwRKBEoERQQ5BC0EJAQfBBwEGwQbBBwEHwQiBCYEKgQvBDUERARGBEYEPAQxBCsEKAQoBCwEMQQ3BDwENwQvBCUEGgQOBAYE+wPxA+gD3wPZA9YD1gPWA9cD2QPcA+AD5gPsA/MD+wMGBB8EIwQpBCgEGQQIBPoD8gPxA/UD+wMBBAcEDQQQBBMEFAQTBBgEFgQVBBMEDwQOBBAEEwQWBBoEHgQjBCkEMQQ7BEcEVQRMBEgEPgQwBBsEBwT6A/MD8QP1A/wDBQQQBBwEKgQ5BEcEVARmBGwEcwRuBGQEXgRaBFgEVgRUBFMEUwRPBEoEQwQ7BDQELgQxBC8EKgQhBBQECQQDBAIEBgQMBBUEHwQrBDkESARWBGQEcQSABHQEaARcBFIESwRIBEYERQRFBEUESARKBE8EVwRgBGwEcgR1BG8EYwRPBD0ELwQoBCYEKwQzBDsERgRSBF8EWQRRBEYEQAQ0BCkEHgQTBAsEBgQDBAAE/wP+AwAEAgQGBAoEDwQXBCAENgQ7BEAEPgQuBBwEDQQDBAEEBAQJBA0EDwQQBA8EDQQJBAMEAgT9A/gD8gPsA+kD6QPqA+0D8APzA/gD/wMIBBIEHQQrBDwETQREBDYEIgQRBAUE/wP/AwMECgQTBB8ELAQ6BEkEWQRpBIAEhQSFBH0EdgRyBGwEZAReBFkEVAROBEcEQAQ4BDAEKQQlBCoEKgQnBCEEFgQOBAsEDQQUBB4EKQQ1BEEETgRbBGgEdAR/BI4ElASZBI4EgAR1BGwEZQReBFcEUQRNBEwETQRRBFYEXgRiBGQEXwRVBEcENgQoBCAEHAQdBB8EHQQXBBAEBgT7A+8D4gPZA8wDwgO4A68DqAOkA6MDogOiA6MDpQOpA64DtAO7A8MDzgPnA+sD8QPwA+ID0QPEA70DvgPDA8sD1APdA+YD7QPzA/gD+wMGBAUECQQMBA8EEwQZBCEEKQQxBDkEQgRNBFkEaARkBFcETARLBEUEOwQvBB4EEAQIBAUECQQRBB0EKwQ6BEoEWQRnBHMEfQSNBJEEkQSGBHgEaQReBFYEUQRMBEgERARABDoENAQuBCkELAQpBCQEHgQTBAoEBgQGBAsEEQQZBCIELQQ4BEMETwRbBFsESgQ2BCIEDwT9A+8D5QPeA9gD1APSA9ED0QPRA9ID1APXA90D8APuA+4D5wPTA7wD"
+      }
+    },
+    "scenes": {
+      "Village": {
+        "steady": {
+          "frames": 3600,
+          "simulatedSeconds": 119.99999999999575,
+          "steps": 7200,
+          "hash": "32466680",
+          "droppedSteps": 0,
+          "maxSubsteps": 1,
+          "maxParticleSpeed": 0.16978,
+          "maxEnergy": 1.27024,
+          "maxEarlyMeanEnergy": 0.67967,
+          "maxLateMeanEnergy": 0.69241,
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 1.42776,
+          "p95PhysicsMs": 4.1,
+          "p99PhysicsMs": 20,
+          "peakMeasuredMs": 56.2,
+          "repeatHash": "32466680",
+          "deterministic": true
+        },
+        "spikes": {
+          "frames": 3113,
+          "simulatedSeconds": 120,
+          "steps": 6676,
+          "hash": "acf45389",
+          "droppedSteps": 1834,
+          "maxSubsteps": 4,
+          "maxParticleSpeed": 0.20276,
+          "maxEnergy": 1.28569,
+          "maxEarlyMeanEnergy": 0.68963,
+          "maxLateMeanEnergy": 0.70332,
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 1.09024,
+          "p95PhysicsMs": 3.6,
+          "p99PhysicsMs": 17.4,
+          "peakMeasuredMs": 162.7,
+          "repeatHash": "acf45389",
+          "deterministic": true
+        }
+      },
+      "Tidelight": {
+        "steady": {
+          "frames": 3600,
+          "simulatedSeconds": 119.99999999999575,
+          "steps": 3600,
+          "hash": "556dd5d6",
+          "droppedSteps": 0,
+          "maxSubsteps": 1,
+          "maxParticleSpeed": 0.06077,
+          "maxEnergy": 0.00701,
+          "maxEarlyMeanEnergy": 0.00178,
+          "maxLateMeanEnergy": 0.00173,
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 0.11397,
+          "p95PhysicsMs": 0.2,
+          "p99PhysicsMs": 1.5,
+          "peakMeasuredMs": 57.3,
+          "repeatHash": "556dd5d6",
+          "deterministic": true
+        },
+        "spikes": {
+          "frames": 3113,
+          "simulatedSeconds": 120,
+          "steps": 3338,
+          "hash": "4db0cf67",
+          "droppedSteps": 524,
+          "maxSubsteps": 4,
+          "maxParticleSpeed": 0.05564,
+          "maxEnergy": 0.00712,
+          "maxEarlyMeanEnergy": 0.0019,
+          "maxLateMeanEnergy": 0.00188,
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 0.17601,
+          "p95PhysicsMs": 0.6,
+          "p99PhysicsMs": 3.3,
+          "peakMeasuredMs": 79.9,
+          "repeatHash": "4db0cf67",
+          "deterministic": true
+        }
+      },
+      "Creek": {
+        "steady": {
+          "frames": 3600,
+          "simulatedSeconds": 119.99999999999575,
+          "steps": 3600,
+          "hash": "19c8bbd1",
+          "droppedSteps": 0,
+          "maxSubsteps": 1,
+          "maxParticleSpeed": 0.08843,
+          "maxEnergy": 0.00924,
+          "maxEarlyMeanEnergy": 0.00257,
+          "maxLateMeanEnergy": 0.00257,
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 0.10888,
+          "p95PhysicsMs": 0.2,
+          "p99PhysicsMs": 1.1,
+          "peakMeasuredMs": 40.7,
+          "repeatHash": "19c8bbd1",
+          "deterministic": true
+        },
+        "spikes": {
+          "frames": 3113,
+          "simulatedSeconds": 120,
+          "steps": 3338,
+          "hash": "f97cd25c",
+          "droppedSteps": 262,
+          "maxSubsteps": 4,
+          "maxParticleSpeed": 0.08843,
+          "maxEnergy": 0.00897,
+          "maxEarlyMeanEnergy": 0.00265,
+          "maxLateMeanEnergy": 0.00242,
+          "boundedEnergy": true,
+          "nanFrames": 0,
+          "meanPhysicsMs": 0.09402,
+          "p95PhysicsMs": 0.1,
+          "p99PhysicsMs": 1.4,
+          "peakMeasuredMs": 37.4,
+          "repeatHash": "f97cd25c",
+          "deterministic": true
+        }
+      }
+    },
+    "heap": {
+      "available": true,
+      "framesPerWindow": 420,
+      "retainedGrowthBytes": 0,
+      "rawDeltas": [
+        4512,
+        0
+      ]
+    },
+    "recovered": {
+      "before": "e1eb2397",
+      "after": "e1eb2397",
+      "bufferInvalidated": true,
+      "recoverySteps": 0
+    }
+  }
+}

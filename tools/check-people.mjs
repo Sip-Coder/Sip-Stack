@@ -121,6 +121,11 @@ try {
   const pending = new Map();
   let serial = 0,
     onLoad;
+  socket.onclose = () => {
+    for (const finish of pending.values())
+      finish({ error: { message: 'Chromium closed its debugging connection' } });
+    pending.clear();
+  };
   socket.onmessage = ({ data }) => {
     const r = JSON.parse(data);
     if (r.method === 'Page.loadEventFired') onLoad?.();
@@ -163,7 +168,9 @@ try {
 } finally {
   socket?.close();
   chrome.kill();
-  await new Promise((ok) => (chrome.exitCode !== null ? ok() : chrome.once('exit', ok)));
+  await new Promise((ok) =>
+    chrome.exitCode !== null || chrome.signalCode !== null ? ok() : chrome.once('exit', ok),
+  );
   server.closeAllConnections();
   server.close();
   rmSync(profile, { recursive: true, force: true, maxRetries: 4, retryDelay: 100 });
