@@ -1,4 +1,4 @@
-"""Exercise the Characters tab with Chromium and Playwright for Python.
+"""Exercise the Heros tab with Chromium and Playwright for Python.
 
 Serve docs/ and pass its URL. Optionally set CHROME and THREE_ROOT (the unpacked
 three@0.170.0 distribution), and MERMAID_ROOT for an unpacked mermaid@11
@@ -85,8 +85,48 @@ def browser_context(browser, *, package=None, system_fonts=False, width=680, hei
     return context
 
 
+def assert_heros_route(page):
+    page.wait_for_function("""() => location.hash === '#heros' &&
+        document.body.dataset.mode === 'heros' &&
+        document.querySelector('#heros.active')""")
+    tab = page.get_by_role("tab", name="Heros", exact=True)
+    assert tab.get_attribute("aria-selected") == "true"
+    assert tab.get_attribute("aria-controls") == "heros"
+    assert page.title() == "Heros · Sip-Stack"
+
+
+def check_saved_links(page, url):
+    base = url.rstrip("/") + "/"
+    # A saved debug URL must still enable the skeleton/contacts inspector.
+    page.goto(base + "?debug=characters&keep=1#characters", wait_until="domcontentloaded")
+    assert_heros_route(page)
+    assert page.url == base + "?debug=heros&keep=1#heros", page.url
+    page.wait_for_function("document.querySelector('#character-test')?.characterTest")
+    assert page.get_by_role("heading", name="Heros", exact=True).is_visible()
+
+    # A plain old bookmark works independently of debug. Replacing its
+    # fragment must leave exactly one entry between World and Heros.
+    page.goto(base + "#world", wait_until="domcontentloaded")
+    page.wait_for_function("document.body.dataset.mode === 'world'")
+    history_size = page.evaluate("history.length")
+    page.evaluate("location.hash = 'characters'")
+    assert_heros_route(page)
+    assert page.url == base + "#heros"
+    assert page.evaluate("history.length") == history_size + 1
+    page.go_back()
+    page.wait_for_function("location.hash === '#world' && document.body.dataset.mode === 'world'")
+    page.go_forward()
+    assert_heros_route(page)
+    page.locator('.seg button[data-mode="world"]').click()
+    page.wait_for_function("document.body.dataset.mode === 'world'")
+    page.get_by_role("link", name="Heros", exact=False).click()
+    assert_heros_route(page)
+    print("Heros deep links, saved debug and tab links, Back/Forward and landing link", flush=True)
+
+
 def ready(page, url):
-    page.goto(url.rstrip("/") + "/?review=characters#characters", wait_until="domcontentloaded")
+    page.goto(url.rstrip("/") + "/?review=heros#heros", wait_until="domcontentloaded")
+    assert_heros_route(page)
     page.locator(HOST).scroll_into_view_if_needed()
     page.wait_for_function("document.querySelector('#character-test')?.characterTest")
     page.wait_for_function("""() => {
@@ -110,7 +150,7 @@ def switch(page, mode):
             const c=document.querySelector('.vl-stage canvas');
             return c && c.style.visibility==='visible' && characterChecks.painted(c);
         }""")
-    if mode == "characters":
+    if mode == "heros":
         page.locator("#character-test canvas").scroll_into_view_if_needed()
         page.wait_for_function("""() => {
             const c=document.querySelector('#character-test canvas');
@@ -224,6 +264,7 @@ def exercise(browser, url, package, system_fonts):
     page.on("pageerror", lambda e: errors.append(str(e)))
     page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
     try:
+        check_saved_links(page, url)
         ready(page, url)
         call(page, "setManual", True)
         canvas = page.locator(HOST + " canvas")
@@ -256,7 +297,7 @@ def exercise(browser, url, package, system_fonts):
         call(page, "reset")
         call(page, "setManual", False)
         controls(page)
-        modes = ("world", "outline", "village", "characters")
+        modes = ("world", "outline", "village", "heros")
         for mode in modes:
             switch(page, mode)
         baseline = page.evaluate("characterChecks.contexts.size")

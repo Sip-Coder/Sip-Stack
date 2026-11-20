@@ -23,7 +23,7 @@ export function mountCharacters(host) {
   });
   const query = new URLSearchParams(location.search);
   const debug =
-    query.get('debug') === 'characters' ? cast.map((a) => debugRig(stage.scene, a.rig, a.ctrl)) : null;
+    query.get('debug') === 'heros' ? cast.map((a) => debugRig(stage.scene, a.rig, a.ctrl)) : null;
   const neutral = { x: 0, z: 0, run: false, jump: false, roll: false, emote: false };
   const steering = { ...neutral };
   const target = new T.Vector3(),
@@ -326,7 +326,7 @@ export function mountCharacters(host) {
     snap = true;
     if (manual && active()) render();
   }).observe(el);
-  if (debug || query.get('review') === 'characters') {
+  if (debug || query.get('review') === 'heros') {
     host.characterTest = {
       select(name) {
         choose(names.indexOf(name));

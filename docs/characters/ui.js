@@ -5,7 +5,7 @@ export const heights = [1.78, 1.68, 1.85];
 export function createUI(host) {
   host.innerHTML = `
     <header class="ct-head"><div><p class="ct-kicker">Sip Studios / Movement studies</p>
-      <h2>Characters</h2></div><span>Third-person controller test</span></header>
+      <h2>Heros</h2></div><span>Third-person controller test</span></header>
     <div class="ct-layout">
       <div class="ct-stage">
         <div class="ct-hud"><strong data-state>Idle</strong><span data-speed>0.00 m/s</span><span data-rate>60 Hz physics</span></div>
@@ -14,7 +14,7 @@ export function createUI(host) {
     <div><dt>Jump / roll</dt><dd>Space / Ctrl · A / B</dd></div><div><dt>Look</dt><dd>Click to capture mouse · drag on touch · right stick</dd></div>
     <div><dt>Slow / restart</dt><dd>Tab on floor / R · left shoulder / Start</dd></div><div><dt>Emote / switch</dt><dd>E / 1–3 · X / right shoulder</dd></div>
     <div><dt>Release camera</dt><dd>Esc</dd></div></dl></details>
-        <div class="ct-loading" role="status">Preparing the characters…</div>
+        <div class="ct-loading" role="status">Preparing Heros…</div>
         <div class="ct-touch"><div class="ct-stick" aria-label="Movement stick"><span></span></div>
           <div class="ct-touch-actions"><button type="button" data-touch="run">Run</button>
           <button type="button" data-touch="roll">Roll</button><button type="button" data-touch="jump">Jump</button></div></div>
