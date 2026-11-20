@@ -1350,6 +1350,7 @@ export function buildRoma(rig) {
       rig.head.rotation.y += lift * 0.37;
       rig.head.rotation.z -= lift * 0.075;
     }
+    const accel = T.MathUtils.clamp((speed - lastSpeed) / dt, -10, 10);
     // In compression the bent side rolls and the outer woven face stays taut.
     for (let k = 0; k < 2; k++) {
       const arm = rig[armNames[k]].rotation,
@@ -1371,7 +1372,13 @@ export function buildRoma(rig) {
       // Use the eased physical chest angle to release the gusset smoothly.
       const bank = T.MathUtils.smoothstep((k ? -1 : 1) * rig.chest.rotation.z, 0.09, 0.23);
       shoulderCaps[k].scale.y = 1 + (0.01 / 0.056) * bank;
-      shoulderCaps[k].position.y = 0.0111 * bank;
+      // As the runner accelerates, the backward arm picks up the slack at
+      // the front of the sleeve. The fold falls back as speed levels out.
+      const backswing =
+        T.MathUtils.smoothstep(arm.x, 0.44, 0.63) *
+        T.MathUtils.smoothstep(speed, 2.8, 3.6) *
+        T.MathUtils.smoothstep(accel, 0.35, 1.7);
+      shoulderCaps[k].position.y = 0.0111 * bank + 0.0024 * backswing;
     }
     skinBends();
     const blinkPhase = (t + 1.1) % 4.45;
@@ -1508,7 +1515,6 @@ export function buildRoma(rig) {
     hang += hangV * dt;
     lantern.rotation.x = hang;
     lantern.rotation.z = -rig.upperArmL.rotation.z * 0.75;
-    const accel = T.MathUtils.clamp((speed - lastSpeed) / dt, -10, 10);
     const landing = T.MathUtils.clamp((f.vy - lastVy) / dt, -14, 14);
     lastSpeed = speed;
     lastVy = f.vy;
