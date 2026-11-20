@@ -79,7 +79,7 @@ def measure(hero, root):
     if (
         not rows
         or samples['materialCount'] < 1
-        or len(rows) < samples['materialCount']
+        or {row['index'] for row in rows} != set(range(1, samples['materialCount'] + 1))
         or len(rows) != samples['sampleCount']
     ):
         raise ValueError(f'Incomplete material coverage for {hero}')
