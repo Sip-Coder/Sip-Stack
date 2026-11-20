@@ -7,7 +7,7 @@ async function measure(onlyHero, { tier }) {
   const { createActor } = await import('/characters/rig.js');
   const { createController } = await import('/characters/motion.js');
   const { garmentPoses, poseGarment } = await import('/tools/characters-garment-poses.mjs');
-  const { posedSurface, compareSurfaces } = await import('/tools/characters-surfaces.mjs');
+  const { posedSurface, compareSurfaces, measureCrownPlies } = await import('/tools/characters-surfaces.mjs');
   const { measureSeam, seamLimitM, panelTopology } = await import('/tools/characters-seams.mjs');
   const results = {},
     failures = [];
@@ -171,6 +171,7 @@ async function measure(onlyHero, { tier }) {
             volumeComponents: s.volumes.length,
             boundaryEdges: s.boundaryEdges,
             nonManifoldEdges: s.nonManifoldEdges,
+            balancedJunction: s.balancedJunction,
           });
         }
         if (id === 'stand') result.surfaces[key] = rows;
@@ -192,6 +193,24 @@ async function measure(onlyHero, { tier }) {
         testedVertices: 0,
         collisions: [],
       });
+      if (name === 'sippy') {
+        pose.crownPlies = {};
+        for (const side of ['L', 'R']) {
+          const key = 'shoulder-' + side;
+          try {
+            const m = measureCrownPlies(cache.get(surfaces[key][0]));
+            pose.crownPlies[key] = m;
+            result.candidateTriangles += m.candidateTriangles;
+            pose.candidateTriangles += m.candidateTriangles;
+            result.crossings += m.crossings;
+            result.coplanar += m.coplanar;
+            if (m.crossings || m.coplanar || m.minPlySeparationM < 0.0001)
+              failures.push(name + '/' + id + '/' + key + ': collapsed or penetrating shoulder lining');
+          } catch (e) {
+            failures.push(name + '/' + id + '/' + key + ': ' + e.message);
+          }
+        }
+      }
       pose.outerPanels = {};
       for (const panel of panels) {
         try {

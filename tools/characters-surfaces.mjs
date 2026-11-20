@@ -83,6 +83,24 @@ export function posedSurface(mesh, body = false) {
     if (count === 1) boundaryEdges++;
     if (count > 2) nonManifoldEdges++;
   }
+  // A coarse pattern can close two openings at the same edge, forming four
+  // incident faces rather than two. A closed, oriented chain still bounds
+  // a volume and can be tested for containment. Verify every edge balance
+  // before accepting this special case; genuine holes continue to skip it.
+  let balancedJunction = false;
+  if (nonManifoldEdges && !boundaryEdges) {
+    const balance = new Map();
+    for (const { id } of tris) {
+      const vertex = [0, 1, 2].map((j) => welded[idx ? idx.getX(3 * id + j) : 3 * id + j]);
+      for (let k = 0; k < 3; k++) {
+        const a = vertex[k],
+          b = vertex[(k + 1) % 3],
+          key = Math.min(a, b) * points.length + Math.max(a, b);
+        balance.set(key, (balance.get(key) ?? 0) + (a < b ? 1 : -1));
+      }
+    }
+    balancedJunction = [...balance.values()].every((v) => v === 0);
+  }
   const hierarchy = tree(tris);
   let volumes = [hierarchy];
   if (body) {
@@ -98,10 +116,12 @@ export function posedSurface(mesh, body = false) {
     mesh,
     points: [...referenced].map((id) => points[id]),
     count: tris.length,
+    triangles: tris,
     tree: hierarchy,
     volumes,
     boundaryEdges,
     nonManifoldEdges,
+    balancedJunction,
   };
 }
 
@@ -185,6 +205,8 @@ const directions = [
   new T.Vector3(1, 0.371638, 0.127491).normalize(),
   new T.Vector3(0.261593, 1, 0.419357).normalize(),
   new T.Vector3(0.173165, 0.286719, 1).normalize(),
+  new T.Vector3(-1, 0.254625, 0.61138).normalize(),
+  new T.Vector3(0.52471, -1, -0.19381).normalize(),
 ];
 const ray = new T.Ray(),
   hit = new T.Vector3(),
@@ -200,28 +222,58 @@ function inside(p, volume) {
     }
     for (const tri of node.leaves) {
       if (!ray.intersectTriangle(...tri.v, false, hit)) continue;
-      hits.push(hit.distanceTo(p));
+      // Keep the direction of crossing. Coincident entry and exit faces
+      // can occur at a folded hem; merging the two into a single hit
+      // would falsely classify distant, exterior points as embedded.
+      hits.push(Math.sign(ray.direction.dot(tri.normal)) * hit.distanceTo(p));
     }
   }
-  let votes = 0;
-  for (let i = 0; i < directions.length; i++) {
+  let insideVotes = 0,
+    outsideVotes = 0;
+  for (const direction of directions) {
     hits.length = 0;
-    ray.set(p, directions[i]);
+    ray.set(p, direction);
     trace(volume);
-    hits.sort((a, b) => a - b);
-    if (hits[0] <= epsilon) return false;
+    hits.sort((a, b) => Math.abs(a) - Math.abs(b));
+    if (Math.abs(hits[0]) <= epsilon) return false;
     let distinct = 0,
-      last = -Infinity;
-    for (const t of hits)
-      if (t - last > epsilon) {
-        distinct++;
-        last = t;
+      ambiguous = false;
+    for (let i = 0; i < hits.length; ) {
+      const start = Math.abs(hits[i]),
+        sign = Math.sign(hits[i++]);
+      while (i < hits.length && Math.abs(hits[i]) - start <= epsilon) {
+        if (Math.sign(hits[i++]) !== sign) ambiguous = true;
       }
-    votes += distinct % 2;
-    if (votes >= 2) return true;
-    if (i + 1 - votes >= 2) return false;
+      distinct++;
+    }
+    if (ambiguous) continue;
+    if (distinct % 2) insideVotes++;
+    else outsideVotes++;
+    if (insideVotes >= 2) return true;
+    if (outsideVotes >= 2) return false;
   }
-  return false;
+  // If several rays hit a crease exactly, integrate the oriented solid
+  // angle of the whole closed component instead of voting with those rays.
+  const a = new T.Vector3(),
+    b = new T.Vector3(),
+    c = new T.Vector3(),
+    cross = new T.Vector3();
+  function solidAngle(node) {
+    if (!node.leaves) return solidAngle(node.left) + solidAngle(node.right);
+    let total = 0;
+    for (const t of node.leaves) {
+      a.subVectors(t.v[0], p);
+      b.subVectors(t.v[1], p);
+      c.subVectors(t.v[2], p);
+      const al = a.length(),
+        bl = b.length(),
+        cl = c.length();
+      const denominator = al * bl * cl + a.dot(b) * cl + b.dot(c) * al + c.dot(a) * bl;
+      total += 2 * Math.atan2(a.dot(cross.crossVectors(b, c)), denominator);
+    }
+    return total;
+  }
+  return Math.round(Math.abs(solidAngle(volume)) / (4 * Math.PI)) % 2 === 1;
 }
 
 export function compareSurfaces(outer, inner, checkReverse = false) {
@@ -270,7 +322,11 @@ export function compareSurfaces(outer, inner, checkReverse = false) {
   }
   visit(outer.tree, inner.tree);
   function testVolume(samples, solid, direction) {
-    if (solid.boundaryEdges || solid.nonManifoldEdges || !samples.tree.box.intersectsBox(solid.tree.box))
+    if (
+      solid.boundaryEdges ||
+      (solid.nonManifoldEdges && !solid.balancedJunction) ||
+      !samples.tree.box.intersectsBox(solid.tree.box)
+    )
       return;
     for (const p of samples.points) {
       result.testedVertices++;
@@ -283,4 +339,39 @@ export function compareSurfaces(outer, inner, checkReverse = false) {
   testVolume(outer, inner, 'outer in inner');
   if (checkReverse) testVolume(inner, outer, 'inner in outer');
   return result;
+}
+
+// A pinched crown can have coincident or crossing plies while the rest of its
+// outfit remains clear. Test the two rendered skins against each other, with
+// their shared rim omitted because its role is to join those two skins.
+export function measureCrownPlies(surface) {
+  const mesh = surface.mesh,
+    geom = mesh.geometry;
+  const count = geom.userData.crownPlyTriangles;
+  if (!Number.isInteger(count) || count <= 0 || count * 6 >= geom.index.count)
+    throw Error('Missing shoulder outer/lining triangle layout');
+  function ply(start) {
+    const triangles = surface.triangles.filter((t) => t.id >= start && t.id < start + count);
+    return { mesh, tree: tree(triangles), boundaryEdges: 1, points: [] };
+  }
+  const intersections = compareSurfaces(ply(0), ply(count));
+  const vertices = geom.attributes.position.count,
+    half = vertices / 2;
+  if (!Number.isInteger(half)) throw Error('Unpaired crown ply buffers');
+  const outer = new T.Vector3(),
+    inner = new T.Vector3();
+  let minPlySeparationM = Infinity;
+  for (let i = 0; i < half; i++) {
+    mesh.getVertexPosition(i, outer).applyMatrix4(mesh.matrixWorld);
+    mesh.getVertexPosition(i + half, inner).applyMatrix4(mesh.matrixWorld);
+    minPlySeparationM = Math.min(minPlySeparationM, outer.distanceTo(inner));
+  }
+  return {
+    trianglesPerPly: count,
+    minPlySeparationM,
+    candidateTriangles: intersections.candidateTriangles,
+    crossings: intersections.crossings,
+    coplanar: intersections.coplanar,
+    samples: intersections.samples,
+  };
 }
