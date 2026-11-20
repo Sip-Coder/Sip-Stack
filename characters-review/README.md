@@ -1,3 +1,15 @@
+# Heros
+
+The lineup shows Sippy, Roma and Hummin at their playable heights beside a one-metre ruler. [Lineup](lineup.jpg) · [Before the revision](lineup-before.jpg) · [Before, after and Florence reference](ours-before-after-florence.jpg)
+
+| Hero | Movement film | Garment turnaround |
+| --- | --- | --- |
+| Sippy | [Watch](sippy.mp4) | [Nine poses and views](sippy-garment-turnaround.jpg) |
+| Roma | [Watch](roma.mp4) | [Nine poses and views](roma-garment-turnaround.jpg) |
+| Hummin | [Watch](hummin.mp4) | [Nine poses and views](hummin-garment-turnaround.jpg) |
+
+Each hero has an original seven-view blueprint, an identically framed model sheet and measured silhouette overlays. [Blueprint gallery and measurements](blueprints/)
+
 # Living characters
 
 The 14-second portrait reel follows a porter, a harvester, the Village rower, a gull, a trout, a kingfisher and the Creek cooper. [Watch the MP4](living-characters-portrait.mp4)
