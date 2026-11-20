@@ -1,6 +1,9 @@
 // Hummin's enamel shells, bellows, display and leatherwork are built in rig-local
 // units. The sole is .047 below its ankle and the helmet is .157 above its pivot.
 import * as T from 'three';
+import { fitArmor } from './hummin-panels.js';
+import { detailMaterial } from './material-detail.js';
+import { makeApron } from './hummin-leather.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const PI = Math.PI;
@@ -62,6 +65,35 @@ export function buildHummin(rig) {
   const wovenStripe = surface('#753b38', 0.84);
   const cyan = surface('#78eaff', 0.26, 0.21, { emissive: '#39c9ff', emissiveIntensity: 1.45 });
 
+  for (const mat of [enamel, porcelain, titanium, graphite]) detailMaterial(mat, 'metal');
+  for (const mat of [leather, darkLeather, leatherEdge]) detailMaterial(mat, 'leather');
+  for (const mat of [linen, thread, wovenStripe]) detailMaterial(mat, 'cotton');
+  detailMaterial(agedBrass, 'gold');
+  // The saddle stitches use the cut pattern's UV coordinates. Even the free
+  // hem carries its stitch row when the panels flex around a raised knee.
+  const leatherCompile = leather.onBeforeCompile,
+    leatherKey = leather.customProgramCacheKey();
+  leather.onBeforeCompile = function (shader, renderer) {
+    leatherCompile.call(this, shader, renderer);
+    shader.vertexShader =
+      'varying vec2 stitchUV;\n' +
+      shader.vertexShader.replace('#include <uv_vertex>', '#include <uv_vertex>\nstitchUV=uv;');
+    shader.fragmentShader =
+      'varying vec2 stitchUV;\n' +
+      shader.fragmentShader.replace(
+        '#include <color_fragment>',
+        `#include <color_fragment>
+      vec2 seamEdge=min(stitchUV,1.-stitchUV);
+      float welt=1.-smoothstep(.010,.026,min(seamEdge.x,seamEdge.y));
+      vec2 lineWidth=max(fwidth(stitchUV)*.7,vec2(.002));
+      float sewn=(1.-smoothstep(.002,.002+lineWidth.x,abs(seamEdge.x-.032)))*smoothstep(.10,.25,fract(32.*stitchUV.y))*(1.-smoothstep(.71,.86,fract(32.*stitchUV.y)));
+      sewn=max(sewn,(1.-smoothstep(.002,.002+lineWidth.y,abs(1.-stitchUV.y-.027)))*smoothstep(.10,.25,fract(30.*stitchUV.x))*(1.-smoothstep(.71,.86,fract(30.*stitchUV.x))));
+      diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.17,.091,.046),.23*welt);
+      diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.32,.224,.143),sewn*.84);`,
+      );
+  };
+  leather.customProgramCacheKey = () => leatherKey + '-saddle-stitch';
+
   // The slim horizontal skirt follows both the resting curve of the shell
   // and the line of a swinging thigh. Flexible leather is isolated from metal.
   const staticGroups = new Map();
@@ -81,6 +113,7 @@ export function buildHummin(rig) {
   };
   function oval(parent, mat, x, y, z, rx, ry, rz) {
     const mesh = part(parent, new T.SphereGeometry(1, 24, 16), mat, x, y, z);
+    mesh.userData.mobileGeometry = new T.SphereGeometry(1, 12, 8);
     mesh.scale.set(rx, ry, rz);
     return mesh;
   }
@@ -91,6 +124,7 @@ export function buildHummin(rig) {
     const mesh = part(parent, new T.CylinderGeometry(capRadius, radius, axis.length(), 12), mat);
     mesh.position.copy(a).lerp(b, 0.5);
     mesh.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), axis.normalize());
+    return mesh;
   }
   function line(parent, mat, points, radius, smooth = true) {
     const path = new T.CatmullRomCurve3(
@@ -105,11 +139,16 @@ export function buildHummin(rig) {
     );
   }
   function shell(parent, mat, profile, depth = 1, x = 0, y = 0, z = 0) {
+    const rings = profile.slice();
+    const cuff = rings[0][0] === rings.at(-1)[0] && rings[0][1] === rings.at(-1)[1];
+    if (!cuff && rings[0][1] !== 0) rings.unshift([rings[0][0], 0]);
+    if (!cuff && rings.at(-1)[1] !== 0) rings.push([rings.at(-1)[0], 0]);
     const g = new T.LatheGeometry(
-      profile.map(([h, r]) => new T.Vector2(r, h)),
+      rings.map(([h, r]) => new T.Vector2(r, h)),
       32,
     );
     const mesh = part(parent, g, mat, x, y, z);
+    mesh.userData.mobileGeometry = new T.LatheGeometry(g.parameters.points, 16);
     mesh.scale.z = depth;
     return mesh;
   }
@@ -138,69 +177,7 @@ export function buildHummin(rig) {
     g.computeVertexNormals();
     return part(parent, g, mat);
   }
-  // A closed leather band can pass over a shoulder crest and continue down
-  // the back. Its edge and outer face catch the light separately.
-  function strap(parent, knots, width) {
-    const path = new T.CatmullRomCurve3(knots.map((p) => new T.Vector3(...p)));
-    const verts = [],
-      uv = [],
-      index = [],
-      tangent = new T.Vector3(),
-      widthAxis = new T.Vector3(),
-      normal = new T.Vector3();
-    const axis = new T.Vector3(1, 0, 0),
-      p = new T.Vector3();
-    const steps = 24;
-    for (let j = 0; j <= steps; j++) {
-      path.getPointAt(j / steps, p);
-      path.getTangentAt(j / steps, tangent);
-      normal.crossVectors(axis, tangent).normalize();
-      widthAxis.crossVectors(tangent, normal).normalize();
-      for (const [u, h] of [
-        [-0.5, -0.0014],
-        [0.5, -0.0014],
-        [0.5, 0.0014],
-        [-0.5, 0.0014],
-      ]) {
-        verts.push(
-          p.x + widthAxis.x * u * width + normal.x * h,
-          p.y + widthAxis.y * u * width + normal.y * h,
-          p.z + widthAxis.z * u * width + normal.z * h,
-        );
-        uv.push(u + 0.5, j / steps);
-      }
-      if (j)
-        for (let k = 0; k < 4; k++) {
-          const a = (j - 1) * 4 + k,
-            b = (j - 1) * 4 + ((k + 1) % 4);
-          index.push(a, a + 4, b, b, a + 4, b + 4);
-        }
-    }
-    const g = new T.BufferGeometry();
-    g.setAttribute('position', new T.Float32BufferAttribute(verts, 3));
-    g.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
-    g.setIndex(index);
-    g.computeVertexNormals();
-    part(parent, g, darkLeather);
-    for (const sign of [-1, 1])
-      for (let i = 0; i < 17; i++) {
-        const ends = [];
-        for (const t of [i / 17 + 0.009, i / 17 + 0.038]) {
-          path.getPointAt(t, p);
-          path.getTangentAt(t, tangent);
-          normal.crossVectors(axis, tangent).normalize();
-          widthAxis.crossVectors(tangent, normal).normalize();
-          ends.push(
-            p
-              .clone()
-              .addScaledVector(widthAxis, sign * width * 0.36)
-              .addScaledVector(normal, 0.0018)
-              .toArray(),
-          );
-        }
-        rod(parent, thread, ends[0], ends[1], 0.00058);
-      }
-  }
+  // Profile cut from steel stock, with the ground chamfer around the jaw.
   function flatTool(parent, material, outline, depth) {
     const shape = new T.Shape();
     for (const [i, [x, y]] of outline.entries()) i === 0 ? shape.moveTo(x, y) : shape.lineTo(x, y);
@@ -256,7 +233,7 @@ export function buildHummin(rig) {
     ry = 0.0905,
     rz = 0.107,
     cy = 0.0665;
-  oval(head, enamel, 0, cy, -0.001, rx, ry, rz);
+  oval(head, enamel, 0, cy, -0.001, rx, ry, rz).userData.garmentSurface = 'head';
   function visor(material, width, height, lift) {
     const p = [],
       uv = [],
@@ -423,6 +400,45 @@ export function buildHummin(rig) {
   }
   for (const s of [-1, 1]) oval(head, titanium, s * 0.077, 0.08, -0.087, 0.0035, 0.0035, 0.0025);
   oval(head, agedBrass, 0, 0.098, -0.101, 0.006, 0.006, 0.0028);
+  // The visor can be removed independently of the dome. Six slotted
+  // fasteners sit in countersunk bosses immediately outside the OLED seal.
+  for (const side of [-1, 1])
+    for (const lat of [-0.42, 0.0, 0.42]) {
+      const theta = side * (1.23 - 0.13 * Math.abs(lat));
+      const n = new T.Vector3(
+        (Math.sin(theta) * Math.cos(lat)) / rx,
+        Math.sin(lat) / ry,
+        (Math.cos(theta) * Math.cos(lat)) / rz,
+      ).normalize();
+      const center = new T.Vector3(
+        rx * Math.sin(theta) * Math.cos(lat),
+        cy + ry * Math.sin(lat),
+        -0.001 + rz * Math.cos(theta) * Math.cos(lat),
+      );
+      const boss = part(
+        head,
+        new T.CylinderGeometry(0.0033, 0.0043, 0.0019, 16),
+        graphite,
+        ...center.clone().addScaledVector(n, 0.0006).toArray(),
+      );
+      boss.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), n);
+      const bolt = part(
+        head,
+        new T.CylinderGeometry(0.0026, 0.003, 0.0011, 12),
+        titanium,
+        ...center.clone().addScaledVector(n, 0.0018).toArray(),
+      );
+      bolt.quaternion.copy(boss.quaternion);
+      const d = new T.Vector3(0, 1, 0).cross(n).normalize().multiplyScalar(0.00165);
+      center.addScaledVector(n, 0.00243);
+      rod(
+        head,
+        graphite,
+        center.clone().sub(d).toArray(),
+        center.clone().add(d).toArray(),
+        0.00034,
+      ).userData.highDetail = true;
+    }
   // Short, alternating ribs allow the head and waist to rotate independently.
   for (let i = 0; i < 5; i++) {
     shell(
@@ -435,7 +451,7 @@ export function buildHummin(rig) {
       0.85,
     );
   }
-  shell(
+  const chestShell = shell(
     rig.chest,
     enamel,
     [
@@ -450,7 +466,33 @@ export function buildHummin(rig) {
     ],
     0.69,
   );
-  shell(
+  chestShell.userData.garmentSurface = 'chassis';
+  // A screw-retained rear cover vents the battery compartment. Slot lengths
+  // step around the shoulder straps and follow the curved casting surface.
+  for (let j = 0; j < 4; j++) {
+    const y = 0.08 + j * 0.0052,
+      length = 0.023 - 0.0027 * j;
+    const rear = (x) => -0.69 * Math.sqrt(0.1095 ** 2 - x * x) - 0.00065;
+    const pts = [];
+    for (let i = 0; i <= 8; i++) {
+      const x = length * (i / 4 - 1);
+      pts.push([x, y, rear(x)]);
+    }
+    line(rig.chest, graphite, pts, 0.00115);
+  }
+  for (const side of [-1, 1]) {
+    const x = side * 0.029,
+      z = -0.69 * Math.sqrt(0.109 ** 2 - x * x);
+    oval(rig.chest, titanium, x, 0.091, z - 0.0012, 0.0026, 0.0026, 0.0011);
+    rod(
+      rig.chest,
+      rubber,
+      [x - 0.0011, 0.0905, z - 0.0022],
+      [x + 0.0011, 0.0915, z - 0.0022],
+      0.00034,
+    ).userData.highDetail = true;
+  }
+  const hipShell = shell(
     rig.hips,
     graphite,
     [
@@ -462,6 +504,7 @@ export function buildHummin(rig) {
     ],
     0.68,
   );
+  hipShell.userData.garmentSurface = 'pelvis';
   for (let i = 0; i < 3; i++)
     shell(
       rig.hips,
@@ -504,105 +547,14 @@ export function buildHummin(rig) {
       0.081,
     );
     wing.rotation.z = -s * (PI * 0.5 - 0.08);
-    strap(
-      rig.chest,
-      [
-        [s * 0.061, 0.064, 0.069],
-        [s * 0.075, 0.119, 0.056],
-        [s * 0.069, 0.147, 0.0],
-        [s * 0.075, 0.118, -0.055],
-        [s * 0.051, 0.057, -0.074],
-        [-s * 0.057, -0.051, -0.052],
-      ],
-      0.019,
-    );
-    buckle(rig.chest, s * 0.069, 0.096, 0.068, 0.009, 0.008);
-    oval(rig.chest, agedBrass, s * 0.064, 0.068, 0.07, 0.0035, 0.0035, 0.002);
   }
   oval(rig.chest, rubber, 0, 0.11, 0.083, 0.008, 0.01, 0.0075);
-  plate(
-    rig.chest,
-    leather,
-    [
-      [0.077, -0.071, 0.071, 0.056],
-      [0.069, -0.075, 0.075, 0.058],
-      [0.031, -0.07, 0.07, 0.063],
-      [0.003, -0.077, 0.077, 0.057],
-      [-0.043, -0.083, 0.083, 0.049],
-      [-0.082, -0.079, 0.079, 0.049],
-    ],
-    0.024,
-    0.017,
+  const apron = makeApron(
+    rig,
+    { leather, darkLeather, leatherEdge, thread, agedBrass, linen, wovenStripe },
+    { group, line, rod, oval, buckle },
   );
-  // Gusseted pocket faces are raised off the bib to accommodate the tools.
-  plate(
-    rig.chest,
-    darkLeather,
-    [
-      [0.004, -0.068, 0.018, 0.078],
-      [0.001, -0.07, 0.018, 0.081],
-      [-0.04, -0.064, 0.02, 0.08],
-      [-0.052, -0.049, 0.012, 0.08],
-    ],
-    0.005,
-  );
-  plate(
-    rig.chest,
-    darkLeather,
-    [
-      [0.002, 0.025, 0.062, 0.077],
-      [-0.005, 0.022, 0.067, 0.078],
-      [-0.038, 0.023, 0.064, 0.073],
-      [-0.045, 0.029, 0.056, 0.073],
-    ],
-    0.004,
-  );
-  for (const s of [-1, 1]) {
-    line(
-      rig.chest,
-      leatherEdge,
-      [
-        [s * 0.069, 0.076, 0.061],
-        [s * 0.055, 0.074, 0.068],
-        [0, 0.074, 0.081],
-      ],
-      0.00125,
-    );
-    for (let k = 0; k < 11; k++) {
-      const x = s * (0.0058 + k * 0.0058),
-        z = 0.059 + 0.023 * (1 - (x / 0.075) ** 2);
-      rod(rig.chest, thread, [x - 0.0016, 0.068, z + 0.001], [x + 0.0016, 0.068, z + 0.001], 0.00065);
-    }
-  }
-  for (const x of [-0.063, 0.015, 0.029, 0.058])
-    for (let k = 0; k < 7; k++) {
-      const y = -0.006 - k * 0.0051;
-      rod(rig.chest, thread, [x, y, 0.083], [x + 0.0007, y - 0.0027, 0.083], 0.00063);
-    }
-  line(
-    rig.chest,
-    leatherEdge,
-    [
-      [-0.068, 0.003, 0.081],
-      [-0.032, 0.003, 0.086],
-      [0.018, 0.003, 0.082],
-    ],
-    0.0017,
-  );
-  line(
-    rig.chest,
-    leatherEdge,
-    [
-      [0.024, 0, 0.077],
-      [0.044, 0, 0.085],
-      [0.063, 0, 0.078],
-    ],
-    0.0016,
-  );
-
-  // Tools pivot at the mouth of the pocket; the handles pass behind the
-  // pocket lip while their polished heads remain readable in silhouette.
-  const tools = group(rig.chest, -0.045, -0.001, 0.079);
+  const { flaps, tools, pen } = apron;
   const wrench = group(tools, -0.006, 0.002, -0.001);
   wrench.rotation.z = 0.13;
   flatTool(
@@ -631,32 +583,21 @@ export function buildHummin(rig) {
     const a = (i / 40) * PI * 5.5;
     spiral.push([0.024 + 0.0046 * Math.cos(a), 0.0008 + i * 0.00062, -0.001 + 0.0046 * Math.sin(a)]);
   }
-  line(tools, titanium, spiral, 0.00125);
+  const worm = line(tools, titanium, spiral, 0.00125).geometry;
+  const ends = Array.from(worm.index.array),
+    lastRing = worm.attributes.position.count - 7;
+  for (let k = 1; k < 5; k++) ends.push(0, k + 1, k, lastRing, lastRing + k, lastRing + k + 1);
+  worm.setIndex(ends);
   rod(tools, agedBrass, [0.025, 0.024, -0.001], [0.025, 0.033, -0.001], 0.0024);
   rod(tools, darkLeather, [0.013, 0.032, -0.001], [0.038, 0.034, -0.001], 0.0033);
   rod(tools, agedBrass, [0.013, 0.032, -0.001], [0.016, 0.0324, -0.001], 0.0036);
   rod(tools, agedBrass, [0.035, 0.0337, -0.001], [0.038, 0.034, -0.001], 0.0036);
 
-  const pen = group(rig.chest, 0.045, -0.003, 0.077);
   pen.rotation.z = -0.14;
   rod(pen, graphite, [0, -0.011, 0], [0, 0.038, 0], 0.0036);
   rod(pen, agedBrass, [0, 0.028, 0], [0, 0.031, 0], 0.0039);
   rod(pen, titanium, [0.002, 0.037, 0.003], [0.003, 0.018, 0.004], 0.0011);
   oval(pen, cyan, 0, 0.038, 0, 0.0026, 0.0018, 0.0026);
-  shell(
-    rig.hips,
-    darkLeather,
-    [
-      [0.011, 0.087],
-      [0.029, 0.087],
-    ],
-    0.76,
-  );
-  buckle(rig.hips, 0, 0.021, 0.068, 0.014, 0.007);
-  const backYoke = oval(rig.chest, darkLeather, 0, 0.035, -0.07, 0.02, 0.021, 0.004);
-  backYoke.rotation.z = PI / 4;
-  oval(rig.chest, agedBrass, 0, 0.035, -0.074, 0.0042, 0.0042, 0.002);
-  const flaps = [];
   for (const [suffix, s] of [
     ['L', 1],
     ['R', -1],
@@ -667,74 +608,10 @@ export function buildHummin(rig) {
     const thigh = rig['thigh' + suffix],
       shin = rig['shin' + suffix],
       foot = rig['foot' + suffix];
-    const flap = group(rig.hips, s * 0.039, 0.012, 0.026);
-    const skew = s * 0.004;
-    const sides = (inner, outer) => (s > 0 ? [-inner, outer] : [-outer, inner]);
-    plate(
-      flap,
-      leather,
-      [
-        [0.016, ...sides(0.045, 0.041), 0.032],
-        [-0.05, ...sides(0.046, 0.044), 0.031],
-        [-0.11, ...sides(0.046, 0.041), 0.038],
-        [-0.119, ...sides(0.044, 0.033), 0.038],
-      ],
-      0.013,
-      0.005,
-    );
-    if (s === 1) flap.position.z += 0.002;
-    line(
-      flap,
-      leatherEdge,
-      [
-        [-0.032 + skew, -0.111, 0.042],
-        [-0.022 + skew, -0.117, 0.049],
-        [0.02 + skew, -0.117, 0.046],
-        [0.031 + skew, -0.111, 0.041],
-      ],
-      0.001,
-    );
-    if (s === 1) {
-      // A service towel is folded over the hip pocket. The hem follows the
-      // same fluted cross section as the woven body, including both wine stripes.
-      function towelBand(top, bottom, material) {
-        const verts = [],
-          idx = [];
-        const edge = (u, v) => {
-          const fold = 0.0043 * Math.cos(u * PI * 4.6 + 0.45 * v);
-          return [
-            -0.026 + 0.05 * u + 0.0034 * Math.sin(v * 1.8),
-            0.012 - 0.092 * v + 0.003 * Math.sin(PI * u * 2.8) * v,
-            0.042 + 0.019 * v + fold,
-          ];
-        };
-        for (let k = 0; k <= 3; k++)
-          for (let j = 0; j <= 16; j++) {
-            verts.push(...edge(j / 16, T.MathUtils.lerp(top, bottom, k / 3)));
-            if (j && k) {
-              const b = k * 17 + j;
-              idx.push(b - 18, b - 1, b, b - 18, b, b - 17);
-            }
-          }
-        const g = new T.BufferGeometry();
-        g.setAttribute('position', new T.Float32BufferAttribute(verts, 3));
-        g.setIndex(idx);
-        g.computeVertexNormals();
-        part(flap, g, material);
-      }
-      for (const [top, bottom, m] of [
-        [0, 0.72, linen],
-        [0.72, 0.745, wovenStripe],
-        [0.745, 0.8, linen],
-        [0.8, 0.86, wovenStripe],
-        [0.86, 1, linen],
-      ])
-        towelBand(top, bottom, m);
-    }
-    flaps.push(flap);
     oval(upper, rubber, 0, 0, 0, 0.032, 0.031, 0.035);
-    oval(upper, enamel, s * 0.008, -0.011, -0.001, 0.043, 0.04, 0.049);
-    shell(
+    oval(upper, enamel, s * 0.008, -0.011, -0.001, 0.043, 0.04, 0.049).userData.garmentSurface =
+      'upperArm' + suffix;
+    const upperShell = shell(
       upper,
       enamel,
       [
@@ -750,6 +627,8 @@ export function buildHummin(rig) {
       0,
       0,
     );
+    upperShell.userData.garmentSurface = 'upperArm' + suffix;
+    fitArmor(upperShell, s, 'upperArm', { graphite, titanium, enamel }, { part, rod });
     rod(upper, graphite, [0, -0.175, 0], [0, -0.029, 0], 0.016, 0.019);
     shell(
       upper,
@@ -765,7 +644,7 @@ export function buildHummin(rig) {
     );
     pivot(fore, 0, 0, 0, 0.02, 0.041);
     rod(fore, graphite, [0, -0.136, -0.003], [0, 0.002, -0.003], 0.014, 0.017);
-    shell(
+    const foreShell = shell(
       fore,
       porcelain,
       [
@@ -778,6 +657,8 @@ export function buildHummin(rig) {
       ],
       0.91,
     );
+    foreShell.userData.garmentSurface = 'forearm' + suffix;
+    fitArmor(foreShell, s, 'forearm', { graphite, titanium, enamel }, { part, rod });
     shell(
       fore,
       titanium,
@@ -797,15 +678,49 @@ export function buildHummin(rig) {
       ],
       0.00095,
     );
+    // Fabric-reinforced bellows keep the wrist and elbow bearings sealed.
+    for (const [joint, start, r, count] of [
+      [fore, -0.021, 0.018, 4],
+      [hand, 0.006, 0.014, 4],
+      [shin, -0.025, 0.027, 3],
+    ]) {
+      for (let j = 0; j < count; j++) {
+        const y = start + j * 0.0037;
+        shell(
+          joint,
+          j % 2 ? rubber : graphite,
+          [
+            [y, r * 0.95],
+            [y + 0.0009, r * 1.13],
+            [y + 0.0025, r],
+            [y + 0.0031, r * 0.96],
+          ],
+          0.98,
+        );
+      }
+    }
     oval(hand, graphite, 0, -0.004, 0, 0.015, 0.017, 0.017);
     oval(hand, enamel, s * 0.002, -0.023, 0.002, 0.02, 0.023, 0.016);
     for (let k = 0; k < 4; k++) {
       const x = (k - 1.5) * 0.0082,
         long = 0.013 * (1 - 0.12 * Math.abs(k - 1.3)),
         y = -0.04;
+      // The dorsal knuckle shield floats over a darker elastomer flexure;
+      // a narrow transverse pivot pin catches light on either side.
+      oval(hand, porcelain, x, -0.035, 0.0105, 0.0041, 0.0053, 0.0044);
+      rod(hand, titanium, [x - 0.0051, -0.041, 0.005], [x + 0.0051, -0.041, 0.005], 0.0019);
       oval(hand, rubber, x, y, 0.001, 0.0038, 0.0046, 0.0043);
       const middle = [x, y - long, 0.0038];
       rod(hand, porcelain, [x, y - 0.001, 0.001], middle, 0.0047, 0.0044);
+      rod(hand, titanium, [x - 0.005, middle[1], middle[2]], [x + 0.005, middle[1], middle[2]], 0.00165);
+      for (let j = 0; j < 2; j++)
+        rod(
+          hand,
+          graphite,
+          [x - 0.0033, y - 0.0038 - j * 0.0017, 0.0058],
+          [x + 0.0033, y - 0.0038 - j * 0.0017, 0.0058],
+          0.00038,
+        ).userData.highDetail = true;
       oval(hand, graphite, ...middle, 0.0041, 0.0041, 0.0043);
       rod(hand, enamel, [x, middle[1] - 0.001, 0.0042], [x, middle[1] - 0.009, 0.009], 0.0043, 0.0035);
       oval(hand, porcelain, x, middle[1] - 0.009, 0.009, 0.0034, 0.0038, 0.0037);
@@ -832,7 +747,7 @@ export function buildHummin(rig) {
     oval(upper, cyan, s * 0.0505, -0.011, 0, 0.0016, 0.008, 0.007);
 
     rod(thigh, graphite, [0, -0.229, 0], [0, -0.017, 0], 0.023, 0.027);
-    shell(
+    const thighShell = shell(
       thigh,
       enamel,
       [
@@ -848,6 +763,8 @@ export function buildHummin(rig) {
       0,
       0,
     );
+    thighShell.userData.garmentSurface = 'thigh' + suffix;
+    fitArmor(thighShell, s, 'thigh', { graphite, titanium, enamel }, { part, rod });
     shell(
       thigh,
       titanium,
@@ -873,7 +790,7 @@ export function buildHummin(rig) {
     pivot(shin, 0, 0, 0, 0.037, 0.075);
     oval(shin, porcelain, 0, -0.002, 0.02, 0.034, 0.032, 0.026);
     rod(shin, graphite, [0, -0.225, 0], [0, -0.011, 0], 0.02, 0.025);
-    shell(
+    const shinShell = shell(
       shin,
       porcelain,
       [
@@ -886,6 +803,8 @@ export function buildHummin(rig) {
       ],
       1.02,
     );
+    shinShell.userData.garmentSurface = 'shin' + suffix;
+    fitArmor(shinShell, s, 'shin', { graphite, titanium, enamel }, { part, rod });
     shell(
       shin,
       graphite,
@@ -969,43 +888,81 @@ export function buildHummin(rig) {
       norm.setXYZ(i, n.x, n.y, n.z);
     }
   }
-  for (const hinge of [tools, pen]) {
-    const b = belly(hinge.position.y);
-    hinge.position.x *= 1 + 0.405 * b;
-    hinge.position.z = hinge.position.z * (1 + 0.45 * b) + 0.01 * b + 0.003;
-  }
-  for (const flap of flaps) {
-    flap.position.x *= 1.24;
-    flap.position.z += 0.015;
-    flap.scale.x = 1.28;
-    flap.scale.z = 1.1;
-  }
   // Pack rigid details by joint and finish. A knuckle, seam or rivet adds
   // geometry, but it does not require its own draw call.
+  function bake(geometry, mesh, parent) {
+    if (!geometry.attributes.uv)
+      geometry.setAttribute(
+        'uv',
+        new T.BufferAttribute(new Float32Array(geometry.attributes.position.count * 2), 2),
+      );
+    const baked = geometry.index ? geometry.toNonIndexed() : geometry.clone();
+    baked.applyMatrix4(mesh.matrix);
+    if (parent === rig.chest) formChassis(baked);
+    if (parent === rig.hips) baked.scale(1.28, 1, 1.23);
+    return baked;
+  }
   for (const [parent, pieces] of staticGroups) {
     const buckets = new Map();
     for (const mesh of pieces) {
       mesh.updateMatrix();
       const g = mesh.geometry;
-      if (!g.attributes.uv)
-        g.setAttribute('uv', new T.BufferAttribute(new Float32Array(g.attributes.position.count * 2), 2));
-      const baked = g.index ? g.toNonIndexed() : g.clone();
-      baked.applyMatrix4(mesh.matrix);
-      if (parent === rig.chest) formChassis(baked);
-      if (parent === rig.hips) baked.scale(1.28, 1, 1.23);
-      if (!buckets.has(mesh.material)) buckets.set(mesh.material, []);
-      buckets.get(mesh.material).push(baked);
+      const hand =
+        parent === rig.handL
+          ? 'handL'
+          : parent === rig.handR
+            ? 'handR'
+            : parent === pen
+              ? 'pen'
+              : parent === tools
+                ? 'corkscrew'
+                : parent === wrench
+                  ? 'wrench'
+                  : '';
+      const name = mesh.userData.garmentSurface ?? hand,
+        fine = mesh.userData.highDetail ?? false;
+      const key = name + mesh.material.uuid + fine;
+      if (!buckets.has(key))
+        buckets.set(key, { material: mesh.material, name, fine, geometries: [], mobile: [], lower: false });
+      const bucket = buckets.get(key),
+        high = bake(g, mesh, parent);
+      bucket.geometries.push(high);
+      if (mesh.userData.mobileGeometry) {
+        bucket.mobile.push(bake(mesh.userData.mobileGeometry, mesh, parent));
+        bucket.lower = true;
+        mesh.userData.mobileGeometry.dispose();
+      } else bucket.mobile.push(high);
       parent.remove(mesh);
       g.dispose();
     }
-    for (const [material, geometries] of buckets) {
+    for (const { material, name, fine, geometries, mobile, lower } of buckets.values()) {
       const mesh = new T.Mesh(mergeGeometries(geometries), material);
+      if (lower) mesh.userData.mobileGeometry = mergeGeometries(mobile);
+      if (fine) mesh.userData.highDetail = true;
       mesh.castShadow = mesh.receiveShadow = true;
+      if (name) (apron.surfaces[name] ??= []).push(mesh);
       parent.add(mesh);
-      for (const g of geometries) g.dispose();
+      for (const g of new Set([...geometries, ...mobile])) g.dispose();
     }
   }
 
+  apron.pairs.push(
+    { outer: 'belt', inner: 'pelvis' },
+    { outer: 'penPocket', inner: 'pen' },
+    { outer: 'toolPocket', inner: 'wrench' },
+    { outer: 'toolPocket', inner: 'corkscrew' },
+  );
+  rig.garments = {
+    surfaces: apron.surfaces,
+    pairs: apron.pairs,
+    bodies: [
+      'chassis',
+      'pelvis',
+      'head',
+      ...['thigh', 'upperArm', 'forearm', 'hand', 'shin'].flatMap((key) => [key + 'L', key + 'R']),
+    ],
+  };
+  apron.prepareWrinkles();
   rig.secondary ??= {};
   rig.secondary.hummin = { apron: flaps[0], antenna, tools };
   let toolAngle = 0,
@@ -1071,7 +1028,7 @@ export function buildHummin(rig) {
     head.rotation.x += bow * 0.12;
     rig.chest.rotation.x += bow * 0.38;
     rig.forearmR.rotation.x -= bow * 0.58;
-    rig.upperArmR.rotation.z += bow * 0.1;
+    rig.upperArmR.rotation.z -= bow * 0.085;
     const run = state === 'run' ? 1 : 0;
     const turnIn = 1 - Math.exp(-dt * 17);
     expression.value.y += (run - expression.value.y) * turnIn;
@@ -1081,13 +1038,14 @@ export function buildHummin(rig) {
     expression.value.x = Math.max(0.05, Math.min(blink, emoteBlink) * (1 - 0.12 * expression.value.y));
     expression.value.w = state === 'idle' ? 0.45 + 0.33 * Math.sin(time * 0.85) + beat * 0.44 : 0;
     const tug = Math.min(0.26, Math.abs(frame.vy) * 0.045) + speed * 0.02;
-    const aimL = Math.min(0, rig.thighL.rotation.x) * 0.84 - 0.09 - tug;
-    const aimR = Math.min(0, rig.thighR.rotation.x) * 0.84 - 0.09 - tug;
+    const aimL = Math.max(-0.94, Math.min(0, rig.thighL.rotation.x) * 0.58 - 0.09 - tug);
+    const aimR = Math.max(-0.94, Math.min(0, rig.thighR.rotation.x) * 0.58 - 0.09 - tug);
     velocityL += ((aimL - springL) * 160 - velocityL * 20) * dt;
     velocityR += ((aimR - springR) * 160 - velocityR * 20) * dt;
     springL += velocityL * dt;
     springR += velocityR * dt;
-    flaps[0].rotation.x = Math.min(springL, aimL + 0.065);
-    flaps[1].rotation.x = Math.min(springR, aimR + 0.065);
+    flaps[0].rotation.set(Math.min(springL, aimL + 0.065), 0, 0);
+    flaps[1].rotation.set(Math.min(springR, aimR + 0.065), 0, 0);
+    apron.crease(frame);
   };
 }
