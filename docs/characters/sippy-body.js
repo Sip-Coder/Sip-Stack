@@ -359,9 +359,7 @@ export function makeSippyBody(rig, skin) {
     };
     function ellipse(x, y, z, rx, rz, bone, omit) {
       return Array.from({ length: n }, (_, j) =>
-        omit?.(j)
-          ? -1
-          : vertex(x + rx * Math.sin((tau * j) / n), y, z + rz * Math.cos((tau * j) / n), bone),
+        omit?.(j) ? -1 : vertex(x + rx * Math.sin((tau * j) / n), y, z + rz * Math.cos((tau * j) / n), bone),
       );
     }
     const lo = 7,
@@ -613,29 +611,32 @@ export function makeSippyBody(rig, skin) {
     }
     p.needsUpdate = true;
   }
+  // Both crowns already have their final cut and UVs. Bind the left and
+  // right skin rings to each tier's pattern before its first simulation step.
+  for (const shape of [high, mobile]) {
+    for (const cap of shape.caps) {
+      const crown = seats?.['shoulder-' + cap.side]?.[0];
+      if (!crown) continue;
+      const geometry = shape === mobile ? (crown.userData.mobileGeometry ?? crown.geometry) : crown.geometry;
+      const uv = geometry.attributes.uv;
+      cap.cloth = geometry.attributes.position;
+      const spans = 10,
+        n = cap.cloth.count / (2 * (spans + 1)),
+        start = n * cap.row;
+      cap.samples = cap.ring.map(({ u }) => {
+        const a = cap.sgn < 0 ? (1 - u) % 1 : u;
+        let j = 0;
+        while (j + 1 < n && uv.getY(j + 1) <= a) j++;
+        const k = (j + 1) % n,
+          hi = k ? uv.getY(k) : 1;
+        return [start + j, start + k, (a - uv.getY(j)) / (hi - uv.getY(j))];
+      });
+    }
+  }
   function poseShoulders({ g, caps }) {
     for (const cap of caps) {
-      const m = seats?.['shoulder-' + cap.side]?.[0];
-      if (!m) continue;
-      const cloth = m.geometry.attributes.position,
-        uv = m.geometry.attributes.uv;
-      const spans = 10,
-        n = cloth.count / (2 * (spans + 1)),
-        start = n * cap.row;
-      // The chest-side armscye turns outward, then down the upper arm.
-      // Follow that continuous posed section, retaining the anatomical
-      // front meridian, even in the rotated overhead and sniff poses.
-      if (cap.source !== m.geometry) {
-        cap.source = m.geometry;
-        cap.samples = cap.ring.map(({ u }) => {
-          const a = cap.sgn < 0 ? (1 - u) % 1 : u;
-          let j = 0;
-          while (j + 1 < n && uv.getY(j + 1) <= a) j++;
-          const k = (j + 1) % n,
-            hi = k ? uv.getY(k) : 1;
-          return [start + j, start + k, (a - uv.getY(j)) / (hi - uv.getY(j))];
-        });
-      }
+      const cloth = cap.cloth;
+      if (!cloth) continue;
       let x = 0,
         y = 0,
         z = 0;
