@@ -433,6 +433,12 @@ export function checkFlorence({ rig, controller, input, animate, name, result, c
   };
   const report = result.secondary.florence;
   const all = groups.all;
+  if (name === 'roma') {
+    // In a full-speed stride the earlier shoulder-bound fringe snapped through
+    // 70°. This release guard is separate from the walk and idle reference.
+    report.engineeringBounds.maximumSprintTipDeg = 45;
+    check(all.runDeg.max <= report.engineeringBounds.maximumSprintTipDeg, 'Roma sprint curl excursion');
+  }
   check(
     rows.every((r) => r.segments === 3 || r.segments === 4),
     'Florence 3–4 articulated segments per lock',
