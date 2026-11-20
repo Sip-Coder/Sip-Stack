@@ -1,0 +1,49 @@
+{
+  "name": "Roma",
+  "role": "Cellar archivist",
+  "heightM": 1.68,
+  "landmarks": {
+    "eyes": 16.5,
+    "chin": 30.3,
+    "shoulders": 33.8,
+    "waist": 52.0,
+    "knee": 76.0,
+    "ankleCuff": 93.8,
+    "hairWidth": 34.2
+  },
+  "palette": [
+    {"id":"skin","label":"Golden olive skin","hex":"#C68D60"},
+    {"id":"blush","label":"Terracotta cheek","hex":"#C78365"},
+    {"id":"lip","label":"Rosewood lips","hex":"#A55150"},
+    {"id":"mouth","label":"Mouth shadow","hex":"#533237"},
+    {"id":"teeth","label":"Macaroon Cream teeth","hex":"#EDD4A8"},
+    {"id":"eyeWhite","label":"Cream sclera","hex":"#F5EBD9"},
+    {"id":"iris","label":"Warm umber iris","hex":"#795136"},
+    {"id":"pupil","label":"Deep brown pupil","hex":"#281B20"},
+    {"id":"catchlight","label":"Eye glint","hex":"#FFF6DC"},
+    {"id":"brow","label":"Soft black lashes and brows","hex":"#332529"},
+    {"id":"curlDeep","label":"Espresso root","hex":"#2B2024"},
+    {"id":"curlBase","label":"Dark chestnut curl","hex":"#382829"},
+    {"id":"curlWarm","label":"Chestnut spiral","hex":"#4A312B"},
+    {"id":"curlLight","label":"Honey chestnut tip","hex":"#604032"},
+    {"id":"satin","label":"Burnished gold satin","hex":"#B69653"},
+    {"id":"facing","label":"Old-gold lapel facing","hex":"#9F7C3E"},
+    {"id":"binding","label":"Fine golden seam binding","hex":"#C5A467"},
+    {"id":"jewelry","label":"Polished yellow gold","hex":"#E0B75C"},
+    {"id":"dress","label":"Emerald Velvet","hex":"#1A5552"},
+    {"id":"leather","label":"Creamy Espresso calfskin","hex":"#914C2C"},
+    {"id":"sole","label":"Dark leather sole","hex":"#50372E"},
+    {"id":"brass","label":"Aged lantern brass","hex":"#AD8849"},
+    {"id":"wick","label":"Warm lantern light","hex":"#FFE0A0"},
+    {"id":"glass","label":"Honey-tinted glass","hex":"#D2AC73"},
+    {"id":"nail","label":"Natural peach nail","hex":"#D99D87"},
+    {"id":"strap","label":"Waxed saddle strap","hex":"#704936"}
+  ],
+  "callouts": [
+    {"label":"Face","text":"Large amber-brown eyes under soft arched brows. A warm upturned smile and three tiny freckles on her right cheek."},
+    {"label":"Hair","text":"The part sits to her left. Narrow tapered chestnut spirals frame the cheeks, fan over the shoulder blades and turn honey-brown toward the tips."},
+    {"label":"Tailoring","text":"A cropped gold satin jacket opens over an emerald scoop-neck dress. Turned cuffs and warm gold piping frame the shoulder and waist."},
+    {"label":"Accessories","text":"Gold hoops and a double necklace; the teardrop pendant rests at the center. A crossbody strap runs from her left shoulder to her right hip."},
+    {"label":"Lantern","text":"Her left hand carries a six-sided brass lantern. Two dark bands and an arched bail hold its honey-colored panes."}
+  ]
+}
