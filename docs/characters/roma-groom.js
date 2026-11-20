@@ -224,6 +224,11 @@ function shapeCurl(head, hair, side, i, inner = false) {
       // backwards around the jacket yoke instead of entering the sleeves.
       p.z -= under * (0.003 + 0.016 * Math.exp(-((angle - 1.76) ** 2) / 0.3));
     }
+    if (side > 0 && i === 7) {
+      // Cross the leading shoulder cup on its anterior face. A little room
+      // here lets the tip swing freely instead of sticking on every stride.
+      p.z += 0.005 * ease(t, 0.36, 0.76);
+    }
     if (inner && i >= 34 && i <= 38) {
       // The underside of the bob follows the slope of the shoulder from the
       // earlobe to the nape. These overlapped plumes leave the outer spiral
