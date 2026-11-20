@@ -2,6 +2,10 @@
 import * as T from 'three';
 import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createHair } from './hair.js';
+import { fitRomaAccessories } from './roma-accessories.js';
+import { makeRomaBody, makeJacketPattern, bindJointFans } from './roma-body.js';
+import { fitRomaGarment } from './roma-tailoring.js';
+import { detailMaterial } from './material-detail.js';
 
 const tau = Math.PI * 2;
 const xyz = (x, y, z) => new T.Vector3(x, y, z);
@@ -79,7 +83,11 @@ function sweep(points, widths, depths, slices = 16, sides = 8) {
       }
     }
   }
-  return surface(pos, idx);
+  const g = surface(pos, idx),
+    uv = [];
+  for (let j = 0; j <= slices; j++) for (let i = 0; i < sides; i++) uv.push(j / slices, i / sides);
+  g.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+  return g;
 }
 
 function seam(points, radius) {
@@ -98,12 +106,20 @@ export function buildRoma(rig) {
   const iris = paint('#82503a', 0.29),
     pupil = paint('#21191c', 0.27),
     catchlight = paint('#fff9e9', 0.15);
-  const hair = [
-    paint('#231a1b', 0.5),
-    paint('#332324', 0.46),
-    paint('#432e29', 0.47),
-    paint('#554039', 0.53),
-  ];
+  const browInk = paint('#241b1c', 0.58);
+  const hair = ['#251d1e', '#332626', '#40302c', '#4c3832'].map((color) => {
+    const mat = new T.MeshPhysicalMaterial({
+      color,
+      roughness: 0.48,
+      anisotropy: 0.67,
+      sheen: 0.58,
+      sheenColor: '#704b3d',
+      sheenRoughness: 0.6,
+      vertexColors: true,
+    });
+    detailMaterial(mat, 'hair');
+    return mat;
+  });
   const satin = new T.MeshPhysicalMaterial({
     color: '#e7b65a',
     roughness: 0.29,
@@ -142,7 +158,19 @@ export function buildRoma(rig) {
     roughness: 0.13,
     depthWrite: false,
   });
-  const buckets = new Map();
+  for (const [type, materials] of [
+    ['skin', [skin]],
+    ['silk', [silk]],
+    ['gold', [satin, facing, gold]],
+    ['leather', [binding, leather]],
+    ['metal', [brass]],
+  ])
+    for (const material of materials) detailMaterial(material, type);
+  const buckets = new Map(),
+    renderBatches = new Map();
+  const nailLacquer = paint('#cc9680', 0.42);
+  const layer = (parent, mat) => renderBatches.get(parent)?.get(mat);
+
   let faceSkin;
   const sphere = new T.SphereGeometry(1, 24, 18);
   function node(parent, x = 0, y = 0, z = 0) {
@@ -159,8 +187,27 @@ export function buildRoma(rig) {
       xyz(sx, sy, sz),
     );
     const g = geometry.index ? geometry.toNonIndexed() : geometry.clone();
-    g.deleteAttribute('uv');
     g.applyMatrix4(transform);
+    const points = g.attributes.position;
+    if (!g.attributes.uv) {
+      const uv = [];
+      for (let i = 0; i < points.count; i++) {
+        const x = points.getX(i),
+          y = points.getY(i),
+          z = points.getZ(i);
+        uv.push(0.5 + Math.atan2(x, z) / tau, y * 4);
+      }
+      g.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+    }
+    if (hair.includes(mat)) {
+      const tint = [],
+        u = g.attributes.uv;
+      for (let i = 0; i < points.count; i++) {
+        const tip = T.MathUtils.smoothstep(u.getX(i), 0.08, 0.98);
+        tint.push(0.8 + 0.36 * tip, 0.85 + 0.2 * tip, 0.86 + 0.12 * tip);
+      }
+      g.setAttribute('color', new T.Float32BufferAttribute(tint, 3));
+    }
     let group = buckets.get(parent);
     if (!group) buckets.set(parent, (group = new Map()));
     let pieces = group.get(mat);
@@ -218,22 +265,16 @@ export function buildRoma(rig) {
     cheekPos.setZ(i, z + nose + cheek * 0.003);
     colors.push(1 + 0.06 * cheek, 1 - 0.13 * cheek, 1 - 0.12 * cheek);
   }
+  const faceIndices = Array.from(cheeks.index.array),
+    crown = 64 * 96;
+  for (let k = 1; k < 95; k++) faceIndices.push(0, k + 1, k, crown, crown + k, crown + k + 1);
+  cheeks.setIndex(faceIndices);
   cheeks.computeVertexNormals();
   cheeks.setAttribute('color', new T.Float32BufferAttribute(colors, 3));
-  const skinTint = skin.clone();
+  const skinTint = paint('#c58b63', 0.65);
+  detailMaterial(skinTint, 'skin');
   skinTint.vertexColors = true;
   add(H, cheeks, skinTint);
-  add(
-    C,
-    tailored([
-      [0.128, 0.061, 0.035],
-      [0.15, 0.037, 0.028],
-      [0.166, 0.028, 0.024],
-      [0.195, 0.025, 0.025],
-      [0.212, 0.029, 0.025],
-    ]),
-    skin,
-  );
   for (const s of [-1, 1]) {
     oval(H, blush, s * 0.008, 0.059, 0.068, 0.0032, 0.0014, 0.0016);
     oval(H, skin, s * 0.064, 0.067, -0.003, 0.012, 0.018, 0.01, 0, 0, -s * 0.18);
@@ -294,7 +335,7 @@ export function buildRoma(rig) {
     const lid = new T.Mesh(geo, makeup);
     lid.frustumCulled = false;
     eye.add(lid);
-    const lash = upper ? new T.Mesh(surface(pos, indices), hair[0]) : null;
+    const lash = upper ? new T.Mesh(surface(pos, indices), browInk) : null;
     if (lash) {
       lash.frustumCulled = false;
       eye.add(lash);
@@ -357,7 +398,7 @@ export function buildRoma(rig) {
     brows.push(brow);
     ribbon(
       brow,
-      hair[0],
+      browInk,
       [
         [side * -0.02, -0.004, 0.006],
         [side * -0.008, 0.001, 0.005],
@@ -462,9 +503,17 @@ export function buildRoma(rig) {
         // locks cascade down the shoulder blade instead, leaving the ear clear.
         if (i < 3) {
           x += side * (-0.034 + (i - 1) * 0.003) * shoulder;
-          z += (0.082 + 0.004 * i - (cr * (radial * 0.85) - 0.008 - 0.013 * t)) * shoulder;
+          const freeEnd = i === 0 || i === 2;
+          const collarArc = freeEnd ? T.MathUtils.smoothstep(t, 0.19, 0.53) : shoulder;
+          const frontSweep = i === 0 ? 0.009 : i === 2 ? 0.018 : 0;
+          z += (0.082 + 0.004 * i + frontSweep - (cr * (radial * 0.85) - 0.008 - 0.013 * t)) * collarArc;
         } else {
-          z += (-0.08 - 0.017 * Math.abs(cr) - (cr * (radial * 0.85) - 0.008 - 0.013 * t)) * shoulder;
+          // The fuller right-hand bank clears the rounded shoulder blade so a
+          // quiet breath cannot catch and release its long side ringlets.
+          const backSweep = side > 0 ? 0.026 * Math.exp(-((i - 7) ** 2) / 3.2) : 0;
+          z +=
+            (-0.08 - backSweep - 0.017 * Math.abs(cr) - (cr * (radial * 0.85) - 0.008 - 0.013 * t)) *
+            shoulder;
         }
         // A final lifted turn breaks the row of straight points at shoulder level.
         const hook = T.MathUtils.smoothstep(t, 0.86, 1);
@@ -513,7 +562,17 @@ export function buildRoma(rig) {
           36,
         );
       }
-      locks.push({ group: root, points: [path[0], path[5], path[10], path[15], path[20]] });
+      // The lighter front wisps turn farther than the dense crown for the
+      // same breath. The innermost left lock already rides the raised lapel.
+      const breathingBend =
+        i === 0 ? (side > 0 ? 0.0175 : 0.003) : i === 2 ? 0.0175 : side < 0 && i === 7 ? 0.016 : undefined;
+      locks.push({
+        breathingBend,
+        role: i < 3 ? 'face' : 'mass',
+        side,
+        group: root,
+        points: [path[0], path[5], path[10], path[15], path[20]],
+      });
     }
   }
   for (const side of [-1, 1])
@@ -568,34 +627,6 @@ export function buildRoma(rig) {
       22,
     );
   }
-  add(
-    C,
-    tailored([
-      [-0.098, 0.069, 0.049],
-      [-0.051, 0.069, 0.046],
-      [0.005, 0.075, 0.048],
-      [0.052, 0.091, 0.059, 0.004],
-      [0.093, 0.095, 0.057, 0.005],
-      [0.122, 0.094, 0.045],
-      [0.139, 0.084, 0.04],
-      [0.154, 0.034, 0.029],
-    ]),
-    skin,
-  );
-  const bodice = tailored([
-    [-0.1, 0.0695, 0.05],
-    [-0.047, 0.071, 0.048],
-    [0.002, 0.078, 0.05],
-    [0.055, 0.095, 0.061, 0.004],
-    [0.108, 0.095, 0.059, 0.005],
-  ]);
-  const bp = bodice.attributes.position;
-  for (let i = 4 * 36; i < 5 * 36; i++) {
-    const a = ((i % 36) * tau) / 36;
-    bp.setY(i, 0.125 - 0.064 * Math.max(0, Math.cos(a)) ** 4);
-  }
-  bodice.computeVertexNormals();
-  add(C, bodice, silk);
   const dressRows = [
     [-0.236, 0.137, 0.099, -0.002],
     [-0.223, 0.135, 0.099],
@@ -603,6 +634,7 @@ export function buildRoma(rig) {
     [-0.109, 0.11, 0.075],
     [-0.051, 0.105, 0.072],
     [0.01, 0.101, 0.068],
+    [0.034, 0.094, 0.062],
     [0.059, 0.085, 0.055],
     [0.08, 0.072, 0.05],
   ];
@@ -655,7 +687,7 @@ export function buildRoma(rig) {
         y + (j === 0 ? 0.008 * Math.sin(a * 2) : 0),
         (rz + fold + 0.009) * Math.cos(a) + 0.002,
       );
-      if (i < 40 && j + 1 < jacketRows.length) {
+      if (i < 40 && j < 5) {
         const k = j * 41 + i;
         ji.push(k, k + 1, k + 41, k + 41, k + 1, k + 42);
       }
@@ -670,31 +702,6 @@ export function buildRoma(rig) {
   jacket.add(jacketSkin);
   jacketShape.attributes.position.setUsage(T.DynamicDrawUsage);
   for (const s of [-1, 1]) {
-    ribbon(
-      C,
-      facing,
-      [
-        [s * 0.029, 0.152, 0.024],
-        [s * 0.039, 0.141, 0.049],
-        [s * 0.051, 0.114, 0.062],
-        [s * 0.045, 0.08, 0.075],
-        [s * 0.049, 0.036, 0.064],
-        [s * 0.054, 0.004, 0.05],
-      ],
-      [0.005, 0.012, 0.014, 0.009, 0.004, 0.001],
-      [0.004, 0.004, 0.005, 0.004, 0.003, 0.002],
-    );
-    thread(
-      C,
-      binding,
-      [
-        [s * 0.031, 0.15, 0.03],
-        [s * 0.045, 0.131, 0.049],
-        [s * 0.058, 0.113, 0.052],
-        [s * 0.049, 0.078, 0.065],
-      ],
-      0.00085,
-    );
     ribbon(
       C,
       binding,
@@ -712,9 +719,9 @@ export function buildRoma(rig) {
   add(
     rig.hips,
     tailored([
-      [0.061, 0.085, 0.061],
-      [0.066, 0.083, 0.058],
-      [0.079, 0.08, 0.055],
+      [0.061, 0.089, 0.065],
+      [0.066, 0.087, 0.063],
+      [0.079, 0.087, 0.062],
     ]),
     leather,
   );
@@ -753,75 +760,9 @@ export function buildRoma(rig) {
     [1, 'L'],
     [-1, 'R'],
   ]) {
-    const arm = rig['upperArm' + id],
-      fore = rig['forearm' + id],
-      hand = rig['hand' + id];
-    arm.position.x = s * 0.13;
-    add(
-      arm,
-      tailored([
-        [-0.18, 0.024, 0.027],
-        [-0.166, 0.027, 0.032, -0.002],
-        [-0.158, 0.029, 0.033, -0.002],
-        [-0.15, 0.025, 0.03, 0.001],
-        [-0.144, 0.028, 0.032],
-        [-0.088, 0.03, 0.034],
-        [-0.037, 0.037, 0.039],
-        [0.002, 0.038, 0.038],
-        [0.024, 0.027, 0.03],
-        [0.03, 0.003, 0.005],
-      ]),
-      satin,
-    );
-    add(
-      fore,
-      tailored([
-        [-0.141, 0.022, 0.025],
-        [-0.125, 0.023, 0.025],
-        [-0.119, 0.028, 0.029],
-        [-0.094, 0.026, 0.028],
-        [-0.057, 0.028, 0.03],
-        [-0.048, 0.03, 0.034, -0.0015],
-        [-0.041, 0.027, 0.032, 0.001],
-        [-0.035, 0.03, 0.033],
-        [-0.012, 0.028, 0.031],
-        [0.008, 0.022, 0.024],
-      ]),
-      satin,
-    );
-    add(
-      fore,
-      tailored([
-        [-0.145, 0.022, 0.024],
-        [-0.139, 0.023, 0.026],
-        [-0.131, 0.024, 0.026],
-      ]),
-      facing,
-    );
-    oval(fore, brass, s * 0.023, -0.133, 0, 0.0018, 0.003, 0.003);
-    oval(hand, skin, 0, -0.023, 0.004, 0.019, 0.032, 0.013, 0, 0, s * 0.05);
-    for (let k = 0; k < 4; k++) {
-      const x = (k - 1.5) * 0.0081,
-        y = -0.047 + (k === 0 ? 0.006 : k === 3 ? 0.004 : 0);
-      oval(hand, skin, x, y, 0.006, 0.0047, 0.0175 - (k === 0 ? 0.003 : 0), 0.0058, -0.28);
-    }
-    oval(hand, skin, -s * 0.016, -0.022, 0.012, 0.007, 0.018, 0.007, -0.24, 0, -s * 0.25);
-    const thigh = rig['thigh' + id],
-      shin = rig['shin' + id],
-      foot = rig['foot' + id];
-    add(thigh, tailored(thighProfile), skin);
-    add(
-      shin,
-      tailored([
-        [-0.231, 0.018, 0.02],
-        [-0.205, 0.019, 0.022],
-        [-0.141, 0.023, 0.026, -0.004],
-        [-0.073, 0.032, 0.037, -0.005],
-        [-0.027, 0.027, 0.03],
-        [0.004, 0.026, 0.027],
-      ]),
-      skin,
-    );
+    const arm = rig['upperArm' + id];
+    arm.position.x = s * 0.144;
+    const foot = rig['foot' + id];
     // A low stacked heel and flexible forefoot both meet the sole plane.
     oval(foot, sole, 0, -0.039, 0.024, 0.029, 0.008, 0.069);
     oval(foot, leather, 0, -0.025, 0.029, 0.03, 0.021, 0.066, -0.032);
@@ -900,37 +841,7 @@ export function buildRoma(rig) {
     );
   }
 
-  // A narrow saddle strap wraps both sides of the shoulder and attaches to the satchel.
-  ribbon(
-    C,
-    leather,
-    [
-      [0.073, 0.146, -0.031],
-      [0.075, 0.149, 0.004],
-      [0.073, 0.134, 0.044],
-      [0.037, 0.078, 0.07],
-      [-0.015, 0.018, 0.06],
-      [-0.067, -0.056, 0.045],
-      [-0.107, -0.083, 0.012],
-      [-0.099, -0.095, -0.045],
-    ],
-    [0.006, 0.0062, 0.006, 0.0059, 0.006, 0.006, 0.006, 0.006],
-    [0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002],
-  );
-  ribbon(
-    C,
-    leather,
-    [
-      [0.073, 0.146, -0.031],
-      [0.046, 0.1, -0.053],
-      [-0.005, 0.033, -0.06],
-      [-0.058, -0.05, -0.048],
-      [-0.091, -0.095, -0.074],
-    ],
-    [0.006, 0.006, 0.006, 0.006, 0.006],
-    [0.002, 0.002, 0.002, 0.002, 0.002],
-  );
-  const bag = node(rig.hips, -0.099, 0.023, -0.071);
+  const bag = node(rig.hips, -0.148, 0.023, -0.121);
   // Structured calfskin saddlebag with a domed flap and a stitched gusset.
   const body = tailored([
     [-0.08, 0.002, 0.013],
@@ -965,6 +876,8 @@ export function buildRoma(rig) {
       const g = parent.name.startsWith('Roma curl') ? mergeVertices(joined) : joined;
       if (g !== joined) joined.dispose();
       const m = new T.Mesh(g, mat);
+      if (!renderBatches.has(parent)) renderBatches.set(parent, new Map());
+      renderBatches.get(parent).set(mat, m);
       if (mat === skinTint) {
         m.name = 'Roma facial skin';
         faceSkin = m;
@@ -981,20 +894,41 @@ export function buildRoma(rig) {
       for (const piece of pieces) piece.dispose();
     }
   }
-  const curlSystem = createHair(rig, [
-    { node: H, center: [0, 0.075, 0.004], radii: [0.072, 0.080, 0.065] },
-    { node: rig.upperArmL, center: [0, -0.013, 0], radii: [0.05, 0.055, 0.051] },
-    { node: rig.upperArmR, center: [0, -0.013, 0], radii: [0.05, 0.055, 0.051] },
-    { node: rig.upperArmL, center: [0, -0.083, 0], radii: [0.045, 0.078, 0.047] },
-    { node: rig.upperArmR, center: [0, -0.083, 0], radii: [0.045, 0.078, 0.047] },
-    { node: C, center: [0, 0.116, -0.003], radii: [0.102, 0.055, 0.055] },
-  ]);
+  const { mesh: bodyMesh, regions: bodyRegions } = makeRomaBody(rig, skin, nailLacquer);
+  const yoke = fitRomaGarment(bodyMesh, 'jacket', satin, facing, makeJacketPattern());
+  const bodice = fitRomaGarment(bodyMesh, 'dress', silk, silk);
+  const skinBends = bindJointFans(rig, [bodyMesh, yoke, bodice]);
+  const collar = [yoke];
+  const colliders = [
+    { role: 'head', node: H, center: [0, 0.075, 0.004], radii: [0.072, 0.08, 0.065] },
+    { role: 'neck', node: C, center: [0, 0.18, 0], radii: [0.034, 0.039, 0.03] },
+    { role: 'back', node: C, center: [0, 0.091, -0.029], radii: [0.108, 0.069, 0.056] },
+    { role: 'back', node: C, center: [0, 0.119, -0.012], radii: [0.102, 0.056, 0.063] },
+  ];
+  for (const [side, joint] of [
+    [1, rig.upperArmL],
+    [-1, rig.upperArmR],
+  ]) {
+    colliders.push(
+      { role: 'shoulder', node: joint, center: [0, -0.013, 0], radii: [0.051, 0.056, 0.052] },
+      { role: 'shoulder', node: joint, center: [0, -0.083, 0], radii: [0.045, 0.078, 0.047] },
+      { role: 'collar', node: C, center: [side * 0.056, 0.11, 0.062], radii: [0.029, 0.057, 0.025] },
+      { role: 'collar', node: C, center: [side * 0.06, 0.062, 0.061], radii: [0.026, 0.049, 0.024] },
+      { role: 'collar', node: C, center: [side * 0.087, 0.086, 0.034], radii: [0.033, 0.048, 0.044] },
+      { role: 'back', node: C, center: [side * 0.082, 0.095, -0.038], radii: [0.035, 0.059, 0.049] },
+    );
+  }
+  const curlSystem = createHair(rig, colliders);
   for (let k = 0; k < locks.length; k++) {
-    const strand = locks[k];
+    const strand = locks[k],
+      face = strand.role === 'face';
     curlSystem.add(strand.group, strand.points, {
-      stiffness: 100 + (k % 5) * 7,
-      damping: 10.8 + (k % 3) * 0.7,
-      maxOffset: 0.021,
+      role: strand.role,
+      breathingBend: strand.breathingBend,
+      fanSide: strand.side,
+      stiffness: face ? 89 + (k % 3) * 8 : 107 + (k % 5) * 7,
+      damping: face ? 9.8 + (k % 3) * 0.7 : 12.2 + (k % 3) * 0.5,
+      maxOffset: face ? 0.045 : 0.039,
       radius: 0.014,
     });
   }
@@ -1023,6 +957,7 @@ export function buildRoma(rig) {
     );
     jacketCapsules.push(capsule(0.052, 0.043));
   }
+  const kneeSupports = [skirtCapsules[2], skirtCapsules[3], skirtCapsules[6], skirtCapsules[7]];
   const jacketBody = [
     [-0.121, 0.101, 0.071, 0],
     [-0.096, 0.097, 0.066, 0],
@@ -1182,10 +1117,54 @@ export function buildRoma(rig) {
     vel[n + 1] = T.MathUtils.clamp(vel[n + 1], -1.1, 1.1);
     vel[n + 2] = T.MathUtils.clamp(vel[n + 2], -1.1, 1.1);
   }
+  const accessories = fitRomaAccessories(rig, bag, skirt, jacketSkin, leather, binding, silk);
+  const surfaces = {
+    'body-face': faceSkin,
+    body: bodyMesh,
+    bodice,
+    skirt: [skirt, accessories.hem],
+    jacket: [jacketSkin, yoke, accessories.jacketHem],
+    belt: layer(rig.hips, leather),
+    strap: accessories.strap,
+    bag: [layer(bag, leather), layer(bag, binding)],
+  };
+  const pairs = [];
+  for (const [outer, inner] of [
+    ['bodice', 'body'],
+    ['skirt', 'body'],
+    ['jacket', 'body'],
+    ['jacket', 'bodice'],
+    ['jacket', 'skirt'],
+    ['belt', 'skirt'],
+    ['belt', 'bodice'],
+    ['strap', 'jacket'],
+    ['strap', 'bodice'],
+    ['bag', 'skirt'],
+    ['bag', 'jacket'],
+  ])
+    pairs.push({ outer, inner });
+  rig.garments = { surfaces, pairs };
   rig.secondary ??= {};
   rig.secondary.roma = {
     hair: curlSystem,
     faceSkin,
+    body: bodyMesh,
+    bodyRegions,
+    bodice,
+    yoke,
+    collar,
+    neck: bodyMesh,
+    upperBack: jacketSkin,
+    panels: {
+      skirt: [
+        { tip: 4, anchor: 452 },
+        { tip: 36, anchor: 484 },
+      ],
+      jacket: [
+        { tip: 1, anchor: 124 },
+        { tip: 21, anchor: 144 },
+      ],
+    },
     skirt,
     jacket: jacketSkin,
     bag,
@@ -1204,11 +1183,21 @@ export function buildRoma(rig) {
     lastSpeed = 0,
     lastVy = 0,
     lastTime = -Infinity,
-    balance = 0;
+    balance = 0,
+    previousHipY = NaN,
+    previousHipV = 0,
+    bobLoad = 0,
+    previousHipX = NaN,
+    previousHipVX = 0,
+    sideLoad = 0;
+  const armNames = ['upperArmL', 'upperArmR'],
+    elbowNames = ['forearmL', 'forearmR'];
   const step = (f) => {
     if (f.time <= lastTime) {
       skirtShape.attributes.position.array.set(skirtRest);
       jacketShape.attributes.position.array.set(jacketRest);
+      previousHipY = previousHipX = NaN;
+      previousHipV = previousHipVX = bobLoad = sideLoad = 0;
       skirtVelocity.fill(0);
       jacketVelocity.fill(0);
       hang =
@@ -1227,10 +1216,13 @@ export function buildRoma(rig) {
     lastTime = f.time;
     // Give the satin cuffs clearance beside the flared jacket hem and the satchel strap.
     // Counterbalance the torso bank with the outside arm on a tight running turn.
+    const crouch = T.MathUtils.smoothstep(0.5 - rig.hips.position.y, 0.05, 0.23);
+    rig.upperArmL.rotation.z += 0.26 * crouch;
+    rig.upperArmR.rotation.z -= 0.26 * crouch;
     const bankTarget = T.MathUtils.clamp(f.turn * f.speed * 0.024, -0.32, 0.32);
     balance += (bankTarget - balance) * (1 - Math.exp(-f.dt * 17));
-    rig.upperArmL.rotation.z += 0.103 + Math.max(0, balance);
-    rig.upperArmR.rotation.z -= 0.103 + Math.max(0, -balance);
+    rig.upperArmL.rotation.z += 0.189 + Math.max(0, balance);
+    rig.upperArmR.rotation.z -= 0.189 + Math.max(0, -balance);
     const dt = Math.min(0.035, f.dt),
       speed = f.speed,
       t = f.time,
@@ -1238,6 +1230,19 @@ export function buildRoma(rig) {
     const moving = Math.min(1, speed / 3.89),
       lateral = T.MathUtils.clamp(f.turn, -1, 1);
     const hop = T.MathUtils.clamp(f.vy, -3, 3);
+    const hipY = rig.hips.position.y;
+    const hipV = Number.isFinite(previousHipY) ? (hipY - previousHipY) / dt : 0;
+    const hipAccel = T.MathUtils.clamp((hipV - previousHipV) / dt, -14, 14);
+    bobLoad += (hipAccel - bobLoad) * (1 - Math.exp(-dt * 15));
+    previousHipY = hipY;
+    previousHipV = hipV;
+    const hipX = rig.hips.position.x;
+    const hipVX = Number.isFinite(previousHipX) ? (hipX - previousHipX) / dt : 0;
+    const hipAX = T.MathUtils.clamp((hipVX - previousHipVX) / dt, -8, 8);
+    sideLoad += (hipAX + hipVX * 10 - sideLoad) * (1 - Math.exp(-dt * 22));
+    previousHipX = hipX;
+    previousHipVX = hipVX;
+    const breath = f.breath ?? Math.sin(t * 1.31);
     const lift = f.emote >= 0 ? Math.sin(Math.PI * f.emote) ** 1.1 : 0;
     if (lift > 0) {
       rig.upperArmR.rotation.x -= lift * 1.16;
@@ -1246,6 +1251,19 @@ export function buildRoma(rig) {
       rig.head.rotation.y -= lift * 0.37;
       rig.head.rotation.z += lift * 0.075;
     }
+    // In compression the bent side rolls and the outer woven face stays taut.
+    for (let k = 0; k < 2; k++) {
+      const arm = rig[armNames[k]].rotation,
+        elbow = rig[elbowNames[k]].rotation;
+      yoke.morphTargetInfluences[2 * k] = T.MathUtils.smoothstep(Math.abs(elbow.x), 0.12, 1.94);
+      yoke.morphTargetInfluences[2 * k + 1] = T.MathUtils.smoothstep(
+        Math.abs(arm.z) + Math.abs(arm.x) * 0.5,
+        0.15,
+        1.7,
+      );
+      yoke.morphTargetInfluences[4 + k] = T.MathUtils.smoothstep(-arm.x, 0.11, 1.28);
+    }
+    skinBends();
     const blinkPhase = (t + 1.1) % 4.45;
     const blink = Math.exp(-((blinkPhase - 0.16) ** 2) / 0.0015);
     const laugh = lift * (0.78 + 0.22 * Math.sin(f.emote * 17));
@@ -1260,6 +1278,7 @@ export function buildRoma(rig) {
     }
     smile.scale.set(1 + 0.09 * laugh, 1 + 0.38 * laugh, 1);
     smile.position.y = -0.038 * 0.38 * laugh;
+    accessories.release();
     updateCapsules();
     const left = rig.thighL.rotation.x,
       right = rig.thighR.rotation.x;
@@ -1282,7 +1301,21 @@ export function buildRoma(rig) {
           length * (leftZ * w + rightZ * (1 - w)) * 0.93 +
           flutter * (0.007 * moving * Math.sin(phase) + 0.0018 * hop),
       );
-      integrate(i, position, skirtVelocity, 171, 17.5, dt, skirtCapsules, false);
+      integrate(i, position, skirtVelocity, 112, 12.9, dt, skirtCapsules, false);
+    }
+    // A narrow bias panel between the swinging skirt and the anchored waist
+    // unfolds over a high knee. The waistband stays attached to the pelvis.
+    let highKnee = false;
+    for (const c of kneeSupports)
+      if (Math.max(c.a.y, c.b.y) + c.radiusA > 0.005) {
+        highKnee = true;
+        break;
+      }
+    for (let i = 6 * 64; i < 7 * 64; i++) {
+      const n = i * 3;
+      simulated.set(skirtRest[n], skirtRest[n + 1], skirtRest[n + 2]);
+      if (highKnee) outsidePanel(simulated, skirtRest[n], skirtRest[n + 2], kneeSupports, 0.018);
+      position.setXYZ(i, simulated.x, simulated.y, simulated.z);
     }
     position.needsUpdate = true;
     clothNormals(skirtShape, 64, true);
@@ -1298,13 +1331,50 @@ export function buildRoma(rig) {
         front = z > 0,
         trail = front ? Math.max(0, -Math.sin(side * phase)) : 0.55 + 0.45 * Math.cos(phase);
       const rideUp = Math.max(0, minimumHemY + 0.095);
-      const spread = 0.05 * moving + 0.11 * Math.abs(lateral) * moving + 0.085 * moving * trail;
+      const lowerBob = Math.max(0, bobLoad) * 0.027;
+      const spread =
+        0.047 * moving +
+        0.091 * Math.abs(lateral) * moving +
+        0.081 * moving * trail +
+        lowerBob * (front ? 0.57 : 1);
+      const folded =
+        Math.sin(8 * Math.atan2(x, z) + 0.47 * side) * (0.0018 * moving + 0.00042 * Math.abs(bobLoad));
+      const chestLift = 0.0016 * breath;
+      // Air under the open quarters adds ease as the chest expands; both
+      // corners still share their pinned waist seam with the rear panel.
+      const breathFlare = front
+        ? (0.0014 + 0.0014 * breath) *
+          (1 - T.MathUtils.smoothstep(speed, 0.12, 0.95)) *
+          T.MathUtils.smoothstep(z, 0.005, 0.052)
+        : 0;
+      const edgeRadius = Math.hypot(x, z);
       goal.set(
-        x * (1 + spread * 0.45 * weight) + lateral * 0.003 * weight,
-        y + weight * (0.005 * trail * moving + rideUp),
-        z * (1 + spread * weight) + weight * (0.0021 * hop - 0.009 * moving + side * 0.006 * lateral),
+        x * (1 + (spread * 0.45 + breathFlare / edgeRadius) * weight) +
+          (lateral * 0.003 - 0.0023 * sideLoad) * weight,
+        y + weight * (0.005 * trail * moving + rideUp + 0.0009 * bobLoad + chestLift),
+        z * (1 + (spread + breathFlare / edgeRadius) * weight) +
+          weight *
+            (0.0021 * hop -
+              0.009 * moving +
+              side * 0.006 * lateral +
+              folded +
+              (front ? chestLift : -0.45 * chestLift)),
       );
-      integrate(i, jpos, jacketVelocity, front ? 113 : 87, front ? 12.5 : 11, dt, jacketCapsules, true);
+      integrate(i, jpos, jacketVelocity, front ? 211 : 174, front ? 22 : 19.7, dt, jacketCapsules, true);
+    }
+    // The upper placket moves with the sternum; the collar and waist attachment
+    // rows remain pinned so its lower corners can oppose the body's motion.
+    for (let i = 4 * 41; i < 9 * 41; i++) {
+      const n = i * 3,
+        y = jacketRest[n + 1],
+        front = jacketRest[n + 2] > 0.008;
+      const pulse = breath * Math.max(0, 1 - Math.abs(y - 0.089) / 0.057) * (front ? 0.0017 : 0.0006);
+      jpos.setXYZ(
+        i,
+        jacketRest[n] * (1 + pulse * 2),
+        y + pulse * 0.24,
+        jacketRest[n + 2] + (front ? pulse : -pulse),
+      );
     }
     jpos.needsUpdate = true;
     clothNormals(jacketShape, 41, false);
@@ -1335,6 +1405,7 @@ export function buildRoma(rig) {
     bagLift += bagLiftV * dt;
     bag.rotation.set(bagPitch, bagSide, -0.14 + bagSide * 0.33);
     bag.position.y = 0.023 + bagLift;
+    accessories.update();
     curlSystem.step(f);
   };
   return step;
