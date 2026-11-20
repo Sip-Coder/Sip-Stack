@@ -239,6 +239,7 @@ def exercise(browser, url, package, system_fonts):
                 const c=document.querySelector('#character-test canvas');
                 return c.checkVisibility({visibilityProperty:true}) && characterChecks.painted(c);
             }""")
+            assert canvas.evaluate("c=>{const gl=c.getContext('webgl2');return gl.getError()===gl.NO_ERROR}"), tier
             print(f"{tier} · three heroes rendered and context restored", flush=True)
         formation(page)
         call(page, "tier", "mobile")

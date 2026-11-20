@@ -78,6 +78,46 @@ function makeSoleProfile(ankle) {
   return hull;
 }
 
+// Skinning is affine for each influencing joint. A roll only needs one row
+// (world-space height) of each bone matrix to seat every posed skin vertex.
+function skinnedFloor(mesh) {
+  const { skeleton } = mesh,
+    rows = new Float64Array(skeleton.bones.length * 4);
+  const model = new T.Matrix4(),
+    transform = new T.Matrix4();
+  return (lowest) => {
+    model.multiplyMatrices(mesh.matrixWorld, mesh.bindMatrixInverse);
+    for (let j = 0; j < skeleton.bones.length; j++) {
+      transform
+        .copy(model)
+        .multiply(skeleton.bones[j].matrixWorld)
+        .multiply(skeleton.boneInverses[j])
+        .multiply(mesh.bindMatrix);
+      const e = transform.elements,
+        k = 4 * j;
+      rows[k] = e[1];
+      rows[k + 1] = e[5];
+      rows[k + 2] = e[9];
+      rows[k + 3] = e[13];
+    }
+    const { position, skinWeight, skinIndex } = mesh.geometry.attributes;
+    for (let i = 0; i < position.count; i++) {
+      const x = position.getX(i),
+        y = position.getY(i),
+        z = position.getZ(i);
+      let floor = 0;
+      for (let j = 0; j < 4; j++) {
+        const weight = skinWeight.getComponent(i, j);
+        if (weight === 0) continue;
+        const k = 4 * skinIndex.getComponent(i, j);
+        floor += weight * (rows[k] * x + rows[k + 1] * y + rows[k + 2] * z + rows[k + 3]);
+      }
+      if (floor < lowest) lowest = floor;
+    }
+    return lowest;
+  };
+}
+
 export function createController(rig, x = 0, z = 0) {
   const { root, height } = rig;
   const capsuleRadius = height * 0.118;
@@ -86,6 +126,7 @@ export function createController(rig, x = 0, z = 0) {
   const frame = {
     dt: 0,
     time: 0,
+    breath: 0,
     speed: 0,
     turn: 0,
     vy: 0,
@@ -124,7 +165,14 @@ export function createController(rig, x = 0, z = 0) {
     worldFoot = new T.Quaternion();
   const axisX = new T.Vector3(1, 0, 0),
     sample = new T.Vector3();
-  const rollMeshes = [];
+  const rollMeshes = [],
+    skinnedFloors = new Map();
+  root.traverse((node) => {
+    if (!node.isMesh || !node.geometry.attributes.position || node.userData.debug) return;
+    rollMeshes.push(node);
+    if (node.isSkinnedMesh) skinnedFloors.set(node, skinnedFloor(node));
+    else if (!node.geometry.boundingSphere) node.geometry.computeBoundingSphere();
+  });
   let travel = 0.25,
     heading = 0,
     speed = 0,
@@ -409,6 +457,7 @@ export function createController(rig, x = 0, z = 0) {
     rig.hips.position.set(0, 0.52, 0);
     frame.dt = dt;
     frame.time += dt;
+    frame.breath = Math.sin(frame.time * 1.31);
     const magnitude = Math.min(1, Math.hypot(input.x, input.z));
     const targetSpeed = (input.run ? RUN : WALK) * magnitude;
     if (input.emote) emoteTime = 0;
@@ -537,7 +586,7 @@ export function createController(rig, x = 0, z = 0) {
         landTime += dt;
         if (landTime >= 0.21) landTime = -1;
       }
-      rig.chest.rotation.x += 0.007 * Math.sin(frame.time * 2.62);
+      rig.chest.rotation.x += 0.007 * frame.breath;
       rig.head.rotation.y = 0.052 * (1 - Math.min(frame.speed, 1)) * Math.sin(frame.time * 0.73);
     }
     for (const c of contacts) {
@@ -565,13 +614,6 @@ export function createController(rig, x = 0, z = 0) {
 
   function finishPose() {
     if (frame.state !== 'roll') return;
-    if (!rollMeshes.length) {
-      root.traverse((node) => {
-        if (!node.isMesh || !node.geometry.attributes.position || node.userData.debug) return;
-        if (!node.geometry.boundingSphere) node.geometry.computeBoundingSphere();
-        rollMeshes.push(node);
-      });
-    }
     // A capsule bounds the path, but the supporting surface of a shoulder
     // roll travels from boot to shoulder to back. Seat the actual silhouette
     // on the test floor, pruning meshes by their transformed bounding spheres.
@@ -579,6 +621,10 @@ export function createController(rig, x = 0, z = 0) {
     let lowest = Infinity;
     for (const mesh of rollMeshes) {
       if (!mesh.visible) continue;
+      if (mesh.isSkinnedMesh) {
+        lowest = skinnedFloors.get(mesh)(lowest);
+        continue;
+      }
       const geo = mesh.geometry,
         m = mesh.matrixWorld,
         e = m.elements,

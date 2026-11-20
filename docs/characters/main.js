@@ -1,10 +1,11 @@
 import * as T from 'three';
+import { setModelDetail } from './material-detail.js';
 import { createActor } from './rig.js';
 import { FIXED_DT, createController } from './motion.js';
 import { buildSippy } from './sippy.js';
 import { buildRoma } from './roma.js';
 import { buildHummin } from './hummin.js';
-import { createStage, debugRig } from './stage.js';
+import { createStage, debugRig, contactShadows } from './stage.js';
 import { createUI, heights, names } from './ui.js';
 import { createInput } from './input.js';
 
@@ -18,7 +19,7 @@ export function mountCharacters(host) {
     const pose = builders[i](rig),
       ctrl = createController(rig);
     stage.scene.add(rig.root);
-    return { rig, pose, ctrl };
+    return { rig, pose, ctrl, contactShadow: contactShadows(stage.scene, rig) };
   });
   const query = new URLSearchParams(location.search);
   const debug =
@@ -156,6 +157,7 @@ export function mountCharacters(host) {
     const auto = mobileDisplay.matches ? 'mobile' : 'high';
     actualTier = tierSelect.value === 'auto' ? auto : tierSelect.value;
     tierSelect.options[0].textContent = 'Auto · ' + (auto === 'high' ? 'High' : 'Mobile');
+    for (const actor of cast) setModelDetail(actor.rig.root, actualTier);
     stage.quality(actualTier);
   }
   tierSelect.addEventListener('change', quality);
@@ -235,6 +237,7 @@ export function mountCharacters(host) {
     );
     stage.camera.lookAt(target);
     stage.illuminate(target);
+    for (const a of cast) a.contactShadow();
     if (debug) {
       stage.scene.updateMatrixWorld(true);
       for (const draw of debug) draw();
@@ -305,6 +308,7 @@ export function mountCharacters(host) {
     ready = false;
     generation++;
     stage.canvas.style.visibility = 'hidden';
+    stage.releaseTargets();
     loading.hidden = false;
     loading.textContent = 'Restoring the test floor…';
     sync();
