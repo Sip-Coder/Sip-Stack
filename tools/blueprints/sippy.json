@@ -1,0 +1,167 @@
+{
+  "name": "Sippy",
+  "role": "Young vineyard sommelier",
+  "heightM": 1.78,
+  "landmarks": {
+    "eyes": 16.42,
+    "chin": 29.9,
+    "shoulders": 33.0,
+    "waist": 54.9,
+    "knee": 78.2,
+    "ankleCuff": 94.5,
+    "hairWidth": 26.8
+  },
+  "palette": [
+    {
+      "id": "skin",
+      "label": "Warm apricot skin",
+      "hex": "#D8A076"
+    },
+    {
+      "id": "flush",
+      "label": "Warm ear and cheek",
+      "hex": "#C68A70"
+    },
+    {
+      "id": "lips",
+      "label": "Rosewood lips",
+      "hex": "#AE6F58"
+    },
+    {
+      "id": "mouth",
+      "label": "Smile shadow",
+      "hex": "#602F29"
+    },
+    {
+      "id": "lining",
+      "label": "Macaroon Cream waistcoat lining",
+      "hex": "#EDD4A8"
+    },
+    {
+      "id": "sclera",
+      "label": "Warm ivory sclera",
+      "hex": "#F5E8D8"
+    },
+    {
+      "id": "iris",
+      "label": "Chestnut iris",
+      "hex": "#734621"
+    },
+    {
+      "id": "pupil",
+      "label": "Deep umber pupil and lash",
+      "hex": "#251A17"
+    },
+    {
+      "id": "catchlight",
+      "label": "Eye and glass glint",
+      "hex": "#FFF8E7"
+    },
+    {
+      "id": "hair",
+      "label": "Espresso hair base and brows",
+      "hex": "#3B281F"
+    },
+    {
+      "id": "chestnut",
+      "label": "Creamy Espresso comb highlights",
+      "hex": "#914C2C"
+    },
+    {
+      "id": "jacket",
+      "label": "Smoked charcoal wool",
+      "hex": "#514740"
+    },
+    {
+      "id": "stripe",
+      "label": "Fine warm pinstripe",
+      "hex": "#776A5E"
+    },
+    {
+      "id": "lapel",
+      "label": "Turned charcoal lapel",
+      "hex": "#63564B"
+    },
+    {
+      "id": "vest",
+      "label": "Walnut waistcoat",
+      "hex": "#685447"
+    },
+    {
+      "id": "trousers",
+      "label": "Charcoal trousers",
+      "hex": "#48413E"
+    },
+    {
+      "id": "shirt",
+      "label": "Warm white cotton",
+      "hex": "#F3E6D3"
+    },
+    {
+      "id": "bow",
+      "label": "Burgundy bow silk",
+      "hex": "#7D3037"
+    },
+    {
+      "id": "pocketSquare",
+      "label": "Wine pocket square",
+      "hex": "#8B3740"
+    },
+    {
+      "id": "metalButton",
+      "label": "Dark horn button",
+      "hex": "#3E302A"
+    },
+    {
+      "id": "gold",
+      "label": "Aged gold",
+      "hex": "#B98E52"
+    },
+    {
+      "id": "shoe",
+      "label": "Polished oxford leather",
+      "hex": "#44342D"
+    },
+    {
+      "id": "sole",
+      "label": "Dark leather welt",
+      "hex": "#2E2724"
+    },
+    {
+      "id": "glass",
+      "label": "Cool wineglass edge",
+      "hex": "#BDD0CE"
+    },
+    {
+      "id": "wine",
+      "label": "Red wine",
+      "hex": "#712536"
+    }
+  ],
+  "callouts": [
+    {
+      "label": "Proportions",
+      "text": "3.34 heads tall. Broad sleeve caps, generous cheeks, compact waist and weighted oxford toes."
+    },
+    {
+      "label": "Hairline",
+      "text": "A high asymmetric pompadour rolls back over a fitted short nape. Seven overlapping tapered clumps carry chestnut highlights; two shorter temple curls frame the face."
+    },
+    {
+      "label": "Expression",
+      "text": "Large warm chestnut irises with twin catchlights, broad expressive brows, a rounded nose and an open, turned-up smile."
+    },
+    {
+      "label": "Tailoring",
+      "text": "Warm charcoal pinstripes follow the suit and trouser grain. Notched lapels reveal ivory cotton, a walnut waistcoat, burgundy silk and a wine pocket square."
+    },
+    {
+      "label": "Accessories",
+      "text": "The right hand carries a stemmed red-wine glass. A brass-gold watch chain loops across the left waistcoat and ends at a small keeper."
+    },
+    {
+      "label": "Construction",
+      "text": "Eye centres, mandibular base, sleeve-cap peaks, top waist seam, patella centres and lower ankle hems define the vertical guides."
+    }
+  ]
+}
