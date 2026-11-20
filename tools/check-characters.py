@@ -106,8 +106,11 @@ def check_saved_links(page, url):
 
     # A plain old bookmark works independently of debug. Replacing its
     # fragment must leave exactly one entry between World and Heros.
-    page.goto(base + "#world", wait_until="domcontentloaded")
-    page.wait_for_function("document.body.dataset.mode === 'world'")
+    page.goto(base + "#characters", wait_until="domcontentloaded")
+    assert_heros_route(page)
+    assert page.url == base + "#heros"
+    page.evaluate("location.hash = 'world'")
+    page.wait_for_function("location.hash === '#world' && document.body.dataset.mode === 'world'")
     history_size = page.evaluate("history.length")
     page.evaluate("location.hash = 'characters'")
     assert_heros_route(page)
