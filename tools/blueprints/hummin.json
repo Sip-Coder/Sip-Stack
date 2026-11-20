@@ -1,0 +1,38 @@
+{
+  "name": "Hummin",
+  "role": "Cellar service automaton",
+  "heightM": 1.85,
+  "landmarks": {
+    "eyes": 8.9,
+    "chin": 18.0,
+    "shoulders": 17.5,
+    "waist": 45.6,
+    "knee": 73.0,
+    "ankleCuff": 94.2,
+    "hairWidth": 24.2
+  },
+  "palette": [
+    {"id":"pearl","label":"Pearl enamel","hex":"#E5DFCD"},
+    {"id":"ceramicRim","label":"Enamel edge","hex":"#B8B4A7"},
+    {"id":"steel","label":"Satin tool steel","hex":"#9EA8AE"},
+    {"id":"darkMetal","label":"Graphite alloy","hex":"#454A4C"},
+    {"id":"rubber","label":"Flexible joint seal","hex":"#292B2A"},
+    {"id":"visor","label":"Blue-black face glass","hex":"#172B38"},
+    {"id":"cyan","label":"Cyan phosphor","hex":"#55E7FF"},
+    {"id":"leather","label":"Oiled brown apron","hex":"#594336"},
+    {"id":"leatherEdge","label":"Burnished leather edge","hex":"#755947"},
+    {"id":"pocket","label":"Tool-pocket leather","hex":"#49392E"},
+    {"id":"stitch","label":"Waxed saddle thread","hex":"#AD936F"},
+    {"id":"brass","label":"Aged brass fittings","hex":"#A78952"},
+    {"id":"bow","label":"Black silk bow","hex":"#24282A"},
+    {"id":"linen","label":"Macaroon Cream cellar cloth","hex":"#EDD4A8"},
+    {"id":"pen","label":"Burgundy pen lacquer","hex":"#884C43"}
+  ],
+  "callouts": [
+    {"label":"Pearl helmet","text":"Broad ceramic dome over a blue-black glass face; paired cyan phosphors, curved smile and annular ear receivers."},
+    {"label":"Shell construction","text":"Rounded shoulder cups, tapered calf covers, captive service screws and ribbed dark flexible joints."},
+    {"label":"Cellar apron","text":"Oil-dark saddle leather over the shell; crossed back straps, brass buckles, turned edges and visible saddle stitching."},
+    {"label":"Service kit","text":"Sommelier’s corkscrew, spanner, burgundy pen and folded wipe in separate layered pockets."},
+    {"label":"Hands","text":"Five articulated digits with pearl knuckle plates, charcoal bellows and exposed joint pins."}
+  ]
+}
