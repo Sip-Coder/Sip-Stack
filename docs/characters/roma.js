@@ -1051,7 +1051,7 @@ export function buildRoma(rig) {
   // Adjacent rings share one outward half-space for each azimuth. Keeping the
   // whole panel on the outside of the leg prevents a large triangle from
   // passing through a knee between two individually valid cloth vertices.
-  function outsidePanel(p, x, z, colliders, verticalMargin) {
+  function outsidePanel(p, x, z, colliders, verticalMargin, roundKnee = false) {
     const radius = Math.hypot(x, z) || 1,
       nx = x / radius,
       nz = z / radius;
@@ -1072,7 +1072,22 @@ export function buildRoma(rig) {
       }
       const da = nx * c.a.x + nz * c.a.z,
         dd = nx * (c.b.x - c.a.x) + nz * (c.b.z - c.a.z);
-      limit = Math.max(limit, da + Math.max(dd * lo, dd * hi) + r);
+      if (!roundKnee) {
+        limit = Math.max(limit, da + Math.max(dd * lo, dd * hi) + r);
+        continue;
+      }
+      // The spherical wall tapers away above and below a bent knee. Take its
+      // support at this panel's height so the fold rounds over the knee cap.
+      const slope = Math.abs(dy) > 0.00001 ? dd / dy : 0;
+      const crestHeight =
+        p.y + Math.sign(slope) * verticalMargin + (slope * r) / Math.sqrt(1 + slope * slope);
+      const crest = Math.abs(dy) > 0.00001 ? T.MathUtils.clamp((crestHeight - c.a.y) / dy, 0, 1) : 0;
+      for (let sample = 0; sample < 3; sample++) {
+        const t = sample === 2 ? crest : sample;
+        const offset = Math.max(0, Math.abs(p.y - (c.a.y + t * dy)) - verticalMargin);
+        if (offset <= r)
+          limit = Math.max(limit, da + t * dd + Math.sqrt(Math.max(0, r * r - offset * offset)));
+      }
     }
     const gap = limit - (p.x * nx + p.z * nz);
     if (gap > 0) {
@@ -1140,7 +1155,7 @@ export function buildRoma(rig) {
         simulated.y = Math.min(foldedHem, simulated.y);
         outsidePanel(simulated, rest[n], rest[n + 2], colliders, 0.032);
       }
-    } else outsidePanel(simulated, rest[n], rest[n + 2], colliders, 0.052);
+    } else outsidePanel(simulated, rest[n], rest[n + 2], colliders, 0.036, true);
     attr.setXYZ(i, simulated.x, simulated.y, simulated.z);
     // A positional contact projection clears the moving collider but does
     // not impart the full separation distance as a one-tick launch impulse.
@@ -1374,7 +1389,7 @@ export function buildRoma(rig) {
     for (let i = 6 * 64; i < 7 * 64; i++) {
       const n = i * 3;
       simulated.set(skirtRest[n], skirtRest[n + 1], skirtRest[n + 2]);
-      if (highKnee) outsidePanel(simulated, skirtRest[n], skirtRest[n + 2], kneeSupports, 0.018);
+      if (highKnee) outsidePanel(simulated, skirtRest[n], skirtRest[n + 2], kneeSupports, 0.018, true);
       position.setXYZ(i, simulated.x, simulated.y, simulated.z);
     }
     position.needsUpdate = true;

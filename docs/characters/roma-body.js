@@ -453,6 +453,7 @@ export function bindJointFans(rig, meshes) {
       const indices = g.attributes.skinIndex,
         weights = g.attributes.skinWeight;
       const pos = g.attributes.position;
+      const raisedSleeve = [new Float32Array(pos.count * 3), new Float32Array(pos.count * 3)];
       for (let i = 0; i < indices.count; i++) {
         const px = pos.getX(i),
           ax = Math.abs(px),
@@ -481,6 +482,13 @@ export function bindJointFans(rig, meshes) {
           blend *= smooth(ax, 0.058, 0.07);
           indices.setXYZW(i, 1, px >= 0 ? 2 : 8, 0, 0);
           weights.setXYZW(i, 1 - blend, blend, 0, 0);
+          // When the arm lifts, the underside folds into the axilla. Preserve the
+          // deltoid cap, then compress excess cloth/skin length farther from the socket.
+          const inset =
+            (0.92 * Math.sin(blend * Math.PI) * Math.max(0, reach - 0.038)) / Math.max(0.038, reach);
+          const bend = raisedSleeve[px >= 0 ? 0 : 1];
+          bend[3 * i] = -Math.sign(px) * dx * inset;
+          bend[3 * i + 1] = -dy * inset;
         }
         const a = indices.array[off],
           b = indices.array[off + 1];
@@ -499,11 +507,24 @@ export function bindJointFans(rig, meshes) {
         indices.setXYZW(i, nodes[k], nodes[k + 1], 0, 0);
         weights.setXYZW(i, 1 - (h - k), h - k, 0, 0);
       }
+      g.morphTargetsRelative = true;
+      const list = g.morphAttributes.position ?? [];
+      g.userData.raisedSleeveMorph = list.length;
+      for (const offsets of raisedSleeve) list.push(new T.BufferAttribute(offsets, 3));
+      g.morphAttributes.position = list;
     }
+  for (const mesh of meshes) mesh.updateMorphTargets();
   rig.root.updateMatrixWorld(true);
   const skeleton = new T.Skeleton(bones);
   for (const mesh of meshes) mesh.bind(skeleton, mesh.bindMatrix);
   return () => {
+    const leftLift = smooth(Math.abs(rig.upperArmL.rotation.z), 1.23, 2.74);
+    const rightLift = smooth(Math.abs(rig.upperArmR.rotation.z), 1.23, 2.74);
+    for (const mesh of meshes) {
+      const first = mesh.geometry.userData.raisedSleeveMorph;
+      mesh.morphTargetInfluences[first] = leftLift;
+      mesh.morphTargetInfluences[first + 1] = rightLift;
+    }
     for (const { mid, node, t, rest } of fans) {
       mid.position.copy(rest).lerp(node.position, t);
       mid.quaternion.slerpQuaternions(identity, node.quaternion, t);
