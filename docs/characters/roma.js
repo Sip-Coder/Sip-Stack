@@ -1378,7 +1378,10 @@ export function buildRoma(rig) {
         T.MathUtils.smoothstep(arm.x, 0.44, 0.63) *
         T.MathUtils.smoothstep(speed, 2.8, 3.6) *
         T.MathUtils.smoothstep(accel, 0.35, 1.7);
-      shoulderCaps[k].position.y = 0.0111 * bank + 0.0024 * backswing;
+      // Landing compression briefly bunches the padded yoke above both
+      // deltoids. Its sewn edge follows the same measured pelvis drop.
+      const impact = f.state === 'land' ? crouch : 0;
+      shoulderCaps[k].position.y = 0.0111 * bank + 0.0024 * backswing + 0.003 * impact;
     }
     skinBends();
     const blinkPhase = (t + 1.1) % 4.45;
