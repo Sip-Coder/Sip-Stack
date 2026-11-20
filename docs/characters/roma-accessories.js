@@ -379,7 +379,61 @@ function bindShoulderRail(chest, layers, guides) {
   };
 }
 
+// The inside face of the right sleeve passes the bag hardware as the arm
+// starts swinging. Track its actual satin surface in each visible pattern and
+// give the nearby width of the leather room to turn over the brass ring.
+function bindCuffFacing(mesh, chest) {
+  const rest = new T.Vector3(-0.127, 0.435, -0.005);
+  const triangle = new T.Triangle(),
+    point = new T.Vector3(),
+    normal = new T.Vector3(),
+    nearest = new T.Vector3();
+  const matrix = new T.Matrix4();
+  const patterns = [mesh.geometry, mesh.userData.mobileGeometry].map((g) => {
+    let best = Infinity,
+      face;
+    const pos = g.attributes.position,
+      idx = g.index;
+    for (let i = 0; i < 3 * g.userData.outerTriangles; i += 3) {
+      const ai = idx.getX(i),
+        bi = idx.getX(i + 1),
+        ci = idx.getX(i + 2);
+      triangle.a.fromBufferAttribute(pos, ai);
+      triangle.b.fromBufferAttribute(pos, bi);
+      triangle.c.fromBufferAttribute(pos, ci);
+      if (triangle.getNormal(normal).x < 0.65) continue;
+      const distance = triangle.getMidpoint(point).distanceToSquared(rest);
+      if (distance < best) {
+        best = distance;
+        face = [ai, bi, ci];
+      }
+    }
+    return face;
+  });
+  return (centers, takeup) => {
+    const face = patterns[Number(mesh.geometry === mesh.userData.mobileGeometry)];
+    matrix.copy(chest.matrixWorld).invert().multiply(mesh.matrixWorld);
+    mesh.getVertexPosition(face[0], triangle.a).applyMatrix4(matrix);
+    mesh.getVertexPosition(face[1], triangle.b).applyMatrix4(matrix);
+    mesh.getVertexPosition(face[2], triangle.c).applyMatrix4(matrix);
+    triangle.getNormal(normal);
+    triangle.getMidpoint(point);
+    for (let i = 1; i < 8; i++) {
+      const p = centers[i];
+      const x = p.x - point.x,
+        y = p.y - point.y,
+        z = p.z - point.z;
+      const gap = x * normal.x + y * normal.y + z * normal.z;
+      if (gap < -0.008 || gap >= 0.0075) continue;
+      const distance = triangle.closestPointToPoint(p, nearest).distanceTo(p);
+      const contact = 1 - T.MathUtils.smoothstep(distance, 0.0056, 0.0083);
+      p.addScaledVector(normal, (0.0075 - gap) * contact * takeup);
+    }
+  };
+}
+
 export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, silk, torsoLayers) {
+  const fitCuff = bindCuffFacing(torsoLayers[0], rig.chest);
   const envelope = radialEnvelope(skirt);
   const jacketEnvelope = radialEnvelope(jacket);
   const chestToJacket = new T.Matrix4(),
@@ -446,7 +500,7 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
       if (d < sleeveRadius[i] && d > 0.0001) center.addScaledVector(away, (sleeveRadius[i] - d) / d);
     }
   }
-  function update(tailLift) {
+  function update(tailLift, takeup = 0) {
     jacket.updateWorldMatrix(true, false);
     rig.hips.updateWorldMatrix(true, false);
     jacketToHips.copy(rig.hips.matrixWorld).invert().multiply(jacket.matrixWorld);
@@ -654,6 +708,7 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
         center.copy(v).applyMatrix4(hipsToChest);
       }
     }
+    if (takeup > 0) fitCuff(centers, takeup);
     for (let row = 0; row < samples; row++) {
       const center = centers[row];
       tangent

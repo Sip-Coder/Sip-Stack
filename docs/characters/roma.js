@@ -1535,7 +1535,13 @@ export function buildRoma(rig) {
     bag.rotation.set(bagPitch, 1.14 + bagSide, -0.14 + bagSide * 0.33);
     bag.position.y = -0.014 + bagLift;
     const tailLift = 0.0021 * Math.min(1, moving * 3.1) * T.MathUtils.smoothstep(bobLoad, -0.75, 1.5);
-    accessories.update(tailLift);
+    // When the bag first takes the load of a walking stride, the swinging
+    // inner cuff can press the strap toward the inside of the brass ring.
+    const takeup =
+      f.state === 'walk'
+        ? (1 - T.MathUtils.smoothstep(speed, 0.6, 1.02)) * T.MathUtils.smoothstep(accel, 0.45, 1.65)
+        : 0;
+    accessories.update(tailLift, takeup);
     jacketShape.attributes.normal.array.set(yoke.geometry.userData.waistNormals, 4 * 41 * 3);
     jacketShape.attributes.normal.needsUpdate = true;
     curlSystem.step(f);
