@@ -1,0 +1,298 @@
+{
+  "heightM": 1.6806924310348375,
+  "headCount": 3.2711262870421827,
+  "landmarks": {
+    "eyes": {
+      "designPct": 16.5,
+      "modelPct": 16.698104774754434,
+      "errorPctHeight": 0.19810477475443378
+    },
+    "chin": {
+      "designPct": 30.3,
+      "modelPct": 30.583110327875875,
+      "errorPctHeight": 0.28311032787587465
+    },
+    "shoulders": {
+      "designPct": 33.8,
+      "modelPct": 34.452019754378554,
+      "errorPctHeight": 0.6520197543785571
+    },
+    "waist": {
+      "designPct": 52.0,
+      "modelPct": 52.19121595369057,
+      "errorPctHeight": 0.19121595369057331
+    },
+    "knee": {
+      "designPct": 76.0,
+      "modelPct": 76.29134749822722,
+      "errorPctHeight": 0.29134749822722483
+    },
+    "ankleCuff": {
+      "designPct": 93.8,
+      "modelPct": 93.84121629395858,
+      "errorPctHeight": 0.04121629395858406
+    },
+    "hairWidth": {
+      "designPct": 34.2,
+      "modelPct": 34.99233280707969,
+      "errorPctHeight": 0.7923328070796885
+    }
+  },
+  "silhouettes": {
+    "front": {
+      "intersectionPx": 126293,
+      "unionPx": 134881,
+      "iou": 0.9363290604310466
+    },
+    "back": {
+      "intersectionPx": 126283,
+      "unionPx": 134882,
+      "iou": 0.9362479797156033
+    },
+    "left": {
+      "intersectionPx": 74123,
+      "unionPx": 80176,
+      "iou": 0.9245035920973858
+    },
+    "right": {
+      "intersectionPx": 74123,
+      "unionPx": 80175,
+      "iou": 0.9245151231680698
+    },
+    "high-front": {
+      "intersectionPx": 113931,
+      "unionPx": 124226,
+      "iou": 0.9171268494518056
+    },
+    "rear-three-quarter": {
+      "intersectionPx": 116844,
+      "unionPx": 127887,
+      "iou": 0.9136503319336602
+    },
+    "top": {
+      "intersectionPx": 35230,
+      "unionPx": 39485,
+      "iou": 0.8922375585665443
+    }
+  },
+  "materials": [
+    {
+      "material": "pupil #1",
+      "id": "pupil",
+      "designHex": "#281B20",
+      "modelHex": "#281c21",
+      "deltaE00": 0.5921730630088614
+    },
+    {
+      "material": "iris #2",
+      "id": "iris",
+      "designHex": "#795136",
+      "modelHex": "#795136",
+      "deltaE00": 0.0
+    },
+    {
+      "material": "catchlight #3",
+      "id": "catchlight",
+      "designHex": "#FFF6DC",
+      "modelHex": "#fff6dc",
+      "deltaE00": 0.0
+    },
+    {
+      "material": "teeth #4",
+      "id": "teeth",
+      "designHex": "#EDD4A8",
+      "modelHex": "#edd4a8",
+      "deltaE00": 0.0
+    },
+    {
+      "material": "blush #5",
+      "id": "blush",
+      "designHex": "#C78365",
+      "modelHex": "#c78365",
+      "deltaE00": 0.0
+    },
+    {
+      "material": "brow #6",
+      "id": "brow",
+      "designHex": "#332529",
+      "modelHex": "#332529",
+      "deltaE00": 0.0
+    },
+    {
+      "material": "skin #7",
+      "id": "skin",
+      "designHex": "#C68D60",
+      "modelHex": "#c88f60",
+      "deltaE00": 0.8255834890066671
+    },
+    {
+      "material": "eyeWhite #8",
+      "id": "eyeWhite",
+      "designHex": "#F5EBD9",
+      "modelHex": "#f5ebd9",
+      "deltaE00": 0.0
+    },
+    {
+      "material": "blush #9",
+      "id": "blush",
+      "designHex": "#C78365",
+      "modelHex": "#c78365",
+      "deltaE00": 0.0
+    },
+    {
+      "material": "skin #10",
+      "id": "skin",
+      "designHex": "#C68D60",
+      "modelHex": "#c88f60",
+      "deltaE00": 0.8255834890066671
+    },
+    {
+      "material": "mouth #11",
+      "id": "mouth",
+      "designHex": "#533237",
+      "modelHex": "#533237",
+      "deltaE00": 0.0
+    },
+    {
+      "material": "lip #12",
+      "id": "lip",
+      "designHex": "#A55150",
+      "modelHex": "#a55150",
+      "deltaE00": 0.0
+    },
+    {
+      "material": "curlDeep #13",
+      "id": "curlDeep",
+      "designHex": "#2B2024",
+      "modelHex": "#2b2024",
+      "deltaE00": 0.0
+    },
+    {
+      "material": "curlBase #14",
+      "id": "curlBase",
+      "designHex": "#382829",
+      "modelHex": "#392829",
+      "deltaE00": 0.48357370124825044
+    },
+    {
+      "material": "curlWarm #15",
+      "id": "curlWarm",
+      "designHex": "#4A312B",
+      "modelHex": "#4b312b",
+      "deltaE00": 0.41682528521377765
+    },
+    {
+      "material": "curlLight #16",
+      "id": "curlLight",
+      "designHex": "#604032",
+      "modelHex": "#624032",
+      "deltaE00": 0.7470532075483475
+    },
+    {
+      "material": "skin #17",
+      "id": "skin",
+      "designHex": "#C68D60",
+      "modelHex": "#c58d5f",
+      "deltaE00": 0.47945481781697113
+    },
+    {
+      "material": "skin #18",
+      "id": "skin",
+      "designHex": "#C68D60",
+      "modelHex": "#c58d5f",
+      "deltaE00": 0.47945481781697113
+    },
+    {
+      "material": "blush #19",
+      "id": "blush",
+      "designHex": "#C78365",
+      "modelHex": "#c78365",
+      "deltaE00": 0.0
+    },
+    {
+      "material": "jewelry #20",
+      "id": "jewelry",
+      "designHex": "#E0B75C",
+      "modelHex": "#e0b75b",
+      "deltaE00": 0.15701597247049603
+    },
+    {
+      "material": "brass #21",
+      "id": "brass",
+      "designHex": "#AD8849",
+      "modelHex": "#ae8849",
+      "deltaE00": 0.3283230194056644
+    },
+    {
+      "material": "glass #22",
+      "id": "glass",
+      "designHex": "#D2AC73",
+      "modelHex": "#d2ac73",
+      "deltaE00": 0.0
+    },
+    {
+      "material": "wick #23",
+      "id": "wick",
+      "designHex": "#FFE0A0",
+      "modelHex": "#ffe1a0",
+      "deltaE00": 0.44886976507888937
+    },
+    {
+      "material": "nail #24",
+      "id": "nail",
+      "designHex": "#D99D87",
+      "modelHex": "#d99d87",
+      "deltaE00": 0.0
+    },
+    {
+      "material": "satin #25",
+      "id": "satin",
+      "designHex": "#B69653",
+      "modelHex": "#b79753",
+      "deltaE00": 0.360936958055996
+    },
+    {
+      "material": "binding #26",
+      "id": "binding",
+      "designHex": "#C5A467",
+      "modelHex": "#c5a467",
+      "deltaE00": 0.0
+    },
+    {
+      "material": "strap #27",
+      "id": "strap",
+      "designHex": "#704936",
+      "modelHex": "#6a4936",
+      "deltaE00": 2.154572465473755
+    },
+    {
+      "material": "leather #28",
+      "id": "leather",
+      "designHex": "#914C2C",
+      "modelHex": "#904c2f",
+      "deltaE00": 0.9326665679849392
+    },
+    {
+      "material": "sole #29",
+      "id": "sole",
+      "designHex": "#50372E",
+      "modelHex": "#50372e",
+      "deltaE00": 0.0
+    },
+    {
+      "material": "facing #30",
+      "id": "facing",
+      "designHex": "#9F7C3E",
+      "modelHex": "#9f7c3d",
+      "deltaE00": 0.20888311285165878
+    },
+    {
+      "material": "dress #31",
+      "id": "dress",
+      "designHex": "#1A5552",
+      "modelHex": "#1a5552",
+      "deltaE00": 0.0
+    }
+  ],
+  "failures": []
+}

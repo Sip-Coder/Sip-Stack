@@ -1,0 +1,1466 @@
+{
+  "method": {
+    "encoding": "8-bit sRGB / D65",
+    "lighting": "Uniform neutral D65 environment at unit linear radiance, normalized diffuse irradiance 1; actual material specular BRDF, texture, emission and alpha enabled.",
+    "background": "18% linear neutral grey; half-float linear blending before sRGB output",
+    "toneMapping": "none",
+    "readout": "Per-channel median of the central 50% × 50% of a 128 px square planar swatch. The swatch uses the production material object and its actual maps/shader, with representative source-geometry vertex colours where used. Region bindings specify UV or object-space footprints."
+  },
+  "calibration": [
+    {
+      "linear": 0,
+      "expectedSrgbByte": 0,
+      "rgb": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "linear": 0.18,
+      "expectedSrgbByte": 118,
+      "rgb": [
+        118,
+        118,
+        118
+      ]
+    },
+    {
+      "linear": 1,
+      "expectedSrgbByte": 255,
+      "rgb": [
+        255,
+        255,
+        255
+      ]
+    }
+  ],
+  "materialCount": 31,
+  "sampleCount": 31,
+  "materials": [
+    {
+      "id": "pupil",
+      "material": "pupil #1",
+      "index": 1,
+      "type": "MeshPhysicalMaterial",
+      "base": "#19000c",
+      "footprint": [],
+      "roughness": 0.27,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 2,
+      "source": "",
+      "tile": [
+        0,
+        0,
+        128,
+        128
+      ],
+      "hex": "#281c21",
+      "modelViews": {
+        "front": {
+          "pixels": 648,
+          "medianSrgb": "#211118"
+        },
+        "left": {
+          "pixels": 117,
+          "medianSrgb": "#2b2226"
+        },
+        "right": {
+          "pixels": 102,
+          "medianSrgb": "#2d2226"
+        },
+        "high-front": {
+          "pixels": 497,
+          "medianSrgb": "#221219"
+        },
+        "top": {
+          "pixels": 20,
+          "medianSrgb": "#383234"
+        }
+      }
+    },
+    {
+      "id": "iris",
+      "material": "iris #2",
+      "index": 2,
+      "type": "MeshStandardMaterial",
+      "base": "#6f3d00",
+      "footprint": [],
+      "roughness": 0.29,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 2,
+      "source": "",
+      "tile": [
+        128,
+        0,
+        128,
+        128
+      ],
+      "hex": "#795136",
+      "modelViews": {
+        "front": {
+          "pixels": 785,
+          "medianSrgb": "#724725"
+        },
+        "left": {
+          "pixels": 129,
+          "medianSrgb": "#74513b"
+        },
+        "right": {
+          "pixels": 127,
+          "medianSrgb": "#7f563b"
+        },
+        "high-front": {
+          "pixels": 581,
+          "medianSrgb": "#744a27"
+        },
+        "top": {
+          "pixels": 18,
+          "medianSrgb": "#87624e"
+        }
+      }
+    },
+    {
+      "id": "catchlight",
+      "material": "catchlight #3",
+      "index": 3,
+      "type": "MeshStandardMaterial",
+      "base": "#fff6da",
+      "footprint": [],
+      "roughness": 0.15,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 2,
+      "source": "",
+      "tile": [
+        256,
+        0,
+        128,
+        128
+      ],
+      "hex": "#fff6dc",
+      "modelViews": {
+        "front": {
+          "pixels": 67,
+          "medianSrgb": "#faf1d7"
+        },
+        "left": {
+          "pixels": 14,
+          "medianSrgb": "#e9e2c9"
+        },
+        "right": {
+          "pixels": 16,
+          "medianSrgb": "#fff8dd"
+        },
+        "high-front": {
+          "pixels": 58,
+          "medianSrgb": "#fff7db"
+        },
+        "top": {
+          "pixels": 10,
+          "medianSrgb": "#fffee2"
+        }
+      }
+    },
+    {
+      "id": "teeth",
+      "material": "teeth #4",
+      "index": 4,
+      "type": "MeshStandardMaterial",
+      "base": "#edd3a5",
+      "footprint": [],
+      "roughness": 0.72,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 3,
+      "source": "",
+      "tile": [
+        384,
+        0,
+        128,
+        128
+      ],
+      "hex": "#edd4a8",
+      "modelViews": {
+        "front": {
+          "pixels": 128,
+          "medianSrgb": "#e5cca1"
+        },
+        "left": {
+          "pixels": 27,
+          "medianSrgb": "#d0b992"
+        },
+        "right": {
+          "pixels": 24,
+          "medianSrgb": "#e6cda2"
+        },
+        "high-front": {
+          "pixels": 98,
+          "medianSrgb": "#fce0b0"
+        },
+        "top": {
+          "pixels": 3,
+          "medianSrgb": "#fbe0b0"
+        }
+      }
+    },
+    {
+      "id": "blush",
+      "material": "blush #5",
+      "index": 5,
+      "type": "MeshStandardMaterial",
+      "base": "#c57d5c",
+      "footprint": [],
+      "roughness": 0.66,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 1,
+      "source": "",
+      "tile": [
+        512,
+        0,
+        128,
+        128
+      ],
+      "hex": "#c78365",
+      "modelViews": {
+        "front": {
+          "pixels": 249,
+          "medianSrgb": "#d88f6f"
+        },
+        "left": {
+          "pixels": 1,
+          "medianSrgb": "#d78e6f"
+        },
+        "right": {
+          "pixels": 148,
+          "medianSrgb": "#d88e6e"
+        },
+        "high-front": {
+          "pixels": 421,
+          "medianSrgb": "#d88d6d"
+        },
+        "top": {
+          "pixels": 374,
+          "medianSrgb": "#d78e6f"
+        }
+      }
+    },
+    {
+      "id": "brow",
+      "material": "brow #6",
+      "index": 6,
+      "type": "MeshPhysicalMaterial",
+      "base": "#271118",
+      "footprint": [],
+      "roughness": 0.58,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 4,
+      "source": "",
+      "tile": [
+        640,
+        0,
+        128,
+        128
+      ],
+      "hex": "#332529",
+      "modelViews": {
+        "front": {
+          "pixels": 704,
+          "medianSrgb": "#2f1f24"
+        },
+        "left": {
+          "pixels": 149,
+          "medianSrgb": "#2e2124"
+        },
+        "right": {
+          "pixels": 163,
+          "medianSrgb": "#322226"
+        },
+        "high-front": {
+          "pixels": 571,
+          "medianSrgb": "#312025"
+        },
+        "top": {
+          "pixels": 290,
+          "medianSrgb": "#311f24"
+        }
+      }
+    },
+    {
+      "id": "skin",
+      "material": "skin #7",
+      "index": 7,
+      "type": "MeshStandardMaterial",
+      "base": "#c68a56",
+      "footprint": [],
+      "roughness": 0.65,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 1,
+      "source": "",
+      "tile": [
+        768,
+        0,
+        128,
+        128
+      ],
+      "hex": "#c88f60",
+      "modelViews": {
+        "front": {
+          "pixels": 407,
+          "medianSrgb": "#c38b5c"
+        },
+        "left": {
+          "pixels": 2,
+          "medianSrgb": "#c08b60"
+        },
+        "right": {
+          "pixels": 242,
+          "medianSrgb": "#c88e5f"
+        },
+        "high-front": {
+          "pixels": 247,
+          "medianSrgb": "#c68c5c"
+        },
+        "top": {
+          "pixels": 11,
+          "medianSrgb": "#ba875d"
+        }
+      }
+    },
+    {
+      "id": "eyeWhite",
+      "material": "eyeWhite #8",
+      "index": 8,
+      "type": "MeshStandardMaterial",
+      "base": "#f5ead7",
+      "footprint": [],
+      "roughness": 0.36,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 2,
+      "source": "",
+      "tile": [
+        896,
+        0,
+        128,
+        128
+      ],
+      "hex": "#f5ebd9",
+      "modelViews": {
+        "front": {
+          "pixels": 1293,
+          "medianSrgb": "#f0e6d4"
+        },
+        "left": {
+          "pixels": 370,
+          "medianSrgb": "#d7cebd"
+        },
+        "right": {
+          "pixels": 347,
+          "medianSrgb": "#faefdc"
+        },
+        "high-front": {
+          "pixels": 1045,
+          "medianSrgb": "#f6ebd9"
+        },
+        "top": {
+          "pixels": 149,
+          "medianSrgb": "#fff5e2"
+        }
+      }
+    },
+    {
+      "id": "blush",
+      "material": "blush #9",
+      "index": 9,
+      "type": "MeshStandardMaterial",
+      "base": "#c57d5c",
+      "footprint": [],
+      "roughness": 0.66,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 1,
+      "source": "",
+      "tile": [
+        0,
+        128,
+        128,
+        128
+      ],
+      "hex": "#c78365",
+      "modelViews": {
+        "front": {
+          "pixels": 261,
+          "medianSrgb": "#cd8667"
+        },
+        "left": {
+          "pixels": 189,
+          "medianSrgb": "#b87a60"
+        },
+        "high-front": {
+          "pixels": 353,
+          "medianSrgb": "#cd8566"
+        },
+        "top": {
+          "pixels": 447,
+          "medianSrgb": "#c78467"
+        }
+      }
+    },
+    {
+      "id": "skin",
+      "material": "skin #10",
+      "index": 10,
+      "type": "MeshStandardMaterial",
+      "base": "#c68a56",
+      "footprint": [],
+      "roughness": 0.65,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 1,
+      "source": "",
+      "tile": [
+        128,
+        128,
+        128,
+        128
+      ],
+      "hex": "#c88f60",
+      "modelViews": {
+        "front": {
+          "pixels": 405,
+          "medianSrgb": "#b68155"
+        },
+        "left": {
+          "pixels": 243,
+          "medianSrgb": "#aa7951"
+        },
+        "high-front": {
+          "pixels": 164,
+          "medianSrgb": "#be8759"
+        },
+        "top": {
+          "pixels": 11,
+          "medianSrgb": "#ad7d58"
+        }
+      }
+    },
+    {
+      "id": "mouth",
+      "material": "mouth #11",
+      "index": 11,
+      "type": "MeshStandardMaterial",
+      "base": "#47141f",
+      "footprint": [],
+      "roughness": 0.72,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 2,
+      "source": "",
+      "tile": [
+        256,
+        128,
+        128,
+        128
+      ],
+      "hex": "#533237",
+      "modelViews": {
+        "front": {
+          "pixels": 431,
+          "medianSrgb": "#4e2a30"
+        },
+        "left": {
+          "pixels": 49,
+          "medianSrgb": "#4e3035"
+        },
+        "right": {
+          "pixels": 10,
+          "medianSrgb": "#543036"
+        },
+        "high-front": {
+          "pixels": 267,
+          "medianSrgb": "#4e2a30"
+        }
+      }
+    },
+    {
+      "id": "lip",
+      "material": "lip #12",
+      "index": 12,
+      "type": "MeshStandardMaterial",
+      "base": "#a14241",
+      "footprint": [],
+      "roughness": 0.56,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 1,
+      "source": "",
+      "tile": [
+        384,
+        128,
+        128,
+        128
+      ],
+      "hex": "#a55150",
+      "modelViews": {
+        "front": {
+          "pixels": 253,
+          "medianSrgb": "#a04948"
+        },
+        "left": {
+          "pixels": 48,
+          "medianSrgb": "#803a3a"
+        },
+        "right": {
+          "pixels": 14,
+          "medianSrgb": "#ab4e4e"
+        },
+        "high-front": {
+          "pixels": 155,
+          "medianSrgb": "#a64c4b"
+        }
+      }
+    },
+    {
+      "id": "curlDeep",
+      "material": "curlDeep #13",
+      "index": 13,
+      "type": "MeshPhysicalMaterial",
+      "base": "#1c0b15",
+      "footprint": [],
+      "roughness": 0.48,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": true,
+      "boundMeshes": 19,
+      "source": "Roma parted crown 0",
+      "tile": [
+        512,
+        128,
+        128,
+        128
+      ],
+      "hex": "#2b2024",
+      "modelViews": {
+        "front": {
+          "pixels": 4033,
+          "medianSrgb": "#36292c"
+        },
+        "back": {
+          "pixels": 14868,
+          "medianSrgb": "#281e21"
+        },
+        "left": {
+          "pixels": 8280,
+          "medianSrgb": "#281d20"
+        },
+        "right": {
+          "pixels": 7969,
+          "medianSrgb": "#2f2426"
+        },
+        "high-front": {
+          "pixels": 6217,
+          "medianSrgb": "#3b2d2f"
+        },
+        "rear-three-quarter": {
+          "pixels": 14353,
+          "medianSrgb": "#291f21"
+        },
+        "top": {
+          "pixels": 12912,
+          "medianSrgb": "#342629"
+        }
+      }
+    },
+    {
+      "id": "curlBase",
+      "material": "curlBase #14",
+      "index": 14,
+      "type": "MeshPhysicalMaterial",
+      "base": "#2c1015",
+      "footprint": [],
+      "roughness": 0.48,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": true,
+      "boundMeshes": 49,
+      "source": "Roma parted crown 1",
+      "tile": [
+        640,
+        128,
+        128,
+        128
+      ],
+      "hex": "#392829",
+      "modelViews": {
+        "front": {
+          "pixels": 13556,
+          "medianSrgb": "#3e2829"
+        },
+        "back": {
+          "pixels": 20901,
+          "medianSrgb": "#342021"
+        },
+        "left": {
+          "pixels": 15629,
+          "medianSrgb": "#332122"
+        },
+        "right": {
+          "pixels": 17830,
+          "medianSrgb": "#3a2728"
+        },
+        "high-front": {
+          "pixels": 15076,
+          "medianSrgb": "#402a2a"
+        },
+        "rear-three-quarter": {
+          "pixels": 20026,
+          "medianSrgb": "#342021"
+        },
+        "top": {
+          "pixels": 13873,
+          "medianSrgb": "#463434"
+        }
+      }
+    },
+    {
+      "id": "curlWarm",
+      "material": "curlWarm #15",
+      "index": 15,
+      "type": "MeshPhysicalMaterial",
+      "base": "#431f14",
+      "footprint": [],
+      "roughness": 0.48,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": true,
+      "boundMeshes": 19,
+      "source": "Roma parted crown 2",
+      "tile": [
+        768,
+        128,
+        128,
+        128
+      ],
+      "hex": "#4b312b",
+      "modelViews": {
+        "front": {
+          "pixels": 4528,
+          "medianSrgb": "#4e3029"
+        },
+        "back": {
+          "pixels": 8493,
+          "medianSrgb": "#452a23"
+        },
+        "left": {
+          "pixels": 5930,
+          "medianSrgb": "#442a24"
+        },
+        "right": {
+          "pixels": 4691,
+          "medianSrgb": "#4b312a"
+        },
+        "high-front": {
+          "pixels": 4562,
+          "medianSrgb": "#52322b"
+        },
+        "rear-three-quarter": {
+          "pixels": 7858,
+          "medianSrgb": "#462a23"
+        },
+        "top": {
+          "pixels": 4474,
+          "medianSrgb": "#553c36"
+        }
+      }
+    },
+    {
+      "id": "curlLight",
+      "material": "curlLight #16",
+      "index": 16,
+      "type": "MeshPhysicalMaterial",
+      "base": "#582900",
+      "footprint": [],
+      "roughness": 0.48,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": true,
+      "boundMeshes": 14,
+      "source": "Roma curl -1 1",
+      "tile": [
+        896,
+        128,
+        128,
+        128
+      ],
+      "hex": "#624032",
+      "modelViews": {
+        "front": {
+          "pixels": 191,
+          "medianSrgb": "#5d3825"
+        },
+        "back": {
+          "pixels": 374,
+          "medianSrgb": "#5b311e"
+        },
+        "left": {
+          "pixels": 359,
+          "medianSrgb": "#58301d"
+        },
+        "right": {
+          "pixels": 257,
+          "medianSrgb": "#603824"
+        },
+        "high-front": {
+          "pixels": 130,
+          "medianSrgb": "#643b27"
+        },
+        "rear-three-quarter": {
+          "pixels": 404,
+          "medianSrgb": "#5c311e"
+        },
+        "top": {
+          "pixels": 143,
+          "medianSrgb": "#745044"
+        }
+      }
+    },
+    {
+      "id": "skin",
+      "material": "skin #17",
+      "index": 17,
+      "type": "MeshStandardMaterial",
+      "base": "#c68a56",
+      "footprint": [],
+      "roughness": 0.65,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": true,
+      "boundMeshes": 1,
+      "source": "Roma facial skin",
+      "tile": [
+        0,
+        256,
+        128,
+        128
+      ],
+      "hex": "#c58d5f",
+      "modelViews": {
+        "front": {
+          "pixels": 12238,
+          "medianSrgb": "#c98859"
+        },
+        "back": {
+          "pixels": 40,
+          "medianSrgb": "#9d704d"
+        },
+        "left": {
+          "pixels": 2862,
+          "medianSrgb": "#a9724b"
+        },
+        "right": {
+          "pixels": 2446,
+          "medianSrgb": "#c48356"
+        },
+        "high-front": {
+          "pixels": 7837,
+          "medianSrgb": "#d1905e"
+        },
+        "rear-three-quarter": {
+          "pixels": 163,
+          "medianSrgb": "#9c6f4b"
+        },
+        "top": {
+          "pixels": 818,
+          "medianSrgb": "#d59666"
+        }
+      }
+    },
+    {
+      "id": "skin",
+      "material": "skin #18",
+      "index": 18,
+      "type": "MeshStandardMaterial",
+      "base": "#c68a56",
+      "footprint": [],
+      "roughness": 0.65,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 2,
+      "source": "Roma face and hair",
+      "tile": [
+        128,
+        256,
+        128,
+        128
+      ],
+      "hex": "#c58d5f",
+      "modelViews": {
+        "front": {
+          "pixels": 12552,
+          "medianSrgb": "#cd8d5c"
+        },
+        "back": {
+          "pixels": 7699,
+          "medianSrgb": "#ad7a50"
+        },
+        "left": {
+          "pixels": 4997,
+          "medianSrgb": "#af7a50"
+        },
+        "right": {
+          "pixels": 5201,
+          "medianSrgb": "#c68557"
+        },
+        "high-front": {
+          "pixels": 9458,
+          "medianSrgb": "#d1915e"
+        },
+        "rear-three-quarter": {
+          "pixels": 7754,
+          "medianSrgb": "#ac7a50"
+        },
+        "top": {
+          "pixels": 109,
+          "medianSrgb": "#db9964"
+        }
+      }
+    },
+    {
+      "id": "blush",
+      "material": "blush #19",
+      "index": 19,
+      "type": "MeshStandardMaterial",
+      "base": "#c57e5c",
+      "footprint": [],
+      "roughness": 0.72,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 1,
+      "source": "Roma face and hair",
+      "tile": [
+        256,
+        256,
+        128,
+        128
+      ],
+      "hex": "#c78365",
+      "modelViews": {
+        "front": {
+          "pixels": 60,
+          "medianSrgb": "#bb7a5c"
+        },
+        "right": {
+          "pixels": 10,
+          "medianSrgb": "#c27e60"
+        },
+        "high-front": {
+          "pixels": 11,
+          "medianSrgb": "#cf8765"
+        }
+      }
+    },
+    {
+      "id": "jewelry",
+      "material": "jewelry #20",
+      "index": 20,
+      "type": "MeshStandardMaterial",
+      "base": "#f9ce65",
+      "footprint": [],
+      "roughness": 0.27,
+      "metalness": 0.73,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 4,
+      "source": "Roma face and hair",
+      "tile": [
+        384,
+        256,
+        128,
+        128
+      ],
+      "hex": "#e0b75b",
+      "modelViews": {
+        "front": {
+          "pixels": 637,
+          "medianSrgb": "#c39d4a"
+        },
+        "left": {
+          "pixels": 105,
+          "medianSrgb": "#a8853f"
+        },
+        "right": {
+          "pixels": 119,
+          "medianSrgb": "#cda650"
+        },
+        "high-front": {
+          "pixels": 428,
+          "medianSrgb": "#cea54f"
+        },
+        "rear-three-quarter": {
+          "pixels": 54,
+          "medianSrgb": "#ae8b44"
+        }
+      }
+    },
+    {
+      "id": "brass",
+      "material": "brass #21",
+      "index": 21,
+      "type": "MeshStandardMaterial",
+      "base": "#c0964b",
+      "footprint": [],
+      "roughness": 0.37,
+      "metalness": 0.64,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 5,
+      "source": "",
+      "tile": [
+        512,
+        256,
+        128,
+        128
+      ],
+      "hex": "#ae8849",
+      "modelViews": {
+        "front": {
+          "pixels": 1262,
+          "medianSrgb": "#9a773d"
+        },
+        "back": {
+          "pixels": 1173,
+          "medianSrgb": "#8b6b38"
+        },
+        "left": {
+          "pixels": 1236,
+          "medianSrgb": "#8d6e3a"
+        },
+        "right": {
+          "pixels": 84,
+          "medianSrgb": "#96743b"
+        },
+        "high-front": {
+          "pixels": 1464,
+          "medianSrgb": "#9c7a41"
+        },
+        "rear-three-quarter": {
+          "pixels": 1386,
+          "medianSrgb": "#8b6d38"
+        },
+        "top": {
+          "pixels": 592,
+          "medianSrgb": "#a17e42"
+        }
+      }
+    },
+    {
+      "id": "glass",
+      "material": "glass #22",
+      "index": 22,
+      "type": "MeshPhysicalMaterial",
+      "base": "#ffc764",
+      "footprint": [],
+      "roughness": 0.13,
+      "metalness": 0,
+      "opacity": 0.564,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 1,
+      "source": "",
+      "tile": [
+        640,
+        256,
+        128,
+        128
+      ],
+      "hex": "#d2ac73",
+      "modelViews": {
+        "front": {
+          "pixels": 1003,
+          "medianSrgb": "#f9c66c"
+        },
+        "back": {
+          "pixels": 1006,
+          "medianSrgb": "#e8b663"
+        },
+        "left": {
+          "pixels": 1048,
+          "medianSrgb": "#8b885b"
+        },
+        "high-front": {
+          "pixels": 951,
+          "medianSrgb": "#f6c170"
+        },
+        "rear-three-quarter": {
+          "pixels": 1093,
+          "medianSrgb": "#dfb367"
+        }
+      }
+    },
+    {
+      "id": "wick",
+      "material": "wick #23",
+      "index": 23,
+      "type": "MeshStandardMaterial",
+      "base": "#ffb18f",
+      "footprint": [],
+      "roughness": 0.23,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 1,
+      "source": "",
+      "tile": [
+        768,
+        256,
+        128,
+        128
+      ],
+      "hex": "#ffe1a0",
+      "modelViews": {
+        "top": {
+          "pixels": 51,
+          "medianSrgb": "#ffeaa9"
+        }
+      }
+    },
+    {
+      "id": "nail",
+      "material": "nail #24",
+      "index": 24,
+      "type": "MeshStandardMaterial",
+      "base": "#d79880",
+      "footprint": [],
+      "roughness": 0.42,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 10,
+      "source": "Roma nail plate",
+      "tile": [
+        896,
+        256,
+        128,
+        128
+      ],
+      "hex": "#d99d87",
+      "modelViews": {
+        "front": {
+          "pixels": 39,
+          "medianSrgb": "#dc9d86"
+        },
+        "back": {
+          "pixels": 88,
+          "medianSrgb": "#b4816e"
+        },
+        "left": {
+          "pixels": 15,
+          "medianSrgb": "#c38b76"
+        },
+        "right": {
+          "pixels": 14,
+          "medianSrgb": "#c28a76"
+        },
+        "high-front": {
+          "pixels": 23,
+          "medianSrgb": "#e1a189"
+        },
+        "rear-three-quarter": {
+          "pixels": 64,
+          "medianSrgb": "#b7826e"
+        }
+      }
+    },
+    {
+      "id": "satin",
+      "material": "satin #25",
+      "index": 25,
+      "type": "MeshPhysicalMaterial",
+      "base": "#c4a047",
+      "footprint": [],
+      "roughness": 0.29,
+      "metalness": 0.88,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": true,
+      "boundMeshes": 2,
+      "source": "Roma jacket",
+      "tile": [
+        0,
+        384,
+        128,
+        128
+      ],
+      "hex": "#b79753",
+      "modelViews": {
+        "front": {
+          "pixels": 29179,
+          "medianSrgb": "#947943"
+        },
+        "back": {
+          "pixels": 36153,
+          "medianSrgb": "#8c733e"
+        },
+        "left": {
+          "pixels": 15941,
+          "medianSrgb": "#907742"
+        },
+        "right": {
+          "pixels": 15690,
+          "medianSrgb": "#967b45"
+        },
+        "high-front": {
+          "pixels": 29087,
+          "medianSrgb": "#9b8047"
+        },
+        "rear-three-quarter": {
+          "pixels": 31955,
+          "medianSrgb": "#8e7540"
+        },
+        "top": {
+          "pixels": 4165,
+          "medianSrgb": "#a38953"
+        }
+      }
+    },
+    {
+      "id": "binding",
+      "material": "binding #26",
+      "index": 26,
+      "type": "MeshStandardMaterial",
+      "base": "#cda962",
+      "footprint": [],
+      "roughness": 0.58,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 3,
+      "source": "Roma jacket hem facing",
+      "tile": [
+        128,
+        384,
+        128,
+        128
+      ],
+      "hex": "#c5a467",
+      "modelViews": {
+        "front": {
+          "pixels": 517,
+          "medianSrgb": "#d1af6d"
+        },
+        "back": {
+          "pixels": 393,
+          "medianSrgb": "#bd9e61"
+        },
+        "left": {
+          "pixels": 66,
+          "medianSrgb": "#d4b16f"
+        },
+        "right": {
+          "pixels": 699,
+          "medianSrgb": "#d5b16e"
+        },
+        "high-front": {
+          "pixels": 202,
+          "medianSrgb": "#d5b16c"
+        },
+        "rear-three-quarter": {
+          "pixels": 380,
+          "medianSrgb": "#be9e61"
+        },
+        "top": {
+          "pixels": 82,
+          "medianSrgb": "#d7b26c"
+        }
+      }
+    },
+    {
+      "id": "strap",
+      "material": "strap #27",
+      "index": 27,
+      "type": "MeshStandardMaterial",
+      "base": "#ffe38e",
+      "footprint": [],
+      "roughness": 0.59,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": true,
+      "vertexColors": false,
+      "boundMeshes": 1,
+      "source": "Roma stitched saddle strap",
+      "tile": [
+        256,
+        384,
+        128,
+        128
+      ],
+      "hex": "#6a4936",
+      "modelViews": {
+        "front": {
+          "pixels": 1655,
+          "medianSrgb": "#6b4731"
+        },
+        "back": {
+          "pixels": 1751,
+          "medianSrgb": "#61412d"
+        },
+        "left": {
+          "pixels": 1213,
+          "medianSrgb": "#674836"
+        },
+        "right": {
+          "pixels": 1384,
+          "medianSrgb": "#694830"
+        },
+        "high-front": {
+          "pixels": 1400,
+          "medianSrgb": "#6b462e"
+        },
+        "rear-three-quarter": {
+          "pixels": 1304,
+          "medianSrgb": "#60402c"
+        },
+        "top": {
+          "pixels": 80,
+          "medianSrgb": "#664832"
+        }
+      }
+    },
+    {
+      "id": "leather",
+      "material": "leather #28",
+      "index": 28,
+      "type": "MeshStandardMaterial",
+      "base": "#934000",
+      "footprint": [],
+      "roughness": 0.59,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 6,
+      "source": "Roma ankle cuff L",
+      "tile": [
+        384,
+        384,
+        128,
+        128
+      ],
+      "hex": "#904c2f",
+      "modelViews": {
+        "front": {
+          "pixels": 4931,
+          "medianSrgb": "#954c2c"
+        },
+        "back": {
+          "pixels": 5775,
+          "medianSrgb": "#814124"
+        },
+        "left": {
+          "pixels": 2533,
+          "medianSrgb": "#834326"
+        },
+        "right": {
+          "pixels": 3508,
+          "medianSrgb": "#8c4728"
+        },
+        "high-front": {
+          "pixels": 6098,
+          "medianSrgb": "#9f502c"
+        },
+        "rear-three-quarter": {
+          "pixels": 6396,
+          "medianSrgb": "#824123"
+        },
+        "top": {
+          "pixels": 276,
+          "medianSrgb": "#9a502f"
+        }
+      }
+    },
+    {
+      "id": "sole",
+      "material": "sole #29",
+      "index": 29,
+      "type": "MeshStandardMaterial",
+      "base": "#431f07",
+      "footprint": [],
+      "roughness": 0.72,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 2,
+      "source": "footL",
+      "tile": [
+        512,
+        384,
+        128,
+        128
+      ],
+      "hex": "#50372e",
+      "modelViews": {
+        "front": {
+          "pixels": 807,
+          "medianSrgb": "#3d2b23"
+        },
+        "back": {
+          "pixels": 835,
+          "medianSrgb": "#3d2a23"
+        },
+        "left": {
+          "pixels": 698,
+          "medianSrgb": "#3b271f"
+        },
+        "right": {
+          "pixels": 698,
+          "medianSrgb": "#3b2820"
+        },
+        "high-front": {
+          "pixels": 1032,
+          "medianSrgb": "#593c31"
+        },
+        "rear-three-quarter": {
+          "pixels": 1057,
+          "medianSrgb": "#3c2921"
+        }
+      }
+    },
+    {
+      "id": "facing",
+      "material": "facing #30",
+      "index": 30,
+      "type": "MeshStandardMaterial",
+      "base": "#ab863c",
+      "footprint": [],
+      "roughness": 0.32,
+      "metalness": 0.76,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 3,
+      "source": "footL",
+      "tile": [
+        640,
+        384,
+        128,
+        128
+      ],
+      "hex": "#9f7c3d",
+      "modelViews": {
+        "front": {
+          "pixels": 120,
+          "medianSrgb": "#6d5323"
+        },
+        "left": {
+          "pixels": 29,
+          "medianSrgb": "#6c5222"
+        },
+        "right": {
+          "pixels": 28,
+          "medianSrgb": "#6c5222"
+        },
+        "high-front": {
+          "pixels": 98,
+          "medianSrgb": "#80642e"
+        }
+      }
+    },
+    {
+      "id": "dress",
+      "material": "dress #31",
+      "index": 31,
+      "type": "MeshPhysicalMaterial",
+      "base": "#075553",
+      "footprint": [],
+      "roughness": 0.6,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 4,
+      "source": "Roma dress",
+      "tile": [
+        768,
+        384,
+        128,
+        128
+      ],
+      "hex": "#1a5552",
+      "modelViews": {
+        "front": {
+          "pixels": 38935,
+          "medianSrgb": "#185754"
+        },
+        "back": {
+          "pixels": 32316,
+          "medianSrgb": "#154d4b"
+        },
+        "left": {
+          "pixels": 15389,
+          "medianSrgb": "#164e4c"
+        },
+        "right": {
+          "pixels": 15845,
+          "medianSrgb": "#195754"
+        },
+        "high-front": {
+          "pixels": 31209,
+          "medianSrgb": "#185a56"
+        },
+        "rear-three-quarter": {
+          "pixels": 28886,
+          "medianSrgb": "#154e4b"
+        },
+        "top": {
+          "pixels": 4,
+          "medianSrgb": "#2e7062"
+        }
+      }
+    }
+  ]
+}

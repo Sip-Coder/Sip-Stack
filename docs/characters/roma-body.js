@@ -423,7 +423,7 @@ export function makeJacketPattern() {
 // A curved fan of skinning frames follows the elbow, knee and shoulder through
 // deep flexion. The intermediate rotations retain the joint's volume even when
 // the hand travels completely over the head.
-export function bindJointFans(rig, meshes) {
+export function bindJointFans(rig, meshes, fitRestPose) {
   const original = meshes[0].skeleton.bones,
     bones = [...original],
     fans = [],
@@ -485,7 +485,7 @@ export function bindJointFans(rig, meshes) {
           // When the arm lifts, the underside folds into the axilla. Preserve the
           // deltoid cap, then compress excess cloth/skin length farther from the socket.
           const inset =
-            (0.92 * Math.sin(blend * Math.PI) * Math.max(0, reach - 0.038)) / Math.max(0.038, reach);
+            (0.92 * Math.sin(blend * Math.PI) * Math.max(0, reach - 0.053)) / Math.max(0.053, reach);
           const bend = raisedSleeve[px >= 0 ? 0 : 1];
           bend[3 * i] = -Math.sign(px) * dx * inset;
           bend[3 * i + 1] = -dy * inset;
@@ -514,6 +514,11 @@ export function bindJointFans(rig, meshes) {
       g.morphAttributes.position = list;
     }
   for (const mesh of meshes) mesh.updateMorphTargets();
+  fitRestPose();
+  for (const { mid, node, rest } of fans) {
+    rest.copy(node.position);
+    mid.position.copy(rest);
+  }
   rig.root.updateMatrixWorld(true);
   const skeleton = new T.Skeleton(bones);
   for (const mesh of meshes) mesh.bind(skeleton, mesh.bindMatrix);

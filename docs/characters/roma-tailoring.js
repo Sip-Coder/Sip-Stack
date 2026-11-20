@@ -45,7 +45,10 @@ export function fitRomaGarment(body, kind, fabric, trim, pattern, waist) {
       const edgeRoll = coat ? 1 - smooth(edge, 0, 0.008) : 0;
       const cuff = coat && anatomicalArm ? 1 - smooth(y, 0.481, 0.489) : 0;
       const hem = coat ? 0.00165 : 0.00105;
-      const ease = coat ? 0.001 + 0.0017 * edgeRoll + 0.002 * cuff : 0.0036;
+      const sleeveEase = anatomicalArm
+        ? 0.0038 * Math.exp(-(((y - 0.608) / 0.045) ** 2)) + 0.002 * Math.exp(-(((y - 0.762) / 0.032) ** 2))
+        : 0;
+      const ease = coat ? 0.001 + 0.0017 * edgeRoll + 0.002 * cuff + sleeveEase : 0.0036;
       const direction = new T.Vector3().fromBufferAttribute(norm, i);
       const folds = [];
       for (const side of [1, -1]) {
@@ -300,8 +303,8 @@ export function fitRomaGarment(body, kind, fabric, trim, pattern, waist) {
               smooth(a, 0.095, 0.126) *
               (1 - smooth(a, 0.17, 0.19)) *
               smooth(v.y, 0.735, 0.777) *
-              smooth(v.z, -0.01, 0.022);
-          morphs[4 + k].push(Math.sign(v.x) * 0.005 * weight, 0.01 * weight, 0.018 * weight);
+              smooth(v.z, -0.03, 0.02);
+          morphs[4 + k].push(Math.sign(v.x) * 0.006 * weight, 0.013 * weight, 0.031 * weight);
         }
       }
     const lining = [],
