@@ -28,7 +28,7 @@ function chestSection(y) {
 }
 const formedChest = chestProfile.map(([h, r]) => {
   const b = 1 - smoothstep(h, -0.067, 0.142);
-  return [h, r * (1 + 0.405 * b), r * 0.69 * (1 + 0.45 * b), 0.01 * b];
+  return [h, r * (0.913 + 0.33 * b), r * 0.69 * (0.91 + 0.26 * b), 0.0025 * b];
 });
 
 export function makeApron(rig, m, parts) {
@@ -97,19 +97,19 @@ export function makeApron(rig, m, parts) {
   const bibZ = (x, y) => {
     const [rx, rz, origin] = chestSection(y);
     const low = smoothstep(-y, 0.038, 0.085);
-    const w = Math.max(rx, 0.125),
-      d = Math.max(rz, 0.095);
+    const w = Math.max(rx, 0.116),
+      d = Math.max(rz, 0.076);
     return (
       origin +
       (d + 0.0054) * Math.sqrt(Math.max(0.026, 1 - (x / (w + 0.0055)) ** 2)) +
-      0.0068 +
+      0.0038 +
       low * 0.0018 * (1 + Math.cos(x * 95 + y * 19))
     );
   };
   const bibAt = (u, v) => {
     const t = 2 * u - 1,
-      edge = lerp(0.084, 0.114, smoothstep(v, 0.08, 0.83));
-    const y = 0.073 - 0.14 * v - 0.006 * (1 - t * t) * v * v;
+      edge = lerp(0.082, 0.102, smoothstep(v, 0.08, 0.83));
+    const y = 0.073 - 0.148 * v - 0.006 * (1 - t * t) * v * v;
     return v3(t * edge, y, bibZ(t * edge, y));
   };
   patch(bibNode, 'bib', leather, 28, 22, bibAt, 0.0019);
@@ -133,18 +133,15 @@ export function makeApron(rig, m, parts) {
   // Broad back cinch passes through the side darts under the front bib. The
   // open ends lie beneath the leather rather than sealing the pelvis in a solid.
   patch(
-    rig.chest,
+    rig.hips,
     'belt',
     darkLeather,
     84,
     6,
     (u, v) => {
-      const theta = lerp(1.12, 2 * Math.PI - 1.12, u),
-        y = lerp(-0.007, -0.027, v);
-      const [rx, rz, origin] = chestSection(y);
-      const x = (rx + 0.0045) * Math.sin(theta),
-        z = origin + (rz + 0.0045) * Math.cos(theta);
-      return v3(x, y, z);
+      const theta = lerp(1.36, 2 * Math.PI - 1.36, u);
+      const y = lerp(0.035, 0.017, v);
+      return v3(0.1115 * Math.sin(theta), y, 0.075 * Math.cos(theta));
     },
     0.0016,
   );
@@ -166,7 +163,7 @@ export function makeApron(rig, m, parts) {
     const base = front ? 0.06 : -0.056;
     const y = lerp(base, crest, h);
     const [rx, rz, z0] = chestSection(y);
-    const standOff = (front ? 0.011 : 0.013) + (s === -1 && !front ? 0.005 : 0);
+    const standOff = (front ? 0.01 : 0.008) + (s === -1 && !front ? 0.003 : 0);
     let z =
       z0 + Math.sign(Math.cos(a)) * rz * Math.sqrt(Math.max(0, 1 - (x / rx) ** 2)) + standOff * Math.cos(a);
     if (front && y < 0.096) z = Math.max(z, bibZ(x, y) + 0.0055 * (1 - smoothstep(y, 0.076, 0.096)));
@@ -285,21 +282,23 @@ export function makeApron(rig, m, parts) {
     [1, 'flapL', 'thighL'],
     [-1, 'flapR', 'thighR'],
   ]) {
-    const node = group(rig.hips, s * 0.052, 0.043, 0.109);
+    const node = group(rig.hips, s * 0.052, 0.043, 0.087);
     flaps.push(node);
     const pattern = (u, v) => {
       const inner = 0.05,
         outer = 0.048 + 0.009 * Math.sin(v * Math.PI);
       const x = s > 0 ? lerp(-inner, outer, u) : lerp(-outer, inner, u);
-      const y = -0.0045 - v * 0.144 - 0.006 * (1 - (u * 2 - 1) ** 2) * v;
+      const corner = s > 0 ? u : 1 - u;
+      const y = -0.0045 - v * 0.157 - 0.006 * (1 - (u * 2 - 1) ** 2) * v + 0.007 * corner ** 4 * v ** 6;
       const hem = 0.0021 * smoothstep(v, 0.927, 0.97);
       return v3(
         x,
         y,
-        -0.019 * ((x + s * 0.052) / 0.105) ** 2 +
+        -0.059 * ((x + s * 0.052) / 0.105) ** 2 +
           0.001 +
-          0.0125 * (1 - (u * 2 - 1) ** 2) +
-          0.01 * v +
+          0.007 * (1 - (u * 2 - 1) ** 2) +
+          0.0075 * (1 - ((x + s * 0.052) / 0.106) ** 2) +
+          -0.021 * v +
           0.0018 * Math.sin(x * 95 + v * 4.5) * v +
           hem,
       );
@@ -310,13 +309,16 @@ export function makeApron(rig, m, parts) {
     // Geometry and embroidery share the same local hinge.
 
     if (s === 1) {
-      const cloth = group(node, 0.038, -0.034, 0.016);
-      const towel = (u, v) =>
-        v3(
-          (u - 0.5) * 0.04 + 0.002 * Math.sin(v * 2),
-          -0.092 * v + 0.003 * Math.sin(u * 7) * v,
-          0.012 * v + 0.0042 * Math.cos(u * 12.4 + 0.7 * v),
+      const cloth = group(bibNode, 0.055, -0.024, 0);
+      const towel = (u, v) => {
+        const x = (u - 0.5) * 0.036 + 0.002 * Math.sin(v * 2),
+          y = -0.059 * v + 0.002 * Math.sin(u * 7) * v;
+        return v3(
+          x,
+          y,
+          bibZ(x + 0.055, y - 0.024) + 0.026 + 0.003 * Math.cos(u * 12.4 + 0.7 * v) + 0.003 * v,
         );
+      };
       for (const [v0, v1, mat] of [
         [0, 0.72, linen],
         [0.72, 0.745, wovenStripe],
@@ -344,7 +346,7 @@ export function makeApron(rig, m, parts) {
     [-0.092, 0.064],
     [-0.052, 0.062],
     [-0.036, 0.049],
-  ].map(([h, r]) => [h, r, r * 1.09, 0]);
+  ].map(([h, r]) => [h, r * 0.73, r * 0.72, -0.01]);
   const bodies = [
     [rig.chest, formedChest, 0],
     [rig.hips, hipProfile, 0],
@@ -439,10 +441,13 @@ export function makeApron(rig, m, parts) {
     const knee = Math.max(-rig.thighL.rotation.x, -rig.thighR.rotation.x);
     const compression = smoothstep(knee + Math.max(0, rig.chest.rotation.x) * 0.57, 0.47, 1.72);
     const bow = smoothstep(rig.chest.rotation.x, 0.12, 0.38);
-    const gather = Math.min(0.72, 0.7 * compression + 0.2 * bow);
+    const bowRelease = frame.emote >= 0 ? bow : 0;
+    const bank = smoothstep(Math.abs(frame.turn), 0.55, 2.0);
+    const dartOpening = 0.032 * bowRelease + 0.045 * bank + 0.018 * smoothstep(knee, 0.84, 1.4);
+    const gather = Math.min(0.72, 0.64 * compression + 0.2 * bow);
     bibNode.scale.y = 1 - gather;
     bibNode.position.y = 0.067 * gather;
-    bibNode.position.z = 0.008 * gather;
+    bibNode.position.z = 0.008 * gather + 0.019 * bowRelease;
     strapNode.scale.z = 1 + 0.14 * gather;
     // The split skirt swings from the waist. Its roots track the shaped bib
     // hem as it gathers; the free leather resists some of the torso twist.
@@ -451,7 +456,7 @@ export function makeApron(rig, m, parts) {
     for (let i = 0; i < flaps.length; i++) {
       const flap = flaps[i];
       flap.position
-        .set(i === 0 ? 0.052 : -0.052, -0.077 + 0.065 * gather, 0.109)
+        .set(i === 0 ? 0.052 : -0.052, -0.077 + 0.065 * gather, 0.095 + 0.023 * bowRelease)
         .applyMatrix4(rig.chest.matrix);
       flap.quaternion.premultiply(beltTurn);
     }
@@ -465,14 +470,19 @@ export function makeApron(rig, m, parts) {
         c.toBody.copy(c.joint.matrixWorld).invert().multiply(mesh.matrixWorld);
         c.toMesh.copy(c.toBody).invert();
       }
-      const pad = type === 'towel' ? 0.018 : 0.0065;
+      const pad = type === 'towel' ? 0.018 : 0.0072;
       for (let i = 0; i < half; i++) {
         const k = i * 3,
           x = rest[k],
           y = rest[k + 1],
           z = rest[k + 2];
         const fold = bend * fabric.wrinkle[i];
-        forward.set(x, y, z + fold);
+        // The side darts open over a twisting pelvis and a bow. Their
+        // leverage grows towards the free outer selvage, leaving the center
+        // of the bib and the neutral cut fixed.
+        const outer = clamp((x * fabric.sign + 0.03) / 0.085, 0, 1);
+        const release = type === 'flap' ? outer * outer * smoothstep(y, -0.13, -0.065) * dartOpening : 0;
+        forward.set(x, y, z + fold + release);
         for (let body = 0; body < colliders.length; body++) {
           const c = colliders[body];
           point.copy(forward).applyMatrix4(c.toBody);
