@@ -30,6 +30,54 @@ export function groundHeight(x, z) {
   return 0;
 }
 
+// The lowest vertex changes as a curved shoe rocks. Reduce the actual sole to
+// its lower side profile, then integrate the ground contact across its edges.
+// Each interval rotates about one fixed material point. Neighbouring intervals
+// meet at the angle where both vertices of their common edge touch the ground.
+function makeSoleProfile(ankle) {
+  ankle.updateWorldMatrix(true, true);
+  const intoAnkle = ankle.matrixWorld.clone().invert();
+  const transform = new T.Matrix4(),
+    vertex = new T.Vector3();
+  const points = [];
+  ankle.traverse((mesh) => {
+    if (!mesh.isMesh) return;
+    transform.multiplyMatrices(intoAnkle, mesh.matrixWorld);
+    const vertices = mesh.geometry.getAttribute('position');
+    for (let i = 0; i < vertices.count; i++) {
+      vertex.fromBufferAttribute(vertices, i).applyMatrix4(transform);
+      points.push({ x: vertex.x, y: vertex.y + ANKLE, z: vertex.z });
+    }
+  });
+  // A bare rig is also used by kinematics-only harnesses.
+  if (!points.length) points.push({ x: 0, z: -0.035, y: 0 }, { x: 0, z: 0.077, y: 0 });
+  points.sort((a, b) => a.z - b.z || a.y - b.y);
+  const hull = [];
+  for (const p of points) {
+    const last = hull.at(-1);
+    if (last && p.z === last.z) continue;
+    while (hull.length > 1) {
+      const a = hull.at(-2),
+        b = hull.at(-1);
+      if ((b.z - a.z) * (p.y - a.y) > (b.y - a.y) * (p.z - a.z) + 1e-12) break;
+      hull.pop();
+    }
+    hull.push(p);
+  }
+  let zero = 0;
+  for (let i = 0; i < hull.length; i++) {
+    const v = hull[i],
+      prev = hull[i - 1];
+    v.from = prev ? Math.atan2(v.y - prev.y, v.z - prev.z) : -Math.PI / 2;
+    v.travel = prev
+      ? prev.travel + (v.z - prev.z) * Math.cos(v.from) + (v.y - prev.y) * Math.sin(v.from)
+      : 0;
+    if (v.from <= 0) zero = v.travel - v.z;
+  }
+  for (const v of hull) v.travel -= zero;
+  return hull;
+}
+
 export function createController(rig, x = 0, z = 0) {
   const { root, height } = rig;
   const capsuleRadius = height * 0.118;
@@ -55,11 +103,15 @@ export function createController(rig, x = 0, z = 0) {
     shin: rig['shin' + side],
     anchor: new T.Vector3(),
     sole: new T.Vector3(),
+    support: new T.Vector3(),
+    pivot: 0,
     target: new T.Vector3(),
     liftOff: new T.Vector3(),
     landing: new T.Vector3(),
     pitch: 0,
     yaw: 0,
+    stage: 'flat',
+    profile: makeSoleProfile(rig['foot' + side]),
     orientation: new T.Quaternion(),
     ankleOffset: new T.Vector3(),
   }));
@@ -155,9 +207,11 @@ export function createController(rig, x = 0, z = 0) {
     for (const c of contacts) {
       atRest(c, c.anchor);
       c.sole.copy(c.anchor);
+      c.support.copy(c.anchor);
       c.target.copy(c.anchor);
       c.planted = true;
       c.pitch = c.yaw = 0;
+      c.stage = 'flat';
     }
   }
 
@@ -189,7 +243,12 @@ export function createController(rig, x = 0, z = 0) {
 
   function planFoot(c, gait, stride, running, dt) {
     if (frame.speed < 0.015) {
-      if (!c.planted) {
+      if (c.planted) {
+        c.target.copy(c.anchor);
+        c.pitch *= Math.exp(-30 * dt);
+        if (Math.abs(c.pitch) < 0.001) c.pitch = 0;
+        c.stage = c.pitch < 0 ? 'heel' : c.pitch > 0 ? 'toe' : 'flat';
+      } else {
         // Finish the final swing gracefully when braking mid-step.
         const floor = groundHeight(c.target.x, c.target.z);
         c.target.y = Math.max(floor, c.target.y - dt * 1.25);
@@ -197,12 +256,17 @@ export function createController(rig, x = 0, z = 0) {
         if (c.target.y <= floor + 0.001) {
           c.planted = true;
           c.anchor.copy(c.target);
+          c.stage = 'flat';
           c.pitch = 0;
         }
       }
       return;
     }
     const duty = 0.53;
+    // At running speed place the sole parallel to the support plane. This
+    // loads the tread through midfoot immediately, before the forefoot push.
+    const strike = (-Math.PI / 10) * (1 - ease(Math.min(running / 0.85, 1)));
+    const push = (lerp(32, 27, running) * Math.PI) / 180;
     if (gait < duty) {
       if (!c.planted) {
         c.planted = true;
@@ -210,11 +274,18 @@ export function createController(rig, x = 0, z = 0) {
         c.anchor.y = groundHeight(c.anchor.x, c.anchor.z);
       }
       c.target.copy(c.anchor);
-      c.pitch = 0;
+      const stance = gait / duty;
+      c.stage = stance < 0.24 ? (strike === 0 ? 'midfoot' : 'heel') : stance < 0.64 ? 'flat' : 'toe';
+      c.pitch =
+        c.stage === 'heel'
+          ? strike * (1 - ease(stance / 0.24))
+          : c.stage === 'toe'
+            ? push * ease((stance - 0.64) / 0.36)
+            : 0;
     } else {
       const t = clamp((gait - duty) / (1 - duty), 0, 1);
       if (c.planted) {
-        c.liftOff.copy(c.target);
+        c.liftOff.copy(c.anchor);
         c.planted = false;
       }
       // Predict the touchdown in the present direction. Refresh the prediction
@@ -224,13 +295,14 @@ export function createController(rig, x = 0, z = 0) {
       c.target.y =
         Math.max(c.target.y, swingFloor(c.target.x, c.target.z)) +
         Math.sin(Math.PI * t) * lerp(0.085, 0.205, running);
-      c.pitch = Math.sin(t * TAU) * lerp(0.24, 0.38, running);
+      c.stage = 'swing';
+      c.pitch = lerp(push, strike, ease(clamp((t - 0.05) / 0.82, 0, 1)));
       const yawDelta = heading - c.yaw;
       c.yaw += Math.atan2(Math.sin(yawDelta), Math.cos(yawDelta)) * (1 - Math.exp(-dt * 19));
     }
   }
 
-  function orientFoot(c) {
+  function orientFoot(c, rock = true) {
     const p = PROPS[2],
       dx = Math.abs(c.target.x - p.x),
       dz = Math.abs(c.target.z - p.z);
@@ -238,9 +310,23 @@ export function createController(rig, x = 0, z = 0) {
     // Express the surface normal in the rotated pelvis coordinate frame.
     dir.set(sine * slope, 1, -cosine * slope).normalize();
     c.orientation.setFromUnitVectors(UP, dir);
-    // Keep the heel, toe and sole centre anchored through a turn. The
-    // character can rotate over the supporting foot until its next lift-off.
+    // Keep the contact yaw independent of the body as it turns over this foot.
     c.orientation.multiply(worldFoot.setFromAxisAngle(UP, c.yaw - heading));
+    let i = 0;
+    while (i + 1 < c.profile.length && c.pitch >= c.profile[i + 1].from) i++;
+    c.pivot = i;
+    if (rock && c.pitch !== 0) {
+      const v = c.profile[i];
+      const sn = Math.sin(c.pitch),
+        cs = Math.cos(c.pitch);
+      sample
+        .set(0, v.z * sn - v.y * cs, v.travel - v.z * cs - v.y * sn)
+        .applyQuaternion(c.orientation)
+        .multiplyScalar(height);
+      c.target.x += cosine * sample.x + sine * sample.z;
+      c.target.y += sample.y;
+      c.target.z += cosine * sample.z - sine * sample.x;
+    }
     c.orientation.multiply(worldFoot.setFromAxisAngle(axisX, c.pitch));
     c.ankleOffset.copy(UP).multiplyScalar(ANKLE).applyQuaternion(c.orientation);
   }
@@ -285,7 +371,11 @@ export function createController(rig, x = 0, z = 0) {
     for (let i = 0; i < contacts.length; i++)
       planFoot(contacts[i], (travel + i * 0.5) % 1, stride, running, dt);
     let hipY = 0.52 - sway * (0.029 + running * 0.042) - 0.002 * (1 - sway);
-    hipY += (Math.cos((travel - 0.25) * TAU * 2) - 1) * lerp(0.009, 0.017, running) * sway;
+    // A walker rounds a tight bend on softer knees; reserve lateral reach
+    // before the trailing stance leg approaches full extension.
+    hipY -= (1 - running) * Math.abs(lean) * 0.27;
+    const bobRange = lerp(0.035, 0.065, running);
+    hipY += (((Math.cos((travel - 0.25) * TAU * 2) - 1) * bobRange * 0.5) / height) * sway;
     hipY -= crouch;
     rig.hips.position.x =
       0.009 * sway * Math.sin(frame.phase) + 0.002 * (1 - sway) * Math.sin(frame.time * 1.07);
@@ -309,7 +399,7 @@ export function createController(rig, x = 0, z = 0) {
     rig.upperArmR.rotation.x = -rig.upperArmL.rotation.x;
     rig.forearmL.rotation.x = -(0.14 + running * 1.14);
     rig.forearmR.rotation.x = rig.forearmL.rotation.x;
-    rig.chest.rotation.x = 0.3 * running + crouch * 0.84;
+    rig.chest.rotation.x = ((17.4 * Math.PI) / 180) * running + crouch * 0.84;
     rig.chest.rotation.z = lean - 0.012 * Math.sin(frame.phase) * sway;
     rig.chest.rotation.y = Math.cos(frame.phase) * 0.083 * sway;
   }
@@ -340,7 +430,6 @@ export function createController(rig, x = 0, z = 0) {
       heading += clamp(delta, -dt * 6.8, dt * 6.8);
     }
     const turn = (heading - headingBefore) / dt;
-    lean = lerp(lean, -clamp(turn * speed * 0.023, -0.37, 0.37), 1 - Math.exp(-10 * dt));
     if (rollTime < 0) speed = lerp(speed, targetSpeed, 1 - Math.exp(-dt / 0.078));
     if (targetSpeed === 0 && speed < 0.012) speed = 0;
     sine = Math.sin(heading);
@@ -350,6 +439,9 @@ export function createController(rig, x = 0, z = 0) {
     slide(oldX + sine * speed * dt, oldZ + cosine * speed * dt);
     velocity.set((root.position.x - oldX) / dt, vy, (root.position.z - oldZ) / dt);
     frame.speed = Math.hypot(velocity.x, velocity.z);
+    // A shallow fraction of the centripetal bank keeps the shoulders readable.
+    const bank = -clamp(Math.atan2(0.34 * turn * frame.speed, 9.81), -0.37, 0.37);
+    lean = lerp(lean, bank, 1 - Math.exp(-10 * dt));
     frame.heading = root.rotation.y = heading;
     frame.turn = turn;
     const floor = groundHeight(root.position.x, root.position.z);
@@ -389,6 +481,7 @@ export function createController(rig, x = 0, z = 0) {
       rig.head.rotation.x = 0.63 * tuck;
       for (const c of contacts) {
         c.planted = false;
+        c.stage = 'swing';
         c.thigh.rotation.x = -(1.38 + c.sign * 0.13) * tuck;
         c.shin.rotation.x = 2.18 * tuck;
         c.ankle.rotation.x = -0.61 * tuck;
@@ -404,6 +497,7 @@ export function createController(rig, x = 0, z = 0) {
       const tuck = clamp((altitude - floor) * 3.3, 0, 1);
       for (const c of contacts) {
         c.planted = false;
+        c.stage = 'swing';
         c.thigh.rotation.x = -0.51 * tuck - c.sign * 0.13 * tuck;
         c.shin.rotation.x = 1.04 * tuck;
         c.ankle.rotation.x = -0.39 * tuck;
@@ -449,13 +543,17 @@ export function createController(rig, x = 0, z = 0) {
     for (const c of contacts) {
       c.ankle.updateWorldMatrix(true, false);
       c.sole.set(0, -ANKLE, 0).applyMatrix4(c.ankle.matrixWorld);
+      if (c.planted) {
+        const v = c.profile[c.pivot];
+        c.support.set(v.x, v.y - ANKLE, v.z).applyMatrix4(c.ankle.matrixWorld);
+      }
       if (inAir) {
         const edge = swingFloor(c.sole.x, c.sole.z);
         if (edge > floor + 0.01 && c.sole.y < edge + 0.02) {
           c.target.copy(c.sole);
           c.target.y = edge + 0.02;
           c.pitch = 0;
-          orientFoot(c);
+          orientFoot(c, false);
           solveLeg(c);
           c.ankle.updateWorldMatrix(true, false);
           c.sole.set(0, -ANKLE, 0).applyMatrix4(c.ankle.matrixWorld);

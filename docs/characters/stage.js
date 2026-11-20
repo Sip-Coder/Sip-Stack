@@ -307,7 +307,7 @@ export function debugRig(scene, rig, controller) {
     capsule.position.y += rig.height / 2;
     for (let j = 0; j < feet.length; j++) {
       feet[j].visible = rig.root.visible && controller.contacts[j].planted;
-      feet[j].position.copy(controller.contacts[j].sole);
+      feet[j].position.copy(controller.contacts[j].support);
     }
   };
 }

@@ -1,9 +1,17 @@
 // Roma's garments, features and curls are constructed in joint-local coordinates.
 import * as T from 'three';
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
+import { createHair } from './hair.js';
 
 const tau = Math.PI * 2;
 const xyz = (x, y, z) => new T.Vector3(x, y, z);
+const thighProfile = [
+  [-0.25, 0.026, 0.027],
+  [-0.2, 0.029, 0.031],
+  [-0.102, 0.039, 0.045],
+  [-0.037, 0.046, 0.046],
+  [0.009, 0.042, 0.044],
+];
 
 function surface(positions, indices) {
   const g = new T.BufferGeometry();
@@ -97,14 +105,17 @@ export function buildRoma(rig) {
     paint('#554039', 0.53),
   ];
   const satin = new T.MeshPhysicalMaterial({
-    color: '#bd8546',
-    roughness: 0.49,
+    color: '#e7b65a',
+    roughness: 0.29,
+    metalness: 0.88,
+    clearcoat: 0.77,
+    clearcoatRoughness: 0.23,
     sheen: 0.85,
     sheenColor: '#e1b875',
     sheenRoughness: 0.56,
     side: T.DoubleSide,
   });
-  const facing = paint('#d8a65f', 0.5),
+  const facing = paint('#f2c981', 0.32, 0.76),
     binding = paint('#82592f', 0.58),
     gold = paint('#d7a84e', 0.27, 0.73);
   const silk = new T.MeshPhysicalMaterial({
@@ -115,8 +126,7 @@ export function buildRoma(rig) {
     sheenRoughness: 0.53,
     side: T.DoubleSide,
   });
-  const silkEdge = paint('#20654b'),
-    leather = paint('#654335', 0.59),
+  const leather = paint('#654335', 0.59),
     sole = paint('#352d2a'),
     brass = paint('#9e793d', 0.37, 0.64);
   const glow = new T.MeshStandardMaterial({
@@ -133,6 +143,7 @@ export function buildRoma(rig) {
     depthWrite: false,
   });
   const buckets = new Map();
+  let faceSkin;
   const sphere = new T.SphereGeometry(1, 24, 18);
   function node(parent, x = 0, y = 0, z = 0) {
     const o = new T.Group();
@@ -158,14 +169,16 @@ export function buildRoma(rig) {
   }
   const oval = (parent, mat, x, y, z, rx, ry, rz, ax = 0, ay = 0, az = 0) =>
     add(parent, sphere, mat, x, y, z, rx, ry, rz, ax, ay, az);
-  const ribbon = (parent, mat, p, w, d, n = 18) => add(parent, sweep(p, w, d, n), mat);
+  const ribbon = (parent, mat, p, w, d, n = 18, sides = 8) => add(parent, sweep(p, w, d, n, sides), mat);
   const thread = (parent, mat, p, r) => add(parent, seam(p, r), mat);
   const ring = (parent, mat, x, y, z, r, t, ax = 0, ay = 0, az = 0) =>
     add(parent, new T.TorusGeometry(r, t, 7, 32), mat, x, y, z, 1, 1, 1, ax, ay, az);
 
   // Pear-shaped face with an inset jaw, high cheeks and a narrow chin.
-  const H = rig.head,
+  const H = node(rig.head, 0, -0.023, 0),
     C = rig.chest;
+  H.name = 'Roma face and hair';
+  H.scale.set(1.18, 1.12, 1.15);
   const contour = [
     [0.003, 0.001, 0.002, 0.012],
     [0.006, 0.02, 0.025, 0.014],
@@ -230,70 +243,135 @@ export function buildRoma(rig) {
   }
 
   const lids = [],
+    brows = [],
     pupils = [];
-  const whiteShape = new T.Shape();
-  whiteShape.moveTo(-0.02, 0);
-  whiteShape.bezierCurveTo(-0.014, 0.012, 0.004, 0.02, 0.016, 0.01);
-  whiteShape.quadraticCurveTo(0.02, 0.005, 0.02, 0.003);
-  whiteShape.bezierCurveTo(0.01, -0.009, -0.01, -0.014, -0.02, 0);
-  const lens = new T.ShapeGeometry(whiteShape, 16);
+  // The iris and pupil conform to the globe. Both lids sweep over the same
+  // ellipsoid, so a blink occludes the pupil without shrinking it.
+  const ex = 0.0245,
+    ey = 0.019,
+    ez = 0.0091;
+  const eyeZ = (x, y) => ez * Math.sqrt(Math.max(0, 1 - (x / ex) ** 2 - (y / ey) ** 2));
+  function irisDisk(cx, cy, rx, ry, offset) {
+    const pos = [],
+      idx = [],
+      rings = 6,
+      steps = 32;
+    for (let k = 0; k <= rings; k++)
+      for (let i = 0; i < steps; i++) {
+        const a = (tau * i) / steps,
+          x = cx + ((rx * k) / rings) * Math.cos(a),
+          y = cy + ((ry * k) / rings) * Math.sin(a);
+        pos.push(x, y, eyeZ(x, y) + offset);
+        if (k) {
+          const a0 = (k - 1) * steps + i,
+            a1 = (k - 1) * steps + ((i + 1) % steps);
+          idx.push(a0, a0 + steps, a1, a1, a0 + steps, a1 + steps);
+        }
+      }
+    return surface(pos, idx);
+  }
+  function eyelid(eye, upper) {
+    const n = 22,
+      bands = 5,
+      pos = [],
+      normals = [],
+      indices = [];
+    for (let row = 0; row <= bands; row++)
+      for (let i = 0; i <= n; i++) {
+        pos.push(0, 0, 0);
+        normals.push(0, 0, 1);
+        if (row < bands && i < n) {
+          const a = row * (n + 1) + i;
+          indices.push(a, a + 1, a + n + 1, a + 1, a + n + 2, a + n + 1);
+        }
+      }
+    const geo = surface(pos, indices),
+      coords = geo.attributes.position;
+    const normal = new T.Float32BufferAttribute(normals, 3);
+    geo.setAttribute('normal', normal);
+    const makeup = upper ? paint('#a97557', 0.66) : skin.clone();
+    makeup.side = T.DoubleSide;
+    const lid = new T.Mesh(geo, makeup);
+    lid.frustumCulled = false;
+    eye.add(lid);
+    const lash = upper ? new T.Mesh(surface(pos, indices), hair[0]) : null;
+    if (lash) {
+      lash.frustumCulled = false;
+      eye.add(lash);
+    }
+    const cached = [];
+    for (let i = 0; i <= n; i++) {
+      const u = -0.996 + (i / n) * 1.992;
+      cached.push([u, Math.sqrt(1 - u * u)]);
+    }
+    return (closed, laugh) => {
+      const edge = upper ? 0.76 - (1.34 * closed + 0.13 * laugh) : -0.62 + 0.08 * closed + 0.17 * laugh;
+      for (let j = 0; j <= bands; j++)
+        for (let i = 0; i <= n; i++) {
+          const [u, v] = cached[i],
+            k = j * (n + 1) + i,
+            tilt = 0.0019 * u;
+          const rim = edge + u * 0.045;
+          const a = upper
+            ? T.MathUtils.lerp(rim, Math.PI * 0.59, j / bands)
+            : T.MathUtils.lerp(-Math.PI * 0.59, rim, j / bands);
+          const x = ex * u,
+            y = (ey + 0.0013) * v * Math.sin(a) + tilt,
+            z = (ez + 0.0019) * v * Math.cos(a) + 0.0009;
+          coords.setXYZ(k, x, y, z);
+          normal.setXYZ(k, u, 0.65 * v * Math.sin(a), v * Math.cos(a));
+          if (lash) {
+            const b = rim + (j / bands) * 0.095;
+            lash.geometry.attributes.position.setXYZ(
+              k,
+              x,
+              (ey + 0.0016) * v * Math.sin(b) + tilt,
+              (ez + 0.0021) * v * Math.cos(b) + 0.001,
+            );
+          }
+        }
+      coords.needsUpdate = normal.needsUpdate = true;
+      if (lash) {
+        lash.geometry.attributes.position.needsUpdate = true;
+        lash.geometry.attributes.normal.array.set(normal.array);
+        lash.geometry.attributes.normal.needsUpdate = true;
+      }
+    };
+  }
   for (const side of [-1, 1]) {
-    // Mirror the almond corners while keeping both pupils oriented toward the viewer.
-    const lid = node(H, side * 0.026, 0.084, 0.0596);
-    lid.rotation.y = side * 0.37;
-    lid.rotation.z = side * 0.04;
-    lids.push(lid);
-    const eye = node(lid);
+    const orbit = node(H, side * 0.027, 0.085, 0.0546);
+    orbit.rotation.y = side * 0.34;
+    orbit.rotation.z = side * 0.036;
+    const eye = node(orbit);
     eye.scale.x = side;
-    add(eye, lens, sclera);
-    const look = node(eye, -0.0007, 0.0025, 0.0007);
-    pupils.push(look);
-    oval(look, pupil, 0, 0, 0, 0.0104, 0.0123, 0.0016);
-    oval(look, iris, 0, 0, 0.0014, 0.0093, 0.0115, 0.0015);
-    oval(look, pupil, -0.0008, 0.001, 0.0028, 0.0051, 0.0073, 0.0012);
-    oval(look, catchlight, -0.0035, 0.0058, 0.004, 0.0024, 0.003, 0.001);
-    oval(look, teeth, 0.003, -0.002, 0.004, 0.001, 0.0012, 0.0007);
+    oval(eye, sclera, 0, 0, 0, ex, ey, ez);
+    const gaze = node(eye);
+    pupils.push(gaze);
+    add(gaze, irisDisk(-0.001, 0.001, 0.0126, 0.015, 0.00035), pupil);
+    add(gaze, irisDisk(-0.001, 0.001, 0.0114, 0.014, 0.00055), iris);
+    add(gaze, irisDisk(-0.001, 0.001, 0.0063, 0.0097, 0.00086), pupil);
+    oval(gaze, catchlight, -0.005, 0.0078, eyeZ(-0.005, 0.0078) + 0.0012, 0.0026, 0.0032, 0.0007);
+    oval(gaze, teeth, 0.003, -0.004, eyeZ(0.003, -0.004) + 0.0011, 0.001, 0.0013, 0.0006);
+    lids.push(eyelid(eye, true), eyelid(eye, false));
+    const brow = node(H, side * 0.029, 0.112, 0.052);
+    brows.push(brow);
     ribbon(
-      eye,
-      pupil,
-      [
-        [-0.02, 0, 0.001],
-        [-0.014, 0.01, 0.0016],
-        [0.003, 0.0157, 0.002],
-        [0.016, 0.009, 0.002],
-        [0.024, 0.006, 0.002],
-      ],
-      [0.0004, 0.0013, 0.002, 0.0022, 0.00015],
-      [0.0004, 0.001, 0.001, 0.001, 0.0002],
-    );
-    ribbon(
-      eye,
-      lips,
-      [
-        [-0.019, -0.0005, 0.0008],
-        [-0.009, -0.0078, 0.001],
-        [0.004, -0.0076, 0.001],
-        [0.017, 0.0006, 0.001],
-      ],
-      [0.0003, 0.0007, 0.0008, 0.0004],
-      [0.0003, 0.0005, 0.0005, 0.0003],
-    );
-    ribbon(
-      H,
+      brow,
       hair[0],
       [
-        [side * 0.009, 0.106, 0.058],
-        [side * 0.021, 0.111, 0.057],
-        [side * 0.037, 0.114, 0.049],
-        [side * 0.049, 0.109, 0.041],
+        [side * -0.02, -0.004, 0.006],
+        [side * -0.008, 0.001, 0.005],
+        [side * 0.008, 0.003, -0.003],
+        [side * 0.02, -0.002, -0.011],
       ],
-      [0.0008, 0.0032, 0.0028, 0.00035],
-      [0.0017, 0.0015, 0.0011, 0.00025],
+      [0.0009, 0.0032, 0.0029, 0.00035],
+      [0.0015, 0.0016, 0.0012, 0.0003],
     );
   }
   // A parted crescent smile has a dark oral cavity, slim upper teeth and a modelled lower lip.
+  const smile = node(H);
   ribbon(
-    H,
+    smile,
     inside,
     [
       [-0.025, 0.041, 0.051],
@@ -306,7 +384,7 @@ export function buildRoma(rig) {
     [0.0006, 0.0018, 0.0021, 0.0018, 0.0006],
   );
   ribbon(
-    H,
+    smile,
     teeth,
     [
       [-0.022, 0.0415, 0.052],
@@ -319,7 +397,7 @@ export function buildRoma(rig) {
     [0.0003, 0.001, 0.001, 0.001, 0.0003],
   );
   ribbon(
-    H,
+    smile,
     lips,
     [
       [-0.025, 0.041, 0.051],
@@ -354,96 +432,142 @@ export function buildRoma(rig) {
       }
     }
   add(H, surface(capPos, capIdx), hair[0]);
-  for (let s of [-1, 1])
-    for (let i = 0; i < 7; i++) {
-      const v = i / 6,
-        a = 0.72 + i * 0.35;
+  // A side part separates two swept banks at the crown. Finer ridges follow
+  // each sculpted mass into the first turn of a corkscrew, including at the back.
+  const locks = [];
+  for (const side of [-1, 1]) {
+    for (let i = 0; i < 11; i++) {
+      const f = i / 10,
+        angle = side * (0.97 + f * 2.13),
+        curlLength = 0.205 + 0.039 * Math.sin(f * Math.PI) + 0.026 * Math.sin(i * 2.37) ** 2;
+      const sr = Math.sin(angle),
+        cr = Math.cos(angle);
+      const points = [];
+      for (let j = 0; j <= 20; j++) {
+        const t = j / 20,
+          turns = 1.62 + 0.3 * Math.sin(i * 1.59),
+          phase = t * turns * tau + 0.69 * i + 0.54 * side;
+        // Each root starts on the round crown, bows over the temple, then
+        // curls away from the jaw and tips back over the shoulder.
+        const eased = Math.sin(Math.min(1, t / 0.36) * Math.PI * 0.5);
+        const radial = 0.038 + 0.035 * eased + 0.019 * t;
+        const helix =
+          (0.003 + 0.01 * Math.sin(Math.PI * t) + 0.01 * T.MathUtils.smoothstep(t, 0.58, 0.89)) * eased;
+        const tangent = Math.cos(phase) * helix,
+          normal = Math.sin(phase) * helix;
+        let x = sr * (radial + normal) + cr * tangent;
+        let z = cr * (radial * 0.85 + normal) - sr * tangent - 0.008 - 0.013 * t;
+        const shoulder = T.MathUtils.smoothstep(t, 0.28, 0.63);
+        // Route the face-framing curls forward of the sleeve cap; adjoining
+        // locks cascade down the shoulder blade instead, leaving the ear clear.
+        if (i < 3) {
+          x += side * (-0.034 + (i - 1) * 0.003) * shoulder;
+          z += (0.082 + 0.004 * i - (cr * (radial * 0.85) - 0.008 - 0.013 * t)) * shoulder;
+        } else {
+          z += (-0.08 - 0.017 * Math.abs(cr) - (cr * (radial * 0.85) - 0.008 - 0.013 * t)) * shoulder;
+        }
+        // A final lifted turn breaks the row of straight points at shoulder level.
+        const hook = T.MathUtils.smoothstep(t, 0.86, 1);
+        x += side * (0.01 * Math.cos(i) * hook);
+        z += 0.008 * hook * Math.sin(i + 0.3);
+        points.push([
+          x,
+          0.143 -
+            (curlLength - (i < 3 ? 0.017 * (i / 2) : 0)) * t +
+            0.0035 * Math.sin(phase) * eased +
+            0.012 * hook,
+          z,
+        ]);
+      }
+      const origin = points[0],
+        root = node(H, ...origin);
+      root.name = 'Roma curl ' + side + ' ' + i;
+      const path = points.map(([x, y, z]) => [x - origin[0], y - origin[1], z - origin[2]]);
+      // Twin ridges catch side light independently, with a tapered tail.
+      ribbon(
+        root,
+        hair[i % 2],
+        path,
+        [0.004, 0.015, 0.0175, 0.016, 0.014, 0.01, 0.0007],
+        [0.0035, 0.0135, 0.014, 0.012, 0.01, 0.007, 0.0005],
+        64,
+        14,
+      );
+      for (const offset of [-1, 1]) {
+        const ridge = path.map(([x, y, z], j) => {
+          const t = j / 20,
+            fade = Math.sin(Math.PI * t) ** 0.6,
+            wave = Math.sin(t * 7.7 + i);
+          return [
+            x + fade * (sr * 0.011 + cr * offset * 0.006 * wave),
+            y,
+            z + fade * (cr * 0.009 - sr * offset * 0.006 * wave),
+          ];
+        });
+        ribbon(
+          root,
+          hair[offset + 2],
+          ridge,
+          [0.0005, 0.0034, 0.0041, 0.003, 0.0015, 0.0003],
+          [0.0004, 0.0021, 0.0028, 0.0022, 0.0011, 0.0003],
+          36,
+        );
+      }
+      locks.push({ group: root, points: [path[0], path[5], path[10], path[15], path[20]] });
+    }
+  }
+  for (const side of [-1, 1])
+    for (let i = 0; i < 10; i++) {
+      const f = i / 9,
+        a = 0.86 + f * 2.21,
+        back = Math.cos(a),
+        sin = Math.sin(a);
       const p = [
-        [0.012, 0.1495, -0.009 - i * 0.0017],
-        [s * (0.028 + 0.014 * v), 0.15 - 0.008 * v, 0.013 - i * 0.007],
-        [s * (0.045 + 0.012 * v), 0.136, 0.03 - i * 0.011],
-        [s * (0.055 + 0.012 * Math.sin(a)), 0.117, 0.041 - i * 0.014],
-        [s * (0.063 + 0.007 * Math.sin(a)), 0.09, 0.032 - i * 0.012],
-        [s * 0.068, 0.078, 0.025 - i * 0.013],
+        [0.023, 0.146, -0.002 + (1 - f) * 0.019],
+        [0.011 + side * 0.017, 0.1525, 0.012 - 0.044 * f],
+        [side * (0.036 + 0.008 * sin), 0.147 + 0.004 * Math.sin(f * 4), 0.037 - 0.066 * f],
+        [side * 0.059 * sin, 0.131 + 0.006 * Math.sin(f * 5), 0.055 * back - 0.002],
+        [side * 0.066 * sin, 0.112, 0.058 * back - 0.008],
+        [side * 0.071 * sin, 0.087, 0.059 * back - 0.008],
       ];
       ribbon(
         H,
         hair[1 + (i % 2)],
         p,
-        [0.003, 0.011, 0.01, 0.009, 0.007, 0.0005],
-        [0.002, 0.004, 0.005, 0.005, 0.004, 0.001],
+        [0.0015, 0.008, 0.012, 0.011, 0.008, 0.001],
+        [0.001, 0.0045, 0.006, 0.0056, 0.004, 0.001],
+        24,
       );
       if (i % 2 === 0)
         ribbon(
           H,
           hair[3],
-          p.map(([x, y, z]) => [x + s * 0.002, y + 0.002, z + 0.002]),
-          [0.0001, 0.0005, 0.0007, 0.0006, 0.0004, 0.0001],
-          [0.0003, 0.0006, 0.0007, 0.0005, 0.0004, 0.0002],
+          p.map(([x, y, z]) => [x + side * 0.0019, y + 0.0028, z + back * 0.002]),
+          [0.0002, 0.0007, 0.0012, 0.0009, 0.0006, 0.0002],
+          [0.0002, 0.0005, 0.0008, 0.0008, 0.0005, 0.0001],
+          24,
         );
     }
-  for (let i = 0; i < 5; i++) {
-    const y = i * 0.0022,
-      z = i * 0.001;
+  // A loose asymmetrical forelock crosses the hairline rather than forming a fringe.
+  for (let i = 0; i < 4; i++) {
+    const d = i * 0.0019;
     const p = [
-      [0.033, 0.149 + y * 0.18, 0.008],
-      [0.018, 0.145 + y, 0.03 + z],
-      [-0.007, 0.139 + y, 0.045 + z],
-      [-0.033, 0.136 + y, 0.046 + z],
-      [-0.051, 0.123 + y, 0.039 + z],
-      [-0.062, 0.101, 0.029 + z],
+      [0.025, 0.146 + d, 0.024],
+      [0.008, 0.148 + d, 0.036],
+      [-0.018, 0.141 + d, 0.047],
+      [-0.042, 0.132 + d, 0.044],
+      [-0.057, 0.116 + d, 0.037],
+      [-0.064, 0.099, 0.029],
     ];
     ribbon(
       H,
       hair[1 + (i % 2)],
       p,
-      [0.001, 0.005, 0.006, 0.005, 0.004, 0.0004],
-      [0.001, 0.004, 0.003, 0.0027, 0.0026, 0.0003],
-      24,
+      [0.001, 0.006, 0.007, 0.006, 0.004, 0.0003],
+      [0.001, 0.003, 0.004, 0.004, 0.002, 0.0004],
+      22,
     );
   }
-  const locks = [];
-  for (let i = 0; i < 15; i++) {
-    const a = 1.3 + ((tau - 2.6) * i) / 14,
-      s = Math.sin(a),
-      c = Math.cos(a);
-    const root = node(H, 0.062 * s, 0.113 - 0.015 * (1 - c), -0.004 + 0.049 * c);
-    const len = 0.166 + 0.026 * (1 - c) + 0.009 * Math.sin(i * 2.7),
-      spread = 0.014 + 0.011 * Math.cos(i * 2) ** 2;
-    const p = [];
-    for (let j = 0; j < 8; j++) {
-      const t = j / 7,
-        wave = Math.sin(t * 9 + i * 0.65) * Math.sin(t * Math.PI);
-      p.push([
-        s * (spread * Math.sin(t * Math.PI) + 0.017 * t) + wave * 0.012,
-        -len * t,
-        c * (0.02 * Math.sin(t * Math.PI) + 0.02 * t) - 0.01 * t + Math.sin(t * 10 + i * 0.91) * 0.01 * t,
-      ]);
-    }
-    ribbon(
-      root,
-      hair[i % 3],
-      p,
-      [0.002, 0.015, 0.019, 0.018, 0.016, 0.015, 0.013, 0.0005],
-      [0.002, 0.015, 0.017, 0.017, 0.015, 0.013, 0.01, 0.0004],
-      26,
-    );
-    const ridge = p.map(([x, y, z], j) => [
-      x + s * 0.008 * Math.sin((j * Math.PI) / 7),
-      y,
-      z + c * 0.012 * Math.sin((j * Math.PI) / 7),
-    ]);
-    ribbon(
-      root,
-      hair[(i % 2) + 1],
-      ridge,
-      [0.001, 0.0023, 0.0036, 0.0022, 0.0021, 0.0016, 0.001, 0.0002],
-      [0.001, 0.002, 0.002, 0.002, 0.0015, 0.0012, 0.001, 0.0002],
-      24,
-    );
-    locks.push({ root, x: 0, z: 0, vx: 0, vz: 0, phase: i * 0.72 });
-  }
-
   add(
     C,
     tailored([
@@ -482,7 +606,11 @@ export function buildRoma(rig) {
     [0.059, 0.085, 0.055],
     [0.08, 0.072, 0.05],
   ];
-  const skirtShape = tailored(dressRows, 64, 0.055);
+  const skirtShape = tailored(dressRows, 64, 0.07);
+  skirtShape.scale(1.075, 1, 1.09);
+  // Include the full knee tuck and spring excursion in the roll broadphase.
+  skirtShape.computeBoundingSphere();
+  skirtShape.boundingSphere.radius += 0.3;
   const skirt = new T.Mesh(skirtShape, silk);
   skirt.castShadow = skirt.receiveShadow = true;
   skirt.frustumCulled = false;
@@ -502,9 +630,10 @@ export function buildRoma(rig) {
   }
   // Open satin panels hang off the shoulders. The bias-cut front edges flare below the waist.
   const jacket = node(C);
+  jacket.scale.set(1.065, 1, 1.085);
   const jacketRows = [
-    [-0.118, 0.108, 0.076, 0.89],
-    [-0.099, 0.104, 0.073, 0.87],
+    [-0.095, 0.105, 0.075, 0.89],
+    [-0.084, 0.101, 0.071, 0.87],
     [-0.055, 0.085, 0.061, 0.78],
     [-0.01, 0.079, 0.055, 0.72],
     [0.036, 0.088, 0.062, 0.69],
@@ -534,6 +663,8 @@ export function buildRoma(rig) {
   }
   const jacketShape = surface(jp, ji),
     jacketRest = jacketShape.attributes.position.array.slice();
+  jacketShape.computeBoundingSphere();
+  jacketShape.boundingSphere.radius += 0.18;
   const jacketSkin = new T.Mesh(jacketShape, satin);
   jacketSkin.castShadow = jacketSkin.receiveShadow = true;
   jacket.add(jacketSkin);
@@ -587,7 +718,7 @@ export function buildRoma(rig) {
     ]),
     leather,
   );
-  const buckle = node(rig.hips, 0, 0.071, 0.061);
+  const buckle = node(rig.hips, 0, 0.071, 0.0665);
   const bucklePoints = [
     [-0.013, -0.007, 0],
     [-0.014, 0.006, 0],
@@ -625,11 +756,15 @@ export function buildRoma(rig) {
     const arm = rig['upperArm' + id],
       fore = rig['forearm' + id],
       hand = rig['hand' + id];
+    arm.position.x = s * 0.13;
     add(
       arm,
       tailored([
         [-0.18, 0.024, 0.027],
-        [-0.153, 0.027, 0.031],
+        [-0.166, 0.027, 0.032, -0.002],
+        [-0.158, 0.029, 0.033, -0.002],
+        [-0.15, 0.025, 0.03, 0.001],
+        [-0.144, 0.028, 0.032],
         [-0.088, 0.03, 0.034],
         [-0.037, 0.037, 0.039],
         [0.002, 0.038, 0.038],
@@ -645,7 +780,10 @@ export function buildRoma(rig) {
         [-0.125, 0.023, 0.025],
         [-0.119, 0.028, 0.029],
         [-0.094, 0.026, 0.028],
-        [-0.038, 0.029, 0.032],
+        [-0.057, 0.028, 0.03],
+        [-0.048, 0.03, 0.034, -0.0015],
+        [-0.041, 0.027, 0.032, 0.001],
+        [-0.035, 0.03, 0.033],
         [-0.012, 0.028, 0.031],
         [0.008, 0.022, 0.024],
       ]),
@@ -671,17 +809,7 @@ export function buildRoma(rig) {
     const thigh = rig['thigh' + id],
       shin = rig['shin' + id],
       foot = rig['foot' + id];
-    add(
-      thigh,
-      tailored([
-        [-0.25, 0.026, 0.027],
-        [-0.2, 0.029, 0.031],
-        [-0.102, 0.039, 0.045],
-        [-0.037, 0.046, 0.046],
-        [0.009, 0.042, 0.044],
-      ]),
-      skin,
-    );
+    add(thigh, tailored(thighProfile), skin);
     add(
       shin,
       tailored([
@@ -802,33 +930,307 @@ export function buildRoma(rig) {
     [0.006, 0.006, 0.006, 0.006, 0.006],
     [0.002, 0.002, 0.002, 0.002, 0.002],
   );
-  const bag = node(rig.hips, -0.086, 0.023, -0.062);
-  oval(bag, leather, -0.006, -0.027, 0, 0.017, 0.038, 0.043, 0, 0, -0.08);
-  oval(bag, binding, -0.019, -0.014, 0.001, 0.007, 0.021, 0.042);
-  oval(bag, brass, -0.026, -0.023, 0.001, 0.002, 0.0045, 0.0045);
-
+  const bag = node(rig.hips, -0.099, 0.023, -0.071);
+  // Structured calfskin saddlebag with a domed flap and a stitched gusset.
+  const body = tailored([
+    [-0.08, 0.002, 0.013],
+    [-0.077, 0.016, 0.04],
+    [-0.067, 0.023, 0.052],
+    [-0.046, 0.025, 0.055],
+    [-0.02, 0.024, 0.054],
+    [-0.009, 0.018, 0.049],
+    [-0.006, 0.002, 0.041],
+  ]);
+  add(bag, body, leather);
+  oval(bag, binding, -0.019, -0.027, 0.001, 0.011, 0.03, 0.055);
+  thread(
+    bag,
+    brass,
+    [
+      [-0.024, -0.033, -0.044],
+      [-0.029, -0.047, -0.028],
+      [-0.03, -0.055, 0.001],
+      [-0.029, -0.047, 0.03],
+      [-0.024, -0.032, 0.047],
+    ],
+    0.001,
+  );
+  oval(bag, leather, -0.026, -0.049, 0, 0.004, 0.012, 0.006);
+  oval(bag, gold, -0.03, -0.043, 0, 0.0027, 0.0045, 0.005);
+  ring(bag, brass, 0, -0.005, -0.041, 0.007, 0.0016, 0, Math.PI * 0.5);
+  ring(bag, brass, 0, -0.005, 0.041, 0.007, 0.0016, 0, Math.PI * 0.5);
   for (const [parent, list] of buckets) {
     for (const [mat, pieces] of list) {
-      const g = mergeGeometries(pieces),
-        m = new T.Mesh(g, mat);
+      const joined = mergeGeometries(pieces);
+      const g = parent.name.startsWith('Roma curl') ? mergeVertices(joined) : joined;
+      if (g !== joined) joined.dispose();
+      const m = new T.Mesh(g, mat);
+      if (mat === skinTint) {
+        m.name = 'Roma facial skin';
+        faceSkin = m;
+      }
       m.castShadow = !mat.transparent;
       m.receiveShadow = true;
+      if (parent === C) m.scale.set(1.065, 1, 1.085);
+      if (parent === rig.shinL || parent === rig.shinR) m.scale.set(1.16, 1, 1.13);
+      if (parent === rig.footL || parent === rig.footR) m.scale.set(1.13, 1, 1.06);
+      if (parent === rig.upperArmL || parent === rig.upperArmR) m.scale.set(1.09, 1, 1.1);
+      if (parent === rig.forearmL || parent === rig.forearmR) m.scale.set(1.08, 1, 1.07);
+      if (parent === rig.hips) m.scale.set(1.075, 1, 1.09);
       parent.add(m);
       for (const piece of pieces) piece.dispose();
     }
   }
-  let hem = 0,
-    hemV = 0,
-    hang = 0,
+  const curlSystem = createHair(rig, [
+    { node: H, center: [0, 0.075, 0.004], radii: [0.072, 0.080, 0.065] },
+    { node: rig.upperArmL, center: [0, -0.013, 0], radii: [0.05, 0.055, 0.051] },
+    { node: rig.upperArmR, center: [0, -0.013, 0], radii: [0.05, 0.055, 0.051] },
+    { node: rig.upperArmL, center: [0, -0.083, 0], radii: [0.045, 0.078, 0.047] },
+    { node: rig.upperArmR, center: [0, -0.083, 0], radii: [0.045, 0.078, 0.047] },
+    { node: C, center: [0, 0.116, -0.003], radii: [0.102, 0.055, 0.055] },
+  ]);
+  for (let k = 0; k < locks.length; k++) {
+    const strand = locks[k];
+    curlSystem.add(strand.group, strand.points, {
+      stiffness: 100 + (k % 5) * 7,
+      damping: 10.8 + (k % 3) * 0.7,
+      maxOffset: 0.021,
+      radius: 0.014,
+    });
+  }
+  // A damped spring field drives the free cloth rings toward their tailored
+  // silhouettes. Collision constraints use the animated legs in garment space.
+  skirt.name = 'Roma dress';
+  jacketSkin.name = 'Roma jacket';
+  bag.name = 'Bag';
+  skirtShape.userData.rest = skirtRest;
+  jacketShape.userData.rest = jacketRest;
+  const skirtVelocity = new Float32Array(3 * position.count);
+  const jacketVelocity = new Float32Array(3 * jacketShape.attributes.position.count);
+  const hipsToJacket = new T.Matrix4(),
+    thighToJacket = new T.Matrix4(),
+    legRotation = new T.Quaternion();
+  let minimumHemY = -Infinity;
+  const capsule = (r, s) => ({ a: xyz(), b: xyz(), radiusA: r, radiusB: s });
+  const skirtCapsules = [],
+    jacketCapsules = [];
+  for (let i = 0; i < 2; i++) {
+    skirtCapsules.push(
+      capsule(0.05, 0.041),
+      capsule(0.041, 0.031),
+      capsule(0.03, 0.036),
+      capsule(0.036, 0.022),
+    );
+    jacketCapsules.push(capsule(0.052, 0.043));
+  }
+  const jacketBody = [
+    [-0.121, 0.101, 0.071, 0],
+    [-0.096, 0.097, 0.066, 0],
+    [-0.064, 0.085, 0.057, 0],
+    [-0.035, 0.071, 0.049, 0],
+    [0.002, 0.078, 0.05, 0],
+    [0.055, 0.095, 0.061, 0.004],
+    [0.093, 0.097, 0.063, 0.004],
+    [0.127, 0.096, 0.049, 0],
+    [0.151, 0.043, 0.03, 0],
+  ];
+  function clothNormals(geometry, columns, wrap) {
+    const pos = geometry.attributes.position.array,
+      norm = geometry.attributes.normal,
+      rows = pos.length / (3 * columns);
+    for (let row = 0; row < rows; row++)
+      for (let i = 0; i < columns; i++) {
+        const a = (row * columns + (wrap ? (i - 1 + columns) % columns : Math.max(i - 1, 0))) * 3;
+        const b = (row * columns + (wrap ? (i + 1) % columns : Math.min(i + 1, columns - 1))) * 3;
+        const c = (Math.max(row - 1, 0) * columns + i) * 3,
+          d = (Math.min(row + 1, rows - 1) * columns + i) * 3;
+        const ux = pos[b] - pos[a],
+          uy = pos[b + 1] - pos[a + 1],
+          uz = pos[b + 2] - pos[a + 2];
+        const vx = pos[d] - pos[c],
+          vy = pos[d + 1] - pos[c + 1],
+          vz = pos[d + 2] - pos[c + 2];
+        const x = uy * vz - uz * vy,
+          y = uz * vx - ux * vz,
+          z = ux * vy - uy * vx,
+          length = Math.hypot(x, y, z) || 1;
+        norm.setXYZ(row * columns + i, x / length, y / length, z / length);
+      }
+    norm.needsUpdate = true;
+  }
+  function updateCapsules() {
+    rig.hips.updateWorldMatrix(true, false);
+    jacket.updateWorldMatrix(true, false);
+    hipsToJacket.copy(jacket.matrixWorld).invert().multiply(rig.hips.matrixWorld);
+    minimumHemY = -Infinity;
+    for (let i = 0; i < 2; i++) {
+      const thigh = i ? rig.thighR : rig.thighL,
+        shin = i ? rig.shinR : rig.shinL;
+      // The lowest rows of the cropped jacket ride up over the high hip on a banked
+      // turn. Use the vertical support of each real elliptical thigh cross-section.
+      thigh.updateMatrix();
+      thighToJacket.multiplyMatrices(hipsToJacket, thigh.matrix);
+      const e = thighToJacket.elements;
+      for (const [y, rx, rz] of thighProfile)
+        minimumHemY = Math.max(minimumHemY, e[13] + e[5] * y + Math.hypot(e[1] * rx, e[9] * rz) + 0.004);
+      const n = i * 4,
+        a = skirtCapsules[n],
+        b = skirtCapsules[n + 1],
+        c = skirtCapsules[n + 2],
+        d = skirtCapsules[n + 3];
+      a.a.copy(thigh.position);
+      a.b.set(0, -0.11, 0).applyQuaternion(thigh.quaternion).add(a.a);
+      b.a.copy(a.b);
+      b.b.copy(shin.position).applyQuaternion(thigh.quaternion).add(a.a);
+      legRotation.multiplyQuaternions(thigh.quaternion, shin.quaternion);
+      c.a.copy(b.b);
+      c.b.set(0, -0.077, -0.005).applyQuaternion(legRotation).add(c.a);
+      d.a.copy(c.b);
+      d.b.set(0, -0.219, 0).applyQuaternion(legRotation).add(c.a);
+      jacketCapsules[i].a.copy(a.a).applyMatrix4(hipsToJacket);
+      jacketCapsules[i].b.copy(a.b).applyMatrix4(hipsToJacket);
+    }
+  }
+  // Adjacent rings share one outward half-space for each azimuth. Keeping the
+  // whole panel on the outside of the leg prevents a large triangle from
+  // passing through a knee between two individually valid cloth vertices.
+  function outsidePanel(p, x, z, colliders, verticalMargin) {
+    const radius = Math.hypot(x, z) || 1,
+      nx = x / radius,
+      nz = z / radius;
+    let limit = -Infinity;
+    for (const c of colliders) {
+      const r = Math.max(c.radiusA, c.radiusB) + 0.003;
+      const low = p.y - verticalMargin - r,
+        high = p.y + verticalMargin + r;
+      const dy = c.b.y - c.a.y;
+      if (Math.min(c.a.y, c.b.y) > high || Math.max(c.a.y, c.b.y) < low) continue;
+      let lo = 0,
+        hi = 1;
+      if (Math.abs(dy) > 0.00001) {
+        const l = (low - c.a.y) / dy,
+          h = (high - c.a.y) / dy;
+        lo = Math.max(0, Math.min(l, h));
+        hi = Math.min(1, Math.max(l, h));
+      }
+      const da = nx * c.a.x + nz * c.a.z,
+        dd = nx * (c.b.x - c.a.x) + nz * (c.b.z - c.a.z);
+      limit = Math.max(limit, da + Math.max(dd * lo, dd * hi) + r);
+    }
+    const gap = limit - (p.x * nx + p.z * nz);
+    if (gap > 0) {
+      p.x += nx * gap;
+      p.z += nz * gap;
+    }
+  }
+  const simulated = xyz(),
+    old = xyz(),
+    goal = xyz();
+  function solveCapsule(p, c) {
+    const dx = c.b.x - c.a.x,
+      dy = c.b.y - c.a.y,
+      dz = c.b.z - c.a.z;
+    const u = T.MathUtils.clamp(
+      ((p.x - c.a.x) * dx + (p.y - c.a.y) * dy + (p.z - c.a.z) * dz) / (dx * dx + dy * dy + dz * dz),
+      0,
+      1,
+    );
+    const x = c.a.x + dx * u,
+      y = c.a.y + dy * u,
+      z = c.a.z + dz * u;
+    const r = c.radiusA + (c.radiusB - c.radiusA) * u + 0.003;
+    const len = Math.hypot(p.x - x, p.y - y, p.z - z);
+    if (len < r && len > 1e-8) {
+      const k = r / len;
+      p.set(x + (p.x - x) * k, y + (p.y - y) * k, z + (p.z - z) * k);
+    }
+  }
+  function solveBodice(p) {
+    let j = 1;
+    while (j < jacketBody.length - 1 && p.y > jacketBody[j][0]) j++;
+    const lo = jacketBody[j - 1],
+      hi = jacketBody[j],
+      u = T.MathUtils.clamp((p.y - lo[0]) / (hi[0] - lo[0]), 0, 1);
+    const rx = T.MathUtils.lerp(lo[1], hi[1], u) + 0.002,
+      rz = T.MathUtils.lerp(lo[2], hi[2], u) + 0.002,
+      cz = T.MathUtils.lerp(lo[3], hi[3], u);
+    const n = Math.hypot(p.x / rx, (p.z - cz) / rz);
+    if (n < 1 && n > 0.0001) {
+      p.x /= n;
+      p.z = cz + (p.z - cz) / n;
+    }
+  }
+  function integrate(i, attr, vel, k, damping, dt, colliders, isJacket) {
+    const n = i * 3;
+    old.fromBufferAttribute(attr, i);
+    vel[n] += (k * (goal.x - old.x) - damping * vel[n]) * dt;
+    vel[n + 1] += (k * (goal.y - old.y) - damping * vel[n + 1]) * dt;
+    vel[n + 2] += (k * (goal.z - old.z) - damping * vel[n + 2]) * dt;
+    simulated.set(old.x + vel[n] * dt, old.y + vel[n + 1] * dt, old.z + vel[n + 2] * dt);
+    const rest = isJacket ? jacketRest : skirtRest;
+    if (isJacket) {
+      simulated.y = Math.max(simulated.y, minimumHemY);
+      for (let pass = 0; pass < 3; pass++) {
+        for (const c of colliders) solveCapsule(simulated, c);
+        solveBodice(simulated);
+      }
+    } else outsidePanel(simulated, rest[n], rest[n + 2], colliders, 0.052);
+    attr.setXYZ(i, simulated.x, simulated.y, simulated.z);
+    // A positional contact projection clears the moving collider but does
+    // not impart the full separation distance as a one-tick launch impulse.
+    vel[n] = T.MathUtils.clamp(vel[n], -1.1, 1.1);
+    vel[n + 1] = T.MathUtils.clamp(vel[n + 1], -1.1, 1.1);
+    vel[n + 2] = T.MathUtils.clamp(vel[n + 2], -1.1, 1.1);
+  }
+  rig.secondary ??= {};
+  rig.secondary.roma = {
+    hair: curlSystem,
+    faceSkin,
+    skirt,
+    jacket: jacketSkin,
+    bag,
+    skirtCapsules,
+    jacketCapsules,
+    jacketBody,
+  };
+  let hang = 0,
     hangV = 0,
     bagPitch = 0,
     bagV = 0,
-    skirtSwing = 0,
-    skirtV = 0;
+    bagSide = 0,
+    bagSideV = 0,
+    bagLift = 0,
+    bagLiftV = 0,
+    lastSpeed = 0,
+    lastVy = 0,
+    lastTime = -Infinity,
+    balance = 0;
   const step = (f) => {
+    if (f.time <= lastTime) {
+      skirtShape.attributes.position.array.set(skirtRest);
+      jacketShape.attributes.position.array.set(jacketRest);
+      skirtVelocity.fill(0);
+      jacketVelocity.fill(0);
+      hang =
+        hangV =
+        bagPitch =
+        bagV =
+        bagSide =
+        bagSideV =
+        bagLift =
+        bagLiftV =
+        lastSpeed =
+        lastVy =
+        balance =
+          0;
+    }
+    lastTime = f.time;
     // Give the satin cuffs clearance beside the flared jacket hem and the satchel strap.
-    rig.upperArmL.rotation.z += 0.075;
-    rig.upperArmR.rotation.z -= 0.075;
+    // Counterbalance the torso bank with the outside arm on a tight running turn.
+    const bankTarget = T.MathUtils.clamp(f.turn * f.speed * 0.024, -0.32, 0.32);
+    balance += (bankTarget - balance) * (1 - Math.exp(-f.dt * 17));
+    rig.upperArmL.rotation.z += 0.103 + Math.max(0, balance);
+    rig.upperArmR.rotation.z -= 0.103 + Math.max(0, -balance);
     const dt = Math.min(0.035, f.dt),
       speed = f.speed,
       t = f.time,
@@ -841,57 +1243,71 @@ export function buildRoma(rig) {
       rig.upperArmR.rotation.x -= lift * 1.16;
       rig.upperArmR.rotation.z -= lift * 0.21;
       rig.forearmR.rotation.x -= lift * 1.33;
-      H.rotation.y -= lift * 0.37;
-      H.rotation.z += lift * 0.075;
+      rig.head.rotation.y -= lift * 0.37;
+      rig.head.rotation.z += lift * 0.075;
     }
-    const blinkPhase = (t + 1.1) % 4.45,
-      blink = Math.max(0.075, 1 - Math.exp(-((blinkPhase - 0.16) ** 2) / 0.003));
-    const glance = 0.0016 * Math.sin(0.78 * t + 0.9) * Math.sin(0.39 * t);
-    for (let k = 0; k < lids.length; k++) {
-      lids[k].scale.y = blink;
-      pupils[k].position.x = -0.0007 + glance * (k === 0 ? -1 : 1);
+    const blinkPhase = (t + 1.1) % 4.45;
+    const blink = Math.exp(-((blinkPhase - 0.16) ** 2) / 0.0015);
+    const laugh = lift * (0.78 + 0.22 * Math.sin(f.emote * 17));
+    const glance = 0.0015 * Math.sin(0.78 * t + 0.9) * Math.sin(0.39 * t);
+    for (const lid of lids) lid(blink, laugh);
+    for (let i = 0; i < 2; i++) {
+      const side = i === 0 ? -1 : 1;
+      pupils[i].position.x = side * (glance - 0.0027 * lift);
+      pupils[i].position.y = 0.0012 * lift;
+      brows[i].position.y = 0.112 + lift * (i ? 0.0035 : 0.005) - blink * 0.002;
+      brows[i].rotation.z = side * (lift * 0.075 - 0.025 * blink);
     }
-    for (const strand of locks) {
-      const gx = 0.11 * moving + 0.045 * moving * Math.sin(phase + strand.phase) + 0.047 * hop;
-      const gz = 0.095 * lateral + 0.024 * moving * Math.cos(phase + strand.phase);
-      strand.vx += (59 * (gx - strand.x) - 11 * strand.vx) * dt;
-      strand.vz += (59 * (gz - strand.z) - 10.5 * strand.vz) * dt;
-      strand.x += strand.vx * dt;
-      strand.z += strand.vz * dt;
-      strand.root.rotation.x = strand.x;
-      strand.root.rotation.z = strand.z;
-    }
-    // The skirt follows each supporting thigh. Spring inertia delays the weighted hem.
+    smile.scale.set(1 + 0.09 * laugh, 1 + 0.38 * laugh, 1);
+    smile.position.y = -0.038 * 0.38 * laugh;
+    updateCapsules();
     const left = rig.thighL.rotation.x,
       right = rig.thighR.rotation.x;
-    const leftZ = -Math.sin(left) * 0.9,
-      rightZ = -Math.sin(right) * 0.9;
+    const leftZ = -Math.sin(left),
+      rightZ = -Math.sin(right);
     const leftY = 1 - Math.cos(left),
       rightY = 1 - Math.cos(right);
-    skirtV += (70 * (0.006 * moving * Math.sin(phase) + 0.0018 * hop - skirtSwing) - 12 * skirtV) * dt;
-    skirtSwing += skirtV * dt;
-    for (let i = 0; i < position.count; i++) {
-      const w = radiusLeft[i],
+    const flare = Math.min(0.19, Math.abs(f.turn) * moving * 0.024 + 0.044 * moving);
+    for (let i = 0; i < 6 * 64; i++) {
+      const n = i * 3,
+        w = radiusLeft[i],
         length = envelope[i],
         flutter = hemMotion[i];
-      const y = skirtRest[3 * i + 1] + length * (leftY * w + rightY * (1 - w)) * 0.57;
-      const z = skirtRest[3 * i + 2] + length * (leftZ * w + rightZ * (1 - w)) + flutter * skirtSwing;
-      position.setXYZ(i, skirtRest[i * 3] + flutter * 0.007 * lateral, y, z);
+      const sway = Math.cos(phase * 0.5 + 0.27) * moving * 0.008;
+      const expand = 1 + flutter * flare;
+      goal.set(
+        skirtRest[n] * expand + flutter * (sway + lateral * 0.01),
+        skirtRest[n + 1] + length * (leftY * w + rightY * (1 - w)) * 0.74 + flutter * flare * 0.032,
+        skirtRest[n + 2] * expand +
+          length * (leftZ * w + rightZ * (1 - w)) * 0.93 +
+          flutter * (0.007 * moving * Math.sin(phase) + 0.0018 * hop),
+      );
+      integrate(i, position, skirtVelocity, 171, 17.5, dt, skirtCapsules, false);
     }
     position.needsUpdate = true;
-    hemV += (76 * (0.007 * moving * Math.sin(phase * 0.98) + 0.0018 * hop - hem) - 13 * hemV) * dt;
-    hem += hemV * dt;
+    clothNormals(skirtShape, 64, true);
     const jpos = jacketShape.attributes.position;
     for (let i = 0; i < 3 * 41; i++) {
-      const weight = Math.max(0, -jacketRest[i * 3 + 1]) / 0.118;
-      jpos.setXYZ(
-        i,
-        jacketRest[i * 3] + lateral * 0.008 * weight,
-        jacketRest[i * 3 + 1],
-        jacketRest[i * 3 + 2] + hem * weight,
+      const n = i * 3,
+        x = jacketRest[n],
+        y = jacketRest[n + 1],
+        z = jacketRest[n + 2],
+        weight = Math.max(0, -y) / 0.118;
+      // Open front quarters lift independently; the back vent trails both.
+      const side = x >= 0 ? 1 : -1,
+        front = z > 0,
+        trail = front ? Math.max(0, -Math.sin(side * phase)) : 0.55 + 0.45 * Math.cos(phase);
+      const rideUp = Math.max(0, minimumHemY + 0.095);
+      const spread = 0.05 * moving + 0.11 * Math.abs(lateral) * moving + 0.085 * moving * trail;
+      goal.set(
+        x * (1 + spread * 0.45 * weight) + lateral * 0.003 * weight,
+        y + weight * (0.005 * trail * moving + rideUp),
+        z * (1 + spread * weight) + weight * (0.0021 * hop - 0.009 * moving + side * 0.006 * lateral),
       );
+      integrate(i, jpos, jacketVelocity, front ? 113 : 87, front ? 12.5 : 11, dt, jacketCapsules, true);
     }
     jpos.needsUpdate = true;
+    clothNormals(jacketShape, 41, false);
     const targetHang = -(
       rig.upperArmR.rotation.x +
       rig.forearmR.rotation.x +
@@ -902,11 +1318,24 @@ export function buildRoma(rig) {
     hang += hangV * dt;
     lantern.rotation.x = hang;
     lantern.rotation.z = -rig.upperArmR.rotation.z * 0.75;
-    const targetBag = 0.12 * moving + 0.16 * moving * Math.sin(phase + 0.3) + 0.07 * hop;
-    bagV += (57 * (targetBag - bagPitch) - 9 * bagV) * dt;
+    const accel = T.MathUtils.clamp((speed - lastSpeed) / dt, -10, 10);
+    const landing = T.MathUtils.clamp((f.vy - lastVy) / dt, -14, 14);
+    lastSpeed = speed;
+    lastVy = f.vy;
+    const targetBag = 0.12 * moving + 0.28 * moving * Math.sin(phase - 0.4) + 0.025 * accel + 0.035 * hop;
+    bagV += (64 * (targetBag - bagPitch) - 8.4 * bagV) * dt;
     bagPitch += bagV * dt;
-    bag.rotation.x = bagPitch;
-    bag.position.y = 0.023 + 0.007 * moving * Math.cos(2 * phase - 0.5);
+    bagSideV +=
+      (51 * (0.2 * lateral * moving + 0.075 * moving * Math.cos(phase) - bagSide) - 8.9 * bagSideV) * dt;
+    bagSide += bagSideV * dt;
+    bagLiftV +=
+      (98 * (0.011 * moving * (0.5 + 0.5 * Math.cos(phase * 2)) - 0.0005 * landing - bagLift) -
+        9.7 * bagLiftV) *
+      dt;
+    bagLift += bagLiftV * dt;
+    bag.rotation.set(bagPitch, bagSide, -0.14 + bagSide * 0.33);
+    bag.position.y = 0.023 + bagLift;
+    curlSystem.step(f);
   };
   return step;
 }
