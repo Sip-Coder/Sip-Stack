@@ -28,7 +28,7 @@ HTML = """<!doctype html><meta charset="utf-8"><script type="importmap">
 </script><title>Orthographic model capture</title>"""
 AIM = {'encoding': '8-bit sRGB / D65', 'lighting': 'Uniform neutral D65 environment at unit linear radiance, '
        'normalized diffuse irradiance 1; actual material specular BRDF, texture, emission and alpha enabled.',
-       'background': '18% linear neutral grey', 'toneMapping': 'none',
+       'background': '18% linear neutral grey; half-float linear blending before sRGB output', 'toneMapping': 'none',
        'readout': 'Per-channel median of the central 50% × 50% of a 128 px square planar swatch. '
        'The swatch uses the production material object and its actual maps/shader, with representative '
        'source-geometry vertex colours where used. Region bindings specify UV or object-space footprints.'}

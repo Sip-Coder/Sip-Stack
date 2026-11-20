@@ -169,7 +169,46 @@ function sourceColors(entry) {
   return values;
 }
 
-function renderSwatches(renderer, entries, booth, camera, strict) {
+// The live stage blends in linear light, then converts to sRGB in OutputPass.
+// Do the same here: transparent glass over 18% grey must be evaluated before
+// the sRGB transfer function. A direct sRGB canvas blends encoded pixel values.
+function makePhotometer(renderer, scene, camera) {
+  if (!renderer.extensions.has('EXT_color_buffer_float'))
+    throw Error('Linear half-float framebuffer required for material measurements');
+  const target = new T.WebGLRenderTarget(swatchSize, swatchSize, {
+    type: T.HalfFloatType,
+    colorSpace: T.LinearSRGBColorSpace,
+  });
+  const outputScene = new T.Scene();
+  const output = new T.ShaderMaterial({
+    uniforms: { sampleImage: { value: target.texture } },
+    vertexShader: 'varying vec2 coords; void main(){coords=uv;gl_Position=vec4(position.xy,0.,1.);}',
+    fragmentShader:
+      'uniform sampler2D sampleImage; varying vec2 coords; void main(){gl_FragColor=texture2D(sampleImage,coords);\n#include <colorspace_fragment>\n}',
+    depthWrite: false,
+    depthTest: false,
+    toneMapped: false,
+  });
+  const geometry = new T.PlaneGeometry(2, 2),
+    quad = new T.Mesh(geometry, output);
+  quad.frustumCulled = false;
+  outputScene.add(quad);
+  return {
+    draw() {
+      renderer.setRenderTarget(target);
+      renderer.render(scene, camera);
+      renderer.setRenderTarget(null);
+      renderer.render(outputScene, camera);
+    },
+    dispose() {
+      target.dispose();
+      geometry.dispose();
+      output.dispose();
+    },
+  };
+}
+
+function renderSwatches(renderer, entries, booth, camera, strict, meter) {
   const atlas = document.createElement('canvas');
   const plans = [];
   for (const entry of entries.values()) {
@@ -225,7 +264,7 @@ function renderSwatches(renderer, entries, booth, camera, strict) {
     camera.left = camera.bottom = -width / 2;
     camera.right = camera.top = width / 2;
     camera.updateProjectionMatrix();
-    renderer.render(booth, camera);
+    meter.draw();
     const col = n % cols,
       row = Math.floor(n / cols);
     canvas2d.drawImage(renderer.domElement, col * swatchSize, row * swatchSize);
@@ -251,7 +290,7 @@ function renderSwatches(renderer, entries, booth, camera, strict) {
   return { atlas: atlas.toDataURL('image/png'), samples };
 }
 
-function calibrateBooth(renderer, booth, camera) {
+function calibrateBooth(renderer, booth, camera, meter) {
   const canvas = document.createElement('canvas');
   canvas.width = canvas.height = 8;
   const read = canvas.getContext('2d', { willReadFrequently: true });
@@ -265,7 +304,7 @@ function calibrateBooth(renderer, booth, camera) {
   const readings = [];
   for (const value of [0, 0.18, 1]) {
     material.color.setRGB(value, value, value);
-    renderer.render(booth, camera);
+    meter.draw();
     read.drawImage(renderer.domElement, 0, 0, 8, 8);
     const rgb = Array.from(read.getImageData(4, 4, 1, 1).data).slice(0, 3);
     const expected = Math.round(
@@ -371,9 +410,15 @@ export async function setup(hero, spec, strict, withLandmarks) {
     const front = new T.OrthographicCamera(-1, 1, 1, -1, 0.001, 2);
     front.position.set(0, 0, 0.5);
     front.lookAt(0, 0, 0);
-    const result = renderSwatches(renderer, entries, booth, front, strict);
-    check();
-    return { ...result, calibration: calibrateBooth(renderer, booth, front), materialCount: entries.size };
+    const meter = makePhotometer(renderer, booth, front);
+    try {
+      const result = renderSwatches(renderer, entries, booth, front, strict, meter);
+      const calibration = calibrateBooth(renderer, booth, front, meter);
+      check();
+      return { ...result, calibration, materialCount: entries.size };
+    } finally {
+      meter.dispose();
+    }
   }
   return { view, materials, landmarks };
 }
