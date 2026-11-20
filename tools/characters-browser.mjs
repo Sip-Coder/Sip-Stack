@@ -76,7 +76,7 @@ export async function runCharacterProbe(measure, options = {}) {
   );
   chrome.on('error', (e) => finish({ error: e.message }));
   chrome.on('exit', (code) => finish({ error: 'Chrome exited before sending measurements (' + code + ')' }));
-  const timeout = setTimeout(() => finish({ error: 'Browser probe timeout' }), 600000);
+  const timeout = setTimeout(() => finish({ error: 'Browser probe timeout' }), options.timeoutMs ?? 600000);
   try {
     const result = await done;
     console.log(JSON.stringify(result, null, 2));

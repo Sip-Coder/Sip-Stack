@@ -1,15 +1,18 @@
 // Node 22+, Chromium and three@0.170.0. Example:
 // THREE_ROOT=/path/to/three CHROME=/usr/bin/chromium node tools/check-characters-motion.mjs
 // Pass sippy, roma or hummin as an optional argument to isolate a single model.
+// Set CHARACTERS_HAIR_MOBILE=1 to repeat hair contact checks on the Mobile geometry.
 import { runCharacterProbe } from './characters-browser.mjs';
 
 // Executed as an ES module inside Chromium so procedural CanvasTextures and
 // BufferGeometry are identical to the production models. WebGL is unnecessary.
-async function measure(onlyHero) {
+async function measure(onlyHero, { mobileHair }) {
   const T = await import('three');
   const { measureRigLandmarks } = await import('/tools/blueprints/measure-landmarks.mjs');
   const { checkFlorence, captureIdleMotion } = await import('/tools/characters-florence.mjs');
+  const { garmentPoses, poseGarment } = await import('/tools/characters-garment-poses.mjs');
   const { createActor } = await import('/characters/rig.js');
+  const { setModelDetail } = await import('/characters/material-detail.js');
   const { createController, FIXED_DT, PROPS } = await import('/characters/motion.js');
   const { buildSippy } = await import('/characters/sippy.js');
   const { buildRoma } = await import('/characters/roma.js');
@@ -122,7 +125,7 @@ async function measure(onlyHero) {
       bodyParts.push({ mesh, regions });
     }
     let poseId = 1;
-    const vertexCache = new WeakMap();
+    let vertexCache = new WeakMap();
     function vertex(mesh, i, out) {
       if (!mesh.isSkinnedMesh) return mesh.getVertexPosition(i, out);
       let cache = vertexCache.get(mesh);
@@ -689,7 +692,7 @@ async function measure(onlyHero) {
     // Build a local-space BVH once for each rigid skin, bodice or sleeve mesh.
     // Query posed cloth triangles in that mesh's space. Test both sets of
     // triangle edges so a small body triangle piercing a wide cloth panel is found.
-    const surfaceCache = new WeakMap();
+    let surfaceCache = new WeakMap();
     function rigidSurface(mesh, selection) {
       if (typeof selection === 'number') selection = null; // Array.map supplies its index.
       let byRegion = surfaceCache.get(mesh);
@@ -811,14 +814,16 @@ async function measure(onlyHero) {
     function sleeveCaps(system) {
       const reports = [];
       for (const joint of [rig.upperArmL, rig.upperArmR]) {
-        const cap = system.colliders.find((c) => c.node === joint && c.radii);
+        const cap = system.colliders.find(
+          (c) => c.radii && (c.node === joint || (c.role === 'shoulder' && c.sleeveJoint === joint)),
+        );
         if (!cap) {
           check(false, joint.name + ' hair collider absent');
           continue;
         }
         // Anatomical proximal sleeve band measured in joint units: upper 3 cm
         // below the shoulder pivot through the rounded crown of the sleeve.
-        const inverse = joint.matrixWorld.clone().invert(),
+        const inverse = cap.node.matrixWorld.clone().invert(),
           v = new T.Vector3();
         let largest = 0,
           vertices = 0;
@@ -1080,8 +1085,8 @@ async function measure(onlyHero) {
       return {
         report,
         rememberIdle: idleMotion.remember,
-        sampleTips() {
-          for (const p of tipPaths) p.frames.push(p.read());
+        sampleTips(recordMotion = true) {
+          if (recordMotion) for (const p of tipPaths) p.frames.push(p.read());
           for (const c of system.colliders) {
             const key = c.role ?? c.node.name;
             for (const chain of system.chains) {
@@ -1121,11 +1126,16 @@ async function measure(onlyHero) {
             report.tipPeakM = Math.max(report.tipPeakM, delta);
           }
           const sleeveTargets = sleeves.map(rigidSurface);
+          const body = secondary.body;
           const layerTargets = [
             ...fixedLayers,
             ...liveLayers.map(rigidSurface),
-            ...partsFor('neck').map((p) => rigidSurface(p.mesh, p.regions.neck)),
+            ...(body ? [rigidSurface(body)] : []),
+            ...partsFor('neck')
+              .filter((part) => part.mesh !== body && !layers.includes(part.mesh))
+              .map((part) => rigidSurface(part.mesh, part.regions.neck)),
           ];
+          let poseTipGap = Infinity;
           for (const chain of system.chains) {
             const center = chain.nodes.at(-1).clone().applyMatrix4(chain.group.matrixWorld);
             const radius = chain.radius * Math.max(...chain.group.getWorldScale(new T.Vector3()).toArray());
@@ -1138,6 +1148,7 @@ async function measure(onlyHero) {
                 faceTargets.includes(target) ? visibleFace : null,
                 witness,
               );
+              poseTipGap = Math.min(poseTipGap, gap);
               if (gap < (report.realTipMinGapM ?? Infinity)) {
                 report.realTipMinGapM = gap;
                 report.nearestRealTip = {
@@ -1150,6 +1161,10 @@ async function measure(onlyHero) {
                 };
               }
             }
+          }
+          if (typeof label === 'string') {
+            report.stressPoseTipGapsM ??= {};
+            report.stressPoseTipGapsM[label] = poseTipGap;
           }
           for (const mesh of surfaces) {
             const g = mesh.geometry,
@@ -1372,6 +1387,62 @@ async function measure(onlyHero) {
       return reports;
     }
 
+    function driveSecondaryTrial(i) {
+      input.z = i >= 6 && i < 313 ? 1 : 0;
+      input.x = 0;
+      input.run = i >= 76;
+      input.jump = i === 194;
+      input.roll = i === 261;
+      if (i >= 150 && i < 194) {
+        input.x = Math.sin((i - 150) * 0.06);
+        input.z = Math.cos((i - 150) * 0.06);
+      }
+    }
+
+    function inspectGarmentPoses(hair) {
+      for (const id of garmentPoses) {
+        poseGarment(rig, controller, animate, id);
+        poseId++;
+        hair.sampleTips(false);
+        hair.inspect(id);
+      }
+    }
+
+    function checkHairGeometry(report, label = '') {
+      const verify = (condition, message) => check(condition, label + message);
+      verify(report.triangles > 0 && report.chains > 1, 'hair surface coverage');
+      verify(report.worstDepthM < 0.0002, 'hair ellipsoid clearance');
+      verify(
+        ['head', 'neck', 'shoulder', 'back', 'collar'].every((role) =>
+          report.colliderRoles.includes(role),
+        ),
+        'complete scalp-to-upper-back collider coverage',
+      );
+      verify(
+        Object.values(report.tipColliders).every((gap) => gap >= -0.0001),
+        'physical tip sphere overlaps body collider',
+      );
+      verify(
+        (report.minCapsuleSurfaceGapM ?? 0) >= -0.0002,
+        'hair triangles penetrate collision capsule',
+      );
+      verify(
+        !report.layerContactPoses,
+        'rendered strands intersect the anatomical body or layered outerwear',
+      );
+      verify(
+        report.realCollarLayers > 0 && report.realTipMinGapM >= -0.0001,
+        'physical hair tip sphere intersects rendered body or garment',
+      );
+      verify(!report.faceContactPoses, 'hair triangles intersect the visible anatomical face');
+      verify(!report.sleeveContactPoses, 'hair triangles intersect actual sleeve triangles');
+    }
+
+    function inspectHairAtFrame(frame, i) {
+      // The raised sleeve sweeps quickly across the hair during a tuck.
+      return i % 8 === 0 || i === 472 || (frame.state === 'roll' && i % 2 === 0);
+    }
+
     function dynamics() {
       controller.reset(-17, -14);
       Object.assign(input, { x: 0, z: 0, run: false, jump: false, roll: false, emote: false });
@@ -1412,15 +1483,7 @@ async function measure(onlyHero) {
       }
       const phases = {};
       for (let i = 0; i < 473; i++) {
-        input.z = i >= 6 && i < 313 ? 1 : 0;
-        input.x = 0;
-        input.run = i >= 76;
-        input.jump = i === 194;
-        input.roll = i === 261;
-        if (i >= 150 && i < 194) {
-          input.x = Math.sin((i - 150) * 0.06);
-          input.z = Math.cos((i - 150) * 0.06);
-        }
+        driveSecondaryTrial(i);
         const frame = pose(i >= 313 ? rememberBones : undefined);
         if (i >= 313 && controller.frame.speed < 0.02 && stop == null) stop = i;
         if (i % 8 === 0 || i === 472) {
@@ -1432,7 +1495,7 @@ async function measure(onlyHero) {
           hair.sampleTips();
           if (stop != null) hair.rememberIdle(frame);
         }
-        if (hair && (i % 8 === 0 || i === 472)) hair.inspect(i);
+        if (hair && inspectHairAtFrame(frame, i)) hair.inspect(i);
       }
       const report = (result.secondary = { sampledPoses: phases, accessories: {} });
       for (let k = 0; k < keys.length; k++) {
@@ -1458,33 +1521,9 @@ async function measure(onlyHero) {
       }
       if (hair) {
         hair.finish(stop);
+        inspectGarmentPoses(hair);
         report.hair = hair.report;
-        check(hair.report.triangles > 0 && hair.report.chains > 1, 'hair surface coverage');
-        check(hair.report.worstDepthM < 0.0002, 'hair ellipsoid clearance');
-        check(
-          ['head', 'neck', 'shoulder', 'back', 'collar'].every((role) =>
-            hair.report.colliderRoles.includes(role),
-          ),
-          'complete scalp-to-upper-back collider coverage',
-        );
-        check(
-          Object.values(hair.report.tipColliders).every((gap) => gap >= -0.0001),
-          'physical tip sphere overlaps body collider',
-        );
-        check(
-          (hair.report.minCapsuleSurfaceGapM ?? 0) >= -0.0002,
-          'hair triangles penetrate collision capsule',
-        );
-        check(
-          !hair.report.layerContactPoses,
-          'rendered strands intersect collar, neck or upper-back surfaces',
-        );
-        check(
-          hair.report.realCollarLayers > 0 && hair.report.realTipMinGapM >= -0.0001,
-          'physical hair tip sphere intersects rendered body or garment',
-        );
-        check(!hair.report.faceContactPoses, 'hair triangles intersect the visible anatomical face');
-        check(!hair.report.sleeveContactPoses, 'hair triangles intersect actual sleeve triangles');
+        checkHairGeometry(hair.report);
         check(hair.report.materialTipPeakM > 0.001, 'rendered hair tips react to motion');
         check(hair.report.materialTipSettleS < 1.65, 'rendered hair tips settle within 1.5 mm');
       }
@@ -1553,6 +1592,26 @@ async function measure(onlyHero) {
         check(endZ > prop.z + prop.depth / 2 && Math.abs(top - prop.height) < 0.01, 'traversed ' + prop.kind);
       }
     }
+    if (mobileHair && rig.hair) {
+      // A coarser index set changes triangle chords. Rebuild the spatial
+      // acceleration structures from the active buffers for this trial.
+      setModelDetail(rig.root, 'mobile');
+      vertexCache = new WeakMap();
+      surfaceCache = new WeakMap();
+      controller.reset(-17, -14);
+      Object.assign(input, { x: 0, z: 0, run: false, jump: false, roll: false, emote: false });
+      for (let f = 0; f < 60; f++) pose();
+      const hair = hairInspector(rig.hair);
+      for (let i = 0; i < 473; i++) {
+        driveSecondaryTrial(i);
+        const frame = pose();
+        hair.sampleTips(false);
+        if (inspectHairAtFrame(frame, i)) hair.inspect(i);
+      }
+      inspectGarmentPoses(hair);
+      checkHairGeometry(hair.report, 'Mobile ');
+      result.secondary.mobileHair = hair.report;
+    }
   }
   return {
     reference: {
@@ -1579,4 +1638,9 @@ async function measure(onlyHero) {
   };
 }
 
-await runCharacterProbe(measure);
+const mobileHair = process.env.CHARACTERS_HAIR_MOBILE === '1';
+// The 84-strand character now traverses the actual coat and skin triangle
+// trees at every sampled pose. Give a full cast and two-tier pass time to
+// finish on the same software-rendered hosts as the visual acceptance tests.
+const minutes = (process.argv[2] ? 1 : 3) * (mobileHair ? 20 : 10);
+await runCharacterProbe(measure, { mobileHair, timeoutMs: minutes * 60000 });

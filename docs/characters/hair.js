@@ -53,7 +53,7 @@ function binding(mesh, groupInverse, guide) {
 }
 
 // Express each joint-attached ellipsoid as a unit sphere in its own frame.
-function makeShape(spec) {
+function makeShape(spec, sleeveRoute) {
   const center = spec.a ?? spec.center;
   const radii = spec.a ? [spec.radius, spec.radius, spec.radius] : spec.radii;
   const worldToUnit = matrix().makeScale(...radii.map((r) => 1 / r));
@@ -62,6 +62,8 @@ function makeShape(spec) {
   return {
     node: spec.node,
     role: spec.role,
+    sleeveRoute: spec.sleeveJoint ? sleeveRoute : null,
+    sleeveJoint: spec.sleeveJoint,
     restNormal: v(),
     planeNormal: v(),
     push: v(),
@@ -160,6 +162,17 @@ function updateGuard(shape, nodes, initial, a, b, nearest, direction, normal) {
   normal.normalize();
   if (normal.dot(shape.restNormal) < 0.55) normal.copy(shape.restNormal);
   else normal.lerp(shape.restNormal, 0.48).normalize();
+  if (shape.sleeveRoute) {
+    // A raised or tucked arm can rotate its rest-side tangent into the neck.
+    // Slide the clump around the front/back of the sleeve on its authored
+    // side of the head as the arm crosses it.
+    const arm = shape.sleeveJoint.rotation;
+    const crossing = T.MathUtils.smoothstep(Math.max(Math.abs(arm.z), -arm.x), 0.9, 1.8);
+    if (crossing > 0) {
+      b.copy(shape.sleeveRoute).transformDirection(shape.unit);
+      normal.lerp(b, crossing).normalize();
+    }
+  }
   const e = shape.unit.elements,
     inv = shape.local.elements,
     n = normal;
@@ -186,6 +199,7 @@ function keepOutside(
   allShapes = shapes,
   arc = 0,
   count = shapes.length,
+  escape = null,
 ) {
   // A small shell allowance covers the chords between adjacent surface vertices.
   for (let pass = 0; pass < 4; pass++) {
@@ -219,9 +233,32 @@ function keepOutside(
       point.copy(scratch).applyMatrix4(s.local);
       moved = true;
     }
-    if (!moved) break;
+    if (!moved) return;
     shapes = allShapes;
     count = shapes.length;
+  }
+  // At a folded sleeve two opposing tangent planes can trap a tip against
+  // the cheek. Follow its side of the head out of the union of ellipsoids.
+  // Each straight ray can exit a given convex ellipsoid only once.
+  if (!escape) return;
+  for (let pass = 0; pass < count; pass++) {
+    let advance = 0;
+    for (const shape of shapes) {
+      if (shape.end || !shape.box.containsPoint(point)) continue;
+      scratch.copy(point).applyMatrix4(shape.unit);
+      const shell = isGuide ? shape.guideShell : surfaceShell;
+      const offset = scratch.lengthSq() - shell * shell;
+      if (offset >= -0.00001) continue;
+      const e = shape.unit.elements;
+      const dx = e[0] * escape.x + e[4] * escape.y + e[8] * escape.z;
+      const dy = e[1] * escape.x + e[5] * escape.y + e[9] * escape.z;
+      const dz = e[2] * escape.x + e[6] * escape.y + e[10] * escape.z;
+      const a = dx * dx + dy * dy + dz * dz;
+      const b = scratch.x * dx + scratch.y * dy + scratch.z * dz;
+      advance = Math.max(advance, (Math.sqrt(b * b - a * offset) - b) / a);
+    }
+    if (advance === 0) return;
+    point.addScaledVector(escape, advance + 0.000001);
   }
 }
 
@@ -252,6 +289,7 @@ export function createHair(rig, colliders) {
       fanSide,
       breathingBend,
       gaitCoupling = 1,
+      sleeveRoute = null,
     } = {},
   ) {
     if (points.length < 2) throw new Error('A hair guide needs a root and tip');
@@ -299,7 +337,8 @@ export function createHair(rig, colliders) {
       maxOffset,
       radius,
       length: rest.map((n, i) => (i ? n.distanceTo(rest[i - 1]) : 0)),
-      shapes: colliders.map(makeShape),
+      sleeveRoute,
+      shapes: colliders.map((spec) => makeShape(spec, sleeveRoute)),
       nearby: new Array(colliders.length),
       posedBox: new T.Box3(),
       reach: new Float32Array(rest.length),
@@ -407,7 +446,8 @@ export function createHair(rig, colliders) {
         keepOutside(n, shapes, temp, true);
       }
       for (const shape of shapes) updateGuard(shape, nodes, false, a, b, p, q, temp);
-      for (let i = 1; i < nodes.length; i++) keepOutside(nodes[i], shapes, temp, true, shapes, i);
+      for (let i = 1; i < nodes.length; i++)
+        keepOutside(nodes[i], shapes, temp, true, shapes, i, shapes.length, chain.sleeveRoute);
       for (let i = 0; i < nodes.length; i++) {
         const lo = Math.max(0, i - 1),
           hi = Math.min(nodes.length - 1, i + 1);
@@ -441,7 +481,7 @@ export function createHair(rig, colliders) {
           p.copy(a).applyMatrix4(chain.skin[j]);
           q.copy(a).applyMatrix4(chain.skin[j + 1]);
           p.lerp(q, t);
-          keepOutside(p, chain.nearby, temp, false, shapes, j + t, activeCount);
+          keepOutside(p, chain.nearby, temp, false, shapes, j + t, activeCount, chain.sleeveRoute);
           p.applyMatrix4(s.toMesh);
           s.position.setXYZ(i, p.x, p.y, p.z);
           box.expandByPoint(p);
