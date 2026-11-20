@@ -208,6 +208,19 @@ const directions = [
   new T.Vector3(-1, 0.254625, 0.61138).normalize(),
   new T.Vector3(0.52471, -1, -0.19381).normalize(),
 ];
+const boundaryTriangle = new T.Triangle(),
+  nearestPoint = new T.Vector3();
+function onSurface(point, node) {
+  if (node.box.distanceToPoint(point) > epsilon) return false;
+  if (!node.leaves) return onSurface(point, node.left) || onSurface(point, node.right);
+  for (const tri of node.leaves) {
+    if (tri.box.distanceToPoint(point) > epsilon) continue;
+    boundaryTriangle.set(...tri.v).closestPointToPoint(point, nearestPoint);
+    if (nearestPoint.distanceToSquared(point) <= epsilon * epsilon) return true;
+  }
+  return false;
+}
+
 const ray = new T.Ray(),
   hit = new T.Vector3(),
   hits = [];
@@ -249,7 +262,9 @@ function inside(p, volume) {
     if (ambiguous) continue;
     if (distinct % 2) insideVotes++;
     else outsideVotes++;
-    if (insideVotes >= 2) return true;
+    // A ray almost tangent to a sewn edge can travel much more than
+    // epsilon before meeting a surface only nanometres from the vertex.
+    if (insideVotes >= 2) return !onSurface(p, volume);
     if (outsideVotes >= 2) return false;
   }
   // If several rays hit a crease exactly, integrate the oriented solid
@@ -273,7 +288,7 @@ function inside(p, volume) {
     }
     return total;
   }
-  return Math.round(Math.abs(solidAngle(volume)) / (4 * Math.PI)) % 2 === 1;
+  return Math.round(Math.abs(solidAngle(volume)) / (4 * Math.PI)) % 2 === 1 && !onSurface(p, volume);
 }
 
 export function compareSurfaces(outer, inner, checkReverse = false) {

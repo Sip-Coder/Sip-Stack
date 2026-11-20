@@ -7,6 +7,7 @@ import { runCharacterProbe } from './characters-browser.mjs';
 // BufferGeometry are identical to the production models. WebGL is unnecessary.
 async function measure(onlyHero) {
   const T = await import('three');
+  const { measureRigLandmarks } = await import('/tools/blueprints/measure-landmarks.mjs');
   const { checkFlorence, captureIdleMotion } = await import('/tools/characters-florence.mjs');
   const { createActor } = await import('/characters/rig.js');
   const { createController, FIXED_DT, PROPS } = await import('/characters/motion.js');
@@ -361,7 +362,7 @@ async function measure(onlyHero) {
       return false;
     }
     controller.reset(0, 0);
-    pose();
+    for (let i = 0; i < 42; i++) pose();
     const lineup = bounds();
     const result = (results[name] = { heightM: lineup.max - lineup.min, phases: {} });
     function check(ok, message) {
@@ -392,6 +393,15 @@ async function measure(onlyHero) {
       ankleSlice: silhouette(0.045, 0.07),
     };
     check(Math.abs(result.heightM - height) / height < 0.02, 'lineup height');
+    if (rig.blueprint) {
+      const observed = measureRigLandmarks(rig);
+      result.proportions.headCount = observed.headCount;
+      result.proportions.chinToCrownM = observed.headHeightM;
+      result.proportions.crownToSolesM = observed.standingHeightM;
+      result.proportions.blueprintLandmarks = observed.landmarks;
+      if (name !== 'hummin')
+        check(observed.headCount >= 3 && observed.headCount <= 3.5, 'hero is 3–3.5 measured heads tall');
+    } else check(false, 'actual mesh blueprint bindings missing');
 
     for (const action of ['walk', 'run', 'turn', 'jump', 'roll', 'emote']) {
       controller.reset(-10, 0); // Keep the level-floor trial clear of all props.
@@ -573,8 +583,7 @@ async function measure(onlyHero) {
         lo = Infinity,
         hi = -Infinity,
         count = 0;
-      const up = new T.Vector3(),
-        orientation = new T.Quaternion();
+      const up = new T.Vector3();
       for (let f = 0; f < 200; f++) {
         const angle = radius ? (targetSpeed * f * FIXED_DT) / radius : 0;
         input.x = Math.sin(angle);
@@ -586,7 +595,7 @@ async function measure(onlyHero) {
           dz = rig.root.position.z - pz,
           heading = Math.atan2(dx, dz);
         if (f > 65) {
-          up.set(0, 1, 0).applyQuaternion(rig.chest.getWorldQuaternion(orientation));
+          up.setFromMatrixColumn(rig.chest.matrixWorld, 1).normalize();
           bank += T.MathUtils.radToDeg(Math.atan2(up.x * Math.cos(heading) - up.z * Math.sin(heading), up.y));
           pitch += T.MathUtils.radToDeg(
             Math.atan2(up.x * Math.sin(heading) + up.z * Math.cos(heading), up.y),
@@ -1103,7 +1112,12 @@ async function measure(onlyHero) {
           report.poses++;
           faceInverse.copy(skinSpace.matrixWorld).invert();
           for (const chain of system.chains) {
-            const delta = chain.nodes.at(-1).distanceTo(chain.rest.at(-1)) * height;
+            const delta = chain.nodes
+              .at(-1)
+              .clone()
+              .sub(chain.rest.at(-1))
+              .applyMatrix3(new T.Matrix3().setFromMatrix4(chain.group.matrixWorld))
+              .length();
             report.tipPeakM = Math.max(report.tipPeakM, delta);
           }
           const sleeveTargets = sleeves.map(rigidSurface);
@@ -1367,9 +1381,7 @@ async function measure(onlyHero) {
         check(false, 'missing rendered accessory registration');
         return;
       }
-      const keys = { sippy: ['bag', 'tail', 'chain'], roma: ['bag'], hummin: ['apron', 'antenna', 'tools'] }[
-        name
-      ];
+      const keys = { sippy: ['tail', 'chain'], roma: ['bag'], hummin: ['apron', 'antenna', 'tools'] }[name];
       const markers = keys.map((k) => freeEdge(api[k])),
         histories = markers.map(() => []);
       const hair = rig.hair ? hairInspector(rig.hair) : null;
@@ -1521,7 +1533,7 @@ async function measure(onlyHero) {
       }
     }
     dynamics();
-    checkFlorence({ rig, controller, input, animate, name, height, result, check });
+    checkFlorence({ rig, controller, input, animate, name, result, check });
 
     result.props = {};
     for (const prop of PROPS) {

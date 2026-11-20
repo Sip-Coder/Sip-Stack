@@ -43,7 +43,11 @@ export async function runCharacterProbe(measure, options = {}) {
       let file;
       if (path.startsWith('/three/')) file = join(three, path.slice(7));
       else if (path.startsWith('/characters/')) file = join(docs, path);
-      else if (/^\/tools\/characters-[a-z-]+\.mjs$/.test(path)) file = join(docs, '..', path);
+      else if (
+        path === '/tools/blueprints/measure-landmarks.mjs' ||
+        /^\/tools\/characters-[a-z-]+\.mjs$/.test(path)
+      )
+        file = join(docs, '..', path);
       else {
         res.writeHead(404).end();
         return;
@@ -77,6 +81,7 @@ export async function runCharacterProbe(measure, options = {}) {
     const result = await done;
     console.log(JSON.stringify(result, null, 2));
     if (result.error || result.failures?.length) process.exitCode = 1;
+    return result;
   } finally {
     clearTimeout(timeout);
     const closed = chrome.exitCode === null ? once(chrome, 'close') : Promise.resolve();

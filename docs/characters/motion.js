@@ -13,11 +13,7 @@ const TAU = Math.PI * 2,
   WALK = 1.13,
   RUN = 3.89,
   MAX_STEP = 0.201;
-const THIGH = 0.245,
-  SHIN = 0.228,
-  ANKLE = 0.047,
-  DOWN = new T.Vector3(0, -1, 0),
-  UP = new T.Vector3(0, 1, 0);
+const UP = new T.Vector3(0, 1, 0);
 const ease = (u) => u * u * (3 - 2 * u);
 
 function surface(p, z) {
@@ -34,7 +30,7 @@ export function groundHeight(x, z) {
 // its lower side profile, then integrate the ground contact across its edges.
 // Each interval rotates about one fixed material point. Neighbouring intervals
 // meet at the angle where both vertices of their common edge touch the ground.
-function makeSoleProfile(ankle) {
+function makeSoleProfile(ankle, restClearance) {
   ankle.updateWorldMatrix(true, true);
   const intoAnkle = ankle.matrixWorld.clone().invert();
   const transform = new T.Matrix4(),
@@ -46,11 +42,21 @@ function makeSoleProfile(ankle) {
     const vertices = mesh.geometry.getAttribute('position');
     for (let i = 0; i < vertices.count; i++) {
       vertex.fromBufferAttribute(vertices, i).applyMatrix4(transform);
-      points.push({ x: vertex.x, y: vertex.y + ANKLE, z: vertex.z });
+      points.push({ x: vertex.x, y: vertex.y, z: vertex.z });
     }
   });
   // A bare rig is also used by kinematics-only harnesses.
-  if (!points.length) points.push({ x: 0, z: -0.035, y: 0 }, { x: 0, z: 0.077, y: 0 });
+  if (!points.length)
+    points.push({ x: 0, z: -0.035, y: -restClearance }, { x: 0, z: 0.077, y: -restClearance });
+  let lowest = Infinity,
+    halfWidth = 0,
+    halfDepth = 0;
+  for (const p of points) {
+    lowest = Math.min(lowest, p.y);
+    halfWidth = Math.max(halfWidth, Math.abs(p.x));
+    halfDepth = Math.max(halfDepth, Math.abs(p.z));
+  }
+  for (const p of points) p.y -= lowest;
   points.sort((a, b) => a.z - b.z || a.y - b.y);
   const hull = [];
   for (const p of points) {
@@ -69,13 +75,11 @@ function makeSoleProfile(ankle) {
     const v = hull[i],
       prev = hull[i - 1];
     v.from = prev ? Math.atan2(v.y - prev.y, v.z - prev.z) : -Math.PI / 2;
-    v.travel = prev
-      ? prev.travel + (v.z - prev.z) * Math.cos(v.from) + (v.y - prev.y) * Math.sin(v.from)
-      : 0;
+    v.travel = prev ? prev.travel + (v.z - prev.z) * Math.cos(v.from) + (v.y - prev.y) * Math.sin(v.from) : 0;
     if (v.from <= 0) zero = v.travel - v.z;
   }
   for (const v of hull) v.travel -= zero;
-  return hull;
+  return { profile: hull, ankleClearance: -lowest, halfWidth, halfDepth };
 }
 
 // Skinning is affine for each influencing joint. A roll only needs one row
@@ -121,6 +125,11 @@ function skinnedFloor(mesh) {
 export function createController(rig, x = 0, z = 0) {
   const { root, height } = rig;
   const capsuleRadius = height * 0.118;
+  // The public height includes an enlarged head. Joint lengths and sole
+  // contours are in rig units, which use the skeleton's actual world scale.
+  const modelScale = root.getWorldScale(new T.Vector3());
+  const metresPerUnit = modelScale.y;
+  const restHips = rig.hips.position.clone();
   const armSwing = rig.name.toLowerCase() === 'hummin' ? 0.79 : 1;
   const velocity = new T.Vector3();
   const frame = {
@@ -135,27 +144,44 @@ export function createController(rig, x = 0, z = 0) {
     phase: Math.PI / 2,
     heading: 0,
   };
-  const contacts = ['L', 'R'].map((side, i) => ({
-    side,
-    sign: i === 0 ? 1 : -1,
-    planted: true,
-    ankle: rig['foot' + side],
-    thigh: rig['thigh' + side],
-    shin: rig['shin' + side],
-    anchor: new T.Vector3(),
-    sole: new T.Vector3(),
-    support: new T.Vector3(),
-    pivot: 0,
-    target: new T.Vector3(),
-    liftOff: new T.Vector3(),
-    landing: new T.Vector3(),
-    pitch: 0,
-    yaw: 0,
-    stage: 'flat',
-    profile: makeSoleProfile(rig['foot' + side]),
-    orientation: new T.Quaternion(),
-    ankleOffset: new T.Vector3(),
-  }));
+  const contacts = ['L', 'R'].map((side, i) => {
+    const thigh = rig['thigh' + side],
+      shin = rig['shin' + side],
+      ankle = rig['foot' + side];
+    const thighLength = shin.position.length(),
+      shinLength = ankle.position.length();
+    return {
+      thigh,
+      shin,
+      ankle,
+      thighLength,
+      shinLength,
+      upperAxis: shin.position.clone().normalize(),
+      lowerAxis: ankle.position.clone().normalize(),
+      restX: restHips.x + thigh.position.x + shin.position.x + ankle.position.x,
+      restZ: restHips.z + thigh.position.z + shin.position.z + ankle.position.z,
+      ...makeSoleProfile(ankle, restHips.y + thigh.position.y + shin.position.y + ankle.position.y),
+      side,
+      sign: i === 0 ? 1 : -1,
+      planted: true,
+      anchor: new T.Vector3(),
+      sole: new T.Vector3(),
+      support: new T.Vector3(),
+      pivot: 0,
+      target: new T.Vector3(),
+      liftOff: new T.Vector3(),
+      landing: new T.Vector3(),
+      pitch: 0,
+      yaw: 0,
+      stage: 'flat',
+      orientation: new T.Quaternion(),
+      ankleOffset: new T.Vector3(),
+    };
+  });
+  const legLength =
+    (contacts[0].thighLength + contacts[0].shinLength + contacts[1].thighLength + contacts[1].shinLength) / 2;
+  const shoeWidth = Math.max(0.042, contacts[0].halfWidth, contacts[1].halfWidth);
+  const shoeDepth = Math.max(0.105, contacts[0].halfDepth, contacts[1].halfDepth);
   const dir = new T.Vector3(),
     knee = new T.Vector3(),
     shinDir = new T.Vector3(),
@@ -193,7 +219,7 @@ export function createController(rig, x = 0, z = 0) {
     // Stay on the chosen tread on either side of a hard edge. In particular
     // a predicted swing endpoint may reach the top of a crate the capsule
     // itself cannot climb: keep that foot on the accessible side instead.
-    const pad = 0.1 * height;
+    const pad = 0.1 * metresPerUnit;
     for (const p of PROPS) {
       const halfW = p.width * 0.5,
         halfD = p.depth * 0.5;
@@ -216,7 +242,8 @@ export function createController(rig, x = 0, z = 0) {
     v.y = groundHeight(v.x, v.z);
   }
   function atRest(c, v, lead = 0) {
-    const lateral = c.sign * height * 0.065;
+    const lateral = c.restX * modelScale.x;
+    lead += c.restZ * modelScale.z;
     v.set(
       root.position.x + lateral * cosine + lead * sine,
       0,
@@ -227,8 +254,8 @@ export function createController(rig, x = 0, z = 0) {
   function swingFloor(px, pz) {
     // Include the whole shoe while clearing a step nose. The ankle can already
     // be over the lower tread while the trailing heel is above the upper one.
-    const padX = height * (0.042 * Math.abs(cosine) + 0.105 * Math.abs(sine));
-    const padZ = height * (0.042 * Math.abs(sine) + 0.105 * Math.abs(cosine));
+    const padX = modelScale.x * shoeWidth * Math.abs(cosine) + modelScale.z * shoeDepth * Math.abs(sine);
+    const padZ = modelScale.x * shoeWidth * Math.abs(sine) + modelScale.z * shoeDepth * Math.abs(cosine);
     let floor = 0;
     for (const p of PROPS) {
       if (Math.abs(px - p.x) > p.width * 0.5 + padX || Math.abs(pz - p.z) > p.depth * 0.5 + padZ) continue;
@@ -242,7 +269,7 @@ export function createController(rig, x = 0, z = 0) {
     altitude = groundHeight(px, pz);
     root.position.set(px, altitude, pz);
     root.rotation.set(0, 0, 0);
-    rig.hips.position.set(0, 0.52, 0);
+    rig.hips.position.copy(restHips);
     for (const node of rig.joints) node.quaternion.identity();
     travel = 0.25;
     movingLast = inAir = false;
@@ -356,7 +383,7 @@ export function createController(rig, x = 0, z = 0) {
       dz = Math.abs(c.target.z - p.z);
     const slope = dx <= p.width * 0.5 && dz <= p.depth * 0.5 ? p.height / p.depth : 0;
     // Express the surface normal in the rotated pelvis coordinate frame.
-    dir.set(sine * slope, 1, -cosine * slope).normalize();
+    dir.set(modelScale.x * sine * slope, modelScale.y, -modelScale.z * cosine * slope).normalize();
     c.orientation.setFromUnitVectors(UP, dir);
     // Keep the contact yaw independent of the body as it turns over this foot.
     c.orientation.multiply(worldFoot.setFromAxisAngle(UP, c.yaw - heading));
@@ -370,13 +397,13 @@ export function createController(rig, x = 0, z = 0) {
       sample
         .set(0, v.z * sn - v.y * cs, v.travel - v.z * cs - v.y * sn)
         .applyQuaternion(c.orientation)
-        .multiplyScalar(height);
+        .multiply(modelScale);
       c.target.x += cosine * sample.x + sine * sample.z;
       c.target.y += sample.y;
       c.target.z += cosine * sample.z - sine * sample.x;
     }
     c.orientation.multiply(worldFoot.setFromAxisAngle(axisX, c.pitch));
-    c.ankleOffset.copy(UP).multiplyScalar(ANKLE).applyQuaternion(c.orientation);
+    c.ankleOffset.copy(UP).multiplyScalar(c.ankleClearance).applyQuaternion(c.orientation);
   }
 
   function solveLeg(c) {
@@ -385,29 +412,37 @@ export function createController(rig, x = 0, z = 0) {
     const dx = c.target.x - root.position.x,
       dz = c.target.z - root.position.z;
     local.set(
-      (cosine * dx - sine * dz) / height - c.thigh.position.x - rig.hips.position.x + c.ankleOffset.x,
-      (c.target.y - root.position.y) / height - rig.hips.position.y + c.ankleOffset.y,
-      (sine * dx + cosine * dz) / height + c.ankleOffset.z,
+      (cosine * dx - sine * dz) / modelScale.x - c.thigh.position.x - rig.hips.position.x + c.ankleOffset.x,
+      (c.target.y - root.position.y) / metresPerUnit -
+        rig.hips.position.y -
+        c.thigh.position.y +
+        c.ankleOffset.y,
+      (sine * dx + cosine * dz) / modelScale.z - rig.hips.position.z - c.thigh.position.z + c.ankleOffset.z,
     );
-    const len = clamp(local.length(), 0.03, THIGH + SHIN - 1e-7);
+    const { thighLength, shinLength } = c;
+    const len = clamp(
+      local.length(),
+      Math.abs(thighLength - shinLength) + 1e-7,
+      thighLength + shinLength - 1e-7,
+    );
     dir.copy(local).normalize();
     // The knee's bend pole stays forward even on a lateral step.
     pole.set(0, 0, 1).addScaledVector(dir, -dir.z).normalize();
-    const along = (THIGH * THIGH - SHIN * SHIN + len * len) / (2 * len);
+    const along = (thighLength * thighLength - shinLength * shinLength + len * len) / (2 * len);
     knee
       .copy(dir)
       .multiplyScalar(along)
-      .addScaledVector(pole, Math.sqrt(Math.max(0, THIGH * THIGH - along * along)));
-    c.thigh.quaternion.setFromUnitVectors(DOWN, shinDir.copy(knee).normalize());
+      .addScaledVector(pole, Math.sqrt(Math.max(0, thighLength * thighLength - along * along)));
+    c.thigh.quaternion.setFromUnitVectors(c.upperAxis, shinDir.copy(knee).normalize());
     invQ.copy(c.thigh.quaternion).invert();
     shinDir.copy(dir).multiplyScalar(len).sub(knee).normalize().applyQuaternion(invQ);
-    c.shin.quaternion.setFromUnitVectors(DOWN, shinDir);
+    c.shin.quaternion.setFromUnitVectors(c.lowerAxis, shinDir);
     invQ.multiplyQuaternions(c.thigh.quaternion, c.shin.quaternion).invert();
     c.ankle.quaternion.multiplyQuaternions(invQ, c.orientation);
   }
   function walkPose(dt, running, crouch) {
     const sway = Math.min(frame.speed / WALK, 1);
-    const stride = height * lerp(0.585, 0.94, running);
+    const stride = metresPerUnit * legLength * lerp(0.585 / 0.473, 0.94 / 0.473, running);
     travel += (frame.speed * dt) / stride;
     travel -= Math.floor(travel);
     frame.phase = travel * TAU;
@@ -418,15 +453,15 @@ export function createController(rig, x = 0, z = 0) {
     movingLast = frame.speed >= 0.015;
     for (let i = 0; i < contacts.length; i++)
       planFoot(contacts[i], (travel + i * 0.5) % 1, stride, running, dt);
-    let hipY = 0.52 - sway * (0.029 + running * 0.042) - 0.002 * (1 - sway);
+    let hipY = restHips.y - sway * (0.029 + running * 0.042) - 0.002 * (1 - sway);
     // A walker rounds a tight bend on softer knees; reserve lateral reach
     // before the trailing stance leg approaches full extension.
     hipY -= (1 - running) * Math.abs(lean) * 0.27;
     const bobRange = lerp(0.035, 0.065, running);
-    hipY += (((Math.cos((travel - 0.25) * TAU * 2) - 1) * bobRange * 0.5) / height) * sway;
+    hipY += (((Math.cos((travel - 0.25) * TAU * 2) - 1) * bobRange * 0.5) / metresPerUnit) * sway;
     hipY -= crouch;
     rig.hips.position.x =
-      0.009 * sway * Math.sin(frame.phase) + 0.002 * (1 - sway) * Math.sin(frame.time * 1.07);
+      restHips.x + 0.009 * sway * Math.sin(frame.phase) + 0.002 * (1 - sway) * Math.sin(frame.time * 1.07);
     // Cap pelvis height by the reach sphere of each leg. This is important at
     // a stair lip or during a sharp reversal while a foot is still locked.
     for (const c of contacts) {
@@ -434,10 +469,11 @@ export function createController(rig, x = 0, z = 0) {
       const dx = c.target.x - root.position.x,
         dz = c.target.z - root.position.z;
       const ax =
-        (cosine * dx - sine * dz) / height - c.thigh.position.x - rig.hips.position.x + c.ankleOffset.x;
-      const az = (sine * dx + cosine * dz) / height + c.ankleOffset.z;
-      const ankleY = (c.target.y - root.position.y) / height + c.ankleOffset.y;
-      const reach = THIGH + SHIN - 0.0002;
+        (cosine * dx - sine * dz) / modelScale.x - c.thigh.position.x - rig.hips.position.x + c.ankleOffset.x;
+      const az =
+        (sine * dx + cosine * dz) / modelScale.z - rig.hips.position.z - c.thigh.position.z + c.ankleOffset.z;
+      const ankleY = (c.target.y - root.position.y) / metresPerUnit - c.thigh.position.y + c.ankleOffset.y;
+      const reach = c.thighLength + c.shinLength - 0.0002;
       hipY = Math.min(hipY, ankleY + Math.sqrt(Math.max(0.0025, reach * reach - ax * ax - az * az)));
     }
     rig.hips.position.y = hipY;
@@ -447,14 +483,18 @@ export function createController(rig, x = 0, z = 0) {
     rig.upperArmR.rotation.x = -rig.upperArmL.rotation.x;
     rig.forearmL.rotation.x = -(0.14 + running * 1.14);
     rig.forearmR.rotation.x = rig.forearmL.rotation.x;
-    rig.chest.rotation.x = ((17.4 * Math.PI) / 180) * running + crouch * 0.84;
-    rig.chest.rotation.z = lean - 0.012 * Math.sin(frame.phase) * sway;
+    const forward = ((17.4 * Math.PI) / 180) * running;
+    rig.chest.rotation.x =
+      Math.atan2(modelScale.y * Math.sin(forward), modelScale.z * Math.cos(forward)) + crouch * 0.84;
+    rig.chest.rotation.z =
+      Math.atan2(modelScale.y * Math.sin(lean), modelScale.x * Math.cos(lean)) -
+      0.012 * Math.sin(frame.phase) * sway;
     rig.chest.rotation.y = Math.cos(frame.phase) * 0.083 * sway;
   }
 
   function step(dt, input) {
     for (const node of rig.joints) node.quaternion.identity();
-    rig.hips.position.set(0, 0.52, 0);
+    rig.hips.position.copy(restHips);
     frame.dt = dt;
     frame.time += dt;
     frame.breath = Math.sin(frame.time * 1.31);
@@ -523,7 +563,7 @@ export function createController(rig, x = 0, z = 0) {
       const u = Math.min(1, rollTime / 0.62),
         tuck = Math.sin(Math.PI * u);
       frame.state = 'roll';
-      rig.hips.position.y = 0.52 - 0.28 * tuck;
+      rig.hips.position.y = restHips.y - legLength * (0.28 / 0.473) * tuck;
       rig.hips.rotation.x = TAU * ease(u);
       rig.hips.rotation.z = -0.24 * tuck;
       rig.chest.rotation.x = 0.47 * tuck;
@@ -591,10 +631,10 @@ export function createController(rig, x = 0, z = 0) {
     }
     for (const c of contacts) {
       c.ankle.updateWorldMatrix(true, false);
-      c.sole.set(0, -ANKLE, 0).applyMatrix4(c.ankle.matrixWorld);
+      c.sole.set(0, -c.ankleClearance, 0).applyMatrix4(c.ankle.matrixWorld);
       if (c.planted) {
         const v = c.profile[c.pivot];
-        c.support.set(v.x, v.y - ANKLE, v.z).applyMatrix4(c.ankle.matrixWorld);
+        c.support.set(v.x, v.y - c.ankleClearance, v.z).applyMatrix4(c.ankle.matrixWorld);
       }
       if (inAir) {
         const edge = swingFloor(c.sole.x, c.sole.z);
@@ -605,7 +645,7 @@ export function createController(rig, x = 0, z = 0) {
           orientFoot(c, false);
           solveLeg(c);
           c.ankle.updateWorldMatrix(true, false);
-          c.sole.set(0, -ANKLE, 0).applyMatrix4(c.ankle.matrixWorld);
+          c.sole.set(0, -c.ankleClearance, 0).applyMatrix4(c.ankle.matrixWorld);
         }
       }
     }
@@ -639,7 +679,7 @@ export function createController(rig, x = 0, z = 0) {
     }
     if (Number.isFinite(lowest)) {
       rollSupport = altitude - lowest;
-      rig.hips.position.y += rollSupport / height;
+      rig.hips.position.y += rollSupport / metresPerUnit;
       for (const c of contacts) c.sole.y += rollSupport;
     }
   }

@@ -36,7 +36,13 @@ export function poseGarment(rig, controller, animate, id) {
       const thigh = -1.17 * extension,
         knee = 2.12 * extension;
       // Preserve the ankle height as the hips descend over the bent legs.
-      rig.hips.position.y -= 0.245 * (1 - Math.cos(thigh)) + 0.228 * (1 - Math.cos(thigh + knee));
+      const upper = rig.shinL.position,
+        lower = rig.footL.position;
+      rig.hips.position.y +=
+        upper.y * (1 - Math.cos(thigh)) +
+        upper.z * Math.sin(thigh) +
+        lower.y * (1 - Math.cos(thigh + knee)) +
+        lower.z * Math.sin(thigh + knee);
       rig.chest.rotation.x += 0.44 * extension;
       for (const side of ['L', 'R']) {
         rig['thigh' + side].rotation.set(thigh, 0, 0);

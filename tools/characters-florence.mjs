@@ -149,7 +149,7 @@ export function captureIdleMotion(rig, system) {
   };
 }
 
-export function checkFlorence({ rig, controller, input, animate, name, height, result, check }) {
+export function checkFlorence({ rig, controller, input, animate, name, result, check }) {
   if (!rig.hair) return;
   const api = rig.secondary[name],
     system = rig.hair,
@@ -184,7 +184,15 @@ export function checkFlorence({ rig, controller, input, animate, name, height, r
   let stopped;
   const m = new T.Matrix4(),
     q = new T.Vector3(),
-    headInverse = new T.Matrix4();
+    headInverse = new T.Matrix4(),
+    neutralHead = new T.Matrix4();
+  function updateHeadFrame(first = false) {
+    // Compare a strand in metres in one physical head frame. Inverting
+    // the complete live head transform also removes the shear shared by
+    // a scalp and its attached roots under a shorter, wider body rig.
+    if (first) neutralHead.copy(rig.head.matrixWorld).setPosition(0, 0, 0);
+    headInverse.copy(rig.head.matrixWorld).invert().premultiply(neutralHead);
+  }
   for (let i = 0; i < end; i++) {
     input.z = i >= idleEnd && i < runEnd ? 1 : 0;
     input.run = i >= walkEnd && i < runEnd;
@@ -200,11 +208,11 @@ export function checkFlorence({ rig, controller, input, animate, name, height, r
     if (stopped != null && i < stopEnd) idleDrivers.remember(f);
     heights.push(rig.head.getWorldPosition(q).y);
 
-    headInverse.copy(rig.head.matrixWorld).invert();
+    updateHeadFrame(i === 0);
     for (const track of tracks) {
       const p = track.stations.map((sample) => sample());
       m.multiplyMatrices(headInverse, track.chain.group.matrixWorld);
-      const h = p.map((v) => v.clone().applyMatrix4(m).multiplyScalar(height));
+      const h = p.map((v) => v.clone().applyMatrix4(m));
       const worldTip = p[3].clone().applyMatrix4(track.chain.group.matrixWorld);
       track.restTip ??= p[3].clone();
       const rigidTip = track.restTip.clone().applyMatrix4(track.chain.group.matrixWorld);
@@ -244,7 +252,7 @@ export function checkFlorence({ rig, controller, input, animate, name, height, r
     response = [stopEnd + 24, end];
   const residualAngles = tracks.map(() => []);
   idleDrivers.replay((i) => {
-    headInverse.copy(rig.head.matrixWorld).invert();
+    updateHeadFrame();
     tracks.forEach((track, j) => {
       m.multiplyMatrices(headInverse, track.chain.group.matrixWorld);
       const a = track.stations[2]().applyMatrix4(m),
