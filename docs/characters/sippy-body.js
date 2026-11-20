@@ -71,19 +71,19 @@ const armShape = [
 const legShape = [
   [-0.467, 0.02, 0.024, 0.002],
   [-0.447, 0.021, 0.025, 0.001],
-  [-0.423, 0.02, 0.022, -0.001],
-  [-0.397, 0.021, 0.025, -0.004],
-  [-0.367, 0.023, 0.028, -0.005],
-  [-0.34, 0.025, 0.03, -0.005],
-  [-0.305, 0.025, 0.028, -0.004],
-  [-0.278, 0.023, 0.025, -0.001],
-  [-0.255, 0.024, 0.026, 0.002],
-  [-0.244, 0.024, 0.028, 0.004],
-  [-0.229, 0.025, 0.027, 0.002],
-  [-0.199, 0.026, 0.03, 0],
-  [-0.168, 0.028, 0.032, -0.001],
-  [-0.133, 0.03, 0.034, -0.002],
-  [-0.094, 0.033, 0.035, -0.002],
+  [-0.423, 0.02, 0.022, -0.005],
+  [-0.397, 0.021, 0.025, -0.011],
+  [-0.367, 0.023, 0.028, -0.016],
+  [-0.34, 0.025, 0.03, -0.02],
+  [-0.305, 0.025, 0.028, -0.023],
+  [-0.278, 0.023, 0.025, -0.018],
+  [-0.266, 0.024, 0.026, -0.017],
+  [-0.257, 0.024, 0.028, -0.016],
+  [-0.231, 0.025, 0.027, -0.02],
+  [-0.199, 0.026, 0.03, -0.018],
+  [-0.168, 0.028, 0.032, -0.015],
+  [-0.133, 0.03, 0.034, -0.014],
+  [-0.094, 0.033, 0.035, -0.012],
 ];
 
 function fingers() {
@@ -296,7 +296,7 @@ function bendFrames(rig, side, leg, levels, bones) {
         pivot = lower.position.y,
         radius = Math.min(
           leg ? 0.082 : 0.054,
-          (0.94 * Math.min(-pivot, pivot - (leg ? -0.474 : -0.322))) / Math.max(0.001, tan),
+          (0.94 * Math.min(-pivot, pivot - (leg ? -0.453 : -0.322))) / Math.max(0.001, tan),
         ),
         band = Math.max(0.00001, radius * tan);
       cross.set(d.x, 0, d.z).normalize();
@@ -338,7 +338,8 @@ export function makeSippyBody(rig, skin) {
       index = [],
       regions = { legs: [], shoulders: [], torso: [], neck: [], distalArms: [] };
     let region = 'torso';
-    const hips = { interior: [], fork: [], trunk: [] },
+    const knees = {},
+      hips = { interior: [], fork: [], trunk: [] },
       caps = [];
     function vertex(x, y, z, j = 0, k = j, t = 0) {
       pos.push([x, y, z]);
@@ -406,6 +407,7 @@ export function makeSippyBody(rig, skin) {
         handBone = side === 'L' ? 2 : 3;
       region = 'legs';
       const legs = legShape.map(([y, rx, rz, z], r) => ellipse(legX, 0.52 + y, z, rx, rz, legBone + r));
+      knees[side] = legs[9]; // Indexed skin ring through the patella.
       for (let r = 0; r < legs.length - 1; r++) band(legs[r], legs[r + 1]);
       const foot = vertex(legX, 0.051, 0.002, legBone);
       for (let j = 0; j < n; j++) tri(foot, legs[0][(j + 1) % n], legs[0][j]);
@@ -517,7 +519,7 @@ export function makeSippyBody(rig, skin) {
     const offsets = Uint32Array.from(moving, (i) => i * 3),
       touched = new Uint8Array(pos.length);
     for (const i of moving) touched[i] = 1;
-    return { g, regions, hips, caps, faces: Uint32Array.from(faces), offsets, touched };
+    return { g, regions, knees, hips, caps, faces: Uint32Array.from(faces), offsets, touched };
   }
   const high = build(false),
     mobile = build(true),
@@ -698,6 +700,10 @@ export function makeSippyBody(rig, skin) {
   return {
     mesh,
     regions: high.regions,
+    knees: {
+      L: { high: high.knees.L, mobile: mobile.knees.L },
+      R: { high: high.knees.R, mobile: mobile.knees.R },
+    },
     update() {
       for (const fn of updates) fn();
       const shape = mesh.geometry === mobile.g ? mobile : high;

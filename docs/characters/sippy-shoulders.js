@@ -355,7 +355,7 @@ function makeCrown(jacket, sleeve, bodyIds, sleeveIds, side) {
     center0.divideScalar(trunk.length);
     center0.x = side * 0.1078;
     for (let i = 0; i < arm.length; i++) center1.add(scratch.fromBufferAttribute(sleeveAttr, arm[i].id));
-    center1.divideScalar(arm.length).applyMatrix4(pose).addScaledVector(axis, -0.00432);
+    center1.divideScalar(arm.length).applyMatrix4(pose).addScaledVector(axis, -0.00468);
     chord.subVectors(center1, center0);
     const span = chord.length(),
       handle = Math.max(0.036, span * 1.05);
@@ -408,7 +408,7 @@ function makeCrown(jacket, sleeve, bodyIds, sleeveIds, side) {
       read(a, bodyAttr, bodyLine[j]);
       read(b, sleeveAttr, sleeveLine[j]);
       a.x += side * 0.00095;
-      b.applyMatrix4(pose).addScaledVector(axis, -0.00032);
+      b.applyMatrix4(pose).addScaledVector(axis, -0.00068);
       r0.copy(a).sub(center0);
       r1.copy(b).sub(center1).applyQuaternion(reverse);
       for (let k = 0; k <= sections; k++) {

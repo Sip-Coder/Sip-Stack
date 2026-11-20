@@ -127,14 +127,18 @@ function torsoPoint(y, a, scale, lift = 0) {
 }
 function jacketY(v, a) {
   const hem = -0.126 + 0.014 * Math.cos(a) - 0.007 * Math.sin(a) ** 2;
-  return lerp(hem, 0.166, v);
+  const y = lerp(hem, 0.166, v);
+  // The longer, square-cut skirt hangs below the waistcoat. Retain the
+  // shoulder and lapel pattern above the floating ribs.
+  return y - (0.04 + 0.012 * Math.cos(a)) * (1 - smooth(y, -0.09, 0.035));
 }
 function waistY(v, a) {
   const c = Math.max(0, Math.cos(a)),
     side = Math.abs(Math.sin(a));
   const hem = -0.094 - 0.012 * c + 0.002 * c * gauss(side, 0, 0.16);
   const neckline = 0.152 - 0.083 * c ** 2 * Math.exp(-4 * side);
-  return lerp(hem, neckline, v);
+  const y = lerp(hem, neckline, v);
+  return y - 0.023 * (1 - smooth(y, -0.077, 0.02));
 }
 export function frontZ(x, y, lift = 0) {
   const w = interpolate(torso, y, 1);
@@ -181,7 +185,7 @@ export function cutSuit(rig, mats) {
     shell(
       14,
       56,
-      (v, u, inner) => torsoPoint(lerp(-0.139, -0.0778, v), u * tau, 0.9255, inner ? -0.00135 : 0),
+      (v, u, inner) => torsoPoint(lerp(-0.163, -0.1008, v), u * tau, 0.9255, inner ? -0.00135 : 0),
       true,
     ),
     trousers,
@@ -310,20 +314,18 @@ export function fitLimb(suit, side, leg, mats) {
     pivot = lower.position.y;
   const rows = leg
     ? [
-        [-0.474, 0.04, 0.045, 0.005],
-        [-0.462, 0.041, 0.048, 0.004],
-        [-0.433, 0.035, 0.038, 0.001],
-        [-0.397, 0.036, 0.042, -0.006],
-        [-0.34, 0.041, 0.05, -0.007],
-        [-0.298, 0.044, 0.048, -0.005],
-        [-0.263, 0.039, 0.042, 0.002],
-        [-0.244, 0.041, 0.047, 0.005],
-        [-0.225, 0.042, 0.046, 0.003],
-        [-0.171, 0.045, 0.051, 0.0],
-        [-0.096, 0.054, 0.057, -0.003],
-        [-0.044, 0.06, 0.061, -0.003],
-        [-0.005, 0.059, 0.057, -0.004],
-        [0.024, 0.042, 0.047, -0.004],
+        [-0.453, 0.04, 0.049, 0.001],
+        [-0.437, 0.043, 0.05, 0.001],
+        [-0.418, 0.0365, 0.041, -0.005],
+        [-0.37, 0.038, 0.045, -0.015],
+        [-0.312, 0.041, 0.05, -0.023],
+        [-0.278, 0.038, 0.045, -0.018],
+        [-0.257, 0.04, 0.051, -0.017],
+        [-0.235, 0.043, 0.051, -0.02],
+        [-0.17, 0.048, 0.056, -0.015],
+        [-0.104, 0.0555, 0.064, -0.013],
+        [-0.062, 0.054, 0.064, -0.007],
+        [-0.032, 0.043, 0.051, -0.004],
       ]
     : [
         [-0.322, 0.03, 0.03, 0.0],
@@ -549,6 +551,8 @@ export function fitOpenings(suit) {
         else if (id === 'vest') side = 0.951;
         const limit =
           (0.09 +
+            0.016 * (1 - smooth(rest[k + 1], 0.055, 0.103)) -
+            0.0036 * gauss(rest[k + 1], 0.06, 0.021) * gauss(z, -0.01, 0.03) +
             0.013 * smooth(rest[k + 1], -0.036, 0.115) +
             0.004 * (1 - smooth(rest[k + 1], -0.12, -0.055))) *
           side;
@@ -592,7 +596,7 @@ export function fitOpenings(suit) {
     }
     const hem = Math.min(0.028, highest + 0.0038),
       top = 0.066;
-    const compression = Math.max(0, hem + 0.139) / (top + 0.139);
+    const compression = Math.max(0, hem + 0.166) / (top + 0.166);
     const chain = rig.secondary?.sippy?.chain;
     if (chain) chain.position.y = 0.09 * compression;
     for (const { m, rest, id } of torsoPieces) {
