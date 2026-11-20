@@ -224,6 +224,7 @@ function sculpt(detail, coat = false) {
       hand = section(palm, y);
     const digits = fingers.map((rows) => section(rows, y));
     const separation = 0.014 + 0.052 * (1 - smooth(y, 0.525, 0.677));
+    const axilla = coat ? T.MathUtils.lerp(0.001, 0.03, smooth(y, 0.696, 0.749)) : y > 0.715 ? 0.02 : 0.001;
     for (let k = 0; k < nz; k++) {
       const z = zs[k],
         offset = k * plane + j * nx;
@@ -260,7 +261,7 @@ function sculpt(detail, coat = false) {
         const trunkAndLeg = join(torso, lowerDist, 0.01);
         const branch = limb < trunkAndLeg ? 1 : lowerDist < torso ? 2 : 0;
         owner[offset + i] = branch;
-        field[offset + i] = join(trunkAndLeg, limb, y > 0.715 ? (coat ? 0.027 : 0.02) : 0.001);
+        field[offset + i] = join(trunkAndLeg, limb, axilla);
       }
     }
   }
@@ -379,6 +380,7 @@ function sculpt(detail, coat = false) {
   g.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
   g.setAttribute('skinIndex', new T.Uint16BufferAttribute(skinIndex, 4));
   g.setAttribute('skinWeight', new T.Float32BufferAttribute(weights, 4));
+  g.userData.anatomicalRegions = Uint8Array.from(skinRegion);
   g.setIndex(idx);
   g.computeVertexNormals();
   g.computeBoundingSphere();
@@ -456,7 +458,13 @@ export function bindJointFans(rig, meshes) {
           ax = Math.abs(px),
           y = pos.getY(i),
           off = i * 4;
-        if (y > 0.645 && y < 0.819 && ax > 0.058 && (y > 0.669 || ax > 0.096)) {
+        if (
+          !g.userData.chestAnchors?.has(i) &&
+          y > 0.645 &&
+          y < 0.819 &&
+          ax > 0.058 &&
+          (y > 0.669 || ax > 0.096)
+        ) {
           const dx = ax - 0.144,
             dy = y - 0.785,
             reach = Math.hypot(dx, dy),

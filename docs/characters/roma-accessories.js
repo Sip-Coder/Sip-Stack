@@ -185,7 +185,9 @@ function radialEnvelope(garment) {
     index = garment.geometry.index.array;
   // Retain the slice storage across poses, including deep folds where one
   // azimuth can cut the same cloth ring more than once.
-  const bins = Array.from({ length: 64 }, () => new Float32Array(256));
+  // Each triangle can contribute at most one segment to any given radial slice.
+  const capacity = 4 * (index.length / 3);
+  const bins = Array.from({ length: 64 }, () => new Float32Array(capacity));
   const used = new Uint32Array(bins.length);
   const vec = new T.Vector3();
   const angles = new Float32Array(positions.count);
@@ -246,11 +248,6 @@ function radialEnvelope(garment) {
         }
         if (n === 2) {
           const head = used[slot];
-          if (head + 4 > bins[slot].length) {
-            const more = new Float32Array(bins[slot].length * 2);
-            more.set(bins[slot]);
-            bins[slot] = more;
-          }
           const bin = bins[slot];
           bin[head] = h0;
           bin[head + 1] = r0;
@@ -312,6 +309,9 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
   const chestToHips = new T.Matrix4(),
     hipsToChest = new T.Matrix4();
   const centers = Array.from({ length: samples }, () => new T.Vector3());
+  const relaxed = Array.from({ length: samples }, () => new T.Vector3());
+  const minimumDistance = new Float32Array(samples);
+  const targetPoint = new T.Vector3();
   const tangent = new T.Vector3(),
     side = new T.Vector3(),
     normal = new T.Vector3(),
@@ -428,6 +428,52 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
         center.copy(v).applyMatrix4(jacketToChest);
       }
       avoidSleeve(center);
+    }
+    // Leather has enough bending stiffness to bridge a fold in the shell. Relax
+    // both ends of the shoulder strap as continuous curves, preserving the two
+    // brass attachment points and the radial support from the moving layers.
+    for (let i = 0; i < samples; i++) minimumDistance[i] = Math.hypot(centers[i].x, centers[i].z) - 0.0015;
+    // A stiff ribbon spans a projecting hem over several guide intervals.
+    // Bound the rate at which its radial support falls away from a folded
+    // panel, so a segment between two outside guides cannot cut across it.
+    const allowance = 0.024;
+    for (let i = 2; i < samples - 1; i++)
+      if (centers[i].y < 0.047)
+        minimumDistance[i] = Math.max(minimumDistance[i], minimumDistance[i - 1] - allowance);
+    for (let i = samples - 3; i >= 1; i--)
+      if (centers[i].y < 0.047)
+        minimumDistance[i] = Math.max(minimumDistance[i], minimumDistance[i + 1] - allowance);
+    for (let pass = 0; pass < 12; pass++) {
+      for (let i = 1; i < samples - 1; i++) {
+        const point = centers[i],
+          out = relaxed[i].copy(point);
+        if (point.y > 0.045) continue;
+        const left = centers[i - 1],
+          right = centers[i + 1];
+        targetPoint.lerpVectors(left, right, 0.5);
+        out.lerp(targetPoint, 0.63);
+        const radius = Math.hypot(out.x, out.z);
+        if (radius < minimumDistance[i] && radius > 0.001) {
+          out.x *= minimumDistance[i] / radius;
+          out.z *= minimumDistance[i] / radius;
+        }
+      }
+      for (let i = 1; i < samples - 1; i++) centers[i].copy(relaxed[i]);
+    }
+    // Smoothing can move a guide sideways into a neighbouring upward hem fold.
+    // Recheck the final azimuth and a full strap-width band of the eased curve.
+    for (let i = 1; i < samples - 1; i++) {
+      const center = centers[i];
+      if (center.y > 0.046) continue;
+      v.copy(center).applyMatrix4(chestToJacket);
+      const angle = Math.atan2(v.x, v.z),
+        r = Math.hypot(v.x, v.z);
+      const support = jacketEnvelope.radius(v.y, angle, 0.021) + 0.009;
+      if (r < support && r > 0.001) {
+        v.x *= support / r;
+        v.z *= support / r;
+        center.copy(v).applyMatrix4(jacketToChest);
+      }
     }
     for (let row = 0; row < samples; row++) {
       const center = centers[row];

@@ -510,7 +510,7 @@ export function buildRoma(rig) {
         } else {
           // The fuller right-hand bank clears the rounded shoulder blade so a
           // quiet breath cannot catch and release its long side ringlets.
-          const backSweep = side > 0 ? 0.026 * Math.exp(-((i - 7) ** 2) / 3.2) : 0;
+          const backSweep = side > 0 ? 0.026 * Math.exp(-((i - 7) ** 2) / 3.2) : i === 7 ? 0.008 : 0;
           z +=
             (-0.08 - backSweep - 0.017 * Math.abs(cr) - (cr * (radial * 0.85) - 0.008 - 0.013 * t)) *
             shoulder;
@@ -568,6 +568,7 @@ export function buildRoma(rig) {
         i === 0 ? (side > 0 ? 0.0175 : 0.003) : i === 2 ? 0.0175 : side < 0 && i === 7 ? 0.016 : undefined;
       locks.push({
         breathingBend,
+        gaitCoupling: side > 0 && i === 3 ? 1.45 : 1,
         role: i < 3 ? 'face' : 'mass',
         side,
         group: root,
@@ -668,7 +669,7 @@ export function buildRoma(rig) {
     [-0.084, 0.101, 0.071, 0.87],
     [-0.055, 0.085, 0.061, 0.78],
     [-0.01, 0.079, 0.055, 0.72],
-    [0.036, 0.088, 0.062, 0.69],
+    [0.003, 0.083, 0.058, 0.67],
     [0.079, 0.1, 0.069, 0.59],
     [0.105, 0.101, 0.064, 0.5],
     [0.127, 0.101, 0.053, 0.44],
@@ -687,7 +688,7 @@ export function buildRoma(rig) {
         y + (j === 0 ? 0.008 * Math.sin(a * 2) : 0),
         (rz + fold + 0.009) * Math.cos(a) + 0.002,
       );
-      if (i < 40 && j < 5) {
+      if (i < 40 && j < 4) {
         const k = j * 41 + i;
         ji.push(k, k + 1, k + 41, k + 41, k + 1, k + 42);
       }
@@ -895,7 +896,27 @@ export function buildRoma(rig) {
     }
   }
   const { mesh: bodyMesh, regions: bodyRegions } = makeRomaBody(rig, skin, nailLacquer);
-  const yoke = fitRomaGarment(bodyMesh, 'jacket', satin, facing, makeJacketPattern());
+  jacketSkin.updateWorldMatrix(true, false);
+  const toBind = new T.Matrix4().copy(rig.root.matrixWorld).invert().multiply(jacketSkin.matrixWorld);
+  const seamRing = (row) =>
+    Array.from({ length: 41 }, (_, i) =>
+      new T.Vector3().fromBufferAttribute(jacketShape.attributes.position, row * 41 + i).applyMatrix4(toBind),
+    );
+  const waist = { edge: seamRing(4), support: seamRing(3) };
+  const white = new Float32Array(jacketShape.attributes.position.count * 3);
+  white.fill(1);
+  jacketShape.setAttribute('color', new T.BufferAttribute(white, 3));
+  satin.vertexColors = true;
+  const yoke = fitRomaGarment(bodyMesh, 'jacket', satin, facing, makeJacketPattern(), waist);
+  const waistNormalTransform = new T.Matrix3().getNormalMatrix(toBind.clone().invert());
+  for (const geometry of [yoke.geometry, yoke.userData.mobileGeometry]) {
+    const normals = geometry.userData.waistNormals,
+      v = new T.Vector3();
+    for (let i = 0; i < 41; i++)
+      v.fromArray(normals, i * 3)
+        .applyNormalMatrix(waistNormalTransform)
+        .toArray(normals, i * 3);
+  }
   const bodice = fitRomaGarment(bodyMesh, 'dress', silk, silk);
   const skinBends = bindJointFans(rig, [bodyMesh, yoke, bodice]);
   const collar = [yoke];
@@ -925,6 +946,7 @@ export function buildRoma(rig) {
     curlSystem.add(strand.group, strand.points, {
       role: strand.role,
       breathingBend: strand.breathingBend,
+      gaitCoupling: strand.gaitCoupling,
       fanSide: strand.side,
       stiffness: face ? 89 + (k % 3) * 8 : 107 + (k % 5) * 7,
       damping: face ? 9.8 + (k % 3) * 0.7 : 12.2 + (k % 3) * 0.5,
@@ -1104,10 +1126,19 @@ export function buildRoma(rig) {
     simulated.set(old.x + vel[n] * dt, old.y + vel[n + 1] * dt, old.z + vel[n + 2] * dt);
     const rest = isJacket ? jacketRest : skirtRest;
     if (isJacket) {
-      simulated.y = Math.max(simulated.y, minimumHemY);
+      // When a tucked thigh reaches the waist, the free panel folds outward.
+      // Keep a little height separation between its rings, so it cannot pass
+      // upward through its own sewn yoke.
+      const foldedHem = -0.014 + (rest[n + 1] + 0.055) * 0.3;
+      const tuck = Math.max(simulated.y, minimumHemY) > foldedHem;
+      simulated.y = Math.min(foldedHem, Math.max(simulated.y, minimumHemY));
       for (let pass = 0; pass < 3; pass++) {
         for (const c of colliders) solveCapsule(simulated, c);
         solveBodice(simulated);
+      }
+      if (tuck) {
+        simulated.y = Math.min(foldedHem, simulated.y);
+        outsidePanel(simulated, rest[n], rest[n + 2], colliders, 0.032);
       }
     } else outsidePanel(simulated, rest[n], rest[n + 2], colliders, 0.052);
     attr.setXYZ(i, simulated.x, simulated.y, simulated.z);
@@ -1143,7 +1174,36 @@ export function buildRoma(rig) {
     ['bag', 'jacket'],
   ])
     pairs.push({ outer, inner });
-  rig.garments = { surfaces, pairs };
+  const joinedWaist = yoke.geometry.userData.waistEdge;
+  const mobileWaist = yoke.userData.mobileGeometry.userData.waistEdge;
+  const seams = [
+    ['L', 0, 21],
+    ['R', 20, 41],
+  ].map(([side, lo, hi]) => ({
+    name: 'jacket-' + side,
+    edge: {
+      mesh: jacketSkin,
+      indices: Array.from({ length: hi - lo }, (_, i) => 4 * 41 + lo + i),
+      closed: false,
+    },
+    mate: {
+      mesh: yoke,
+      indices: { high: joinedWaist.slice(lo, hi), mobile: mobileWaist.slice(lo, hi) },
+      closed: false,
+    },
+  }));
+  const outerPanels = [
+    {
+      name: 'jacket-yoke',
+      mesh: yoke,
+      boundaryLoops: 3,
+      triangles: {
+        high: [[0, yoke.geometry.userData.outerTriangles]],
+        mobile: [[0, yoke.userData.mobileGeometry.userData.outerTriangles]],
+      },
+    },
+  ];
+  rig.garments = { surfaces, pairs, seams, outerPanels };
   rig.secondary ??= {};
   rig.secondary.roma = {
     hair: curlSystem,
@@ -1364,7 +1424,7 @@ export function buildRoma(rig) {
     }
     // The upper placket moves with the sternum; the collar and waist attachment
     // rows remain pinned so its lower corners can oppose the body's motion.
-    for (let i = 4 * 41; i < 9 * 41; i++) {
+    for (let i = 5 * 41; i < 9 * 41; i++) {
       const n = i * 3,
         y = jacketRest[n + 1],
         front = jacketRest[n + 2] > 0.008;
@@ -1406,6 +1466,8 @@ export function buildRoma(rig) {
     bag.rotation.set(bagPitch, bagSide, -0.14 + bagSide * 0.33);
     bag.position.y = 0.023 + bagLift;
     accessories.update();
+    jacketShape.attributes.normal.array.set(yoke.geometry.userData.waistNormals, 4 * 41 * 3);
+    jacketShape.attributes.normal.needsUpdate = true;
     curlSystem.step(f);
   };
   return step;
