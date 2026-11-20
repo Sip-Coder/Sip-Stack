@@ -143,7 +143,16 @@ export function fitHipSeams(suit) {
         leg.material,
       );
     layer.name = 'sippy-seat-' + side;
-    parts.push({ sign, leg, layer });
+    const geometry = layer.geometry;
+    geometry.computeBoundingBox();
+    const bounds = geometry.boundingBox;
+    const sphere = bounds.getBoundingSphere(new T.Sphere());
+    geometry.boundingSphere = sphere;
+    // Both index sets share these animated vertices. A close hand camera can
+    // see the posed seat while the unposed pattern lies outside the frustum.
+    layer.userData.mobileGeometry.boundingBox = bounds;
+    layer.userData.mobileGeometry.boundingSphere = sphere;
+    parts.push({ sign, leg, layer, bounds, sphere });
     seams.push(seam('hip-' + side, layer, 0, around, true, leg));
   }
   const arcs = [];
@@ -204,7 +213,8 @@ export function fitHipSeams(suit) {
         }
       }
     rp.needsUpdate = true;
-    for (const { sign, leg, layer } of parts) {
+    for (const { sign, leg, layer, bounds, sphere } of parts) {
+      bounds.makeEmpty();
       leg.updateWorldMatrix(true, false);
       tr.multiplyMatrices(chestInv, leg.matrixWorld);
       up.setFromMatrixColumn(tr, 1).normalize();
@@ -258,8 +268,10 @@ export function fitHipSeams(suit) {
                 sign * lerp(sign * tPoint.x, Math.max(0.0004 + 0.00065 * h, sign * tPoint.x), ease);
             }
             p.setXYZ(index, tPoint.x, tPoint.y, tPoint.z);
+            bounds.expandByPoint(tPoint);
           }
         }
+      bounds.getBoundingSphere(sphere);
       // The marker normals stay attached to the independent panels as the cut
       // curves over a tucked thigh.
       for (let h = 0; h < 2; h++)
