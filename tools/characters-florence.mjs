@@ -402,7 +402,6 @@ export function checkFlorence({ rig, controller, input, animate, name, height, r
     engineeringBounds: {
       lagFrames: [0.3, 12],
       idleMaxHz: 0.55,
-      maximumIndividualIdleDeg: 4.5,
       everyClumpSettleLimitS: 1.5,
       rootTravelMaxMm: 3,
     },
@@ -458,7 +457,8 @@ export function checkFlorence({ rig, controller, input, animate, name, height, r
   );
   for (const row of rows) {
     check(row.settleS < 1.5, 'Florence ' + row.name + ' settle within three degrees');
-    check(row.idleDeg <= 4.5, 'Florence ' + row.name + ' sustained idle motion exceeds 4.5 degrees');
+    check(row.walkDeg >= 10 && row.walkDeg <= 20, `${row.name} walk swing between 10 and 20 degrees`);
+    check(row.idleDeg >= 1 && row.idleDeg <= 3, `${row.name} idle sway between 1 and 3 degrees`);
   }
   check(
     report.fanning.rangeMm.median > 0.1 && report.fanning.upMinusDownMm.p75 > 0.05,

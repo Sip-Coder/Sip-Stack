@@ -243,7 +243,16 @@ export function createHair(rig, colliders) {
   function add(
     group,
     points,
-    { stiffness = 110, damping = 12, maxOffset = 0.023, radius = 0.003, role = 'mass', fanSide, breathingBend } = {},
+    {
+      stiffness = 110,
+      damping = 12,
+      maxOffset = 0.023,
+      radius = 0.003,
+      role = 'mass',
+      fanSide,
+      breathingBend,
+      gaitCoupling = 1,
+    } = {},
   ) {
     if (points.length < 2) throw new Error('A hair guide needs a root and tip');
     group.updateWorldMatrix(true, true);
@@ -270,22 +279,18 @@ export function createHair(rig, colliders) {
       const inverseScale = m.clone().invert().getMaxScaleOnAxis();
       mesh.geometry.boundingSphere.radius += (maxOffset + radius) * inverseScale;
     });
+    // A short face curl has less travel than a long lock past the shoulder.
+    // The groom's hold on the scalp changes its response to footfalls independently of breathing.
+    const length = rest.reduce((sum, point, i) => sum + (i ? point.distanceTo(rest[i - 1]) : 0), 0);
+    const lengthGain = role === 'face' ? T.MathUtils.clamp(length / 0.18, 0.52, 1) : 1;
     const chain = {
       group,
       rest,
       nodes,
       surfaces,
       role,
-      breathingBend,
-      // A short face curl has less travel than a long lock past the shoulder.
-      gaitGain:
-        role === 'face'
-          ? T.MathUtils.clamp(
-              rest.reduce((l, p, i) => l + (i ? p.distanceTo(rest[i - 1]) : 0), 0) / 0.18,
-              0.52,
-              1,
-            )
-          : 1,
+      breathingBend: breathingBend ?? (role === 'face' ? 0.02 - 0.01 * lengthGain : 0.02),
+      gaitGain: lengthGain * gaitCoupling,
       side,
       axis,
       variation: Math.sin(chains.length * 2.39996),
@@ -346,8 +351,7 @@ export function createHair(rig, colliders) {
         Math.cos(2 * phase) * (0.157 + 0.28 * sprint) * (chain.role === 'face' ? 0.79 : 1) +
         Math.sin(phase) * (0.027 * chain.variation + 0.17 * sprint);
       // Long face-framing locks already inherit more of the chest excursion.
-      const breathBend = chain.breathingBend ?? (chain.role === 'face' ? 0.02 - 0.01 * chain.gaitGain : 0.02);
-      const drive = pace * gait * chain.gaitGain + (1 - pace) * breathBend * breath;
+      const drive = pace * gait * chain.gaitGain + (1 - pace) * chain.breathingBend * breath;
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i],
           weight = i / (nodes.length - 1);
