@@ -1,0 +1,1940 @@
+{
+  "name": "roma",
+  "tier": "mobile",
+  "heightM": 1.68,
+  "standingHeightM": 1.6806924310348375,
+  "headHeightM": 0.5137962535083147,
+  "headCount": 3.2711262870421827,
+  "floorM": -2.7755575615628914e-17,
+  "groom": {
+    "animatedClumps": 84,
+    "sectionsAt": [
+      0.25,
+      0.5,
+      0.75,
+      0.95
+    ],
+    "clumps": [
+      {
+        "name": "Roma curl -1 0",
+        "role": "face",
+        "sectionDiametersM": [
+          0.011162592824374429,
+          0.0299536903484255,
+          0.013053367868740508,
+          0.0024160924086392478
+        ],
+        "widthPercentOfGroom": 5.105029682891834,
+        "distalToWidest": 0.08066092626767936
+      },
+      {
+        "name": "Roma curl -1 1",
+        "role": "face",
+        "sectionDiametersM": [
+          0.01581218545520371,
+          0.014192458278440859,
+          0.015050614095488192,
+          0.004589080670176722
+        ],
+        "widthPercentOfGroom": 2.694882505669241,
+        "distalToWidest": 0.2902243135952139
+      },
+      {
+        "name": "Roma curl -1 2",
+        "role": "face",
+        "sectionDiametersM": [
+          0.009759814432632014,
+          0.026123231440119382,
+          0.01154392896779504,
+          0.0019708214421889736
+        ],
+        "widthPercentOfGroom": 4.452201727520116,
+        "distalToWidest": 0.07544324853939154
+      },
+      {
+        "name": "Roma curl -1 3",
+        "role": "face",
+        "sectionDiametersM": [
+          0.018535880624419573,
+          0.019364760855528074,
+          0.021352077356721868,
+          0.002500724617036305
+        ],
+        "widthPercentOfGroom": 3.639050395110912,
+        "distalToWidest": 0.11711856299776141
+      },
+      {
+        "name": "Roma curl -1 4",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.007562084965366328,
+          0.011028407522898331,
+          0.009749384673663455,
+          0.0017612874572466664
+        ],
+        "widthPercentOfGroom": 1.879579681319066,
+        "distalToWidest": 0.1597046040953508
+      },
+      {
+        "name": "Roma curl -1 5",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.011503642002920778,
+          0.01680533575795413,
+          0.008304807465590678,
+          0.0023389051195184573
+        ],
+        "widthPercentOfGroom": 2.864145849054922,
+        "distalToWidest": 0.1391763397771705
+      },
+      {
+        "name": "Roma curl -1 6",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.0072652081790903775,
+          0.006339284751649528,
+          0.01357338020673867,
+          0.01644227065844355
+        ],
+        "widthPercentOfGroom": 2.8022683946156226,
+        "distalToWidest": 1
+      },
+      {
+        "name": "Roma curl -1 7",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.018087370170070227,
+          0.010946163669167697,
+          0.02320355815492459,
+          0.002271194573481346
+        ],
+        "widthPercentOfGroom": 3.9545996420378775,
+        "distalToWidest": 0.09788130588925736
+      },
+      {
+        "name": "Roma curl -1 8",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.019088968484050388,
+          0.01707388628730219,
+          0.02682722877264685,
+          0.002345271330737827
+        ],
+        "widthPercentOfGroom": 4.572184515531354,
+        "distalToWidest": 0.08742130432529337
+      },
+      {
+        "name": "Roma curl -1 9",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.03360681013512854,
+          0.028661856844276967,
+          0.006032412427305276,
+          0.0017614840055607114
+        ],
+        "widthPercentOfGroom": 5.727633600116971,
+        "distalToWidest": 0.05241449570720985
+      },
+      {
+        "name": "Roma curl -1 10",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.016568129309447312,
+          0.02063122232668344,
+          0.0143376128483943,
+          0.002604385683446149
+        ],
+        "widthPercentOfGroom": 3.5161945371981833,
+        "distalToWidest": 0.12623516155306808
+      },
+      {
+        "name": "Roma curl -1 11",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.0081137725050823,
+          0.006839852754896684,
+          0.012634774861594401,
+          0.0017547423284299164
+        ],
+        "widthPercentOfGroom": 2.1533540593767087,
+        "distalToWidest": 0.1388819624925618
+      },
+      {
+        "name": "Roma curl -1 12",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.011477059858068524,
+          0.018391417551261297,
+          0.0076246197699629545,
+          0.002493689286163636
+        ],
+        "widthPercentOfGroom": 3.1344629465524934,
+        "distalToWidest": 0.13558983581407605
+      },
+      {
+        "name": "Roma curl -1 13",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.008591170649364844,
+          0.010166629271185211,
+          0.012095912951475463,
+          0.001716175053502261
+        ],
+        "widthPercentOfGroom": 2.061515423998628,
+        "distalToWidest": 0.14188057242036628
+      },
+      {
+        "name": "Roma curl -1 14",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.009190962362453934,
+          0.016030106426361445,
+          0.01323319600296241,
+          0.0020832747385723755
+        ],
+        "widthPercentOfGroom": 2.7320229385622894,
+        "distalToWidest": 0.12996013146528076
+      },
+      {
+        "name": "Roma curl -1 15",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.011908133490837941,
+          0.009328618194962621,
+          0.008100990115444582,
+          0.0023891287280879032
+        ],
+        "widthPercentOfGroom": 2.029512031119782,
+        "distalToWidest": 0.20062999209121118
+      },
+      {
+        "name": "Roma curl -1 16",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.011991174149432578,
+          0.014297277212203018,
+          0.013373427494147274,
+          0.013801689976901082
+        ],
+        "widthPercentOfGroom": 2.4366955691877212,
+        "distalToWidest": 0.9653369499698207
+      },
+      {
+        "name": "Roma curl -1 17",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.03665331517693946,
+          0.017249290399945008,
+          0.008505728057194675,
+          0.002456506120575417
+        ],
+        "widthPercentOfGroom": 6.246851716035763,
+        "distalToWidest": 0.06702002557522914
+      },
+      {
+        "name": "Roma curl -1 18",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.00844765960944198,
+          0.01247110525840832,
+          0.006056674774873288,
+          0.0018999349907584892
+        ],
+        "widthPercentOfGroom": 2.1254597274018177,
+        "distalToWidest": 0.15234696134711131
+      },
+      {
+        "name": "Roma curl -1 19",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.008601743270673175,
+          0.008775827806229217,
+          0.014881412264934347,
+          0.002316914945189818
+        ],
+        "widthPercentOfGroom": 2.5362501398707873,
+        "distalToWidest": 0.15569187278342225
+      },
+      {
+        "name": "Roma curl -1 20",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.00839234421573156,
+          0.008737073085926304,
+          0.014478577166686582,
+          0.0022310024829536044
+        ],
+        "widthPercentOfGroom": 2.467594655022538,
+        "distalToWidest": 0.15408989828688868
+      },
+      {
+        "name": "Roma curl -1 21",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.0150386243244501,
+          0.014389308622711464,
+          0.011050340819734113,
+          0.0018797720265080237
+        ],
+        "widthPercentOfGroom": 2.5630439078840386,
+        "distalToWidest": 0.12499627532099811
+      },
+      {
+        "name": "Roma curl -1 22",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.02083073314072581,
+          0.009740663985390492,
+          0.014829560920124288,
+          0.0024582326903249047
+        ],
+        "widthPercentOfGroom": 3.550197313346857,
+        "distalToWidest": 0.1180098978618691
+      },
+      {
+        "name": "Roma curl -1 23",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.010610016880873912,
+          0.006738742649134719,
+          0.01191395429250825,
+          0.0016718325816036008
+        ],
+        "widthPercentOfGroom": 2.030504074669658,
+        "distalToWidest": 0.14032558297247164
+      },
+      {
+        "name": "Roma curl -1 24",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.019367770635451722,
+          0.018675480689077706,
+          0.014944977131623257,
+          0.002432491790970498
+        ],
+        "widthPercentOfGroom": 3.3008635275091933,
+        "distalToWidest": 0.12559482641321376
+      },
+      {
+        "name": "Roma curl -1 25",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.02841920496980753,
+          0.016057246213431072,
+          0.013471993252191174,
+          0.0019214294101825345
+        ],
+        "widthPercentOfGroom": 4.843506200653525,
+        "distalToWidest": 0.06761024498130243
+      },
+      {
+        "name": "Roma curl -1 26",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.016923597713859057,
+          0.01437168405391934,
+          0.014560236652592191,
+          0.007371914226332604
+        ],
+        "widthPercentOfGroom": 2.8843013219942764,
+        "distalToWidest": 0.4355997082284462
+      },
+      {
+        "name": "Roma curl -1 27",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.018644320371564733,
+          0.018607527690886645,
+          0.015570688509650977,
+          0.002230476306972447
+        ],
+        "widthPercentOfGroom": 3.1775653619650224,
+        "distalToWidest": 0.11963301759039947
+      },
+      {
+        "name": "Roma curl -1 28",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.013832480413648589,
+          0.013751313353387817,
+          0.012501502666785493,
+          0.0017749233543747987
+        ],
+        "widthPercentOfGroom": 2.3574799057575158,
+        "distalToWidest": 0.1283156239009362
+      },
+      {
+        "name": "Roma curl -1 29",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.02083658743799859,
+          0.009842360406649356,
+          0.01706458029979648,
+          0.0023747205488277735
+        ],
+        "widthPercentOfGroom": 3.551195065577129,
+        "distalToWidest": 0.11396878475873264
+      },
+      {
+        "name": "Roma curl -1 30",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.006629121553080665,
+          0.014880433122471124,
+          0.01206491545132913,
+          0.0016728165206906383
+        ],
+        "widthPercentOfGroom": 2.5360832638938917,
+        "distalToWidest": 0.11241719289504401
+      },
+      {
+        "name": "Roma curl -1 31",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.01599729139615037,
+          0.018083164305529923,
+          0.01855783288034231,
+          0.0023442059160257793
+        ],
+        "widthPercentOfGroom": 3.16282523463001,
+        "distalToWidest": 0.12631894742995117
+      },
+      {
+        "name": "Roma curl -1 32",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.05141559360136167,
+          0.06474819157639848,
+          0.026037607546169905,
+          0.007713403378352498
+        ],
+        "widthPercentOfGroom": 11.035082357672032,
+        "distalToWidest": 0.11912924810033042
+      },
+      {
+        "name": "Roma curl -1 33",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.03659163734688012,
+          0.05917195848853359,
+          0.03225418465709212,
+          0.007631222340035462
+        ],
+        "widthPercentOfGroom": 10.084720812862573,
+        "distalToWidest": 0.12896687104778268
+      },
+      {
+        "name": "Roma curl -1 34",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.0457976400078888,
+          0.029566017696418277,
+          0.05574520067929412,
+          0.008443328273887841
+        ],
+        "widthPercentOfGroom": 9.500695935501561,
+        "distalToWidest": 0.15146287341331632
+      },
+      {
+        "name": "Roma curl -1 35",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.058713889386672914,
+          0.02238413546609822,
+          0.04978627657306477,
+          0.007619739546747354
+        ],
+        "widthPercentOfGroom": 10.006651755774342,
+        "distalToWidest": 0.12977746196587192
+      },
+      {
+        "name": "Roma curl -1 36",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.025953648281892658,
+          0.030773542477397837,
+          0.04396230054763553,
+          0.0083297633241449
+        ],
+        "widthPercentOfGroom": 7.492527518756575,
+        "distalToWidest": 0.18947514621349607
+      },
+      {
+        "name": "Roma curl -1 37",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.07112429937279276,
+          0.07680811112700162,
+          0.024990493129459543,
+          0.007648638883115801
+        ],
+        "widthPercentOfGroom": 13.09046339963946,
+        "distalToWidest": 0.09958113499847479
+      },
+      {
+        "name": "Roma curl -1 38",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.02796662711740786,
+          0.0254548222761141,
+          0.025792424899203747,
+          0.00794997225935236
+        ],
+        "widthPercentOfGroom": 4.766373021287491,
+        "distalToWidest": 0.2842663945844185
+      },
+      {
+        "name": "Roma curl -1 39",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.05959425891658549,
+          0.055136266368786845,
+          0.05207250052152025,
+          0.008068032603167099
+        ],
+        "widthPercentOfGroom": 10.156693788319876,
+        "distalToWidest": 0.1353827155474822
+      },
+      {
+        "name": "Roma curl -1 40",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.05492106193058842,
+          0.050741243361034215,
+          0.05247935926754328,
+          0.007495017193371798
+        ],
+        "widthPercentOfGroom": 9.360237356741328,
+        "distalToWidest": 0.13646890518694488
+      },
+      {
+        "name": "Roma curl -1 41",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.04006651344546926,
+          0,
+          0.05334697403249912,
+          0.008130272334226162
+        ],
+        "widthPercentOfGroom": 9.091964387709682,
+        "distalToWidest": 0.15240362704121097
+      },
+      {
+        "name": "Roma curl 1 0",
+        "role": "face",
+        "sectionDiametersM": [
+          0.011413302753286725,
+          0.018463885018308146,
+          0.013230104850845205,
+          0.00234112210963589
+        ],
+        "widthPercentOfGroom": 3.1468136307591754,
+        "distalToWidest": 0.12679466468267728
+      },
+      {
+        "name": "Roma curl 1 1",
+        "role": "face",
+        "sectionDiametersM": [
+          0.03198158023068085,
+          0.014857318897946208,
+          0.012223200332341562,
+          0.00621378518887783
+        ],
+        "widthPercentOfGroom": 5.450644460975221,
+        "distalToWidest": 0.19429262544434145
+      },
+      {
+        "name": "Roma curl 1 2",
+        "role": "face",
+        "sectionDiametersM": [
+          0.018059055517710983,
+          0.013514692333445776,
+          0.024848251806772224,
+          0.0024770884347496687
+        ],
+        "widthPercentOfGroom": 4.234906002098359,
+        "distalToWidest": 0.09968864023160595
+      },
+      {
+        "name": "Roma curl 1 3",
+        "role": "face",
+        "sectionDiametersM": [
+          0.009042702387399524,
+          0.021849200995199627,
+          0.005964885219238582,
+          0.001743784278298945
+        ],
+        "widthPercentOfGroom": 3.723775545867822,
+        "distalToWidest": 0.07980997926112093
+      },
+      {
+        "name": "Roma curl 1 4",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.03332782570069637,
+          0.008253527940373751,
+          0.016302721215820916,
+          0.0021736484999298274
+        ],
+        "widthPercentOfGroom": 5.680086075846196,
+        "distalToWidest": 0.06522023127012483
+      },
+      {
+        "name": "Roma curl 1 5",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.01770075396032666,
+          0.007883407112515613,
+          0.013579848053154814,
+          0.001991355631824932
+        ],
+        "widthPercentOfGroom": 3.016752638019531,
+        "distalToWidest": 0.11250117572891127
+      },
+      {
+        "name": "Roma curl 1 6",
+        "role": "mass",
+        "sectionDiametersM": [
+          0,
+          0.006248440038901474,
+          0.006341856077909344,
+          0.0013839829817788927
+        ],
+        "widthPercentOfGroom": 1.0808472393805386,
+        "distalToWidest": 0.2182299574094303
+      },
+      {
+        "name": "Roma curl 1 7",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.01282996334612495,
+          0.019393530956474708,
+          0.01757853562451786,
+          0.002460300482886406
+        ],
+        "widthPercentOfGroom": 3.3052538781449066,
+        "distalToWidest": 0.12686191536797028
+      },
+      {
+        "name": "Roma curl 1 8",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.007858516162317464,
+          0.012786979890231311,
+          0.012698489144189067,
+          0.0017901984746198252
+        ],
+        "widthPercentOfGroom": 2.179294475400194,
+        "distalToWidest": 0.14000166497387379
+      },
+      {
+        "name": "Roma curl 1 9",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.019857020899205245,
+          0.0340220749774441,
+          0.01651449656078021,
+          0.00238971443369769
+        ],
+        "widthPercentOfGroom": 5.7984074954742,
+        "distalToWidest": 0.07024011425764064
+      },
+      {
+        "name": "Roma curl 1 10",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.015048006438219122,
+          0.007055379180398051,
+          0.006362436198598985,
+          0.0018545902945812794
+        ],
+        "widthPercentOfGroom": 2.564642908498721,
+        "distalToWidest": 0.12324491634127475
+      },
+      {
+        "name": "Roma curl 1 11",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.014930903049080613,
+          0,
+          0.007243432629008864,
+          0.014439312908914441
+        ],
+        "widthPercentOfGroom": 2.5446848909534556,
+        "distalToWidest": 0.9670756592183188
+      },
+      {
+        "name": "Roma curl 1 12",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.023879938149504374,
+          0.01811538852567647,
+          0.009888908270048942,
+          0.002095840082125305
+        ],
+        "widthPercentOfGroom": 4.069875586640327,
+        "distalToWidest": 0.08776572489442583
+      },
+      {
+        "name": "Roma curl 1 13",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.006981271899367684,
+          0.011965812304673055,
+          0.012647729854830135,
+          0.0018483211977888834
+        ],
+        "widthPercentOfGroom": 2.1555619884913115,
+        "distalToWidest": 0.1461385734043817
+      },
+      {
+        "name": "Roma curl 1 14",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.012633166134061192,
+          0.009107484076216296,
+          0,
+          0.002185185088225951
+        ],
+        "widthPercentOfGroom": 2.1530798827489477,
+        "distalToWidest": 0.1729720851477062
+      },
+      {
+        "name": "Roma curl 1 15",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.008381248091431136,
+          0.011760742741500255,
+          0.012278662068619215,
+          0.0017788523837520632
+        ],
+        "widthPercentOfGroom": 2.09266149170144,
+        "distalToWidest": 0.14487347023730757
+      },
+      {
+        "name": "Roma curl 1 16",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.011742545672478233,
+          0.016158132645944446,
+          0.017980040839117934,
+          0.017938063456487494
+        ],
+        "widthPercentOfGroom": 3.064351708106954,
+        "distalToWidest": 0.9976653344113039
+      },
+      {
+        "name": "Roma curl 1 17",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.03238962372158625,
+          0.017180885500860717,
+          0.013981284041296217,
+          0.002023217581283195
+        ],
+        "widthPercentOfGroom": 5.5201876160506815,
+        "distalToWidest": 0.062464991834246295
+      },
+      {
+        "name": "Roma curl 1 18",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.01651212715075292,
+          0.01361603363133602,
+          0.011999424213685854,
+          0.0020256330396723437
+        ],
+        "widthPercentOfGroom": 2.8141740884594784,
+        "distalToWidest": 0.12267547489058545
+      },
+      {
+        "name": "Roma curl 1 19",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.019447181081586353,
+          0.01667158140242834,
+          0.013990906685591838,
+          0.002478971214333505
+        ],
+        "widthPercentOfGroom": 3.314397508796086,
+        "distalToWidest": 0.12747200758472546
+      },
+      {
+        "name": "Roma curl 1 20",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.011614108917102533,
+          0.014301435685527969,
+          0.009870895871199577,
+          0.0016181780674086013
+        ],
+        "widthPercentOfGroom": 2.437404300883631,
+        "distalToWidest": 0.11314794563220544
+      },
+      {
+        "name": "Roma curl 1 21",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.011994301354341024,
+          0.013896467149852711,
+          0.017398145770840156,
+          0.023139316403223226
+        ],
+        "widthPercentOfGroom": 3.9436508726040747,
+        "distalToWidest": 1
+      },
+      {
+        "name": "Roma curl 1 22",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.0149967207082127,
+          0.01524068538038478,
+          0.013115028787421601,
+          0.0018542394098994732
+        ],
+        "widthPercentOfGroom": 2.59748132365165,
+        "distalToWidest": 0.12166378109779336
+      },
+      {
+        "name": "Roma curl 1 23",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.008203593216634044,
+          0.018344196946611855,
+          0.012713787567224546,
+          0.0020269625941173415
+        ],
+        "widthPercentOfGroom": 3.1264151038467887,
+        "distalToWidest": 0.11049612038164028
+      },
+      {
+        "name": "Roma curl 1 24",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.008602312193538693,
+          0.018467554237336207,
+          0.01597399429260697,
+          0.0022740181698532474
+        ],
+        "widthPercentOfGroom": 3.147438978482057,
+        "distalToWidest": 0.12313585982359383
+      },
+      {
+        "name": "Roma curl 1 25",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.014045417462425573,
+          0.015213330940161522,
+          0.013024763712418853,
+          0.0018730458436368052
+        ],
+        "widthPercentOfGroom": 2.5928192860972037,
+        "distalToWidest": 0.12311872074590648
+      },
+      {
+        "name": "Roma curl 1 26",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.015552613487061615,
+          0.019875397107461945,
+          0.017670043496449087,
+          0.010544301782211867
+        ],
+        "widthPercentOfGroom": 3.3873786839820608,
+        "distalToWidest": 0.5305203073529109
+      },
+      {
+        "name": "Roma curl 1 27",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.010653175599896732,
+          0.013400607959382686,
+          0.012222209314718511,
+          0.0017731168673361635
+        ],
+        "widthPercentOfGroom": 2.2838755627665472,
+        "distalToWidest": 0.1323161510813905
+      },
+      {
+        "name": "Roma curl 1 28",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.01172612060931017,
+          0.020050447887854955,
+          0.0172403439411012,
+          0.002417260228710452
+        ],
+        "widthPercentOfGroom": 3.4172127184374066,
+        "distalToWidest": 0.12055891430608119
+      },
+      {
+        "name": "Roma curl 1 29",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.01351904207109973,
+          0.013893093158391248,
+          0.014300073073148232,
+          0.00196217618381024
+        ],
+        "widthPercentOfGroom": 2.437172069844185,
+        "distalToWidest": 0.13721441658187675
+      },
+      {
+        "name": "Roma curl 1 30",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.01371326942855393,
+          0.013927087527156547,
+          0.012343625127967689,
+          0.001998735482571055
+        ],
+        "widthPercentOfGroom": 2.3736038663464396,
+        "distalToWidest": 0.14351424723034903
+      },
+      {
+        "name": "Roma curl 1 31",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.014015444480808163,
+          0.019721228854323317,
+          0.019273729195375816,
+          0.002399011120130097
+        ],
+        "widthPercentOfGroom": 3.3611036741493026,
+        "distalToWidest": 0.12164612752334561
+      },
+      {
+        "name": "Roma curl 1 32",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.06128789539624275,
+          0.05778521011743887,
+          0,
+          0.007400687975740284
+        ],
+        "widthPercentOfGroom": 10.445341510857784,
+        "distalToWidest": 0.12075284895806657
+      },
+      {
+        "name": "Roma curl 1 33",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.038972551250503605,
+          0.03078699131130807,
+          0.027230228468779333,
+          0.00817340854939806
+        ],
+        "widthPercentOfGroom": 6.642120841791442,
+        "distalToWidest": 0.20972218361743622
+      },
+      {
+        "name": "Roma curl 1 34",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.06118911339907167,
+          0.03300065398947521,
+          0.05087343251877462,
+          0.007720270452162451
+        ],
+        "widthPercentOfGroom": 10.428506021746832,
+        "distalToWidest": 0.12617065394968738
+      },
+      {
+        "name": "Roma curl 1 35",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.06365474158433027,
+          0.029862298038523725,
+          0.05406822861800245,
+          0.008203273359637706
+        ],
+        "widthPercentOfGroom": 10.848724863776141,
+        "distalToWidest": 0.12887136378945077
+      },
+      {
+        "name": "Roma curl 1 36",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.06204657853019144,
+          0.029172910908356334,
+          0.04389180264773433,
+          0.008087022900273475
+        ],
+        "widthPercentOfGroom": 10.5746444406025,
+        "distalToWidest": 0.1303379346910867
+      },
+      {
+        "name": "Roma curl 1 37",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.030200755372867847,
+          0.07824815308244888,
+          0.023601806537097793,
+          0.007740742463470278
+        ],
+        "widthPercentOfGroom": 13.335890819154544,
+        "distalToWidest": 0.09892556128850703
+      },
+      {
+        "name": "Roma curl 1 38",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.030839184092240964,
+          0.0841595647986204,
+          0.03356767711168227,
+          0.008387529871724777
+        ],
+        "widthPercentOfGroom": 14.34337710641385,
+        "distalToWidest": 0.09966222962053947
+      },
+      {
+        "name": "Roma curl 1 39",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.06016903860706155,
+          0.06036542984298097,
+          0.04197874344406352,
+          0.007449108882118209
+        ],
+        "widthPercentOfGroom": 10.288125021801898,
+        "distalToWidest": 0.12340024582769303
+      },
+      {
+        "name": "Roma curl 1 40",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.039947917464733515,
+          0.06323566605591636,
+          0.057491351826767234,
+          0.008172734618368918
+        ],
+        "widthPercentOfGroom": 10.777301510358223,
+        "distalToWidest": 0.12924248494737364
+      },
+      {
+        "name": "Roma curl 1 41",
+        "role": "mass",
+        "sectionDiametersM": [
+          0.05190489121118043,
+          0.05859814691558435,
+          0.05260663200511356,
+          0.00756931569100913
+        ],
+        "widthPercentOfGroom": 9.986925680502639,
+        "distalToWidest": 0.1291732945397297
+      }
+    ]
+  },
+  "landmarks": {
+    "chin": 30.583110327875875,
+    "eyes": 16.698104774754434,
+    "shoulders": 34.34928463850765,
+    "waist": 52.19121595369057,
+    "knee": 76.26947527641954,
+    "ankleCuff": 93.84121629395858,
+    "hairWidth": 34.92551208487516
+  },
+  "locationsM": {
+    "crown": [
+      [
+        0.02211720120619492,
+        1.6806924310348375,
+        0.03547932242409003
+      ]
+    ],
+    "chin": [
+      [
+        0.0024565185420009914,
+        1.1668961775265227,
+        0.045847774595849204
+      ]
+    ],
+    "eyes": [
+      [
+        0.10022782937316768,
+        1.4002149546600258,
+        0.205621727305088
+      ],
+      [
+        -0.0917494776452914,
+        1.4001135869779,
+        0.20719419073569756
+      ]
+    ],
+    "shoulders": [
+      [
+        0.22423585637293894,
+        1.1036195686042707,
+        -0.005334821432097399
+      ],
+      [
+        -0.22055988777428695,
+        1.1036293296115471,
+        -0.005339002350042297
+      ]
+    ],
+    "waist": [
+      [
+        0.0022878466143357035,
+        0.8038800030128359,
+        0
+      ]
+    ],
+    "knee": [
+      [
+        0.12477644160012408,
+        0.40146964705930827,
+        0.09094013163221992
+      ],
+      [
+        -0.12299153275138971,
+        0.39726084572266995,
+        0.09116544400822627
+      ]
+    ],
+    "ankleCuff": [
+      [
+        0.12264,
+        0.1041599972963333,
+        -0.01680000000000001
+      ],
+      [
+        -0.12264,
+        0.10415999729633335,
+        -0.016800000000000023
+      ]
+    ],
+    "hairWidth": [
+      [
+        -0.2950300337748731,
+        1.3511828752439194,
+        -0.004214333697126385
+      ],
+      [
+        0.29171856925102946,
+        1.1732530956328526,
+        0.14734226721136318
+      ]
+    ]
+  },
+  "measurements": {
+    "groom": {
+      "label": "Crown and all spiral curls",
+      "sources": [
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma parted crown 0",
+          "vertices": 2088
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma parted crown 1",
+          "vertices": 7276
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma parted crown 2",
+          "vertices": 2470
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 0/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 1/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 1/Mesh[1]",
+          "vertices": 51
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 2/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 3/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 4/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 5/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 6/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 6/Mesh[1]",
+          "vertices": 51
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 7/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 8/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 9/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 10/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 11/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 11/Mesh[1]",
+          "vertices": 51
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 12/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 13/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 14/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 15/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 16/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 16/Mesh[1]",
+          "vertices": 51
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 17/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 18/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 19/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 20/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 21/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 21/Mesh[1]",
+          "vertices": 51
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 22/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 23/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 24/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 25/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 26/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 26/Mesh[1]",
+          "vertices": 51
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 27/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 28/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 29/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 30/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 31/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 31/Mesh[1]",
+          "vertices": 51
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 32/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 33/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 34/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 35/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 36/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 37/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 38/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 39/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 40/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 41/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 0/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 1/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 1/Mesh[1]",
+          "vertices": 51
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 2/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 3/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 4/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 5/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 6/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 6/Mesh[1]",
+          "vertices": 51
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 7/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 8/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 9/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 10/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 11/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 11/Mesh[1]",
+          "vertices": 51
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 12/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 13/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 14/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 15/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 16/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 16/Mesh[1]",
+          "vertices": 51
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 17/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 18/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 19/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 20/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 21/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 21/Mesh[1]",
+          "vertices": 51
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 22/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 23/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 24/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 25/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 26/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 26/Mesh[1]",
+          "vertices": 51
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 27/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 28/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 29/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 30/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 31/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 31/Mesh[1]",
+          "vertices": 51
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 32/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 33/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 34/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 35/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 36/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 37/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 38/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 39/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 40/Mesh[0]",
+          "vertices": 105
+        },
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 41/Mesh[0]",
+          "vertices": 105
+        }
+      ],
+      "minM": [
+        -0.2950300337748731,
+        0.9743432253162193,
+        -0.2587923203337706
+      ],
+      "maxM": [
+        0.29171856925102946,
+        1.6806924310348375,
+        0.21651427996399045
+      ],
+      "top": {
+        "mesh": "hips/chest/head/Roma face and hair/Roma parted crown 1",
+        "index": 3374,
+        "worldM": [
+          0.02211720120619492,
+          1.6806924310348375,
+          0.03547932242409003
+        ]
+      },
+      "left": {
+        "mesh": "hips/chest/head/Roma face and hair/Roma curl 1 7/Mesh[0]",
+        "index": 360,
+        "worldM": [
+          0.29171856925102946,
+          1.1732530956328526,
+          0.14734226721136318
+        ]
+      },
+      "right": {
+        "mesh": "hips/chest/head/Roma face and hair/Roma curl -1 33/Mesh[0]",
+        "index": 180,
+        "worldM": [
+          -0.2950300337748731,
+          1.3511828752439194,
+          -0.004214333697126385
+        ]
+      }
+    },
+    "chin": {
+      "label": "Mandible",
+      "sources": [
+        {
+          "mesh": "hips/chest/head/Roma face and hair/Roma facial skin",
+          "vertices": 37428
+        }
+      ],
+      "minM": [
+        -0.206501069803366,
+        1.1668961775265227,
+        -0.15816597144502634
+      ],
+      "maxM": [
+        0.21121380863805175,
+        1.6357598436177572,
+        0.2317024172176191
+      ],
+      "bottom": {
+        "mesh": "hips/chest/head/Roma face and hair/Roma facial skin",
+        "index": 0,
+        "worldM": [
+          0.0024565185420009914,
+          1.1668961775265227,
+          0.045847774595849204
+        ]
+      }
+    },
+    "eyes": [
+      {
+        "label": "Iris",
+        "sources": [
+          {
+            "mesh": "hips/chest/head/Roma face and hair/Group[2]/Group[0]/Group[0]/Mesh[1]",
+            "vertices": 1152
+          }
+        ],
+        "minM": [
+          0.06668732457095518,
+          1.3553158358689568,
+          0.19406426077809683
+        ],
+        "maxM": [
+          0.1337683341753802,
+          1.4451140734510948,
+          0.21717919383207912
+        ],
+        "low": {
+          "mesh": "hips/chest/head/Roma face and hair/Group[2]/Group[0]/Group[0]/Mesh[1]",
+          "index": 1103,
+          "worldM": [
+            0.10023155411256149,
+            1.3553158358689568,
+            0.20068281454952963
+          ]
+        },
+        "high": {
+          "mesh": "hips/chest/head/Roma face and hair/Group[2]/Group[0]/Group[0]/Mesh[1]",
+          "index": 1007,
+          "worldM": [
+            0.09617936342061364,
+            1.4451140734510948,
+            0.19912322623603362
+          ]
+        }
+      },
+      {
+        "label": "Iris",
+        "sources": [
+          {
+            "mesh": "hips/chest/head/Roma face and hair/Group[0]/Group[0]/Group[0]/Mesh[1]",
+            "vertices": 1152
+          }
+        ],
+        "minM": [
+          -0.12537708045912718,
+          1.3552143824658418,
+          0.19588882685267361
+        ],
+        "maxM": [
+          -0.05812187483145562,
+          1.4450127914899582,
+          0.2184995546187215
+        ],
+        "low": {
+          "mesh": "hips/chest/head/Roma face and hair/Group[0]/Group[0]/Group[0]/Mesh[1]",
+          "index": 1103,
+          "worldM": [
+            -0.09178913536701801,
+            1.3552143824658418,
+            0.20225955676726656
+          ]
+        },
+        "high": {
+          "mesh": "hips/chest/head/Roma face and hair/Group[0]/Group[0]/Group[0]/Mesh[1]",
+          "index": 1007,
+          "worldM": [
+            -0.0877527672791015,
+            1.4450127914899582,
+            0.20066911426093698
+          ]
+        }
+      }
+    ],
+    "shoulders": [
+      {
+        "label": "Outer sleeve on the deltoid",
+        "sources": [
+          {
+            "mesh": "Roma shaped jacket yoke and sleeves",
+            "vertices": 1493
+          }
+        ],
+        "minM": [
+          0.1978570351171382,
+          1.037999153527342,
+          -0.08876781640894685
+        ],
+        "maxM": [
+          0.36093659137193757,
+          1.1036195686042707,
+          0.09238197022958197
+        ],
+        "low": {
+          "mesh": "Roma shaped jacket yoke and sleeves",
+          "index": 7297,
+          "worldM": [
+            0.22597843037363413,
+            1.037999153527342,
+            0.08353300887645097
+          ]
+        },
+        "high": {
+          "mesh": "Roma shaped jacket yoke and sleeves",
+          "index": 3476,
+          "worldM": [
+            0.22423585637293894,
+            1.1036195686042707,
+            -0.005334821432097399
+          ]
+        }
+      },
+      {
+        "label": "Outer sleeve on the deltoid",
+        "sources": [
+          {
+            "mesh": "Roma shaped jacket yoke and sleeves",
+            "vertices": 1543
+          }
+        ],
+        "minM": [
+          -0.3563623584723743,
+          1.0379786050202133,
+          -0.08876195280036314
+        ],
+        "maxM": [
+          -0.1932803732335848,
+          1.1036293296115471,
+          0.09236905590317936
+        ],
+        "low": {
+          "mesh": "Roma shaped jacket yoke and sleeves",
+          "index": 7287,
+          "worldM": [
+            -0.211820471877677,
+            1.0379786050202133,
+            0.08165842991988415
+          ]
+        },
+        "high": {
+          "mesh": "Roma shaped jacket yoke and sleeves",
+          "index": 3466,
+          "worldM": [
+            -0.22055988777428695,
+            1.1036293296115471,
+            -0.005339002350042297
+          ]
+        }
+      }
+    ],
+    "waist": [
+      {
+        "label": "Waist belt",
+        "sources": [
+          {
+            "mesh": "hips/Mesh[6]",
+            "vertices": 432
+          }
+        ],
+        "minM": [
+          -0.18255625660427932,
+          0.7913304009557962,
+          -0.14521415467357635
+        ],
+        "maxM": [
+          0.18713194983295073,
+          0.8164296050698757,
+          0.14521415467357635
+        ],
+        "low": {
+          "mesh": "hips/Mesh[6]",
+          "index": 0,
+          "worldM": [
+            0.002287846614335712,
+            0.7913304009557962,
+            0.14521415467357635
+          ]
+        },
+        "high": {
+          "mesh": "hips/Mesh[6]",
+          "index": 218,
+          "worldM": [
+            0.002287846614335712,
+            0.8164296050698757,
+            0.13851196573626995
+          ]
+        }
+      }
+    ],
+    "knee": [
+      {
+        "label": "Patella",
+        "sources": [
+          {
+            "mesh": "Roma continuous anatomical skin",
+            "vertices": 15
+          }
+        ],
+        "minM": [
+          0.07425103246218046,
+          0.3919002498995189,
+          0.07955507813373518
+        ],
+        "maxM": [
+          0.1753018507380677,
+          0.41103904421909765,
+          0.10232518513070465
+        ],
+        "low": {
+          "mesh": "Roma continuous anatomical skin",
+          "index": 15086,
+          "worldM": [
+            0.1343473395527347,
+            0.3919002498995189,
+            0.09860162980790067
+          ]
+        },
+        "high": {
+          "mesh": "Roma continuous anatomical skin",
+          "index": 15091,
+          "worldM": [
+            0.10434335897602567,
+            0.41103904421909765,
+            0.09774534517682552
+          ]
+        }
+      },
+      {
+        "label": "Patella",
+        "sources": [
+          {
+            "mesh": "Roma continuous anatomical skin",
+            "vertices": 13
+          }
+        ],
+        "minM": [
+          -0.17328920987919344,
+          0.3928557060261032,
+          0.08028671545741131
+        ],
+        "maxM": [
+          -0.072693855623586,
+          0.40166598541923665,
+          0.1020441725590412
+        ],
+        "low": {
+          "mesh": "Roma continuous anatomical skin",
+          "index": 15080,
+          "worldM": [
+            -0.13406745947885454,
+            0.3928557060261032,
+            0.09871394328644545
+          ]
+        },
+        "high": {
+          "mesh": "Roma continuous anatomical skin",
+          "index": 13413,
+          "worldM": [
+            -0.17328920987919344,
+            0.40166598541923665,
+            0.08028671545741131
+          ]
+        }
+      }
+    ],
+    "ankleCuff": [
+      {
+        "label": "Rolled ankle cuff",
+        "sources": [
+          {
+            "mesh": "hips/thighL/shinL/footL/Roma ankle cuff L/Mesh[0]",
+            "vertices": 1728
+          }
+        ],
+        "minM": [
+          0.06397439826965332,
+          0.10063199742212889,
+          -0.07922020280957223
+        ],
+        "maxM": [
+          0.18130560173034668,
+          0.1076879971705377,
+          0.04562020280957221
+        ],
+        "low": {
+          "mesh": "hips/thighL/shinL/footL/Roma ankle cuff L/Mesh[0]",
+          "index": 248,
+          "worldM": [
+            0.14985600070595742,
+            0.10063199742212889,
+            0.033356422537565225
+          ]
+        },
+        "high": {
+          "mesh": "hips/thighL/shinL/footL/Roma ankle cuff L/Mesh[0]",
+          "index": 1220,
+          "worldM": [
+            0.09542399929404259,
+            0.1076879971705377,
+            -0.06695642253756524
+          ]
+        }
+      },
+      {
+        "label": "Rolled ankle cuff",
+        "sources": [
+          {
+            "mesh": "hips/thighR/shinR/footR/Roma ankle cuff R/Mesh[0]",
+            "vertices": 1728
+          }
+        ],
+        "minM": [
+          -0.18130560173034665,
+          0.10063199742212896,
+          -0.07922020280957225
+        ],
+        "maxM": [
+          -0.06397439826965333,
+          0.10768799717053774,
+          0.0456202028095722
+        ],
+        "low": {
+          "mesh": "hips/thighR/shinR/footR/Roma ankle cuff R/Mesh[0]",
+          "index": 216,
+          "worldM": [
+            -0.06820799858808518,
+            0.10063199742212896,
+            -0.016800000000000023
+          ]
+        },
+        "high": {
+          "mesh": "hips/thighR/shinR/footR/Roma ankle cuff R/Mesh[0]",
+          "index": 1080,
+          "worldM": [
+            -0.06820799858808518,
+            0.10768799717053774,
+            -0.016800000000000023
+          ]
+        }
+      }
+    ]
+  },
+  "pose": "42 grounded idle ticks at fixed timestep, feet facing +Z"
+}
