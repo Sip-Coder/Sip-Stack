@@ -185,6 +185,36 @@ function coplanarOverlap(a, b) {
   return true;
 }
 
+const firstEdge = new T.Vector3(), secondEdge = new T.Vector3(), separating = new T.Vector3();
+function edgesSeparate(a, b) {
+  // Near an acute sewn corner, classifying a point within epsilon of a face
+  // as lying on it can extend the apparent intersection line far past the
+  // true contact. Project onto the remaining triangle separating axes.
+  for (let i = 0; i < 3; i++) {
+    firstEdge.subVectors(a.v[(i + 1) % 3], a.v[i]);
+    for (let j = 0; j < 3; j++) {
+      secondEdge.subVectors(b.v[(j + 1) % 3], b.v[j]);
+      separating.crossVectors(firstEdge, secondEdge);
+      if (separating.lengthSq() < 1e-20 * firstEdge.lengthSq() * secondEdge.lengthSq()) continue;
+      separating.normalize();
+      // Face-normal crossings, including a crossing along a tessellation
+      // edge, have already been classified using the two cut intervals.
+      if (Math.abs(separating.dot(a.normal)) > 1 - 1e-12 || Math.abs(separating.dot(b.normal)) > 1 - 1e-12)
+        continue;
+      let aMin = Infinity, aMax = -Infinity, bMin = Infinity, bMax = -Infinity;
+      for (let k = 0; k < 3; k++) {
+        const u = separating.dot(a.v[k]), v = separating.dot(b.v[k]);
+        aMin = Math.min(aMin, u);
+        aMax = Math.max(aMax, u);
+        bMin = Math.min(bMin, v);
+        bMax = Math.max(bMax, v);
+      }
+      if (aMax - bMin <= epsilon || bMax - aMin <= epsilon) return true;
+    }
+  }
+  return false;
+}
+
 function intersects(a, b) {
   line.crossVectors(a.normal, b.normal);
   if (line.lengthSq() < 1e-15) {
@@ -196,9 +226,9 @@ function intersects(a, b) {
   // one mesh. Requiring the other mesh to span the plane catches this case.
   const piercesA = cut(a, b, spans, 0),
     piercesB = cut(b, a, spans, 2);
-  return (piercesA || piercesB) && Math.min(spans[1], spans[3]) - Math.max(spans[0], spans[2]) > epsilon
-    ? 'crossing'
-    : false;
+  if ((!piercesA && !piercesB) || Math.min(spans[1], spans[3]) - Math.max(spans[0], spans[2]) <= epsilon)
+    return false;
+  return edgesSeparate(a, b) ? false : 'crossing';
 }
 
 const directions = [

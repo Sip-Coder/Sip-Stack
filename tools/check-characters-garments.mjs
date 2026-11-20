@@ -195,7 +195,23 @@ async function measure(onlyHero, { tier }) {
       });
       if (name === 'sippy') {
         pose.crownPlies = {};
+        pose.seatBounds = {};
         for (const side of ['L', 'R']) {
+          const seat = surfaces['trousers-' + side].find((m) => m.name === 'sippy-seat-' + side);
+          const sphere = seat?.geometry.boundingSphere;
+          if (!sphere) {
+            failures.push(name + '/' + id + ': missing trouser seat culling sphere ' + side);
+          } else {
+            const inverse = seat.matrixWorld.clone().invert(), local = sphere.center.clone();
+            const points = cache.get(seat).points;
+            let furthest = 0;
+            for (const point of points)
+              furthest = Math.max(furthest, local.copy(point).applyMatrix4(inverse).distanceTo(sphere.center));
+            const excessM = (furthest - sphere.radius) * seat.matrixWorld.getMaxScaleOnAxis();
+            pose.seatBounds[side] = { vertices: points.length, excessM: Math.max(0, excessM) };
+            if (excessM > 1e-7)
+              failures.push(name + '/' + id + ': posed seat leaves its culling sphere ' + side);
+          }
           const key = 'shoulder-' + side;
           try {
             const m = measureCrownPlies(cache.get(surfaces[key][0]));
