@@ -41,7 +41,10 @@ export function posedSurface(mesh, body = false) {
   // A batched palm or mechanical casing may contain several closed parts.
   // Overlapping solid parts form a union; a single parity ray across both
   // would incorrectly classify their overlap as empty.
-  const parent = body ? points.map((_, i) => i) : [];
+  // Join faces across edges. Merely touching another volume at a single
+  // welded vertex does not make the two volumes one continuous body skin.
+  const firstFace = body ? new Map() : null,
+    parent = [];
   function root(i) {
     while (parent[i] !== i) {
       parent[i] = parent[parent[i]];
@@ -59,17 +62,19 @@ export function posedSurface(mesh, body = false) {
     normal.normalize();
     for (const id of ids) referenced.add(id);
     const box = new T.Box3().setFromPoints(v);
-    tris.push({ id: i / 3, vertex: ids[0], v, normal, box, center: box.getCenter(new T.Vector3()) });
-    if (body) {
-      const base = root(ids[0]);
-      parent[root(ids[1])] = base;
-      parent[root(ids[2])] = base;
-    }
+    const face = tris.length;
+    tris.push({ id: i / 3, face, v, normal, box, center: box.getCenter(new T.Vector3()) });
+    if (body) parent.push(face);
     for (let j = 0; j < 3; j++) {
       const a = ids[j],
         b = ids[(j + 1) % 3],
         key = Math.min(a, b) + ',' + Math.max(a, b);
       edges.set(key, (edges.get(key) ?? 0) + 1);
+      if (body) {
+        const previous = firstFace.get(key);
+        if (previous === undefined) firstFace.set(key, face);
+        else parent[root(face)] = root(previous);
+      }
     }
   }
   let boundaryEdges = 0,
@@ -83,7 +88,7 @@ export function posedSurface(mesh, body = false) {
   if (body) {
     const groups = new Map();
     for (const tri of tris) {
-      const key = root(tri.vertex);
+      const key = root(tri.face);
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(tri);
     }

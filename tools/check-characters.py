@@ -1,7 +1,8 @@
 """Exercise the Characters tab with Chromium and Playwright for Python.
 
 Serve docs/ and pass its URL. Optionally set CHROME and THREE_ROOT (the unpacked
-three@0.170.0 distribution). --system-fonts uses the site's fallback fonts for
+three@0.170.0 distribution), and MERMAID_ROOT for an unpacked mermaid@11
+package to serve the Outline diagrams locally. --system-fonts uses fallback fonts for
 offline runs. All application scripts, the renderer and shader programs run.
 """
 import argparse
@@ -70,6 +71,14 @@ def browser_context(browser, *, package=None, system_fonts=False, width=680, hei
         prefix = "https://cdn.jsdelivr.net/npm/three@0.170.0/"
         context.route(prefix + "**", lambda r: r.fulfill(
             path=package / urlsplit(r.request.url.split(prefix)[1]).path,
+            content_type="text/javascript", headers={"Access-Control-Allow-Origin": "*"}))
+    if os.getenv("MERMAID_ROOT"):
+        mermaid = Path(os.environ["MERMAID_ROOT"]).resolve()
+        info = json.loads((mermaid / "package.json").read_text())
+        assert info["name"] == "mermaid" and info["version"].split(".")[0] == "11", info["version"]
+        diagrams = "https://cdn.jsdelivr.net/npm/mermaid@11/"
+        context.route(diagrams + "**", lambda r: r.fulfill(
+            path=mermaid / urlsplit(r.request.url.split(diagrams)[1]).path,
             content_type="text/javascript", headers={"Access-Control-Allow-Origin": "*"}))
     if system_fonts:
         context.route("https://fonts.googleapis.com/**", lambda r: r.fulfill(body="", content_type="text/css"))
