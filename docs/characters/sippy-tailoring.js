@@ -19,7 +19,7 @@ function piece(parent, name, geometry, material) {
 
 // Rectangular pattern cut on an arbitrary curved surface. Both surfaces
 // share the edge vertices with the turned hem, including the front opening.
-function shell(along, around, point, closed = false) {
+export function shell(along, around, point, closed = false) {
   const verts = [],
     uv = [];
   const columns = closed ? around : around + 1,
@@ -161,49 +161,6 @@ export function cutSuit(rig, mats) {
     return m;
   };
   const beneath = (outer, inner) => pairs.push({ outer, inner });
-  // The upper body under the shirt is a watertight, sculpted volume.
-  const body = torso.map(([y, x, z, c]) => [y, 0.75 * x, 0.76 * z, c]);
-  function core(parent, name, rows, around = 32) {
-    const p = [],
-      idx = [],
-      n = (rows.length - 1) * 4;
-    for (let i = 0; i <= n; i++) {
-      const y = lerp(rows[0][0], rows.at(-1)[0], i / n);
-      for (let j = 0; j < around; j++) {
-        const a = (tau * j) / around;
-        p.push(
-          interpolate(rows, y, 1) * Math.sin(a),
-          y,
-          interpolate(rows, y, 3) + interpolate(rows, y, 2) * Math.cos(a),
-        );
-        if (i < n) {
-          const h = i * around + j,
-            k = i * around + ((j + 1) % around);
-          idx.push(h, k, h + around, k, k + around, h + around);
-        }
-      }
-    }
-    for (const i of [0, n]) {
-      const o = p.length / 3,
-        y = i === 0 ? rows[0][0] : rows.at(-1)[0];
-      p.push(0, y, interpolate(rows, y, 3));
-      for (let j = 0; j < around; j++) {
-        const a = i * around + j,
-          b = i * around + ((j + 1) % around);
-        if (i === 0) idx.push(o, b, a);
-        else idx.push(o, a, b);
-      }
-    }
-    const g = new T.BufferGeometry();
-    g.setAttribute('position', new T.Float32BufferAttribute(p, 3));
-    g.setIndex(idx);
-    g.computeVertexNormals();
-    return add(name, parent, g, skin);
-  }
-  body[0][0] = -0.103;
-  body.splice(1, 1);
-  body[body.length - 1][0] = 0.174;
-  core(chest, 'body-torso', body);
   add(
     'shirt',
     chest,
@@ -215,7 +172,7 @@ export function cutSuit(rig, mats) {
     ),
     white,
   );
-  beneath('shirt', 'body-torso');
+  beneath('shirt', 'body');
   // The trouser rise closes the fork between both legs. It sits under the
   // waistcoat, with a small lip above the waistband for the tucked shirt.
   add(
@@ -223,13 +180,13 @@ export function cutSuit(rig, mats) {
     chest,
     shell(
       14,
-      48,
-      (v, u, inner) => torsoPoint(lerp(-0.139, -0.0778, v), u * tau, 0.912, inner ? -0.00135 : 0),
+      56,
+      (v, u, inner) => torsoPoint(lerp(-0.139, -0.0778, v), u * tau, 0.9255, inner ? -0.00135 : 0),
       true,
     ),
     trousers,
   );
-  beneath('trouser-rise', 'body-torso');
+  beneath('trouser-rise', 'body');
   add(
     'vest',
     chest,
@@ -338,15 +295,15 @@ export function cutSuit(rig, mats) {
     add('tails', pivot, shell(18, 18, tail), suit);
   }
   beneath('tails', 'jacket');
-  rig.garments = { surfaces, pairs };
-  return { add, core, beneath, surfaces, tails, updates, rig };
+  rig.garments = { surfaces, pairs, seams: [] };
+  return { add, beneath, surfaces, tails, updates, rig };
 }
 
 // A single articulated pattern runs across each elbow and knee. Slices
 // rotate progressively into the lower joint while their centres follow a
 // circular fillet around the bend. Shirtsleeves and skin use the same centres.
 export function fitLimb(suit, side, leg, mats) {
-  const { rig, add, core, beneath, updates } = suit;
+  const { rig, add, beneath, updates } = suit;
   const joint = rig[(leg ? 'thigh' : 'upperArm') + side],
     lower = rig[(leg ? 'shin' : 'forearm') + side];
   const sign = side === 'L' ? 1 : -1,
@@ -386,11 +343,7 @@ export function fitLimb(suit, side, leg, mats) {
         [0.015, 0.008, 0.01, -0.002],
         [0.017, 0.001, 0.001, -0.002],
       ];
-  const bodyKey = (leg ? 'body-leg-' : 'body-arm-') + side;
-  const body = rows.slice(1, -1).map(([y, w, d, z]) => [y, w * 0.67, d * 0.67, z]);
-  if (!leg) body.splice(-1, 1);
-  const skin = core(joint, bodyKey, body, 24);
-  const pieces = [[skin, false]];
+  const pieces = [];
   const key = (leg ? 'trousers-' : 'sleeve-') + side;
   function tube(name, mat, shrink, y0, y1, thick, n, nr) {
     const shape = shell(
@@ -414,15 +367,15 @@ export function fitLimb(suit, side, leg, mats) {
     return m;
   }
   if (leg) {
-    tube(key, mats.trousers, 1, rows[0][0], rows.at(-1)[0], 0.00145, 44, 36);
-    beneath(key, bodyKey);
+    tube(key, mats.trousers, 1, rows[0][0], -0.09, 0.00145, 44, 56);
+    beneath(key, 'body');
   } else {
     const sh = 'shirtsleeve-' + side;
     tube(sh, mats.white, 0.808, -0.317, 0.01, 0.00125, 36, 30);
-    beneath(sh, bodyKey);
+    beneath(sh, 'body');
     tube(key, mats.suit, 1, -0.312, 0.017, 0.00145, 58, 34);
     beneath(key, sh);
-    beneath(key, bodyKey);
+    beneath(key, 'body');
   }
   const q = new T.Quaternion(),
     cross = new T.Vector3(),
@@ -554,11 +507,10 @@ export function anatomyRegions(suit, neck) {
   }
   for (const [name, meshes] of Object.entries(suit.surfaces))
     for (const m of meshes) {
-      if (name === 'body-torso' || name === 'jacket')
-        add(m, (y) => (y > 0.13 ? ['torso', 'shoulders'] : ['torso']));
+      if (name === 'jacket') add(m, (y) => (y > 0.13 ? ['torso', 'shoulders'] : ['torso']));
       else if (name === 'collar') add(m, () => ['neck']);
-      else if (name.startsWith('body-leg') || name.startsWith('trousers')) add(m, () => ['legs']);
-      else if (name.startsWith('body-arm') || name.startsWith('sleeve-'))
+      else if (name.startsWith('trousers')) add(m, () => ['legs']);
+      else if (name.startsWith('sleeve-'))
         add(m, (y) => (y > -0.018 ? ['shoulders'] : y < -0.178 ? ['distalArms'] : []));
     }
   for (const m of neck.children) if (m.isMesh) add(m, () => ['neck']);
@@ -579,8 +531,7 @@ export function fitOpenings(suit) {
   for (const [id, parts] of Object.entries(surfaces)) {
     for (const m of parts) {
       if (id.startsWith('trousers-')) legs.push(m);
-      if (!['shirt', 'vest', 'jacket', 'lapels', 'body-torso', 'tails', 'trouser-rise'].includes(id))
-        continue;
+      if (!['shirt', 'vest', 'jacket', 'lapels', 'tails', 'trouser-rise'].includes(id)) continue;
       const p = m.geometry.attributes.position,
         rest = p.array.slice();
       const item = { m, rest, id };
@@ -593,10 +544,9 @@ export function fitOpenings(suit) {
           z = rest[k + 2],
           w = smooth(Math.abs(x), 0.066, 0.133);
         let side = 1;
-        if (id === 'trouser-rise') side = 0.918;
+        if (id === 'trouser-rise') side = 0.929;
         else if (id === 'shirt') side = 0.905;
         else if (id === 'vest') side = 0.951;
-        else if (id === 'body-torso') side = 0.78;
         const limit =
           (0.09 +
             0.013 * smooth(rest[k + 1], -0.036, 0.115) +
@@ -629,8 +579,7 @@ export function fitOpenings(suit) {
   return function () {
     chest.updateWorldMatrix(true, false);
     inv.copy(chest.matrixWorld).invert();
-    let highest = -Infinity,
-      rear = Infinity;
+    let highest = -Infinity;
     for (const { leg, a } of cache) {
       leg.updateWorldMatrix(true, false);
       mx.multiplyMatrices(inv, leg.matrixWorld);
@@ -639,8 +588,6 @@ export function fitOpenings(suit) {
       for (let k = 0; k < p.length; k += 3) {
         const y = e[1] * p[k] + e[5] * p[k + 1] + e[9] * p[k + 2] + e[13];
         highest = Math.max(highest, y);
-        const z = e[2] * p[k] + e[6] * p[k + 1] + e[10] * p[k + 2] + e[14];
-        if (y >= -0.202) rear = Math.min(rear, z);
       }
     }
     const hem = Math.min(0.028, highest + 0.0038),
@@ -650,244 +597,11 @@ export function fitOpenings(suit) {
     if (chain) chain.position.y = 0.09 * compression;
     for (const { m, rest, id } of torsoPieces) {
       const p = m.geometry.attributes.position;
-      if (id === 'tails') {
-        // A vent pivots at its actual seam; the end sweeps clear of the thighs.
-        m.parent.updateWorldMatrix(true, false);
-        mx.multiplyMatrices(inv, m.parent.matrixWorld);
-        const e = mx.elements;
-        let minGap = 0;
-        for (let k = 0; k < rest.length; k += 3) {
-          const z = e[2] * rest[k] + e[6] * rest[k + 1] + e[10] * rest[k + 2] + e[14];
-          minGap = Math.max(minGap, z - rear + 0.004);
-        }
-        m.position.z = -minGap;
-        continue;
-      }
+      if (id === 'tails') continue;
       for (let k = 1; k < rest.length; k += 3) {
         const y = rest[k];
         p.array[k] = y + Math.max(0, top - y) * compression;
       }
-      p.needsUpdate = true;
-    }
-  };
-}
-
-// Stitched saddle pieces connect the jacket to each independently rotating
-// sleeve. Sample facing cloth surfaces along the transverse axis. The
-// shaped shoulder eases across the gap and retains its layered seam margin.
-export function setSleeveHeads(suit) {
-  const { rig, surfaces } = suit,
-    chest = rig.chest,
-    inv = new T.Matrix4(),
-    tr = new T.Matrix4();
-  const copies = [];
-  function port(mesh, trim, sign) {
-    const p = mesh.geometry.attributes.position,
-      source = p.array;
-    const active = [],
-      map = new Map(),
-      tris = [];
-    const idx = mesh.geometry.index;
-    for (let i = 0; i < idx.count; i += 3) {
-      const a = idx.getX(i),
-        b = idx.getX(i + 1),
-        c = idx.getX(i + 2);
-      if (!trim(a, b, c, source)) continue;
-      for (const j of [a, b, c]) {
-        if (!map.has(j)) {
-          map.set(j, active.length);
-          active.push(j);
-        }
-        tris.push(map.get(j) * 3);
-      }
-    }
-    const pts = new Float32Array(active.length * 3),
-      cells = 8,
-      count = cells * cells;
-    const heads = new Int32Array(count),
-      ids = new Int32Array((tris.length / 3) * count),
-      next = new Int32Array(ids.length);
-    const row = (y) => Math.max(0, Math.min(cells - 1, Math.floor(((y - 0.109) * cells) / 0.06)));
-    const col = (z) => Math.max(0, Math.min(cells - 1, Math.floor(((z + 0.037) * cells) / 0.074)));
-    return {
-      refresh() {
-        mesh.updateWorldMatrix(true, false);
-        tr.multiplyMatrices(inv, mesh.matrixWorld);
-        const e = tr.elements;
-        for (let j = 0; j < active.length; j++) {
-          const k = active[j] * 3,
-            x = source[k],
-            y = source[k + 1],
-            z = source[k + 2];
-          pts[3 * j] = sign * (e[0] * x + e[4] * y + e[8] * z + e[12]);
-          pts[3 * j + 1] = e[1] * x + e[5] * y + e[9] * z + e[13];
-          pts[3 * j + 2] = e[2] * x + e[6] * y + e[10] * z + e[14];
-        }
-        heads.fill(-1);
-        let used = 0;
-        for (let i = 0; i < tris.length; i += 3) {
-          const a = tris[i],
-            b = tris[i + 1],
-            c = tris[i + 2];
-          const y0 = Math.min(pts[a + 1], pts[b + 1], pts[c + 1]),
-            y1 = Math.max(pts[a + 1], pts[b + 1], pts[c + 1]);
-          const z0 = Math.min(pts[a + 2], pts[b + 2], pts[c + 2]),
-            z1 = Math.max(pts[a + 2], pts[b + 2], pts[c + 2]);
-          if (y1 < 0.109 || y0 > 0.169 || z1 < -0.037 || z0 > 0.037) continue;
-          for (let v = row(y0), v1 = row(y1); v <= v1; v++)
-            for (let u = col(z0), u1 = col(z1); u <= u1; u++) {
-              const bin = v * cells + u;
-              ids[used] = i;
-              next[used] = heads[bin];
-              heads[bin] = used++;
-            }
-        }
-      },
-      limit(y0, y1, z0, z1) {
-        let limit = Infinity;
-        for (let v = row(y0), v1 = row(y1); v <= v1; v++)
-          for (let u = col(z0), u1 = col(z1); u <= u1; u++) {
-            for (let j = heads[v * cells + u]; j >= 0; j = next[j]) {
-              const t = ids[j],
-                a = tris[t],
-                b = tris[t + 1],
-                c = tris[t + 2];
-              if (
-                Math.max(pts[a + 1], pts[b + 1], pts[c + 1]) < y0 ||
-                Math.min(pts[a + 1], pts[b + 1], pts[c + 1]) > y1 ||
-                Math.max(pts[a + 2], pts[b + 2], pts[c + 2]) < z0 ||
-                Math.min(pts[a + 2], pts[b + 2], pts[c + 2]) > z1
-              )
-                continue;
-              limit = Math.min(limit, pts[a], pts[b], pts[c]);
-            }
-          }
-        return limit;
-      },
-      at(y, z, min) {
-        let edge = min ? Infinity : -Infinity;
-        for (let j = heads[row(y) * cells + col(z)]; j >= 0; j = next[j]) {
-          const i = ids[j];
-          const a = tris[i],
-            b = tris[i + 1],
-            c = tris[i + 2],
-            ay = pts[a + 1],
-            az = pts[a + 2];
-          const ayb = pts[b + 1] - ay,
-            azb = pts[b + 2] - az,
-            ayc = pts[c + 1] - ay,
-            azc = pts[c + 2] - az;
-          const det = ayb * azc - azb * ayc;
-          if (Math.abs(det) < 1e-10) continue;
-          const py = y - ay,
-            pz = z - az,
-            f = (py * azc - pz * ayc) / det,
-            g = (ayb * pz - azb * py) / det;
-          if (f < -0.0001 || g < -0.0001 || f + g > 1.0001) continue;
-          const x = pts[a] + f * (pts[b] - pts[a]) + g * (pts[c] - pts[a]);
-          edge = min ? Math.min(edge, x) : Math.max(edge, x);
-        }
-        return edge;
-      },
-    };
-  }
-  const segments = 24,
-    steps = 5;
-  for (const [side, sign] of [
-    ['L', 1],
-    ['R', -1],
-  ]) {
-    const jacket = surfaces.jacket[0],
-      sleeve = surfaces['sleeve-' + side][0];
-    const trunk = port(
-      jacket,
-      (a, b, c, s) =>
-        s[a * 3 + 1] > 0.092 &&
-        s[b * 3 + 1] > 0.092 &&
-        s[c * 3 + 1] > 0.092 &&
-        Math.max(sign * s[a * 3], sign * s[b * 3], sign * s[c * 3]) > 0.044,
-      sign,
-    );
-    const arm = port(
-      sleeve,
-      (a, b, c, s) => Math.max(s[a * 3 + 1], s[b * 3 + 1], s[c * 3 + 1]) > -0.096,
-      sign,
-    );
-    const geometry = shell(
-      steps,
-      segments,
-      (v, u, inner) => [
-        sign * (0.105 + 0.01 * v),
-        0.135 - sign * Math.sin(u * tau) * 0.02 * (1 - 0.06 * inner),
-        Math.cos(u * tau) * 0.02 * (1 - 0.06 * inner),
-      ],
-      true,
-    );
-    const part = suit.add('jacket', chest, geometry, jacket.material);
-    part.name = 'sippy-shoulder-yoke-' + side;
-    const cs = new Float32Array(segments),
-      sn = new Float32Array(segments);
-    for (let j = 0; j < segments; j++) {
-      cs[j] = Math.cos((j * tau) / segments);
-      sn[j] = Math.sin((j * tau) / segments);
-    }
-    copies.push({ trunk, arm, part, cs, sn, sign, points: new Float32Array(segments * 8) });
-  }
-  return () => {
-    chest.updateWorldMatrix(true, false);
-    inv.copy(chest.matrixWorld).invert();
-    for (const { trunk, arm, part, cs, sn, sign, points } of copies) {
-      trunk.refresh();
-      arm.refresh();
-      const p = part.geometry.attributes.position;
-      for (let layer = 0; layer < 2; layer++)
-        for (let j = 0; j < segments; j++) {
-          let radius = 1 - 0.075 * layer,
-            y,
-            z,
-            left,
-            right;
-          for (let attempt = 0; attempt < 5; attempt++) {
-            y = 0.136 - sign * (sign * sn[j] < 0 ? 0.018 : 0.024) * radius * sn[j];
-            z = 0.032 * radius * cs[j];
-            left = trunk.at(y, z, false);
-            right = arm.at(y, z, true);
-            if (Number.isFinite(left) && Number.isFinite(right) && right - left > 0.0048) break;
-            radius *= 0.76;
-          }
-          if (!Number.isFinite(left)) left = 0.099;
-          if (!Number.isFinite(right)) right = 0.126;
-          const n = (layer * segments + j) * 4;
-          points[n] = Math.max(0.1007, left + 0.0007);
-          points[n + 1] = right - 0.0015;
-          points[n + 2] = y;
-          points[n + 3] = z;
-        }
-      for (let j = 0; j < segments; j++) {
-        const a = j * 4,
-          b = ((j + 1) % segments) * 4,
-          c = a + 4 * segments,
-          d = b + 4 * segments;
-        const y0 = Math.min(points[a + 2], points[b + 2], points[c + 2], points[d + 2]);
-        const y1 = Math.max(points[a + 2], points[b + 2], points[c + 2], points[d + 2]);
-        const z0 = Math.min(points[a + 3], points[b + 3], points[c + 3], points[d + 3]);
-        const z1 = Math.max(points[a + 3], points[b + 3], points[c + 3], points[d + 3]);
-        const ceiling = arm.limit(y0, y1, z0, z1) - 0.0008;
-        points[a + 1] = Math.min(points[a + 1], ceiling);
-        points[b + 1] = Math.min(points[b + 1], ceiling);
-        points[c + 1] = Math.min(points[c + 1], ceiling);
-        points[d + 1] = Math.min(points[d + 1], ceiling);
-      }
-      for (let layer = 0; layer < 2; layer++)
-        for (let j = 0; j < segments; j++) {
-          const n = (layer * segments + j) * 4,
-            left = points[n],
-            right = points[n + 1];
-          for (let k = 0; k <= steps; k++) {
-            const i = (layer * (steps + 1) + k) * segments + j;
-            p.setXYZ(i, sign * lerp(left, right, k / steps), points[n + 2], points[n + 3]);
-          }
-        }
       p.needsUpdate = true;
     }
   };

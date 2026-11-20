@@ -1,7 +1,11 @@
 // The vineyard sommelier. All dimensions here are fractions of standing height.
 import * as T from 'three';
 import { createHair } from './hair.js';
-import { cutSuit, fitLimb, frontZ, anatomyRegions, fitOpenings, setSleeveHeads } from './sippy-tailoring.js';
+import { fitExpression } from './sippy-expression.js';
+import { fitHipSeams } from './sippy-hips.js';
+import { makeSippyBody } from './sippy-body.js';
+import { cutSuit, fitLimb, frontZ, anatomyRegions, fitOpenings } from './sippy-tailoring.js';
+import { setSleeveHeads } from './sippy-shoulders.js';
 import { detailMaterial } from './material-detail.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
@@ -299,7 +303,7 @@ export function buildSippy(rig) {
     black = surface('#231915', 0.48);
   const white = surface('#f4e5d4', 0.51);
   const mouth = surface('#6b342b', 0.52),
-    lip = surface('#b9735a', 0.55);
+    lip = surface('#b97b65', 0.57);
   const suit = surface('#494039', 0.83),
     trousers = surface('#403936', 0.79);
   const waistcoat = surface('#635042', 0.76),
@@ -376,18 +380,10 @@ export function buildSippy(rig) {
   const skullMesh = mesh(headSkin, faceShape, skin);
   skullMesh.name = 'sippy-face-sculpt';
   skullMesh.userData.patternPiece = true;
+  const expression = fitExpression(skullMesh, 96, mouth, white, lip);
+  const orbitalRims = [];
   const neck = group(chest);
   neck.name = 'sippy-neck';
-  mesh(
-    neck,
-    rings([
-      [0.145, 0.021, 0.018, 0],
-      [0.16, 0.0205, 0.0185, 0],
-      [0.195, 0.019, 0.0185, 0.0015],
-      [0.213, 0.022, 0.021, 0.003],
-    ]),
-    skin,
-  );
   for (const s of [-1, 1]) {
     const ear = ellipsoid(headSkin, skin, s * 0.056, 0.059, -0.001, 0.012, 0.019, 0.009);
     ear.rotation.z = -s * 0.15;
@@ -408,9 +404,11 @@ export function buildSippy(rig) {
     lids = [],
     brows = [];
   for (const s of [-1, 1]) {
-    const eye = group(headSkin, s * 0.0238, 0.0715, 0.0441);
-    eye.rotation.y = s * 0.32;
+    const eye = group(headSkin, s * 0.0238, 0.0715, 0.0437);
+    eye.rotation.y = s * 0.38;
     eye.rotation.z = -s * 0.037;
+    eye.scale.z = 0.84;
+    orbitalRims.push(expression.orbit(eye, skin, s));
     const gaze = eyeSurface(eye);
     lids.push(eyelid(eye, skin, black, true), eyelid(eye, skin, blush, false));
     gazes.push(gaze);
@@ -448,93 +446,6 @@ export function buildSippy(rig) {
     skin,
   );
   for (const s of [-1, 1]) ellipsoid(headSkin, blush, s * 0.006, 0.047, 0.061, 0.0017, 0.00095, 0.0007);
-  const smile = group(headSkin, 0, 0.034, 0);
-  const smileZ = (x, y) =>
-    0.0023 + (0.041 + ((0.049 - 0.041) * (y - 0.025)) / 0.02) * Math.sqrt(1 - (x / 0.051) ** 2);
-  const lipVertices = [],
-    toothVertices = [],
-    smileIndex = [];
-  for (let n = 0; n <= 20; n++) {
-    const u = n / 10 - 1,
-      x = u * 0.023;
-    const top = 0.033 + 0.0053 * u * u + 0.0009 * u;
-    const bottom = top - 0.0083 * (1 - u * u);
-    lipVertices.push(x, bottom, smileZ(x, bottom) + 0.0016, x, top, smileZ(x, top) + 0.0018);
-    const toothBottom = top - 0.0031 * (1 - u * u);
-    toothVertices.push(
-      x * 0.91,
-      toothBottom,
-      smileZ(x * 0.91, toothBottom) + 0.002,
-      x * 0.91,
-      top,
-      smileZ(x * 0.91, top) + 0.0021,
-    );
-    if (n < 20) {
-      const k = n * 2;
-      smileIndex.push(k, k + 2, k + 1, k + 1, k + 2, k + 3);
-    }
-  }
-  for (const [vertices, material] of [
-    [lipVertices, mouth],
-    [toothVertices, white],
-  ]) {
-    const geo = new T.BufferGeometry();
-    geo.setAttribute('position', new T.Float32BufferAttribute(vertices, 3));
-    geo.setIndex(smileIndex);
-    geo.computeVertexNormals();
-    geo.translate(0, -0.034, 0.0007);
-    mesh(smile, geo, material);
-  }
-  stroke(
-    headSkin,
-    lip,
-    [
-      [-0.014, 0.03, 0.046],
-      [0, 0.0268, 0.0455],
-      [0.013, 0.031, 0.047],
-    ],
-    0.00125,
-  );
-
-  // The upper lip crests at the philtrum and turns up into each cheek.
-  for (const sign of [-1, 1]) {
-    sweep(
-      headSkin,
-      lip,
-      [
-        [0, 0.0341, 0.0482],
-        [sign * 0.006, 0.0353, 0.048],
-        [sign * 0.013, 0.0352, 0.0473],
-        [sign * 0.018, 0.0366, 0.046],
-        [sign * 0.022, 0.0385, 0.0444],
-      ],
-      0.0013,
-      0.00115,
-      0.1,
-    );
-    stroke(
-      headSkin,
-      blush,
-      [
-        [sign * 0.022, 0.0396, 0.0446],
-        [sign * 0.024, 0.0403, 0.0443],
-        [sign * 0.025, 0.042, 0.0442],
-      ],
-      0.00047,
-      5,
-    );
-    stroke(
-      headSkin,
-      skin,
-      [
-        [sign * 0.0022, 0.0434, 0.048],
-        [sign * 0.0029, 0.039, 0.0488],
-        [sign * 0.0047, 0.0365, 0.0481],
-      ],
-      0.00064,
-      6,
-    );
-  }
   // A fitted short back and sides, a low taper at the nape and a broken temple
   // hairline. The comb flows around the ear then spirals into the crown.
   const skullProfile = new T.CatmullRomCurve3(
@@ -804,13 +715,20 @@ export function buildSippy(rig) {
       [sign * 0.052, 0.104 - long * 0.002, 0.032],
       [sign * (0.051 - long * 0.001), 0.099 - long * 0.005, 0.034 + long * 0.002],
     ];
-    lock('sippy-face-' + (long ? 'L' : 'R'), temples, 0.0065 + long * 0.0015, 0.0034, browns[long ? 1 : 3], {
-      role: 'face',
-      stiffness: long ? 91 : 102,
-      damping: long ? 9.3 : 10.9,
-      maxOffset: 0.016,
-      radius: 0.0023,
-    });
+    lock(
+      'sippy-face-' + (long ? 'L' : 'R'),
+      temples,
+      0.0065 + long * 0.0015,
+      0.0034,
+      browns[long ? 1 : 3],
+      {
+        role: 'face',
+        stiffness: long ? 91 : 102,
+        damping: long ? 9.3 : 10.9,
+        maxOffset: 0.016,
+        radius: 0.0023,
+      },
+    );
     // Brushed-back sections follow the contours of the temples before
     // tapering into the low nape. Let the tips separate on a turn.
     for (let i = 0; i < 7; i++) {
@@ -900,20 +818,6 @@ export function buildSippy(rig) {
     // separately toward the stem. A flat nail plate follows each distal joint.
     const palm = group(hand);
     palm.scale.set(1.14, 1.06, 1.14);
-    mesh(
-      palm,
-      rings(
-        [
-          [-0.041, 0.01, 0.014, 0.001],
-          [-0.033, 0.016, 0.019, 0.0],
-          [-0.02, 0.017, 0.021, 0.002],
-          [-0.008, 0.016, 0.018, 0.001],
-          [0.007, 0.014, 0.014, 0.001],
-        ],
-        32,
-      ),
-      skin,
-    );
     const nail = surface('#d69e83', 0.43);
     for (let j = 0; j < 4; j++) {
       const z = 0.0143 - j * 0.0096,
@@ -922,21 +826,6 @@ export function buildSippy(rig) {
       const x0 = s * (0.006 - 0.0015 * Math.abs(j - 1)),
         d = 0.0048 - 0.00035 * Math.abs(j - 1);
       const tip = [x0 - s * (0.011 + 0.001 * j), base - len * 0.98, z + 0.0052];
-      sweep(
-        palm,
-        skin,
-        [
-          [x0, base + 0.004, z],
-          [x0 + s * 0.001, base - 0.005, z - 0.0005],
-          [x0 - s * 0.0007, base - len * 0.52, z + 0.0002],
-          [x0 - s * 0.0046, base - len * 0.84, z + 0.0016],
-          tip,
-        ],
-        d * 1.15,
-        d,
-        0.7,
-      );
-      ellipsoid(palm, skin, x0 + s * 0.0032, base + 0.0005, z, d * 0.84, d * 0.91, d * 0.88);
       const plate = ellipsoid(
         palm,
         nail,
@@ -961,14 +850,6 @@ export function buildSippy(rig) {
       );
       fold.userData.highDetail = true;
     }
-    const thumbPts = [
-      [-s * 0.009, -0.01, 0.006],
-      [-s * 0.015, -0.014, 0.017],
-      [-s * 0.017, -0.021, 0.026],
-      [-s * 0.013, -0.028, 0.029],
-      [-s * 0.006, -0.03, 0.027],
-    ];
-    sweep(palm, skin, thumbPts, 0.007, 0.0057, 0.71);
     const thumbNail = ellipsoid(palm, nail, -s * 0.0083, -0.03, 0.03, 0.0039, 0.0025, 0.0012);
     thumbNail.rotation.z = s * 0.25;
     mesh(
@@ -1120,24 +1001,23 @@ export function buildSippy(rig) {
     { role: 'shoulder', node: rig.upperArmL, center: [0, -0.022, 0], radii: [0.0475, 0.0465, 0.0505] },
     { role: 'shoulder', node: rig.upperArmR, center: [0, -0.022, 0], radii: [0.0475, 0.0465, 0.0505] },
   ]);
-  for (const groom of grooms) hairMotion.add(groom.group, groom.points, groom.flex);
+  // The barbered sides and swept crest retain their shape through the walk cycle.
+  for (const groom of grooms)
+    hairMotion.add(groom.group, groom.points, { ...groom.flex, gaitCoupling: 0.71 });
   rig.secondary ??= {};
   // Use the final batched render skin (cheeks, nose and ears) for contact checks.
-  const faceSkin = headSkin.children.filter((part) => part.isMesh && part.material === skin);
+  const faceSkin = headSkin.children
+    .filter((part) => part.isMesh && part.material === skin)
+    .concat(orbitalRims);
   const finishSuit = fitOpenings(tailoring),
-    sleeveHeads = setSleeveHeads(tailoring);
+    sleeveHeads = setSleeveHeads(tailoring),
+    hipSeams = fitHipSeams(tailoring);
   const g = tailoring.surfaces;
-  g['body-neck'] = [...neck.children];
+  const body = makeSippyBody(rig, skin);
+  g.body = [body.mesh];
   g['body-head'] = [skullMesh];
   tailoring.beneath('collar', 'body-head');
-  for (const s of ['L', 'R']) {
-    const hand = rig['hand' + s].children.find(
-      (node) => node.isGroup && node !== goblet && node.children.some((k) => k.isMesh && k.material === skin),
-    );
-    g['body-hand-' + s] = hand.children.filter((k) => k.isMesh && k.material === skin);
-    tailoring.beneath('shirtsleeve-' + s, 'body-hand-' + s);
-  }
-  tailoring.beneath('collar', 'body-neck');
+  tailoring.beneath('collar', 'body');
   const collarSkin = [
     ...tailoring.surfaces.collar,
     ...tailoring.surfaces.jacket,
@@ -1149,7 +1029,9 @@ export function buildSippy(rig) {
     chain,
     faceSkin,
     collarSkin,
-    neckSkin: neck.children,
+    neckSkin: [],
+    body: body.mesh,
+    bodyRegions: body.regions,
     upperBack: tailoring.surfaces.jacket,
     bodyParts: anatomyRegions(tailoring, neck),
   };
@@ -1182,7 +1064,7 @@ export function buildSippy(rig) {
       blink = blinkTime < 0.16 ? Math.sin((Math.PI * blinkTime) / 0.16) : 0;
     const focus = f.emote >= 0 ? Math.sin(Math.PI * f.emote) ** 0.8 : 0;
     const sniff = f.emote < 0 ? 0 : Math.exp(-((f.emote - 0.56) ** 2) / 0.01);
-    smile.scale.set(1 + 0.09 * focus, 1 + 0.22 * focus - 0.64 * sniff, 1);
+    expression.smile(focus, sniff);
     for (let i = 0; i < 2; i++) {
       const close = Math.max(blink, sniff * (i === 0 ? 0.93 : 0.86), f.state === 'roll' ? 0.33 : 0);
       lids[i * 2](close);
@@ -1261,7 +1143,9 @@ export function buildSippy(rig) {
     satchel.rotation.x = -lag * 0.8 + bagLift * 3.2;
     for (let i = 0; i < tailoring.updates.length; i++) tailoring.updates[i]();
     finishSuit();
+    hipSeams();
     sleeveHeads();
+    body.update();
     hairMotion.step(f);
     satchel.rotation.z = 0.024 * Math.sin(f.phase + 1) * Math.min(1, f.speed);
   };
