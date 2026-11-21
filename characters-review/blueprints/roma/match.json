@@ -83,39 +83,39 @@
   },
   "silhouettes": {
     "front": {
-      "intersectionPx": 81078,
-      "unionPx": 87802,
-      "iou": 0.923418600943031
+      "intersectionPx": 81088,
+      "unionPx": 87804,
+      "iou": 0.9235114573367956
     },
     "back": {
-      "intersectionPx": 81075,
-      "unionPx": 87807,
-      "iou": 0.923331852813557
+      "intersectionPx": 81085,
+      "unionPx": 87809,
+      "iou": 0.923424705895751
     },
     "left": {
-      "intersectionPx": 50986,
-      "unionPx": 55281,
-      "iou": 0.9223060364320472
+      "intersectionPx": 50993,
+      "unionPx": 55273,
+      "iou": 0.9225661715484956
     },
     "right": {
-      "intersectionPx": 50980,
-      "unionPx": 55277,
-      "iou": 0.922264232863578
+      "intersectionPx": 50986,
+      "unionPx": 55270,
+      "iou": 0.9224895965261444
     },
     "high-front": {
-      "intersectionPx": 75393,
-      "unionPx": 83463,
-      "iou": 0.9033104489414471
+      "intersectionPx": 75449,
+      "unionPx": 83458,
+      "iou": 0.9040355627980541
     },
     "rear-three-quarter": {
-      "intersectionPx": 78075,
-      "unionPx": 87025,
-      "iou": 0.8971559896581442
+      "intersectionPx": 78072,
+      "unionPx": 87015,
+      "iou": 0.8972246164454405
     },
     "top": {
-      "intersectionPx": 18504,
-      "unionPx": 22101,
-      "iou": 0.8372471833853672
+      "intersectionPx": 18515,
+      "unionPx": 22103,
+      "iou": 0.8376690946930281
     }
   },
   "materials": [
