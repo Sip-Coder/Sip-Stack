@@ -3,6 +3,7 @@
 // curled surface, so the shape of the curl survives secondary animation.
 import * as T from 'three';
 import { upperSurface } from './hair-heightfield.js';
+import { fitBandSectors } from './roma-band-contact.js';
 import { curlResponse } from './roma-curl-response.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
@@ -403,7 +404,7 @@ export function clothHairColliders(mesh, spanCount, role) {
     if (Math.abs(k - u) < 0.0001) sections[k].expandByPoint(vertex.fromBufferAttribute(position, i));
   }
   const centers = sections.map((box) => box.getCenter(new T.Vector3()));
-  return centers.slice(0, -1).map((a, k) => {
+  const profiles = centers.slice(0, -1).map((a, k) => {
     const b = centers[k + 1];
     const line = new T.Line3(a, b),
       nearest = new T.Vector3();
@@ -424,6 +425,7 @@ export function clothHairColliders(mesh, spanCount, role) {
       radius: radius + (role === 'band' ? 0.0035 : 0.0015),
     };
   });
+  return fitBandSectors(mesh, profiles);
 }
 
 // The folded hood shares skin weights with the jacket yoke. Sample the

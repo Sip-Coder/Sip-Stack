@@ -424,6 +424,17 @@ export function createHair(rig, colliders) {
     // The groom's hold on the scalp changes its response to footfalls independently of breathing.
     const length = rest.reduce((sum, point, i) => sum + (i ? point.distanceTo(rest[i - 1]) : 0), 0);
     const lengthGain = role === 'face' ? T.MathUtils.clamp(length / 0.18, 0.52, 1) : 1;
+    const shapes = [], fabric = [], faceGuards = [];
+    for (const spec of colliders) {
+      const shape = makeShape(spec, sleeveRoute);
+      if (spec.fabric) {
+        fabric.push(shape);
+        if (spec.groomProfile) shapes.push(makeShape(spec.groomProfile, sleeveRoute));
+      } else {
+        shapes.push(shape);
+      }
+      if (shape.protectsFaces) faceGuards.push(shape);
+    }
     const chain = {
       group,
       rest,
@@ -441,7 +452,9 @@ export function createHair(rig, colliders) {
       radius,
       length: rest.map((n, i) => (i ? n.distanceTo(rest[i - 1]) : 0)),
       sleeveRoute,
-      shapes: colliders.map((spec) => makeShape(spec, sleeveRoute)),
+      shapes,
+      fabric,
+      faceGuards,
       nearby: new Array(colliders.length),
       posedBox: new T.Box3(),
       reach: new Float32Array(rest.length),
@@ -451,7 +464,6 @@ export function createHair(rig, colliders) {
       bend: rest.map(() => new T.Quaternion()),
       skin: rest.map(matrix),
     };
-    chain.faceGuards = chain.shapes.filter((s) => s.protectsFaces);
     for (const surface of surfaces) {
       if (chain.faceGuards.length) surface.fitFaces = ellipsoidFaceGuard(surface);
       surface.mesh.geometry.computeBoundingBox();
@@ -484,6 +496,7 @@ export function createHair(rig, colliders) {
       const { group, rest, nodes, shapes, speed } = chain;
       group.updateWorldMatrix(true, false);
       linear.setFromMatrix4(inverse.copy(group.matrixWorld).invert());
+      for (const shape of chain.fabric) updateShape(shape, group.matrixWorld, chain.radius);
       for (const shape of shapes) {
         updateShape(shape, group.matrixWorld, chain.radius);
         shape.planeActive = false;
