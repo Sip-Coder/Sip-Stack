@@ -98,6 +98,8 @@ for (const name of ['sippy', 'roma'])
     let vertices = 0,
       normalZeros = 0,
       muscleFaceZeroNormals = 0,
+      femurFaceZeroNormals = 0,
+      femurVertices = 0,
       anchors = 0,
       maxAttach = 0,
       unattached = 0,
@@ -145,7 +147,9 @@ for (const name of ['sippy', 'roma'])
       }
       if (zeroNormals.size) normalZeroParts.push(p.name + ' (' + zeroNormals.size + ')');
       normalZeros += zeroNormals.size;
-      if (zeroNormals.size && p.muscleNode) {
+      const femur = p.scanNode === 'FEMUR_LEFT' || p.scanNode === 'FEMUR_RIGHT';
+      if (femur) femurVertices += pos.count;
+      if (zeroNormals.size && (p.muscleNode || femur)) {
         const bad = new Set();
         for (let j = 0; j < g.index.count; j += 3) {
           const aa = g.index.getX(j),
@@ -158,7 +162,9 @@ for (const name of ['sippy', 'roma'])
           if (tri.getArea() < 1e-14) continue;
           for (const idx of [aa, bb, cc]) if (zeroNormals.has(idx)) bad.add(idx);
         }
-        muscleFaceZeroNormals += bad.size;
+        if (femur) femurFaceZeroNormals += bad.size;
+        else muscleFaceZeroNormals += bad.size;
+        if (bad.size) problems.push('Zero shading normals on rendered faces of ' + p.name);
       }
       vertices += pos.count;
     }
@@ -232,6 +238,8 @@ for (const name of ['sippy', 'roma'])
       normalZeros,
       normalZeroParts,
       muscleFaceZeroNormals,
+      femurFaceZeroNormals,
+      femurVertices,
       fewestDistinctProportion: spatialRetention.sort((a, b) => a.ratio - b.ratio)[0],
       belowHalfDistinct: spatialRetention.filter((p) => p.ratio < 0.5),
       uniquePickerIds: ids.size,

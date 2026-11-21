@@ -62,7 +62,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 12.456,
+       "coronalQAngleDeg": 12.73,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -71,11 +71,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.13
+        "worstIn": 0.129
        }
       },
       "R": {
-       "coronalQAngleDeg": 11.289,
+       "coronalQAngleDeg": 11.517,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -84,7 +84,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.154
+        "worstIn": 0.151
        }
       },
       "corticalEndplateAngle": {
@@ -93,7 +93,7 @@
       }
      },
      "skin": {
-      "sampled": 77543,
+      "sampled": 77484,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -151,7 +151,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 18.789,
+       "coronalQAngleDeg": 19.163,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -160,11 +160,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.127
+        "worstIn": 0.129
        }
       },
       "R": {
-       "coronalQAngleDeg": 13.008,
+       "coronalQAngleDeg": 13.17,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -173,7 +173,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.138
+        "worstIn": 0.132
        }
       },
       "corticalEndplateAngle": {
@@ -182,7 +182,7 @@
       }
      },
      "skin": {
-      "sampled": 80682,
+      "sampled": 80623,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -241,7 +241,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 16.004,
+       "coronalQAngleDeg": 16.115,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -249,12 +249,12 @@
        },
        "hip": {
         "hits": 5,
-        "medianIn": 0.098,
-        "worstIn": 0.147
+        "medianIn": 0.1,
+        "worstIn": 0.145
        }
       },
       "R": {
-       "coronalQAngleDeg": 14.841,
+       "coronalQAngleDeg": 15.07,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -263,7 +263,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.156
+        "worstIn": 0.153
        }
       },
       "corticalEndplateAngle": {
@@ -272,7 +272,7 @@
       }
      },
      "skin": {
-      "sampled": 81160,
+      "sampled": 81134,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -331,7 +331,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 12.108,
+       "coronalQAngleDeg": 12.322,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -340,11 +340,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.127
+        "worstIn": 0.13
        }
       },
       "R": {
-       "coronalQAngleDeg": 17.427,
+       "coronalQAngleDeg": 17.512,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -353,7 +353,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.128
+        "worstIn": 0.127
        }
       },
       "corticalEndplateAngle": {
@@ -362,7 +362,7 @@
       }
      },
      "skin": {
-      "sampled": 81098,
+      "sampled": 81017,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -425,20 +425,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 17.239,
-       "shoulder": {
-        "hits": 5,
-        "medianIn": 0.098,
-        "worstIn": 0.143
-       },
-       "hip": {
-        "hits": 5,
-        "medianIn": 0.098,
-        "worstIn": 0.139
-       }
-      },
-      "R": {
-       "coronalQAngleDeg": 19.244,
+       "coronalQAngleDeg": 17.264,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -450,13 +437,26 @@
         "worstIn": 0.134
        }
       },
+      "R": {
+       "coronalQAngleDeg": 19.226,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.143
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.133
+       }
+      },
       "corticalEndplateAngle": {
        "thoracicDeg": 42.76,
        "lumbarDeg": 20.161
       }
      },
      "skin": {
-      "sampled": 74027,
+      "sampled": 73931,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -519,7 +519,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 42.212,
+       "coronalQAngleDeg": 42.327,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -528,11 +528,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.119
+        "worstIn": 0.118
        }
       },
       "R": {
-       "coronalQAngleDeg": 13.979,
+       "coronalQAngleDeg": 14.155,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -541,7 +541,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.129
+        "worstIn": 0.127
        }
       },
       "corticalEndplateAngle": {
@@ -612,7 +612,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 20.38,
+       "coronalQAngleDeg": 20.718,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -625,7 +625,7 @@
        }
       },
       "R": {
-       "coronalQAngleDeg": 20.021,
+       "coronalQAngleDeg": 20.113,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -634,7 +634,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.134
+        "worstIn": 0.132
        }
       },
       "corticalEndplateAngle": {
@@ -643,7 +643,7 @@
       }
      },
      "skin": {
-      "sampled": 75452,
+      "sampled": 75473,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -701,7 +701,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 12.601,
+       "coronalQAngleDeg": 12.754,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -710,11 +710,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.154
+        "worstIn": 0.143
        }
       },
       "R": {
-       "coronalQAngleDeg": 11.961,
+       "coronalQAngleDeg": 12.223,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -723,7 +723,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.137
+        "worstIn": 0.13
        }
       },
       "corticalEndplateAngle": {
@@ -732,7 +732,7 @@
       }
      },
      "skin": {
-      "sampled": 81375,
+      "sampled": 81244,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -800,7 +800,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 81.971,
+       "coronalQAngleDeg": 82.151,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -809,11 +809,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.122
+        "worstIn": 0.124
        }
       },
       "R": {
-       "coronalQAngleDeg": 23.678,
+       "coronalQAngleDeg": 23.544,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -822,7 +822,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.123
+        "worstIn": 0.127
        }
       },
       "corticalEndplateAngle": {
@@ -831,7 +831,7 @@
       }
      },
      "skin": {
-      "sampled": 63203,
+      "sampled": 63198,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -893,7 +893,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 19.871,
+       "coronalQAngleDeg": 19.852,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -902,11 +902,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.129
+        "worstIn": 0.128
        }
       },
       "R": {
-       "coronalQAngleDeg": 16.352,
+       "coronalQAngleDeg": 16.46,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -915,7 +915,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.136
+        "worstIn": 0.133
        }
       },
       "corticalEndplateAngle": {
@@ -924,7 +924,7 @@
       }
      },
      "skin": {
-      "sampled": 66765,
+      "sampled": 66781,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -984,7 +984,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 3.123,
+       "coronalQAngleDeg": 3.089,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.099,
@@ -997,7 +997,7 @@
        }
       },
       "R": {
-       "coronalQAngleDeg": 11.294,
+       "coronalQAngleDeg": 11.523,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1006,7 +1006,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.153
+        "worstIn": 0.151
        }
       },
       "corticalEndplateAngle": {
@@ -1014,18 +1014,18 @@
        "lumbarDeg": 17.755
       },
       "legRaise": {
-       "thighFromVerticalDeg": 59.341,
-       "kneeFlexionDeg": 72.309,
+       "thighFromVerticalDeg": 59.342,
+       "kneeFlexionDeg": 72.308,
        "ankleLiftIn": 12.507,
        "rigPivotOffsetsIn": {
-        "hip": 0.98,
+        "hip": 0.985,
         "knee": 3.098,
         "ankle": 0.515
        }
       }
      },
      "skin": {
-      "sampled": 76487,
+      "sampled": 76463,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -1080,7 +1080,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 12.854,
+       "coronalQAngleDeg": 13.142,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1089,11 +1089,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.131
+        "worstIn": 0.133
        }
       },
       "R": {
-       "coronalQAngleDeg": 11.299,
+       "coronalQAngleDeg": 11.521,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1102,7 +1102,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.141
+        "worstIn": 0.138
        }
       },
       "corticalEndplateAngle": {
@@ -1111,7 +1111,7 @@
       }
      },
      "skin": {
-      "sampled": 77683,
+      "sampled": 77613,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -1169,7 +1169,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 19.555,
+       "coronalQAngleDeg": 19.956,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1178,11 +1178,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.132
+        "worstIn": 0.133
        }
       },
       "R": {
-       "coronalQAngleDeg": 12.999,
+       "coronalQAngleDeg": 13.165,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1191,7 +1191,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.13
+        "worstIn": 0.128
        }
       },
       "corticalEndplateAngle": {
@@ -1200,7 +1200,7 @@
       }
      },
      "skin": {
-      "sampled": 80931,
+      "sampled": 80870,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -1257,7 +1257,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 16.509,
+       "coronalQAngleDeg": 16.632,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.1,
@@ -1266,11 +1266,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.149
+        "worstIn": 0.146
        }
       },
       "R": {
-       "coronalQAngleDeg": 15.263,
+       "coronalQAngleDeg": 15.486,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1279,7 +1279,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.142
+        "worstIn": 0.139
        }
       },
       "corticalEndplateAngle": {
@@ -1288,7 +1288,7 @@
       }
      },
      "skin": {
-      "sampled": 82057,
+      "sampled": 82006,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -1346,7 +1346,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 12.709,
+       "coronalQAngleDeg": 12.94,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1355,11 +1355,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.132
+        "worstIn": 0.134
        }
       },
       "R": {
-       "coronalQAngleDeg": 17.82,
+       "coronalQAngleDeg": 17.903,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1368,7 +1368,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.118
+        "worstIn": 0.116
        }
       },
       "corticalEndplateAngle": {
@@ -1377,7 +1377,7 @@
       }
      },
      "skin": {
-      "sampled": 81643,
+      "sampled": 81595,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -1439,7 +1439,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 17.673,
+       "coronalQAngleDeg": 17.716,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1448,11 +1448,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.143
+        "worstIn": 0.14
        }
       },
       "R": {
-       "coronalQAngleDeg": 20.264,
+       "coronalQAngleDeg": 20.244,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1470,7 +1470,7 @@
       }
      },
      "skin": {
-      "sampled": 74507,
+      "sampled": 74446,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -1533,7 +1533,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 43.011,
+       "coronalQAngleDeg": 43.122,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1542,11 +1542,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.13
+        "worstIn": 0.12
        }
       },
       "R": {
-       "coronalQAngleDeg": 15.056,
+       "coronalQAngleDeg": 15.229,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1555,7 +1555,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.126
+        "worstIn": 0.124
        }
       },
       "corticalEndplateAngle": {
@@ -1564,7 +1564,7 @@
       }
      },
      "skin": {
-      "sampled": 76753,
+      "sampled": 76723,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -1626,7 +1626,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 21.238,
+       "coronalQAngleDeg": 21.603,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1635,11 +1635,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.14
+        "worstIn": 0.141
        }
       },
       "R": {
-       "coronalQAngleDeg": 20.39,
+       "coronalQAngleDeg": 20.478,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1648,7 +1648,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.128
+        "worstIn": 0.126
        }
       },
       "corticalEndplateAngle": {
@@ -1657,7 +1657,7 @@
       }
      },
      "skin": {
-      "sampled": 76207,
+      "sampled": 76174,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -1715,7 +1715,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 13.03,
+       "coronalQAngleDeg": 13.198,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1724,11 +1724,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.159
+        "worstIn": 0.148
        }
       },
       "R": {
-       "coronalQAngleDeg": 11.943,
+       "coronalQAngleDeg": 12.199,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1737,7 +1737,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.127
+        "worstIn": 0.125
        }
       },
       "corticalEndplateAngle": {
@@ -1746,7 +1746,7 @@
       }
      },
      "skin": {
-      "sampled": 81795,
+      "sampled": 81771,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -1814,7 +1814,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 85.679,
+       "coronalQAngleDeg": 85.835,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1823,11 +1823,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.122
+        "worstIn": 0.123
        }
       },
       "R": {
-       "coronalQAngleDeg": 23.471,
+       "coronalQAngleDeg": 23.347,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1845,7 +1845,7 @@
       }
      },
      "skin": {
-      "sampled": 63727,
+      "sampled": 63702,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -1909,7 +1909,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 20.256,
+       "coronalQAngleDeg": 20.239,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1918,11 +1918,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.13
+        "worstIn": 0.129
        }
       },
       "R": {
-       "coronalQAngleDeg": 16.233,
+       "coronalQAngleDeg": 16.35,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -1931,7 +1931,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.126
+        "worstIn": 0.125
        }
       },
       "corticalEndplateAngle": {
@@ -1940,7 +1940,7 @@
       }
      },
      "skin": {
-      "sampled": 67503,
+      "sampled": 67478,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -1999,7 +1999,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 3.066,
+       "coronalQAngleDeg": 3.019,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.099,
@@ -2008,11 +2008,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.142
+        "worstIn": 0.141
        }
       },
       "R": {
-       "coronalQAngleDeg": 11.304,
+       "coronalQAngleDeg": 11.526,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2021,7 +2021,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.141
+        "worstIn": 0.138
        }
       },
       "corticalEndplateAngle": {
@@ -2029,18 +2029,18 @@
        "lumbarDeg": 16.298
       },
       "legRaise": {
-       "thighFromVerticalDeg": 59.341,
-       "kneeFlexionDeg": 72.309,
+       "thighFromVerticalDeg": 59.342,
+       "kneeFlexionDeg": 72.308,
        "ankleLiftIn": 12.507,
        "rigPivotOffsetsIn": {
-        "hip": 0.981,
+        "hip": 0.987,
         "knee": 3.098,
         "ankle": 0.515
        }
       }
      },
      "skin": {
-      "sampled": 77053,
+      "sampled": 77010,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -2095,7 +2095,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 17.041,
+       "coronalQAngleDeg": 17.147,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.1,
@@ -2104,11 +2104,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.142
+        "worstIn": 0.136
        }
       },
       "R": {
-       "coronalQAngleDeg": 16.498,
+       "coronalQAngleDeg": 16.588,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2126,7 +2126,7 @@
       }
      },
      "skin": {
-      "sampled": 94902,
+      "sampled": 94950,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -2179,7 +2179,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 17.279,
+       "coronalQAngleDeg": 17.324,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.1,
@@ -2188,11 +2188,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.137
+        "worstIn": 0.136
        }
       },
       "R": {
-       "coronalQAngleDeg": 15.076,
+       "coronalQAngleDeg": 15.112,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2201,7 +2201,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.171
+        "worstIn": 0.168
        }
       },
       "corticalEndplateAngle": {
@@ -2210,7 +2210,7 @@
       }
      },
      "skin": {
-      "sampled": 96526,
+      "sampled": 96531,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -2263,7 +2263,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 15.665,
+       "coronalQAngleDeg": 15.673,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.099,
@@ -2272,11 +2272,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.14
+        "worstIn": 0.139
        }
       },
       "R": {
-       "coronalQAngleDeg": 20.079,
+       "coronalQAngleDeg": 20.198,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.099,
@@ -2285,7 +2285,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.177
+        "worstIn": 0.174
        }
       },
       "corticalEndplateAngle": {
@@ -2294,7 +2294,7 @@
       }
      },
      "skin": {
-      "sampled": 101303,
+      "sampled": 101289,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -2347,7 +2347,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 17.441,
+       "coronalQAngleDeg": 17.536,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2360,7 +2360,7 @@
        }
       },
       "R": {
-       "coronalQAngleDeg": 15.817,
+       "coronalQAngleDeg": 15.824,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2369,7 +2369,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.158
+        "worstIn": 0.16
        }
       },
       "corticalEndplateAngle": {
@@ -2378,7 +2378,7 @@
       }
      },
      "skin": {
-      "sampled": 99261,
+      "sampled": 99282,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -2431,7 +2431,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 14.804,
+       "coronalQAngleDeg": 14.87,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2440,7 +2440,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.128
+        "worstIn": 0.129
        }
       },
       "R": {
@@ -2453,7 +2453,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.124
+        "worstIn": 0.122
        }
       },
       "corticalEndplateAngle": {
@@ -2462,7 +2462,7 @@
       }
      },
      "skin": {
-      "sampled": 93346,
+      "sampled": 93375,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -2515,7 +2515,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 18.85,
+       "coronalQAngleDeg": 18.855,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2524,11 +2524,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.14
+        "worstIn": 0.141
        }
       },
       "R": {
-       "coronalQAngleDeg": 39.939,
+       "coronalQAngleDeg": 40.487,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2537,7 +2537,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.153
+        "worstIn": 0.154
        }
       },
       "corticalEndplateAngle": {
@@ -2546,7 +2546,7 @@
       }
      },
      "skin": {
-      "sampled": 95296,
+      "sampled": 95313,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -2599,7 +2599,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 19.279,
+       "coronalQAngleDeg": 19.281,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2612,7 +2612,7 @@
        }
       },
       "R": {
-       "coronalQAngleDeg": 22.583,
+       "coronalQAngleDeg": 22.753,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2630,7 +2630,7 @@
       }
      },
      "skin": {
-      "sampled": 95747,
+      "sampled": 95772,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -2683,7 +2683,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 15.811,
+       "coronalQAngleDeg": 15.863,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2692,11 +2692,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.125
+        "worstIn": 0.13
        }
       },
       "R": {
-       "coronalQAngleDeg": 15.586,
+       "coronalQAngleDeg": 15.68,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2705,7 +2705,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.173
+        "worstIn": 0.168
        }
       },
       "corticalEndplateAngle": {
@@ -2714,7 +2714,7 @@
       }
      },
      "skin": {
-      "sampled": 96951,
+      "sampled": 96972,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -2767,7 +2767,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 31.375,
+       "coronalQAngleDeg": 31.478,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2775,12 +2775,12 @@
        },
        "hip": {
         "hits": 5,
-        "medianIn": 0.102,
-        "worstIn": 0.137
+        "medianIn": 0.098,
+        "worstIn": 0.143
        }
       },
       "R": {
-       "coronalQAngleDeg": 22.629,
+       "coronalQAngleDeg": 22.661,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2788,8 +2788,8 @@
        },
        "hip": {
         "hits": 5,
-        "medianIn": 0.095,
-        "worstIn": 0.135
+        "medianIn": 0.098,
+        "worstIn": 0.138
        }
       },
       "corticalEndplateAngle": {
@@ -2798,7 +2798,7 @@
       }
      },
      "skin": {
-      "sampled": 81796,
+      "sampled": 81844,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -2851,7 +2851,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 17.147,
+       "coronalQAngleDeg": 17.142,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2860,11 +2860,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.149
+        "worstIn": 0.15
        }
       },
       "R": {
-       "coronalQAngleDeg": 16.205,
+       "coronalQAngleDeg": 16.305,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2873,7 +2873,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.155
+        "worstIn": 0.16
        }
       },
       "corticalEndplateAngle": {
@@ -2882,7 +2882,7 @@
       }
      },
      "skin": {
-      "sampled": 82545,
+      "sampled": 82535,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -2943,12 +2943,12 @@
        },
        "hip": {
         "hits": 5,
-        "medianIn": 0.098,
-        "worstIn": 0.15
+        "medianIn": 0.099,
+        "worstIn": 0.134
        }
       },
       "R": {
-       "coronalQAngleDeg": 16.503,
+       "coronalQAngleDeg": 16.594,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -2965,18 +2965,18 @@
        "lumbarDeg": 19.726
       },
       "legRaise": {
-       "thighFromVerticalDeg": 71.015,
-       "kneeFlexionDeg": 94.469,
+       "thighFromVerticalDeg": 71.003,
+       "kneeFlexionDeg": 94.447,
        "ankleLiftIn": 11.061,
        "rigPivotOffsetsIn": {
-        "hip": 0.341,
+        "hip": 0.35,
         "knee": 0.359,
         "ankle": 0.517
        }
       }
      },
      "skin": {
-      "sampled": 95410,
+      "sampled": 95341,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -3031,7 +3031,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 16.67,
+       "coronalQAngleDeg": 16.769,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3040,11 +3040,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.142
+        "worstIn": 0.135
        }
       },
       "R": {
-       "coronalQAngleDeg": 16.413,
+       "coronalQAngleDeg": 16.501,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3053,7 +3053,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.155
+        "worstIn": 0.151
        }
       },
       "corticalEndplateAngle": {
@@ -3062,7 +3062,7 @@
       }
      },
      "skin": {
-      "sampled": 95598,
+      "sampled": 95648,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -3115,7 +3115,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 18.443,
+       "coronalQAngleDeg": 18.51,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3124,11 +3124,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.136
+        "worstIn": 0.133
        }
       },
       "R": {
-       "coronalQAngleDeg": 15.009,
+       "coronalQAngleDeg": 15.053,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3137,7 +3137,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.169
+        "worstIn": 0.165
        }
       },
       "corticalEndplateAngle": {
@@ -3146,7 +3146,7 @@
       }
      },
      "skin": {
-      "sampled": 97176,
+      "sampled": 97200,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -3199,7 +3199,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 15.423,
+       "coronalQAngleDeg": 15.434,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.099,
@@ -3208,11 +3208,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.141
+        "worstIn": 0.135
        }
       },
       "R": {
-       "coronalQAngleDeg": 15.337,
+       "coronalQAngleDeg": 15.419,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3221,7 +3221,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.168
+        "worstIn": 0.161
        }
       },
       "corticalEndplateAngle": {
@@ -3230,7 +3230,7 @@
       }
      },
      "skin": {
-      "sampled": 102062,
+      "sampled": 102067,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -3283,7 +3283,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 16.427,
+       "coronalQAngleDeg": 16.51,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3292,11 +3292,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.139
+        "worstIn": 0.133
        }
       },
       "R": {
-       "coronalQAngleDeg": 15.727,
+       "coronalQAngleDeg": 15.732,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3305,7 +3305,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.153
+        "worstIn": 0.154
        }
       },
       "corticalEndplateAngle": {
@@ -3314,7 +3314,7 @@
       }
      },
      "skin": {
-      "sampled": 100086,
+      "sampled": 100096,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -3367,7 +3367,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 19.473,
+       "coronalQAngleDeg": 19.557,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3376,7 +3376,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.14
+        "worstIn": 0.133
        }
       },
       "R": {
@@ -3389,7 +3389,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.114
+        "worstIn": 0.125
        }
       },
       "corticalEndplateAngle": {
@@ -3398,7 +3398,7 @@
       }
      },
      "skin": {
-      "sampled": 93899,
+      "sampled": 93891,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -3451,7 +3451,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 16.455,
+       "coronalQAngleDeg": 16.458,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3460,11 +3460,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.144
+        "worstIn": 0.137
        }
       },
       "R": {
-       "coronalQAngleDeg": 35.217,
+       "coronalQAngleDeg": 35.72,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3473,7 +3473,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.145
+        "worstIn": 0.141
        }
       },
       "corticalEndplateAngle": {
@@ -3482,7 +3482,7 @@
       }
      },
      "skin": {
-      "sampled": 96132,
+      "sampled": 96143,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -3535,7 +3535,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 19.148,
+       "coronalQAngleDeg": 19.15,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3544,11 +3544,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.14
+        "worstIn": 0.135
        }
       },
       "R": {
-       "coronalQAngleDeg": 23.898,
+       "coronalQAngleDeg": 24.078,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3557,7 +3557,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.16
+        "worstIn": 0.155
        }
       },
       "corticalEndplateAngle": {
@@ -3566,7 +3566,7 @@
       }
      },
      "skin": {
-      "sampled": 96486,
+      "sampled": 96504,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -3619,7 +3619,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 15.459,
+       "coronalQAngleDeg": 15.503,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3628,11 +3628,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.134
+        "worstIn": 0.13
        }
       },
       "R": {
-       "coronalQAngleDeg": 15.451,
+       "coronalQAngleDeg": 15.541,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3641,7 +3641,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.169
+        "worstIn": 0.162
        }
       },
       "corticalEndplateAngle": {
@@ -3650,7 +3650,7 @@
       }
      },
      "skin": {
-      "sampled": 97541,
+      "sampled": 97549,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -3703,7 +3703,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 31.521,
+       "coronalQAngleDeg": 31.628,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3712,11 +3712,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.134
+        "worstIn": 0.139
        }
       },
       "R": {
-       "coronalQAngleDeg": 21.59,
+       "coronalQAngleDeg": 21.62,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3724,8 +3724,8 @@
        },
        "hip": {
         "hits": 5,
-        "medianIn": 0.096,
-        "worstIn": 0.137
+        "medianIn": 0.098,
+        "worstIn": 0.144
        }
       },
       "corticalEndplateAngle": {
@@ -3734,7 +3734,7 @@
       }
      },
      "skin": {
-      "sampled": 82284,
+      "sampled": 82304,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -3787,7 +3787,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 15.171,
+       "coronalQAngleDeg": 15.154,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3796,11 +3796,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.149
+        "worstIn": 0.142
        }
       },
       "R": {
-       "coronalQAngleDeg": 13.698,
+       "coronalQAngleDeg": 13.781,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3809,7 +3809,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.148
+        "worstIn": 0.15
        }
       },
       "corticalEndplateAngle": {
@@ -3818,7 +3818,7 @@
       }
      },
      "skin": {
-      "sampled": 83379,
+      "sampled": 83367,
       "exposedFemurByRegion": {},
       "exposed": 0,
       "maximumRayDepthInches": 0,
@@ -3871,7 +3871,7 @@
        }
       },
       "L": {
-       "coronalQAngleDeg": 3.174,
+       "coronalQAngleDeg": 3.175,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3880,11 +3880,11 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.153
+        "worstIn": 0.137
        }
       },
       "R": {
-       "coronalQAngleDeg": 16.417,
+       "coronalQAngleDeg": 16.506,
        "shoulder": {
         "hits": 5,
         "medianIn": 0.098,
@@ -3893,7 +3893,7 @@
        "hip": {
         "hits": 5,
         "medianIn": 0.098,
-        "worstIn": 0.155
+        "worstIn": 0.151
        }
       },
       "corticalEndplateAngle": {
@@ -3901,11 +3901,11 @@
        "lumbarDeg": 19.289
       },
       "legRaise": {
-       "thighFromVerticalDeg": 71.015,
-       "kneeFlexionDeg": 94.47,
+       "thighFromVerticalDeg": 71.004,
+       "kneeFlexionDeg": 94.449,
        "ankleLiftIn": 11.061,
        "rigPivotOffsetsIn": {
-        "hip": 0.341,
+        "hip": 0.349,
         "knee": 0.359,
         "ankle": 0.517
        }

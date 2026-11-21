@@ -8,10 +8,10 @@ For each of six orthographic views, the test compares the closest inner triangle
 
 | Hero and tier | Main exposed / sampled | Candidate exposed / sampled | Main femur exposures | Candidate femur exposures | Worst shoulder / hip joint ray gap |
 |---|---:|---:|---:|---:|---:|
-| Sippy Mobile | 5,315 / 671,694 | 0 / 834,097 | 4,301 | 0 | 0.162 / 0.156 in |
-| Sippy High | 5,246 / 675,258 | 0 / 839,859 | 4,223 | 0 | 0.163 / 0.159 in |
-| Roma Mobile | 0 / 754,219 | 0 / 1,033,083 | 0 | 0 | 0.148 / 0.177 in |
-| Roma High | 0 / 756,781 | 0 / 1,040,698 | 0 | 0 | 0.159 / 0.169 in |
+| Sippy Mobile | 5,315 / 671,694 | 0 / 833,653 | 4,301 | 0 | 0.162 / 0.153 in |
+| Sippy High | 5,246 / 675,258 | 0 / 839,388 | 4,223 | 0 | 0.163 / 0.148 in |
+| Roma Mobile | 0 / 754,219 | 0 / 1,033,204 | 0 | 0 | 0.148 / 0.174 in |
+| Roma High | 0 / 756,781 | 0 / 1,040,824 | 0 | 0 | 0.159 / 0.165 in |
 
 The joint measures use five rays through each fitted humeral-head/glenoid and femoral-head/acetabular pair. The joint column gives the largest absolute separation across the two sides and eleven poses. The independent bone-only test prevents overlying muscle from hiding a bone crossing. [Bone-only measurements](bone-containment.json)
 
@@ -21,12 +21,12 @@ Each explicitly registered source endpoint identifies an atlas vertex and a cort
 
 | Hero and tier | Muscles | Cortex-attached muscles | Distinct cortical endpoints | Worst endpoint gap | Resting iliac breadth / clavicular span | Resting Q-angle, left / right |
 |---|---:|---:|---:|---:|---:|---:|
-| Sippy Mobile | 323 | 270 | 637 | <0.001 in | 9.69 / 14.01 in | 12.46° / 11.29° |
-| Sippy High | 323 | 270 | 640 | <0.001 in | 9.70 / 14.02 in | 12.85° / 11.30° |
-| Roma Mobile | 339 | 286 | 667 | <0.001 in | 10.73 / 12.35 in | 17.04° / 16.50° |
-| Roma High | 339 | 286 | 671 | <0.001 in | 10.74 / 12.36 in | 16.67° / 16.41° |
+| Sippy Mobile | 323 | 270 | 637 | <0.001 in | 9.69 / 14.01 in | 12.73° / 11.52° |
+| Sippy High | 323 | 270 | 640 | <0.001 in | 9.70 / 14.02 in | 13.14° / 11.52° |
+| Roma Mobile | 339 | 286 | 667 | <0.001 in | 10.73 / 12.35 in | 17.15° / 16.59° |
+| Roma High | 339 | 286 | 671 | <0.001 in | 10.74 / 12.36 in | 16.77° / 16.50° |
 
-The Q-angle uses the coronal projection of the anterior superior iliac spine, patellar center and tibial tuberosity on the fitted CT. Roma uses the female iliac crest, socket and thigh axis, a dedicated posterior gluteal warp and a separate medial adductor warp. Her leg muscles include 76 surfaces from the female Visible Human subject. The torso, head and upper limbs retain the registered adult male atlas. [Source provenance and fit limits](tissue-registration.md)
+The Q-angle uses the coronal projection of the anterior superior iliac spine, patellar center and tibial tuberosity on the fitted CT. A separate [cortical-axis measurement](high-long-bones.json) compares the fitted femoral neck and shaft with the donor survey. Roma uses the female iliac crest, socket and thigh axis, a dedicated posterior gluteal warp and a separate medial adductor warp. Her leg muscles include 76 surfaces from the female Visible Human subject. The torso, head and upper limbs retain the registered adult male atlas. [Source provenance and fit limits](tissue-registration.md)
 
 ## Reproduction
 
