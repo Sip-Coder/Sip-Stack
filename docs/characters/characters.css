@@ -1,0 +1,395 @@
+#character-test {
+  --ct-ink: #263a36;
+  --ct-green: #1d5652;
+  max-width: 1440px;
+  margin: auto;
+  padding: 0 clamp(14px, 3.3vw, 48px) 36px;
+  color: var(--ct-ink);
+  font-family: Inter, system-ui, sans-serif;
+}
+.ct-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 12px 0 20px;
+}
+.ct-head h2 {
+  font:
+    500 clamp(32px, 4.6vw, 62px) / 1 Fraunces,
+    Georgia,
+    serif;
+  margin: 0;
+  letter-spacing: -0.05em;
+  color: var(--ct-green);
+}
+.ct-head > span {
+  font-size: 12px;
+  color: #626359;
+}
+.ct-kicker,
+.ct-panel h3 {
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  font-weight: 650;
+}
+.ct-kicker {
+  margin: 0 0 10px;
+  color: #865339;
+}
+.ct-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(208px, 248px);
+  background: #f8f4e9;
+  border: 1px solid #31494033;
+  border-radius: 15px;
+  overflow: hidden;
+}
+.ct-stage {
+  position: relative;
+  isolation: isolate;
+  background: #c9d3cf;
+  min-width: 0;
+  height: clamp(420px, 66svh, 790px);
+}
+.ct-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  outline-offset: -3px;
+  cursor: grab;
+}
+.ct-stage canvas:active {
+  cursor: grabbing;
+}
+.ct-hud {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 8px 12px;
+  background: #203632de;
+  color: #fff9eb;
+  border-radius: 6px;
+  pointer-events: none;
+  font:
+    500 11px/1.4 ui-monospace,
+    monospace;
+  font-variant-numeric: tabular-nums;
+}
+.ct-hud strong {
+  text-transform: capitalize;
+  color: #fff;
+}
+.ct-hud span + span {
+  border-left: 1px solid #ffffff47;
+  padding-left: 0.8em;
+  color: #d5e7d7;
+}
+.ct-loading {
+  position: absolute;
+  inset: 40% 0 auto;
+  text-align: center;
+  font-size: 14px;
+}
+.ct-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 16px;
+  border-left: 1px solid #31494033;
+}
+.ct-panel h3 {
+  margin: 8px 0 2px;
+  color: #67665c;
+}
+.ct-panel h3:first-child {
+  margin-top: 0;
+}
+#character-test button,
+#character-test select {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.ct-picker {
+  display: grid;
+  gap: 5px;
+}
+.ct-picker button {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  padding: 9px 10px;
+}
+.ct-picker button[aria-pressed='true'] {
+  background: #fffdf5;
+  border-color: #1d565267;
+  box-shadow: 0 2px 4px #173d2e0d;
+}
+.ct-picker span {
+  display: grid;
+  gap: 2px;
+}
+.ct-picker b {
+  font:
+    600 18px/1 Fraunces,
+    Georgia,
+    serif;
+}
+.ct-picker small,
+.ct-settings,
+.ct-slow {
+  font-size: 11px;
+}
+.ct-picker kbd {
+  margin-left: auto;
+  font:
+    500 10px ui-monospace,
+    monospace;
+  opacity: 0.65;
+}
+.ct-swatch {
+  height: 28px;
+  width: 5px;
+  border-radius: 3px;
+  background: #773847;
+}
+.ct-roma {
+  background: #397757;
+}
+.ct-hummin {
+  background: #4589a3;
+}
+.ct-modes {
+  display: flex;
+  gap: 6px;
+}
+.ct-modes button,
+.ct-settings select {
+  background: #fffaf1;
+  border: 1px solid #31494038;
+  border-radius: 5px;
+  min-height: 34px;
+}
+.ct-modes button {
+  padding: 5px 8px;
+  flex: 1;
+  font-size: 12px !important;
+}
+.ct-modes [aria-pressed='true'] {
+  background: var(--ct-green);
+  color: white !important;
+}
+.ct-settings {
+  margin-top: 5px;
+  display: grid;
+  gap: 5px;
+}
+.ct-settings label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.ct-settings select {
+  width: 115px;
+  padding: 4px;
+}
+.ct-slow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ct-review {
+  padding: 14px 0;
+  border-bottom: 1px solid #31494033;
+}
+.ct-review summary {
+  cursor: pointer;
+  font:
+    600 15px Fraunces,
+    Georgia,
+    serif;
+}
+.ct-guide {
+  position: absolute;
+  top: 54px;
+  left: 16px;
+  z-index: 2;
+  max-width: min(245px, 82%);
+  color: #fffaf2;
+  background: #203632e8;
+  border-radius: 5px;
+  font-size: 11px;
+}
+.ct-guide summary {
+  width: fit-content;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.ct-guide dl {
+  margin: 0 10px 8px;
+  display: grid;
+  gap: 5px;
+}
+.ct-guide dl div {
+  display: grid;
+  grid-template-columns: 65px 1fr;
+  gap: 5px;
+}
+.ct-guide dt {
+  font-weight: 650;
+}
+.ct-guide dd {
+  margin: 0;
+  color: #e0ebe1;
+}
+.ct-review figcaption {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.ct-review > div {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+}
+.ct-review figure {
+  margin: 0;
+  max-width: 240px;
+  flex: 1;
+  min-width: 0;
+}
+.ct-review video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 9/16;
+  background: #233330;
+  border-radius: 6px;
+}
+.ct-review figcaption {
+  margin-top: 4px;
+}
+.ct-touch {
+  display: none;
+  position: absolute;
+  bottom: 16px;
+  inset-inline: 12px;
+  align-items: flex-end;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.ct-stick,
+.ct-touch-actions button {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: auto;
+}
+.ct-stick {
+  width: 76px;
+  height: 76px;
+  border: 1px solid #f6f8eea6;
+  background: #26393658;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.ct-stick span {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #f6f7e7cd;
+}
+.ct-touch-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.ct-touch-actions button {
+  min-width: 44px;
+  height: 44px;
+  border: 1px solid #eff3e49c;
+  border-radius: 50%;
+  background: #213932bb;
+  color: white !important;
+  font-size: 11px !important;
+}
+.ct-touch-actions button:active {
+  background: #176451;
+}
+#character-test :focus-visible {
+  outline: 3px solid #ac6032;
+  outline-offset: 1px;
+}
+@media (pointer: coarse) {
+  .ct-touch {
+    display: flex;
+  }
+}
+@media (max-width: 760px) {
+  .ct-layout {
+    grid-template-columns: 1fr;
+  }
+  .ct-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 12px;
+    padding: 12px;
+    border-left: 0;
+    border-top: 1px solid #31494033;
+  }
+  .ct-panel h3 {
+    display: none;
+  }
+  .ct-picker {
+    grid-column: 1/-1;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .ct-picker button {
+    padding: 7px 4px;
+    gap: 6px;
+  }
+  .ct-picker kbd {
+    display: none;
+  }
+  .ct-picker b {
+    font-size: 15px;
+  }
+  .ct-picker small {
+    font-size: 9px;
+  }
+  .ct-stage {
+    height: clamp(350px, 57svh, 600px);
+  }
+  .ct-settings {
+    grid-column: 1/-1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+  }
+  .ct-settings select {
+    width: auto;
+  }
+  .ct-slow {
+    grid-column: 1/-1;
+  }
+  .ct-head {
+    align-items: center;
+  }
+  .ct-head > span {
+    font-size: 10px;
+  }
+  .ct-modes button {
+    min-height: 42px;
+  }
+}
