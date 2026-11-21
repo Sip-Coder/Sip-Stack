@@ -757,7 +757,7 @@ export function buildRoma(rig) {
   const sleeveFolds = [];
   const shoulderCaps = [];
   const colliders = [
-    { role: 'head', node: H, center: [0, 0.075, 0.004], radii: [0.072, 0.08, 0.065] },
+    { role: 'head', protectsFaces: true, node: H, center: [0, 0.075, 0.004], radii: [0.072, 0.08, 0.065] },
     { role: 'neck', node: C, center: [0, 0.18, 0], radii: [0.034, 0.039, 0.03] },
     { role: 'back', node: C, center: [0, 0.091, -0.029], radii: [0.108, 0.069, 0.056] },
     { role: 'back', node: C, center: [0, 0.119, -0.012], radii: [0.11, 0.06, 0.063] },
@@ -839,6 +839,7 @@ export function buildRoma(rig) {
   for (const side of [-1, 1]) {
     colliders.push({
       role: 'earring',
+      protectsFaces: true,
       localContact: true,
       node: H,
       center: [side * 0.069, 0.038, 0.005],
@@ -1204,7 +1205,9 @@ export function buildRoma(rig) {
     jacketCapsules,
     jacketBody,
   };
-  let bagPitch = 0,
+  let bagTrail = 0,
+    bagTrailV = 0,
+    bagPitch = 0,
     bagV = 0,
     bagSide = 0,
     bagSideV = 0,
@@ -1231,6 +1234,7 @@ export function buildRoma(rig) {
       previousHipV = previousHipVX = bobLoad = sideLoad = 0;
       hemVelocity.fill(0);
       jacketVelocity.fill(0);
+      bagTrail = bagTrailV = 0;
       bagPitch = bagV = bagSide = bagSideV = bagLift = bagLiftV = lastSpeed = lastVy = balance = 0;
     }
     lastTime = f.time;
@@ -1443,6 +1447,12 @@ export function buildRoma(rig) {
     const landing = T.MathUtils.clamp((f.vy - lastVy) / dt, -14, 14);
     lastSpeed = speed;
     lastVy = f.vy;
+    // Load the crossbody sling as the hips accelerate forward. Its resting
+    // seat is already behind the hanging wrist, so releasing that contact
+    // must not pull the pouch forward when the runner raises her arm.
+    const trailTarget = 0.065 * T.MathUtils.smoothstep(speed, 0.98, 3.58);
+    bagTrailV += (74 * (trailTarget - bagTrail) - 13 * bagTrailV) * dt;
+    bagTrail += bagTrailV * dt;
     const targetBag = 0.12 * moving + 0.28 * moving * Math.sin(phase - 0.4) + 0.025 * accel + 0.035 * hop;
     bagV += (64 * (targetBag - bagPitch) - 8.4 * bagV) * dt;
     bagPitch += bagV * dt;
@@ -1463,7 +1473,7 @@ export function buildRoma(rig) {
       f.state === 'walk'
         ? (1 - T.MathUtils.smoothstep(speed, 0.6, 1.02)) * T.MathUtils.smoothstep(accel, 0.45, 1.65)
         : 0;
-    accessories.update(tailLift, takeup);
+    accessories.update(tailLift, takeup, bagTrail);
     jacketShape.attributes.normal.array.set(yoke.geometry.userData.waistNormals, 4 * 41 * 3);
     jacketShape.attributes.normal.needsUpdate = true;
     hoodContacts.update();

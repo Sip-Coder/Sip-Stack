@@ -700,7 +700,7 @@ export function fitRomaAccessories(
       clearPadSection(point, chestToHips, envelope, 0.01);
     }
   }
-  function update(tailLift, takeup = 0) {
+  function update(tailLift = 0, takeup = 0, bagTrail = 0) {
     jacket.updateWorldMatrix(true, false);
     rig.hips.updateWorldMatrix(true, false);
     jacketToHips.copy(rig.hips.matrixWorld).invert().multiply(jacket.matrixWorld);
@@ -755,7 +755,7 @@ export function fitRomaAccessories(
       }
     }
     bag.position.x = bagRadius * Math.sin(bagAngle);
-    bag.position.z = bagRadius * Math.cos(bagAngle);
+    bag.position.z = bagRadius * Math.cos(bagAngle) - bagTrail;
     // Let the hip pouch rotate aft only where the real wrist/forearm passes
     // its outline. Sample the forearm and knuckle segment at the pouch's
     // height: shoulder clearance elsewhere must not displace its resting load.
@@ -779,7 +779,7 @@ export function fitRomaAccessories(
         if (nearest.z + reach > safeZ) safeZ = Math.min(safeZ, nearest.z - reach);
       }
     }
-    bag.position.z = Math.max(-0.085, safeZ);
+    bag.position.z = Math.max(-0.085 - 0.16 * bagTrail, safeZ);
     // The satchel tucks toward the waist only after the swinging forearm has
     // carried it behind the fuller front of the hip.
     bag.position.x += 0.002 * T.MathUtils.smoothstep(-bag.position.z, 0.015, 0.039);

@@ -1,13 +1,15 @@
 // Node 22+, Chromium and three@0.170.0. Example:
 // THREE_ROOT=/path/to/three CHROME=/usr/bin/chromium node tools/check-characters-motion.mjs
 // Pass sippy, roma or hummin as an optional argument to isolate a single model.
-// Set CHARACTERS_HAIR_MOBILE=1 to repeat hair contact checks on the Mobile geometry.
+// Set CHARACTERS_HAIR_MOBILE=1 to include Mobile hair contacts. Set it to
+// "only" to run that identical 86-pose trial in a separate browser alongside
+// a default High run on the same revision.
 import { readFile } from 'node:fs/promises';
 import { runCharacterProbe } from './characters-browser.mjs';
 
 // Executed as an ES module inside Chromium so procedural CanvasTextures and
 // BufferGeometry are identical to the production models. WebGL is unnecessary.
-async function measure(onlyHero, { mobileHair, designs }) {
+async function measure(onlyHero, { mobileHair, onlyMobile, designs }) {
   const T = await import('three');
   const { measureRigLandmarks } = await import('/tools/blueprints/measure-landmarks.mjs');
   const { checkFlorence, captureIdleMotion } = await import('/tools/characters-florence.mjs');
@@ -127,6 +129,12 @@ async function measure(onlyHero, { mobileHair, designs }) {
     }
     let poseId = 1;
     let vertexCache = new WeakMap();
+    let surfaceCache = new WeakMap();
+    const surfaceRay = new T.Ray(),
+      along = new T.Vector3(),
+      pierce = new T.Vector3(),
+      transform = new T.Matrix4(),
+      queryBox = new T.Box3();
     function vertex(mesh, i, out) {
       if (!mesh.isSkinnedMesh) return mesh.getVertexPosition(i, out);
       let cache = vertexCache.get(mesh);
@@ -371,6 +379,10 @@ async function measure(onlyHero, { mobileHair, designs }) {
     const result = (results[name] = { heightM: lineup.max - lineup.min, phases: {} });
     function check(ok, message) {
       if (!ok) failures.push(name + ' ' + message);
+    }
+    if (onlyMobile) {
+      if (rig.hair) measureMobileHair();
+      continue;
     }
     const shoulderSpan = rig.upperArmL
       .getWorldPosition(new T.Vector3())
@@ -715,7 +727,6 @@ async function measure(onlyHero, { mobileHair, designs }) {
     // Build a local-space BVH once per skin, garment, or accessory surface.
     // Query posed cloth triangles in that mesh's space. Test both sets of
     // triangle edges so a small body triangle piercing a wide cloth panel is found.
-    let surfaceCache = new WeakMap();
     function rigidSurface(mesh, selection) {
       if (typeof selection === 'number') selection = null; // Array.map supplies its index.
       let byRegion = surfaceCache.get(mesh);
@@ -775,11 +786,6 @@ async function measure(onlyHero, { mobileHair, designs }) {
       byRegion.set(selection ?? null, result);
       return result;
     }
-    const surfaceRay = new T.Ray(),
-      along = new T.Vector3(),
-      pierce = new T.Vector3(),
-      transform = new T.Matrix4(),
-      queryBox = new T.Box3();
     function cutsTriangle(a, b, triangle) {
       along.subVectors(b, a);
       const len = along.length();
@@ -1328,6 +1334,7 @@ async function measure(onlyHero, { mobileHair, designs }) {
                   report.worstDepthM = depth;
                   report.worstPose = label;
                   report.collider = c.node.name;
+                  report.colliderRole = c.role;
                   report.lock = mesh.parent.name;
                 }
               }
@@ -1703,7 +1710,9 @@ async function measure(onlyHero, { mobileHair, designs }) {
         );
       }
     }
-    if (mobileHair && rig.hair) {
+    if (mobileHair && rig.hair) measureMobileHair();
+
+    function measureMobileHair() {
       // A coarser index set changes triangle chords. Rebuild the spatial
       // acceleration structures from the active buffers for this trial.
       setModelDetail(rig.root, 'mobile');
@@ -1721,6 +1730,7 @@ async function measure(onlyHero, { mobileHair, designs }) {
       }
       inspectGarmentPoses(hair);
       checkHairGeometry(hair.report, 'Mobile ');
+      result.secondary ??= {};
       result.secondary.mobileHair = hair.report;
     }
   }
@@ -1749,11 +1759,12 @@ async function measure(onlyHero, { mobileHair, designs }) {
   };
 }
 
-const mobileHair = process.env.CHARACTERS_HAIR_MOBILE === '1';
+const onlyMobile = process.env.CHARACTERS_HAIR_MOBILE === 'only';
+const mobileHair = onlyMobile || process.env.CHARACTERS_HAIR_MOBILE === '1';
 // The 84-strand character now traverses the actual coat and skin triangle
 // trees at every sampled pose. Give a full cast and two-tier pass time to
 // finish on the same software-rendered hosts as the visual acceptance tests.
-const perHeroMinutes = mobileHair ? 45 : 25;
+const perHeroMinutes = onlyMobile ? 25 : 45;
 const minutes = (process.argv[2] ? 1 : 3) * perHeroMinutes;
 const designs = {};
 for (const name of ['sippy', 'roma', 'hummin']) {
@@ -1762,4 +1773,4 @@ for (const name of ['sippy', 'roma', 'hummin']) {
   );
   designs[name] = { heightM: spec.heightM, chin: spec.landmarks.chin };
 }
-await runCharacterProbe(measure, { mobileHair, designs, timeoutMs: minutes * 60000 });
+await runCharacterProbe(measure, { mobileHair, onlyMobile, designs, timeoutMs: minutes * 60000 });

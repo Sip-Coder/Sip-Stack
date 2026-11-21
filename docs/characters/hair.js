@@ -2,6 +2,7 @@
 // successive guide points respond to the actual acceleration of the head.
 // All integration, length limits and skinning run on the controller's fixed clock.
 import * as T from 'three';
+import { ellipsoidFaceGuard } from './hair-support-faces.js';
 
 const v = () => new T.Vector3();
 const matrix = () => new T.Matrix4();
@@ -49,7 +50,7 @@ function binding(mesh, groupInverse, guide) {
   }
   position.setUsage(T.DynamicDrawUsage);
   normal?.setUsage(T.DynamicDrawUsage);
-  return { mesh, position, normal, rest, normals, segment, fraction, toMesh, normalToMesh };
+  return { mesh, position, normal, rest, normals, segment, fraction, toGroup, toMesh, normalToMesh };
 }
 
 // Express each joint-attached ellipsoid as a unit sphere in its own frame.
@@ -65,6 +66,7 @@ function makeShape(spec, sleeveRoute) {
     node: spec.node,
     role: spec.role,
     localContact: spec.localContact === true,
+    protectsFaces: spec.protectsFaces === true,
     sleeveRoute: spec.sleeveJoint ? sleeveRoute : null,
     sleeveJoint: spec.sleeveJoint,
     restNormal: v(),
@@ -449,7 +451,9 @@ export function createHair(rig, colliders) {
       bend: rest.map(() => new T.Quaternion()),
       skin: rest.map(matrix),
     };
+    chain.faceGuards = chain.shapes.filter((s) => s.protectsFaces);
     for (const surface of surfaces) {
+      if (chain.faceGuards.length) surface.fitFaces = ellipsoidFaceGuard(surface);
       surface.mesh.geometry.computeBoundingBox();
       for (let i = 0; i < surface.position.count; i++) {
         const j = surface.segment[i];
@@ -599,6 +603,13 @@ export function createHair(rig, colliders) {
             q.copy(a).applyQuaternion(chain.bend[j + 1]);
             p.lerp(q, t).applyNormalMatrix(s.normalToMesh);
             s.normal.setXYZ(i, p.x, p.y, p.z);
+          }
+        }
+        if (s.fitFaces) {
+          for (let pass = 0; pass < 4; pass++) {
+            let moved = false;
+            for (const shape of chain.faceGuards) if (s.fitFaces(shape, box)) moved = true;
+            if (!moved || chain.faceGuards.length === 1) break;
           }
         }
         box.getBoundingSphere(geometry.boundingSphere);
