@@ -84,7 +84,21 @@ function makeShape(spec, sleeveRoute) {
 
 function updateShape(shape, groupWorld, strandRadius) {
   if (shape.support) {
-    shape.unit.copy(shape.node.matrixWorld).invert().multiply(groupWorld);
+    shape.unit.copy(shape.node.matrixWorld).invert();
+    // A spherical tip around a nonuniformly scaled head must still clear
+    // the pack in every world direction. Bound the largest eigenvalue of
+    // the inverse pack transform times its transpose by its row sums.
+    const m = shape.unit.elements;
+    const xy = Math.abs(m[0] * m[1] + m[4] * m[5] + m[8] * m[9]);
+    const xz = Math.abs(m[0] * m[2] + m[4] * m[6] + m[8] * m[10]);
+    const yz = Math.abs(m[1] * m[2] + m[5] * m[6] + m[9] * m[10]);
+    const stretch = Math.sqrt(Math.max(
+      m[0] ** 2 + m[4] ** 2 + m[8] ** 2 + xy + xz,
+      m[1] ** 2 + m[5] ** 2 + m[9] ** 2 + xy + yz,
+      m[2] ** 2 + m[6] ** 2 + m[10] ** 2 + xz + yz,
+    ));
+    shape.physicalTipRadius = strandRadius * groupWorld.getMaxScaleOnAxis() * stretch;
+    shape.unit.multiply(groupWorld);
     shape.local.copy(shape.unit).invert();
     shape.radius = strandRadius * shape.unit.getMaxScaleOnAxis();
     shape.box.copy(shape.support.bounds).expandByScalar(0.005 + 3 * shape.radius).applyMatrix4(shape.local);
@@ -302,7 +316,9 @@ function drapeGuide(chain, point, delta) {
     for (let i = 1; i < nodes.length; i++) {
       if (!shape.box.containsPoint(nodes[i])) continue;
       point.copy(nodes[i]).applyMatrix4(shape.unit);
-      const height = shape.support.sphereHeight(point.x, point.z, shape.radius);
+      let height = shape.support.sphereHeight(point.x, point.z, shape.radius);
+      if (i === nodes.length - 1 && shape.support.topForSphere)
+        height = Math.max(height, shape.support.topForSphere(point.x, point.z, shape.physicalTipRadius));
       const weight = Math.min(1, 2.9 * i / (nodes.length - 1));
       rise = Math.max(rise, (height + 0.002 - point.y) / weight);
     }
