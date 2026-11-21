@@ -298,7 +298,22 @@ def check_missing_module(browser, url, package, system_fonts):
         with page.expect_navigation(wait_until="domcontentloaded"):
             page.locator(SECTION + " [data-study-body]").evaluate("el=>el.scrollIntoView({block:'start'})")
         page.wait_for_function("document.querySelector('#character-test')?.characterTest")
-        section = open_sheet(page, "sippy", stage["call"](page, "snapshot")["tier"])
+        stage["call"](page, "setManual", True)
+        page.locator('[data-setting="tier"]').select_option("mobile")
+        # The previous scroll position is restored during this navigation.
+        # As Axon View mounts above us its changing layout can move the sheet.
+        # Keep the same real header in view until the new layout is stable.
+        page.wait_for_function(
+            """() => {
+            const body=document.querySelector('[data-ref] [data-study-body]');
+            if (!body) return false;
+            body.scrollIntoView({block:'start',behavior:'instant'});
+            const section=body.closest('[data-ref]');
+            return section.dataset.ready==='sippy-mobile' && section.characterRef?.stats().active;
+        }""",
+            polling=150,
+        )
+        section = wait_model(page, "sippy", "mobile")
         first = section.locator('[data-panel="portrait"]')
         first.scroll_into_view_if_needed()
         page.wait_for_function("document.querySelector('[data-panel=portrait]')?.dataset.status==='ready'")
