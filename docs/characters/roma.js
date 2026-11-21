@@ -830,7 +830,7 @@ export function buildRoma(rig) {
   }
   const fieldKit = kit.register(layer);
   const packContacts = bindPackContacts(fieldKit);
-  const hoodContacts = bindHoodContacts(hood);
+  const hoodContacts = bindHoodContacts(hood, rig.hips);
   colliders.push(
     ...packContacts.shapes,
     ...hoodContacts.panels,

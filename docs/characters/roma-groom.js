@@ -430,12 +430,13 @@ export function clothHairColliders(mesh, spanCount, role) {
 // outside of each panel in its current pose so the hair clears the raised
 // shoulder as well as the resting collar. The sample buffers and envelopes
 // are retained across fixed ticks, including switches of geometry tier.
-export function bindHoodContacts(hood) {
+export function bindHoodContacts(hood, hips) {
   const count = 8;
   const panels = Array.from({ length: count }, () => {
     const node = new T.Group();
     node.name = 'Folded hood contact';
-    hood.add(node);
+    node.matrixAutoUpdate = false;
+    hips.add(node);
     return { node, role: 'collar', localContact: true, center: [0, 0, 0], radii: [1, 1, 1] };
   });
   const tables = new Map();
@@ -473,7 +474,11 @@ export function bindHoodContacts(hood) {
   const rel = new T.Vector3(), localCenter = new T.Vector3();
   const along = new T.Vector3(), across = new T.Vector3(), normal = new T.Vector3();
   const basis = new T.Matrix4(), inverse = new T.Matrix4();
+  const hoodToHips = new T.Matrix4();
   function update() {
+    hood.updateWorldMatrix(true, false);
+    hips.updateWorldMatrix(true, false);
+    hoodToHips.copy(hips.matrixWorld).invert().multiply(hood.matrixWorld);
     const sets = tables.get(hood.geometry);
     for (let i = 0; i < count; i++) {
       const frame = panels[i].node, panel = sets[i];
@@ -499,6 +504,11 @@ export function bindHoodContacts(hood) {
         enclosing = Math.max(enclosing, rel.length());
       }
       frame.scale.multiplyScalar(enclosing).addScalar(0.0015);
+      // The skin is posed in hood mesh space. Keep that exact fitted ellipsoid
+      // on the pelvis so final ground support moves it with the actual fabric.
+      frame.updateMatrix();
+      frame.matrix.premultiply(hoodToHips);
+      frame.matrixWorldNeedsUpdate = true;
     }
   }
   update();
