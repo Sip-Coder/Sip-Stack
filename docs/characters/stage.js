@@ -382,6 +382,7 @@ export function createStage(el) {
     rim.position.set(p.x + 2, p.y + 4, p.z - 4);
   }
   return {
+    renderer,
     scene,
     camera,
     canvas,

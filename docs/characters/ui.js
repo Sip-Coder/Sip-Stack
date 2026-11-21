@@ -39,6 +39,12 @@ export function createUI(host) {
       </aside>
     </div>
 
+    <section class="ct-study" data-axon aria-labelledby="axon-title">
+      <header><div><h3 id="axon-title">Axon View</h3>
+        <p>Explore each character from the inside out.</p></div>
+        <button type="button" data-open-study>Inspect layers</button></header>
+      <div class="ct-study-body" data-study-body></div>
+    </section>
     <details class="ct-review"><summary>Movement films</summary><div>
     ${names.map((name, i) => `<figure><video controls playsinline preload="none" aria-label="${labels[i]} movement film" src="characters/review/${name}.mp4"></video><figcaption>${labels[i]}</figcaption></figure>`).join('')}
     </div></details>`;

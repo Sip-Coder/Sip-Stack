@@ -393,3 +393,10 @@
     min-height: 42px;
   }
 }
+
+.ct-study { margin: 34px 0; }
+.ct-study > header { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:0 0 16px; border-bottom:1px solid #294b392d; }
+.ct-study h3 { margin:0; font:500 clamp(28px,3vw,43px)/1.1 Fraunces,Georgia,serif; letter-spacing:-.04em; color:var(--ct-green); }
+.ct-study header p { margin:6px 0 0; font-size:14px; }
+.ct-study > header button { padding:8px 14px; border:1px solid #a9b7a9; border-radius:6px; background:#faf8ef; }
+.ct-study-body { min-height:280px; }
