@@ -45,6 +45,12 @@ export function createUI(host) {
         <button type="button" data-open-study>Inspect layers</button></header>
       <div class="ct-study-body" data-study-body></div>
     </section>
+    <section class="ct-study" data-ref aria-labelledby="ref-title">
+      <header><div><h3 id="ref-title">Character Ref</h3>
+        <p>Turnarounds, expressions and material studies from the live cast.</p></div>
+        <button type="button" data-open-study>View sheet</button></header>
+      <div class="ct-study-body" data-study-body></div>
+    </section>
     <details class="ct-review"><summary>Movement films</summary><div>
     ${names.map((name, i) => `<figure><video controls playsinline preload="none" aria-label="${labels[i]} movement film" src="characters/review/${name}.mp4"></video><figcaption>${labels[i]}</figcaption></figure>`).join('')}
     </div></details>`;
