@@ -57,6 +57,36 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
   const groupButton = find('[data-action=group]'),
     lineupButton = find('[data-action=lineup]'),
     slowCheck = find('[data-setting=slow]');
+  const studies = [];
+  function observeStudy(section, load) {
+    let inView = false, pending, block, failed = false;
+    const open = section.querySelector('[data-open-study]');
+    const syncStudy = () => {
+      const active = inView && visible && !lost && !document.hidden;
+      block?.sync(names[selected], actualTier, active);
+      if (!active || pending || failed || block) return;
+      pending = load().then(module => {
+        block = module.mountStudy(section, stage, name => choose(names.indexOf(name)));
+        syncStudy();
+      }).catch(async error => {
+        failed = true;
+        if (await import('../assets/sip-recover.js').then(m => m.recover(section.querySelector('h3').textContent, error)).catch(() => false)) return;
+        open.hidden = false;
+        open.textContent = 'Retry loading';
+      }).finally(() => { pending = null; });
+    };
+    new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      syncStudy();
+    }).observe(section.querySelector('[data-study-body]'));
+    open.addEventListener('click', () => {
+      failed = false;
+      section.querySelector('[data-study-body]').scrollIntoView({ block: 'center' });
+      syncStudy();
+    });
+    studies.push(syncStudy);
+  }
+  observeStudy(find('[data-axon]'), () => import('./axon-view.js'));
   function updateHUD() {
     const f = cast[selected]?.ctrl.frame;
     if (!f) return;
@@ -133,6 +163,7 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
     if (!Number.isInteger(i) || i < 0 || i >= names.length) return;
     selected = i;
     rememberHero?.(names[i]);
+    for (const update of studies) update();
     if (!party || view === 'lineup') {
       view = 'follow';
       reset();
@@ -194,6 +225,7 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
     tierSelect.options[0].textContent = 'Auto · ' + (auto === 'high' ? 'High' : 'Mobile');
     for (const actor of cast) if (actor) setModelDetail(actor.rig.root, actualTier);
     stage.quality(actualTier);
+    for (const update of studies) update();
   }
   tierSelect.addEventListener('change', () => {
     autoLimited = false;
@@ -333,6 +365,7 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
     if (!raf && active() && !manual) raf = requestAnimationFrame(frame);
   }
   function sync() {
+    for (const update of studies) update();
     if (!active()) {
       cancelAnimationFrame(raf);
       raf = 0;

@@ -1,0 +1,208 @@
+.ax-toolbar,
+.ax-layout {
+  background: #f9f7ef;
+  border: 1px solid #c6cfc4;
+}
+.ax-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px;
+  margin-top: 14px;
+  border-radius: 12px 12px 0 0;
+}
+.ax-toolbar label,
+.ax-part-label {
+  font-weight: 600;
+  font-size: 13px;
+}
+.ax-toolbar select,
+.ax-part-label select {
+  background: #fffcf6;
+  border: 1px solid #a6b2a6;
+  border-radius: 5px;
+  padding: 6px 9px;
+}
+.ax-toolbar select {
+  margin-left: 6px;
+}
+.ax-spread {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ax-spread span {
+  white-space: nowrap;
+}
+.ax-spread output {
+  font:
+    12px ui-monospace,
+    monospace;
+  display: inline-block;
+  width: 4ch;
+  text-align: right;
+}
+.ax-toolbar input,
+.ax-layer input {
+  accent-color: #23655b;
+}
+.ax-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 24%);
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+}
+.ax-figure {
+  position: relative;
+  min-width: 0;
+  min-height: 380px;
+  background: #e4ebe6;
+}
+.ax-figure canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+.ax-figure canvas:active {
+  cursor: grabbing;
+}
+.ax-figure button,
+.ax-layer button {
+  color: #305349;
+  background: #fffcf1;
+  border: 1px solid #b4bfb1;
+  border-radius: 5px;
+}
+.ax-reset {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 6px 10px;
+}
+.ax-status {
+  position: absolute;
+  top: 45%;
+  width: 100%;
+  text-align: center;
+  pointer-events: none;
+}
+.ax-settings {
+  padding: 17px;
+  border-left: 1px solid #c6cfc4;
+}
+.ax-settings h4 {
+  font:
+    500 21px Georgia,
+    serif;
+  margin: 0 0 8px;
+}
+.ax-layer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px;
+  padding: 11px 0;
+  border-bottom: 1px solid #d4d9cf;
+}
+.ax-layer > label:first-child {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.ax-layer input[type='checkbox'] {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+}
+.ax-layer button {
+  padding: 5px 7px;
+  font-size: 12px !important;
+}
+.ax-layer button[aria-pressed='true'] {
+  background: #285e53;
+  color: white !important;
+}
+.ax-opacity {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  color: #53645c;
+  font-size: 12px;
+  grid-column: 1/-1;
+  padding-left: 22px;
+}
+.ax-opacity input {
+  width: 100%;
+  min-width: 0;
+}
+.ax-part-label {
+  display: grid;
+  gap: 6px;
+  margin-top: 16px;
+}
+.ax-part-label select {
+  min-width: 0;
+  width: 100%;
+}
+[data-measure] {
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  margin-top: 9px;
+  font-variant-numeric: tabular-nums;
+}
+[data-measure] p {
+  margin: 4px 0;
+}
+.ax-help {
+  margin: 10px 0;
+  font-size: 13px;
+}
+.ax-help summary {
+  cursor: pointer;
+  width: fit-content;
+}
+.ax-help p {
+  margin: 8px 0;
+}
+@media (max-width: 730px) {
+  .ax-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ax-figure {
+    min-height: clamp(270px, 71vw, 475px);
+  }
+  .ax-settings {
+    border-left: 0;
+    border-top: 1px solid #c6cfc4;
+  }
+  .ax-layers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 15px;
+  }
+  .ax-layer {
+    grid-template-columns: 1fr;
+  }
+  .ax-layer button {
+    width: fit-content;
+    min-height: 32px;
+  }
+  .ax-opacity {
+    padding: 0;
+  }
+  .ax-spread {
+    flex: 1;
+    justify-content: flex-end;
+  }
+  .ax-spread input {
+    width: clamp(75px, 20vw, 185px);
+  }
+}

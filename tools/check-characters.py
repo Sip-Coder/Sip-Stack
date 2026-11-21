@@ -131,7 +131,7 @@ def check_saved_links(page, url):
     # This bookmark deliberately has no review/debug query. Sample the same
     # first hero frame and the same requests an ordinary visitor gets.
     page.wait_for_function("""() => {
-        const canvas = document.querySelector('#character-test canvas');
+        const canvas = document.querySelector('#character-test .ct-stage canvas');
         return performance.getEntriesByName('heros-first-hero-frame').length === 1 &&
             canvas?.checkVisibility({visibilityProperty:true}) && characterChecks.painted(canvas);
     }""")
@@ -181,7 +181,7 @@ def ready(page, url):
     page.locator(HOST).scroll_into_view_if_needed()
     page.wait_for_function("document.querySelector('#character-test')?.characterTest")
     page.wait_for_function("""() => {
-        const c = document.querySelector('#character-test canvas');
+        const c = document.querySelector('#character-test .ct-stage canvas');
         return c && c.width && c.checkVisibility({visibilityProperty:true});
     }""")
 
@@ -202,7 +202,7 @@ def check_picker(page, tier):
             return s.name === name && s.built.includes(name) && s.tier === tier;
         }""", arg=[name, tier])
         assert picker.get_attribute("aria-pressed") == "true"
-        canvas = page.locator(HOST + " canvas")
+        canvas = page.locator(HOST + " .ct-stage canvas")
         canvas.scroll_into_view_if_needed()
         call(page, "view", "front")
         call(page, "render")
@@ -235,7 +235,7 @@ def check_lazy_cast(page):
     call(page, "setManual", True)
     assert call(page, "snapshot")["built"] == ["sippy"]
     assert requested_builders(page) == ["sippy"]
-    canvas = page.locator(HOST + " canvas")
+    canvas = page.locator(HOST + " .ct-stage canvas")
     call(page, "render")
     last_frame = frame_digest(canvas)
     # Hold the first requested Hummin payload while leaving the tab. A late
@@ -254,7 +254,7 @@ def check_lazy_cast(page):
         c.addEventListener('webglcontextrestored', () => window.pendingRestored = true, {once:true});
         pendingLoss.loseContext();
     }""")
-    page.wait_for_function("document.querySelector('#character-test canvas').style.visibility === 'hidden'")
+    page.wait_for_function("document.querySelector('#character-test .ct-stage canvas').style.visibility === 'hidden'")
     page.wait_for_timeout(120)
     page.evaluate("pendingLoss.restoreContext()")
     page.wait_for_function("window.pendingRestored === true")
@@ -262,7 +262,7 @@ def check_lazy_cast(page):
     canvas.scroll_into_view_if_needed()
     call(page, "setManual", False)
     page.wait_for_function("""() => {
-        const canvas = document.querySelector('#character-test canvas');
+        const canvas = document.querySelector('#character-test .ct-stage canvas');
         return canvas.checkVisibility({visibilityProperty:true}) && characterChecks.painted(canvas);
     }""")
     call(page, "setManual", True)
@@ -345,9 +345,9 @@ def switch(page, mode):
             return c && c.style.visibility==='visible' && characterChecks.painted(c);
         }""")
     if mode == "heros":
-        page.locator("#character-test canvas").scroll_into_view_if_needed()
+        page.locator("#character-test .ct-stage canvas").scroll_into_view_if_needed()
         page.wait_for_function("""() => {
-            const c=document.querySelector('#character-test canvas');
+            const c=document.querySelector('#character-test .ct-stage canvas');
             return c.checkVisibility({visibilityProperty:true}) && characterChecks.painted(c);
         }""")
     if mode == "world":
@@ -385,7 +385,7 @@ def formation(page):
 
 
 def controls(page):
-    canvas = page.locator(HOST + " canvas")
+    canvas = page.locator(HOST + " .ct-stage canvas")
     canvas.focus()
     page.keyboard.press("Digit2")
     page.wait_for_function("document.querySelector('#character-test').characterTest.snapshot().name === 'roma'")
@@ -490,7 +490,7 @@ def exercise(browser, url, package, system_fonts):
         check_lazy_cast(page)
         check_deferred_detail(page)
         call(page, "view", "front")
-        canvas = page.locator(HOST + " canvas")
+        canvas = page.locator(HOST + " .ct-stage canvas")
         assert canvas.evaluate("c=>c.getContext('webgl2').getContextAttributes().preserveDrawingBuffer")
         for tier in ("mobile", "high"):
             check_picker(page, tier)
@@ -502,13 +502,13 @@ def exercise(browser, url, package, system_fonts):
                 window.contextLoss = c.getContext('webgl2').getExtension('WEBGL_lose_context');
                 contextLoss.loseContext();
             }""")
-            page.wait_for_function("document.querySelector('#character-test canvas').style.visibility==='hidden'")
+            page.wait_for_function("document.querySelector('#character-test .ct-stage canvas').style.visibility==='hidden'")
             page.wait_for_timeout(120)
             if tier == "mobile":
                 page.evaluate("characterChecks.rejectOneWarm=true")
             page.evaluate("contextLoss.restoreContext()")
             page.wait_for_function("""() => {
-                const c=document.querySelector('#character-test canvas');
+                const c=document.querySelector('#character-test .ct-stage canvas');
                 return c.checkVisibility({visibilityProperty:true}) && characterChecks.painted(c);
             }""")
             assert canvas.evaluate("c=>{const gl=c.getContext('webgl2');return gl.getError()===gl.NO_ERROR}"), tier
@@ -583,7 +583,7 @@ def check_recovery(browser, url, package, system_fonts):
                     page.locator(f'[data-pick="{hero}"]').click()
                 page.wait_for_function("performance.getEntriesByName('heros-first-hero-frame').length === 1")
                 page.locator(f'[data-pick="{hero}"]').click()
-                page.locator(HOST + " canvas").scroll_into_view_if_needed()
+                page.locator(HOST + " .ct-stage canvas").scroll_into_view_if_needed()
                 page.locator(".ct-loading").wait_for(state="hidden")
                 assert page.locator(f'[data-pick="{hero}"]').get_attribute("aria-pressed") == "true"
             if permanent:
@@ -593,7 +593,7 @@ def check_recovery(browser, url, package, system_fonts):
                 assert suppressed is False
             else:
                 page.wait_for_function("""() => {
-                  const c=document.querySelector('#character-test canvas');
+                  const c=document.querySelector('#character-test .ct-stage canvas');
                   return sessionStorage.getItem('sip-recovered-at') &&
                     performance.getEntriesByName('heros-first-hero-frame').length &&
                     c?.checkVisibility({visibilityProperty:true}) && characterChecks.painted(c);
@@ -618,11 +618,11 @@ def check_remembered_cast(browser, url, package, system_fonts):
                 # Only a real, successfully drawn UI selection should become
                 # the startup choice for the next document in the same tab.
                 page.locator(f'[data-pick="{expected}"]').click()
-                page.locator(HOST + " canvas").scroll_into_view_if_needed()
+                page.locator(HOST + " .ct-stage canvas").scroll_into_view_if_needed()
                 page.locator(".ct-loading").wait_for(state="hidden")
                 page.reload(wait_until="domcontentloaded")
             page.wait_for_function("""expected => {
-                const canvas = document.querySelector('#character-test canvas');
+                const canvas = document.querySelector('#character-test .ct-stage canvas');
                 const pick = document.querySelector('[data-pick="'+expected+'"]');
                 return performance.getEntriesByName('heros-first-hero-frame').length === 1 &&
                     pick?.getAttribute('aria-pressed') === 'true' && canvas &&

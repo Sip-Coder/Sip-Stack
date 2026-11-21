@@ -51,7 +51,7 @@ export function createInput(host, canvas, command, orbit) {
     'Digit3',
   ];
   window.addEventListener('keydown', (e) => {
-    if (!enabled || e.altKey || e.metaKey || e.target.matches?.('input,select,textarea,video')) return;
+    if (!enabled || e.target.closest?.('.ct-study') || e.altKey || e.metaKey || e.target.matches?.('input,select,textarea,video')) return;
     if (e.code === 'Escape') {
       release();
       return;
@@ -136,7 +136,7 @@ export function createInput(host, canvas, command, orbit) {
     if (held.has('KeyA') || held.has('ArrowLeft')) x--;
     if (held.has('KeyW') || held.has('ArrowUp')) y++;
     if (held.has('KeyS') || held.has('ArrowDown')) y--;
-    const pads = navigator.getGamepads?.();
+    const pads = document.activeElement?.closest('.ct-study') ? null : navigator.getGamepads?.();
     let pad;
     if (pads)
       for (let i = 0; i < pads.length; i++) {

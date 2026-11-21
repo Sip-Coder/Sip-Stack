@@ -11,7 +11,9 @@ from playwright.sync_api import sync_playwright
 
 DOCS = Path(__file__).resolve().parents[1] / 'docs'
 ORIGIN = 'http://heros.test'
-HTML = '''<meta charset="utf-8"><script type="importmap">
+# This fixture exercises only the floor clock. Inspector visibility and real GPU draws
+# are covered by check-axon-performance.py.
+HTML = '''<meta charset="utf-8"><style>.ct-study{display:none}</style><script type="importmap">
 {"imports":{"three":"/three/build/three.module.js","three/addons/":"/three/examples/jsm/"}}
 </script><div id="character-test"></div>'''
 # The real rig, controller, controls, HUD, quality policy and scheduler all run.
