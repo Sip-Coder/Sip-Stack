@@ -454,6 +454,12 @@ for (const state of args.slice(2).length ? args.slice(2) : defaultPoses) {
     try {
       const report = baseline ? {} : landmarks(snapshot, record),
         skin = coverage(snapshot.parts, rig.height, record.pelvis);
+      if (!baseline && process.env.AXON_BONES_ONLY === '1') {
+        const extremity = /^(METACARPAL|METATARSAL|PHALANGE|LUNATE|SCAPHOID|PISIFORM|CAPITATE|HAMATE|TRIQUETRUM|TRAPEZOID|TRAPEZIUM|TALUS|CUBOID|[A-Z]+_CUNEIFORM|NAVICULAR|CALCANEUS)/;
+        const parts = snapshot.parts.filter(p => p.layer === 'skin' || extremity.test(p.scanNode));
+        const extremitySkin = coverage(parts, rig.height, record.pelvis);
+        skin.handAndFoot = { sampled: extremitySkin.sampled, exposed: extremitySkin.exposed };
+      }
       if (!baseline && state === 'leg-raise') report.legRaise = raisedLegMeasures(rig, record.pelvis);
       console.log(
         JSON.stringify({
@@ -477,6 +483,7 @@ for (const state of args.slice(2).length ? args.slice(2) : defaultPoses) {
         report.muscleAtlas.visibleHumanFemale !== (name === 'roma' ? 76 : 0) ||
         report.muscleAtlas.maxGapInches > 0.02 ||
         skin.exposed ||
+        skin.handAndFoot?.exposed ||
         [report.L.shoulder, report.R.shoulder, report.L.hip, report.R.hip].some(
           (r) => r.hits < 3 || r.worstIn > 0.25,
         )

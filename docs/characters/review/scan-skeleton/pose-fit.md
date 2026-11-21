@@ -10,8 +10,8 @@ For each of six orthographic views, the test compares the closest inner triangle
 |---|---:|---:|---:|---:|---:|
 | Sippy Mobile | 5,315 / 671,694 | 0 / 834,097 | 4,301 | 0 | 0.162 / 0.156 in |
 | Sippy High | 5,246 / 675,258 | 0 / 839,859 | 4,223 | 0 | 0.163 / 0.159 in |
-| Roma Mobile | 0 / 754,219 | 0 / 1,033,149 | 0 | 0 | 0.148 / 0.177 in |
-| Roma High | 0 / 756,781 | 0 / 1,040,774 | 0 | 0 | 0.159 / 0.169 in |
+| Roma Mobile | 0 / 754,219 | 0 / 1,033,083 | 0 | 0 | 0.148 / 0.177 in |
+| Roma High | 0 / 756,781 | 0 / 1,040,698 | 0 | 0 | 0.159 / 0.169 in |
 
 The joint measures use five rays through each fitted humeral-head/glenoid and femoral-head/acetabular pair. The joint column gives the largest absolute separation across the two sides and eleven poses. The independent bone-only test prevents overlying muscle from hiding a bone crossing. [Bone-only measurements](bone-containment.json)
 
