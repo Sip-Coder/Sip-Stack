@@ -10,7 +10,7 @@ METRICS = (
     ("requests", "HTTP requests", 1, 0),
     ("modules", "JS modules", 1, 0),
     ("presentedMs", "First populated frame (s)", 1000, 2),
-    ("interactiveMs", "First input response (s)", 1000, 2),
+    ("interactiveMs", "Time to interactive (s)", 1000, 2),
 )
 
 

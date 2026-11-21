@@ -1,8 +1,10 @@
 # Heros browser performance
 
-Both revisions ran in headless Chromium 155.0.8059.79 with ANGLE Vulkan SwiftShader on an AMD EPYC 9V74 host (five visible logical CPUs, four CPUs of cgroup quota). Both used the same 800 × 680 CSS viewport and DPR 1. The WebGL canvas was 497 × 449 pixels. The FPS figures describe this software renderer.
+The route comparison measures Village and Heros on two revisions of this PR. It includes the full document, every HTTP request and the first input that moves the scene. [Village and Heros cold-load table](route-load-method.md)
 
-The left side of each arrow is main at `a59620d`. The right side uses the application files committed at `ebbf2ad`. Their recorded hashes match that revision. The raw measurements retain the per-frame timings, resource lists, submitted mesh names and content hashes of the served source files. [Before](before.json) · [After](after.json)
+The separate cast tour and interactive floor measurements below ran in headless Chromium 155.0.8059.79 with ANGLE Vulkan SwiftShader on an AMD EPYC 9V74 host (five visible logical CPUs, four CPUs of cgroup quota). Both used the same 800 × 680 CSS viewport and DPR 1. The WebGL canvas was 497 × 449 pixels. The FPS figures describe this software renderer.
+
+The left side of each arrow is main at `a59620d`. The right side was measured at `7d3cb79`, which serves the application committed at `092e67c`. The raw measurements retain the per-frame timings, resource lists, submitted mesh names and content hashes of the served source files. [Before](before.json) · [After](after.json)
 
 ## Navigation and selection
 
@@ -10,27 +12,27 @@ Each tier starts at the normal `/#heros` route in a fresh context. Sippy reports
 
 | Tier | Presented | Time from action (s) | Gzip and binary body (KiB) | Browser transfer (KiB) | JS modules |
 |---|---|---:|---:|---:|---:|
-| Mobile | Sippy | 30.53 → 5.68 | 558.3 → 428.6 | 576.1 → 438.0 | 54 → 25 |
-| Mobile | Roma | 1.88 → 1.18 | 558.3 → 441.8 | 576.1 → 452.0 | 54 → 28 |
-| Mobile | Hummin | 1.75 → 1.97 | 558.3 → 479.2 | 576.1 → 491.8 | 54 → 36 |
-| Mobile | Lineup | 1.18 → 0.87 | 558.3 → 479.2 | 576.1 → 491.8 | 54 → 36 |
-| High | Sippy | 30.40 → 7.12 | 558.3 → 428.6 | 576.1 → 438.0 | 54 → 25 |
-| High | Roma | 3.21 → 1.43 | 558.3 → 441.8 | 576.1 → 452.0 | 54 → 28 |
-| High | Hummin | 3.36 → 1.98 | 558.3 → 479.2 | 576.1 → 491.8 | 54 → 36 |
-| High | Lineup | 2.32 → 0.94 | 558.3 → 479.2 | 576.1 → 491.8 | 54 → 36 |
+| Mobile | Sippy | 30.53 → 4.29 | 558.3 → 368.7 | 576.1 → 376.0 | 54 → 21 |
+| Mobile | Roma | 1.88 → 1.22 | 558.3 → 381.5 | 576.1 → 389.7 | 54 → 24 |
+| Mobile | Hummin | 1.75 → 2.33 | 558.3 → 419.5 | 576.1 → 430.7 | 54 → 34 |
+| Mobile | Lineup | 1.18 → 0.86 | 558.3 → 419.5 | 576.1 → 430.7 | 54 → 34 |
+| High | Sippy | 30.40 → 4.01 | 558.3 → 368.7 | 576.1 → 376.0 | 54 → 21 |
+| High | Roma | 3.21 → 1.35 | 558.3 → 381.5 | 576.1 → 389.7 | 54 → 24 |
+| High | Hummin | 3.36 → 2.18 | 558.3 → 419.5 | 576.1 → 430.7 | 54 → 34 |
+| High | Lineup | 2.32 → 0.89 | 558.3 → 419.5 | 576.1 → 430.7 | 54 → 34 |
 
 ## Interactive floor
 
 | Tier | Actor | Pose step (ms) | Script/frame (ms) | Draws/frame, mean | Draws/frame, maximum | Rendered FPS |
 |---|---|---:|---:|---:|---:|---:|
-| Mobile | Sippy | 16.26 → 0.24 | 201.1 → 4.1 | 851.8 → 58.9 | 854 → 80 | 4.18 → 7.02 |
-| Mobile | Roma | 115.82 → 0.03 | 1,602.2 → 2.2 | 433.2 → 28.7 | 438 → 36 | 0.62 → 12.69 |
-| Mobile | Hummin | 2.37 → 0.85 | 39.6 → 4.8 | 298.8 → 56.9 | 302 → 78 | 6.41 → 10.65 |
-| Mobile | Lineup | 120.63 → 1.07 | 1,577.2 → 10.0 | 1,569.0 → 140.2 | 1,569 → 186 | 0.63 → 5.79 |
-| High | Sippy | 17.16 → 0.10 | 305.6 → 3.4 | 1,145.9 → 65.8 | 1,150 → 83 | 1.84 → 3.25 |
-| High | Roma | 148.93 → 0.03 | 1,923.8 → 2.3 | 433.2 → 30.0 | 438 → 36 | 0.52 → 7.42 |
-| High | Hummin | 1.85 → 0.64 | 22.1 → 4.3 | 322.3 → 72.8 | 326 → 90 | 3.07 → 4.07 |
-| High | Lineup | 171.01 → 0.80 | 2,384.2 → 8.1 | 1,889.0 → 163.5 | 1,889 → 201 | 0.41 → 2.17 |
+| Mobile | Sippy | 16.26 → 0.13 | 201.1 → 3.5 | 851.8 → 60.8 | 854 → 80 | 4.18 → 9.85 |
+| Mobile | Roma | 115.82 → 0.03 | 1,602.2 → 1.8 | 433.2 → 29.3 | 438 → 36 | 0.62 → 14.67 |
+| Mobile | Hummin | 2.37 → 0.89 | 39.6 → 7.1 | 298.8 → 58.8 | 302 → 78 | 6.41 → 11.38 |
+| Mobile | Lineup | 120.63 → 1.06 | 1,577.2 → 7.2 | 1,569.0 → 144.3 | 1,569 → 186 | 0.63 → 6.95 |
+| High | Sippy | 17.16 → 0.13 | 305.6 → 2.9 | 1,145.9 → 65.8 | 1,150 → 83 | 1.84 → 5.74 |
+| High | Roma | 148.93 → 0.05 | 1,923.8 → 3.9 | 433.2 → 30.0 | 438 → 36 | 0.52 → 6.29 |
+| High | Hummin | 1.85 → 1.32 | 22.1 → 6.3 | 322.3 → 72.8 | 326 → 90 | 3.07 → 4.68 |
+| High | Lineup | 171.01 → 0.85 | 2,384.2 → 5.6 | 1,889.0 → 163.5 | 1,889 → 201 | 0.41 → 3.08 |
 
 ## Measurement
 

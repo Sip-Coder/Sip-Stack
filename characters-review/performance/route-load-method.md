@@ -2,7 +2,7 @@
 
 The previous speed PR head was `0f46593`. The revised application is `092e67c`. Each cell is the median of five cold navigations. KB uses 1,000 bytes. The input column measures time to interactive by requiring the first keyboard input to change the rendered scene.
 
-| Tier | Route | Revision | Transferred KB | HTTP requests | JS modules | First populated frame (s) | First input response (s) |
+| Tier | Route | Revision | Transferred KB | HTTP requests | JS modules | First populated frame (s) | Time to interactive (s) |
 |---|---|---|---:|---:|---:|---:|---:|
 | Mobile | Village | Before | 547.4 | 58 | 52 | 6.55 | 9.92 |
 | Mobile | Heros | Before | 445.0 | 32 | 25 | 6.77 | 7.73 |
