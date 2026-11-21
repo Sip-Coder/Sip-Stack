@@ -87,6 +87,7 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
     studies.push(syncStudy);
   }
   observeStudy(find('[data-axon]'), () => import('./axon-view.js'));
+  observeStudy(find('[data-ref]'), () => import('./character-ref.js'));
   function updateHUD() {
     const f = cast[selected]?.ctrl.frame;
     if (!f) return;
