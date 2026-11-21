@@ -101,6 +101,9 @@ class Wire:
 
 
 def confirm_graph(page, cdp, route, tier, resources, key, code):
+    # Release the held movement key before the post-timing module audit. On a
+    # slow renderer Village otherwise keeps panning past its visible workers.
+    cdp.send("Input.dispatchKeyEvent", {"type": "keyUp", "key": key, "code": code})
     # Attach after the timed endpoint so enabling the debugger cannot perturb it.
     scripts = set()
 
@@ -145,7 +148,6 @@ def confirm_graph(page, cdp, route, tier, resources, key, code):
     }""",
         route,
     )
-    cdp.send("Input.dispatchKeyEvent", {"type": "keyUp", "key": key, "code": code})
     cdp.send(
         "Input.dispatchKeyEvent",
         {

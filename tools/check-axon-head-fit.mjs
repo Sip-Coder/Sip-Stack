@@ -31,8 +31,10 @@ const { snapshotDiagramModel } = await import('../docs/characters/diagram-parts.
 const { setModelDetail } = await import('../docs/characters/model-tier.js');
 const { names, heights } = await import('../docs/characters/ui.js');
 const { posedSurface, compareSurfaces } = await import('./characters-surfaces.mjs');
-const bones = /^(Cranium|Mandible|Maxilla and nasal aperture|(Left|Right) zygomatic arch)$/;
-const muscles = /^(Left|Right) (temporalis|masseter|orbicularis oculi|zygomaticus major)$/;
+const bones = /^(Cranium and maxilla|Mandible)$/;
+const muscles =
+  /^(left|right)_(?:(?:inferior|superior)_(?:rectus|oblique)|(?:lateral|medial)_rectus|levator_palpebrae_superioris)$/i;
+const key = (part) => part.muscleNode ?? part.atlasNode ?? part.name;
 const eyes = /cornea|sclera|pupil|iris|eyelid|eyelash/i;
 const hair = /crest|sideburn|waves|forelock|fringe|tapered lock|quiff lock/i;
 
@@ -42,19 +44,25 @@ function checks(parts, axis) {
     .filter(
       (p) =>
         bones.test(p.name) ||
-        muscles.test(p.name) ||
+        muscles.test(key(p)) ||
         (p.layer === 'skin' && (eyes.test(p.name) || hair.test(p.name))),
     )
-    .map((p) => ({ name: p.name, shape: posedSurface(p.mesh) }));
+    .map((p) => ({ name: key(p), shape: posedSurface(p.mesh) }));
   const orbit = entries.filter((e) => eyes.test(e.name)),
     groom = entries.filter((e) => hair.test(e.name));
   const internal = entries.filter((e) => bones.test(e.name) || muscles.test(e.name));
-  if (!orbit.length || !groom.length || internal.length !== 13)
+  if (
+    !orbit.length ||
+    !groom.length ||
+    internal.filter((e) => muscles.test(e.name)).length !== 14 ||
+    internal.filter((e) => bones.test(e.name)).length !== 2
+  )
     throw Error('Incomplete live facial inventory');
   const result = {
     insideVertices: 0,
     outsideVertices: 0,
     skinCrossings: 0,
+    orbitalBoneCrossings: 0,
     eyeLidCrossings: 0,
     hairCrossings: 0,
   };
@@ -80,7 +88,10 @@ function checks(parts, axis) {
       if (positive && hitsSkin(face.tree)) result.insideVertices++;
       else result.outsideVertices++;
     }
-    if (!bones.test(name)) continue;
+    if (muscles.test(name)) {
+      const cranium = internal.find((e) => e.name === 'Cranium and maxilla');
+      result.orbitalBoneCrossings += crossings(shape, cranium.shape);
+    }
     for (const e of orbit) result.eyeLidCrossings += crossings(shape, e.shape);
     for (const e of groom) result.hairCrossings += crossings(shape, e.shape);
   }
@@ -90,17 +101,14 @@ function checks(parts, axis) {
 const args = process.argv.slice(2),
   heroes = args[0] ? [args[0]] : ['sippy', 'roma'],
   tiers = args[1] ? [args[1]] : ['mobile', 'high'];
-if (
-  heroes.some((n) => !['sippy', 'roma'].includes(n)) ||
-  tiers.some((n) => !['mobile', 'high'].includes(n))
-)
+if (heroes.some((n) => !['sippy', 'roma'].includes(n)) || tiers.some((n) => !['mobile', 'high'].includes(n)))
   throw Error('Expected [sippy|roma] [mobile|high]');
 for (const hero of heroes) {
   const build = (await import(`../docs/characters/${hero}.js`))[
     hero === 'sippy' ? 'buildSippy' : 'buildRoma'
   ];
   for (const tier of tiers)
-    for (const state of ['idle', 'walk', 'run', 'roll']) {
+    for (const state of ['idle', 'blink', 'walk', 'run', 'roll', 'roll-tuck']) {
       const rig = createActor(hero, heights[names.indexOf(hero)]),
         pose = build(rig),
         control = createController(rig);
@@ -111,13 +119,17 @@ for (const hero of heroes) {
         control.finishPose();
       };
       for (let step = 0; step < 12; step++) tick();
-      if (state !== 'idle') {
+      if (state === 'blink') {
+        const peak = hero === 'sippy' ? 4.15 : 3.45;
+        for (let step = 12; step < Math.round(peak / FIXED_DT); step++) tick();
+      } else if (state !== 'idle') {
         input.run = state !== 'walk';
         input.z = -0.9;
         for (let step = 0; step < 45; step++) tick();
-        if (state === 'roll') {
+        if (state.startsWith('roll')) {
           input.roll = true;
-          for (let step = 0; step < 13; step++) {
+          const frame = state === 'roll-tuck' ? 17 : 13;
+          for (let step = 0; step < frame; step++) {
             tick();
             input.roll = false;
           }
@@ -135,6 +147,7 @@ for (const hero of heroes) {
         console.log(JSON.stringify({ hero, tier, state, ...result }));
         if (
           result.outsideVertices ||
+          result.orbitalBoneCrossings ||
           result.skinCrossings ||
           result.eyeLidCrossings ||
           result.hairCrossings

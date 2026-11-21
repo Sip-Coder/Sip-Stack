@@ -14,13 +14,21 @@ export function muscleEnvelope(parts, height) {
   const box = new Box3();
   for (const { mesh } of skin) box.union(mesh.geometry.boundingBox);
   const step = height / 490,
-    pad = step * 1.05;
+    pad = step * 1.4;
   const y0 = box.min.y - step * 2,
     z0 = box.min.z - step * 2;
   const ny = Math.ceil((box.max.y - y0) / step) + 3,
     nz = Math.ceil((box.max.z - z0) / step) + 3;
   const intervals = new Array(ny * nz);
+  // Exact projected faces for resolving a concavity between two consecutive
+  // atlas vertices. The coarse buckets only accelerate the lookup.
+  const cells = new Map(),
+    cellSize = 8,
+    cellStride = Math.ceil(nz / cellSize) + 2;
+  let group = 0;
+  const depths = [];
   for (const { mesh } of skin) {
+    group++;
     const rays = new Map(),
       g = mesh.geometry,
       a = g.attributes.position,
@@ -44,6 +52,21 @@ export function muscleEnvelope(parts, height) {
       const x = a.getX(A),
         dx = a.getX(B) - x,
         ex = a.getX(C) - x;
+      const face = { ay, az, du, dv, eu, ev, det, x, dx, ex, group };
+      for (
+        let iy = Math.floor(Math.min(ay, by, cy) / cellSize);
+        iy <= Math.floor(Math.max(ay, by, cy) / cellSize);
+        iy++
+      )
+        for (
+          let iz = Math.floor(Math.min(az, bz, cz) / cellSize);
+          iz <= Math.floor(Math.max(az, bz, cz) / cellSize);
+          iz++
+        ) {
+          const key = iy * cellStride + iz;
+          if (!cells.has(key)) cells.set(key, []);
+          cells.get(key).push(face);
+        }
       for (let y = Math.ceil(Math.min(ay, by, cy)); y <= Math.max(ay, by, cy); y++)
         for (let z = Math.ceil(Math.min(az, bz, cz)); z <= Math.max(az, bz, cz); z++) {
           const ly = y - ay,
@@ -115,13 +138,22 @@ export function muscleEnvelope(parts, height) {
     return lo < hi ? [lo, hi] : null;
   }
   const cache = new Map();
-  return function fit(p) {
+  function fit(p) {
     const y = (p.y - y0) / step,
       z = (p.z - z0) / step,
       iy = Math.floor(y),
       iz = Math.floor(z);
     const inside = rangeAt(p.x, iy, iz);
-    if (inside && p.x >= inside[0] && p.x <= inside[1]) return p;
+    if (inside) {
+      const x = Math.max(inside[0], Math.min(inside[1], p.x));
+      // The sampled ray already passes through this section. Small sideways
+      // corrections can stay at their continuous height and depth; snapping
+      // them to a voxel centre would introduce ripples on the muscle belly.
+      if (Math.abs(x - p.x) <= 1.6 * step) {
+        p.x = x;
+        return p;
+      }
+    }
     const qx = Math.round(p.x / step),
       key = qx + ':' + iy + ':' + iz;
     let target = cache.get(key);
@@ -151,72 +183,199 @@ export function muscleEnvelope(parts, height) {
       if (target) cache.set(key, target);
     }
     return target ? p.copy(target) : p;
+  }
+  fit.inside = (p) => {
+    const y = (p.y - y0) / step,
+      z = (p.z - z0) / step;
+    const bucket = cells.get(Math.floor(y / cellSize) * cellStride + Math.floor(z / cellSize));
+    if (!bucket) return false;
+    depths.fill(0);
+    for (const f of bucket) {
+      const py = y - f.ay,
+        pz = z - f.az;
+      const b = (py * f.ev - pz * f.eu) / f.det,
+        c = (f.du * pz - f.dv * py) / f.det;
+      if (b < 0 || c < 0 || b + c > 1 || f.x + b * f.dx + c * f.ex < p.x) continue;
+      depths[f.group] = (depths[f.group] || 0) + Math.sign(f.det);
+    }
+    return depths.some((d) => d !== 0);
   };
+  return fit;
 }
 
-// Where a long fascicle bends around a concave skin fold, safe vertices alone
-// do not guarantee a safe triangle. Split shared edges where the fitted
-// midpoint departs from the chord, keeping adjacent triangles watertight.
-export function fitMuscleFolds(geometry, fit) {
-  const points = Array.from(geometry.attributes.position.array);
+// Refine only a chord that actually exits the posed skin. The shoulder,
+// jaw, ankle and web of the thumb can all fold between a pair of safe ends.
+// Use one index for a split shared edge, carrying its exact attribute weights.
+export function fitMuscleFolds(geometry, fit, pitch, contacts) {
+  const positions = Array.from(geometry.attributes.position.array);
   const colors = Array.from(geometry.attributes.color.array);
+  const uv = Array.from(geometry.attributes.uv.array);
+  const a = new Vector3(),
+    b = new Vector3(),
+    c = new Vector3(),
+    sample = new Vector3();
+  const add = (vertices, weights, p) => {
+    const id = positions.length / 3;
+    positions.push(p.x, p.y, p.z);
+    for (const [array, stride] of [
+      [colors, 3],
+      [uv, 2],
+    ]) {
+      for (let k = 0; k < stride; k++) {
+        let value = 0;
+        for (let j = 0; j < vertices.length; j++) value += array[stride * vertices[j] + k] * weights[j];
+        array.push(value);
+      }
+    }
+    return id;
+  };
+  const axis = new Vector3(),
+    tangent = new Vector3(),
+    bitangent = new Vector3();
+  const middle = new Vector3(),
+    candidate = new Vector3(),
+    best = new Vector3(),
+    test = new Vector3();
+  function outsideCount(from, to) {
+    const steps = Math.max(2, Math.min(15, Math.ceil(from.distanceTo(to) / pitch)));
+    let exterior = 0;
+    for (let k = 1; k < steps; k++) if (!fit.inside(test.lerpVectors(from, to, k / steps))) exterior++;
+    return exterior;
+  }
+  // A chord spanning an armpit or flexed ankle needs a path through the
+  // surrounding tissue. Merely snapping its midpoint to the nearer of the
+  // two opposing skin surfaces would leave triangles hanging across air.
+  function aroundFold(a, b) {
+    middle.addVectors(a, b).multiplyScalar(0.5);
+    best.copy(middle);
+    fit(best);
+    let gaps = outsideCount(a, best) + outsideCount(best, b);
+    if (!gaps) return best;
+    axis.subVectors(b, a);
+    const length = axis.length();
+    axis.normalize();
+    tangent
+      .set(Math.abs(axis.x) < 0.8 ? 1 : 0, Math.abs(axis.x) < 0.8 ? 0 : 1, 0)
+      .projectOnPlane(axis)
+      .normalize();
+    bitangent.crossVectors(axis, tangent);
+    for (let r = pitch; r <= Math.max(length * 0.75, 5 * pitch); r += pitch) {
+      for (let n = 0; n < 16; n++) {
+        const angle = (n * Math.PI) / 8;
+        candidate
+          .copy(middle)
+          .addScaledVector(tangent, r * Math.cos(angle))
+          .addScaledVector(bitangent, r * Math.sin(angle));
+        if (!fit.inside(candidate)) continue;
+        const score = outsideCount(a, candidate) + outsideCount(candidate, b);
+        if (score < gaps) {
+          best.copy(candidate);
+          gaps = score;
+        }
+        if (!gaps) return best;
+      }
+    }
+    return best;
+  }
   let faces = geometry.index.array;
-  const q = new Vector3(),
-    mid = new Vector3();
-  let changed = false;
-  for (let pass = 0; pass < 4; pass++) {
-    const originalCount = points.length / 3;
-    const edgeMap = new Map();
-    function midpoint(a, b) {
-      const key = Math.min(a, b) * originalCount + Math.max(a, b);
-      if (edgeMap.has(key)) return edgeMap.get(key);
-      mid.fromArray(points, 3 * a).lerp(q.fromArray(points, 3 * b), 0.5);
-      fit(q.copy(mid));
-      let idx = -1;
-      if (q.distanceToSquared(mid) > 2.5e-7) {
-        idx = points.length / 3;
-        points.push(q.x, q.y, q.z);
-        for (let k = 0; k < 3; k++) colors.push((colors[3 * a + k] + colors[3 * b + k]) * 0.5);
+  for (let pass = 0; pass < 3; pass++) {
+    const start = positions.length / 3,
+      cache = new Map();
+    const edge = (i, j) => {
+      const key = Math.min(i, j) * start + Math.max(i, j);
+      if (cache.has(key)) return cache.get(key);
+      a.fromArray(positions, 3 * i);
+      b.fromArray(positions, 3 * j);
+      const steps = Math.min(16, Math.ceil(a.distanceTo(b) / pitch));
+      let hit = -1;
+      for (let k = 1; k < steps; k++) {
+        // Try the center first, then the intervals on either side.
+        const n = Math.floor(steps / 2) + (k % 2 === 1 ? -(k - 1) / 2 : k / 2);
+        const t = n / steps;
+        sample.lerpVectors(a, b, t);
+        if (fit.inside(sample)) continue;
+        hit = add([i, j], [0.5, 0.5], aroundFold(a, b));
+        break;
       }
-      edgeMap.set(key, idx);
-      return idx;
-    }
+      cache.set(key, hit);
+      return hit;
+    };
     const next = [];
-    for (let i = 0; i < faces.length; i += 3) {
-      const a = faces[i],
-        b = faces[i + 1],
-        c = faces[i + 2];
-      const ab = midpoint(a, b),
-        bc = midpoint(b, c),
-        ca = midpoint(c, a);
-      mid
-        .fromArray(points, 3 * a)
-        .add(q.fromArray(points, 3 * b))
-        .add(q.fromArray(points, 3 * c))
-        .multiplyScalar(1 / 3);
-      fit(q.copy(mid));
-      if (ab < 0 && bc < 0 && ca < 0 && q.distanceToSquared(mid) < 2.5e-7) {
-        next.push(a, b, c);
-        continue;
+    for (let k = 0; k < faces.length; k += 3) {
+      const i = faces[k],
+        j = faces[k + 1],
+        l = faces[k + 2];
+      const ab = edge(i, j),
+        bc = edge(j, l),
+        ca = edge(l, i);
+      a.fromArray(positions, 3 * i);
+      b.fromArray(positions, 3 * j);
+      c.fromArray(positions, 3 * l);
+      const length = Math.sqrt(
+        Math.max(a.distanceToSquared(b), a.distanceToSquared(c), b.distanceToSquared(c)),
+      );
+      let u = 1 / 3,
+        v = 1 / 3,
+        w = 1 / 3,
+        cross = false;
+      // An entire concave patch can also lie in the interior of a large
+      // source triangle. Test in barycentric coordinates to preserve the UVs.
+      if (ab < 0 && bc < 0 && ca < 0) {
+        const steps = Math.min(12, Math.ceil(length / pitch));
+        for (let y = 1; y < steps && !cross; y++)
+          for (let x = 1; x < steps - y; x++) {
+            u = x / steps;
+            v = y / steps;
+            w = 1 - u - v;
+            sample.copy(a).multiplyScalar(u).addScaledVector(b, v).addScaledVector(c, w);
+            if (!fit.inside(sample)) {
+              cross = true;
+              break;
+            }
+          }
+        if (!cross) {
+          next.push(i, j, l);
+          continue;
+        }
+      } else {
+        sample.copy(a).add(b).add(c).divideScalar(3);
       }
-      const center = points.length / 3;
-      points.push(q.x, q.y, q.z);
-      for (let k = 0; k < 3; k++)
-        colors.push((colors[3 * a + k] + colors[3 * b + k] + colors[3 * c + k]) / 3);
-      const loop = [a, ab, b, bc, c, ca].filter((j) => j >= 0);
-      for (let j = 0; j < loop.length; j++) next.push(loop[j], loop[(j + 1) % loop.length], center);
+      if (!fit.inside(sample)) fit(sample);
+      const center = add([i, j, l], [u, v, w], sample);
+      const rim = [i, ab, j, bc, l, ca].filter((n) => n >= 0);
+      for (let m = 0; m < rim.length; m++) next.push(rim[m], rim[(m + 1) % rim.length], center);
     }
-    if (originalCount === points.length / 3) break;
-    changed = true;
+    if (start === positions.length / 3) break;
     faces = next;
   }
-  if (changed) {
-    const Attribute = geometry.attributes.position.constructor;
-    geometry.setAttribute('position', new Attribute(points, 3));
-    geometry.setAttribute('color', new Attribute(colors, 3));
-    geometry.deleteAttribute('normal');
-    geometry.setIndex(Array.from(faces));
-    geometry.computeVertexNormals();
-    geometry.computeBoundingBox();
+  // Recheck each repaired fan against the actual skin. A small number of
+  // constrained tendon insertions need their skin fold to follow them.
+  if (faces !== geometry.index.array) {
+    const originalCount = geometry.attributes.position.count;
+    for (let k = 0; k < faces.length; k += 3) {
+      if (faces[k] < originalCount && faces[k + 1] < originalCount && faces[k + 2] < originalCount) continue;
+      a.fromArray(positions, 3 * faces[k]);
+      b.fromArray(positions, 3 * faces[k + 1]);
+      c.fromArray(positions, 3 * faces[k + 2]);
+      const length = Math.sqrt(
+        Math.max(a.distanceToSquared(b), a.distanceToSquared(c), b.distanceToSquared(c)),
+      );
+      const steps = Math.max(2, Math.min(20, Math.ceil(length / (pitch * 0.6))));
+      for (let y = 0; y <= steps; y++)
+        for (let x = 0; x <= steps - y; x++) {
+          const u = x / steps,
+            v = y / steps,
+            w = 1 - u - v;
+          sample.copy(a).multiplyScalar(u).addScaledVector(b, v).addScaledVector(c, w);
+          if (!fit.inside(sample)) contacts.push(sample.clone());
+        }
+    }
   }
+  if (faces === geometry.index.array) return;
+  const Attribute = geometry.attributes.position.constructor;
+  geometry.setAttribute('position', new Attribute(positions, 3));
+  geometry.setAttribute('color', new Attribute(colors, 3));
+  geometry.setAttribute('uv', new Attribute(uv, 2));
+  geometry.deleteAttribute('normal');
+  geometry.setIndex(faces);
 }

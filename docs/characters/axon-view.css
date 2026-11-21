@@ -165,6 +165,19 @@
   margin: 10px 0;
   font-size: 13px;
 }
+.ax-ghost {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 12px;
+  font-size: 13px;
+}
+.ax-ghost input {
+  accent-color: #23655b;
+}
+[data-human-setting][hidden] {
+  display: none;
+}
 .ax-help summary {
   cursor: pointer;
   width: fit-content;
