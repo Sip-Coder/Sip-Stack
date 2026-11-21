@@ -210,7 +210,7 @@ function axialParts(rig, roma, part) {
     start=end;
   }
   part('Sacrum','skeleton',({bands})=>{
-    bands((x,y,z)=>hips(x,y,z+.005),[[-.037,.004,.004,-.019],[-.026,.012,.006,-.023],
+    bands((x,y,z)=>hips(x,y+.005,z+.009),[[-.037,.004,.004,-.019],[-.026,.012,.006,-.023],
       [-.004,.019,.007,-.021],[.012,.022,.006,-.018],[.017,.013,.004,-.016]]);
   });
   for (const s of [-1,1]) {
@@ -226,7 +226,7 @@ function axialParts(rig, roma, part) {
         [.015,-.034,.007],[.033,-.039,-.004],[.044,-.024,-.012],[.046,-.008,.002]]),.0042);
     });
     part(side+'clavicle','skeleton',({cord})=>{
-      const shoulderJoint = local(s===1?rig.upperArmL:rig.upperArmR)(s*(roma?-.006:-.030),-.014,0);
+      const shoulderJoint = local(s===1?rig.upperArmL:rig.upperArmR)(s*(roma?-.006:-.030),-.012,0);
       cord([...path(ac,[[s*.006,.77,.026],[s*.032,.84,.023],[s*.060,.91,.011]]),shoulderJoint],.0032);
     });
     part(side+'scapula','skeleton',({sweep,cord})=>{
@@ -308,7 +308,7 @@ function limbs(rig, roma, part) {
     const draw = (name,layer,fn)=>part(prefix+name,layer,fn);
     draw('humerus','skeleton',({longBone,ellipsoid})=>{
       longBone(path(upper,[[.06,0,0],[.32,s*.001,.001],[.70,s*.001,-.001],[.97,0,0]]),.008,.007);
-      ellipsoid(local(arm),-s*(roma?.001:.032),-.013,0,.009,.009,.008);
+      ellipsoid(local(arm),-s*(roma?.001:.030),-.013,0,.007,.006,.007);
     });
     draw('radius','skeleton',({longBone})=>{
       longBone(path(lower,[[.025,-s*.005,.004],[.28,-s*.007,.003],[.71,-s*.006,.005],
@@ -351,10 +351,16 @@ function limbs(rig, roma, part) {
             [x,-.036-fingerLength*.30,.008],[x*.96,-.036-fingerLength*.59,.009],
             [x*.90,-.035-fingerLength*.84,.010]];
       } else {
-        const z=.0143-k*.0096, l=[.020,.025,.023,.017][k], b=-.030+.002*Math.abs(k-1), x=.006-.0015*Math.abs(k-1);
+        const z=.0143-k*.0096;
+        // The index follows the tighter curl of Sippy's original grip.
+        const phalanges=[
+          [[.0044,-.026,.0142],[.0040,-.036,.0134],[.004,-.0395,.0132],[.0042,-.0425,.0138]],
+          [[.0059,-.028,.0046],[.0063,-.040,.0046],[.0022,-.0488,.0077],[-.0024,-.053,.0073]],
+          [[.0044,-.026,-.005],[.0048,-.0372,-.005],[.0003,-.0452,-.0023],[-.0039,-.049,-.0027]],
+          [[.0029,-.024,-.0146],[.0033,-.0328,-.0142],[-.0008,-.0388,-.0119],[-.0015,-.0422,-.0127]],
+        ];
         points=thumb?[[-.003,-.006,.004],[-.015,-.014,.017],[-.016,-.021,.026],[-.013,-.027,.029],[-.007,-.029,.027]]:
-          [[.001,-.006,z*.47],[.003,-.019,z*.88],[x,b+.002,z],
-            [x+.0004,b-l*.40,z],[x-.0037,b-l*.75,z+.0012],[x-.0095,b-l*.95,z+.0043]];
+          [[.001,-.006,z*.47],[.003,-.019,z*.88],...phalanges[k]];
       }
       const p=path(hand,points);
       draw(digitNames[k].toLowerCase()+' metacarpal and phalanges','skeleton',({longBone})=>{
@@ -409,7 +415,7 @@ function limbs(rig, roma, part) {
     });
     draw('thenar muscles','muscles',({belly})=>{
       const pts=roma?[[-.005,-.003,.003],[-.009,-.013,.007],[-.012,-.022,.009],[-.016,-.027,.010]]:
-        [[-.003,-.005,.005],[-.007,-.014,.009],[-.010,-.020,.014],[-.014,-.025,.025]];
+        [[-.003,-.005,.005],[-.007,-.014,.009],[-.007,-.018,.009],[-.008,-.022,.014]];
       belly(path(hand,pts),roma?.0045:.0028,roma?.003:.0021);
     });
     draw('plantar foot muscles','muscles',({belly})=>{
@@ -422,22 +428,6 @@ function limbs(rig, roma, part) {
 // skin triangles there. These inspection-only sections meet her real neck and
 // wrists; her exposed face and fingers are taken directly from the live model.
 function coveredSkin(rig, roma, part) {
-  if (!roma) {
-    // The live cut between each inner thigh and the torso is normally hidden
-    // by the jogger seat. Give the anterior hip and gluteal fold a continuous
-    // cutaway without replacing the original, selectable skinned body.
-    part('Covered hip and upper thigh contours','skin',({bands})=>{
-      for(const sign of [-1,1]) {
-        const place=(x,y,z)=>local(rig.hips)(sign*x,y,sign*z);
-        bands(place,[[-.157,.019,.026,-.002,.059],[-.137,.031,.035,-.002,.059],
-          [-.118,.039,.041,-.002,.059],[-.102,.046,.045,-.001,.058],
-          [-.089,.050,.048,.000,.056],[-.078,.050,.051,.001,.054],
-          [-.064,.048,.052,.000,.050],[-.042,.049,.054,-.001,.043],
-          [-.018,.050,.054,-.003,.034],[.004,.047,.054,-.006,.027],
-          [.025,.040,.048,-.006,.024],[.042,.032,.039,-.007,.020]],sippySkin,32);
-      }
-    });
-  }
   if(roma){
     const cols=24, place=local(rig.chest);
     part('Covered torso and hips','skin',({bands})=>{
