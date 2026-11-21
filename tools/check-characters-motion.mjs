@@ -12,6 +12,7 @@ import { runCharacterProbe } from './characters-browser.mjs';
 async function measure(onlyHero, { mobileHair, onlyMobile, designs }) {
   const T = await import('three');
   const { measureRigLandmarks } = await import('/tools/blueprints/measure-landmarks.mjs');
+  const { checkBandCoverage } = await import('/tools/characters-band-coverage.mjs');
   const { checkFlorence, captureIdleMotion } = await import('/tools/characters-florence.mjs');
   const { garmentPoses, poseGarment } = await import('/tools/characters-garment-poses.mjs');
   const { createActor } = await import('/characters/rig.js');
@@ -1023,6 +1024,11 @@ async function measure(onlyHero, { mobileHair, onlyMobile, designs }) {
           ? ['hood', 'collar', 'headphones', 'backpack', 'backpack-straps']
           : ['hoodie', 'backpack', 'packStraps', 'hoops', 'headband'];
       const outfit = rig.garments.surfaces;
+      if (name === 'roma') {
+        const coverage = checkBandCoverage(T, outfit.headband, system.colliders);
+        report.bandCoverage = coverage;
+        check(coverage.triangles > 0 && coverage.maxTriangleRadius <= 1.00001, 'actual headband enclosed by its fitted sectors');
+      }
       const kitLayers = new Map();
       report.kitTargets = {};
       for (const id of kitIds) {
