@@ -161,3 +161,36 @@ export function bindKnitWaist(rig, body, crew, rest) {
   }
   return { update, anchor, support };
 }
+
+// The open jacket's sewn waist has accordion ease. It opens on the hard
+// twist between rib cage and belt and when the abdomen folds under the chest.
+// Use the same waist shape on both sides of the stitch, fading up the yoke.
+export function bindJacketWaist(jacket, yoke) {
+  const baseX = jacket.scale.x;
+  const baseZ = jacket.scale.z;
+  const spreadX = 0.075,
+    spreadZ = 0.235;
+  const slot = yoke.geometry.morphAttributes.position.length;
+  for (const g of [yoke.geometry, yoke.userData.mobileGeometry]) {
+    const pos = g.attributes.position,
+      region = g.userData.anatomicalRegions;
+    const displacements = new Float32Array(3 * pos.count);
+    for (let i = 0; i < pos.count; i++) {
+      if (region[i] !== 0) continue;
+      const amount = 1 - T.MathUtils.smoothstep(pos.getY(i), 0.614, 0.647);
+      displacements[i * 3] = spreadX * amount * pos.getX(i);
+      displacements[i * 3 + 2] = spreadZ * amount * pos.getZ(i);
+    }
+    g.morphAttributes.position.push(new T.BufferAttribute(displacements, 3));
+  }
+  yoke.updateMorphTargets();
+  return function foldWaist(turn, flex) {
+    const ease = Math.max(
+      T.MathUtils.smoothstep(Math.abs(turn), 0.32, 0.94),
+      T.MathUtils.smoothstep(flex, 0.19, 0.49),
+    );
+    jacket.scale.x = baseX * (1 + spreadX * ease);
+    jacket.scale.z = baseZ * (1 + spreadZ * ease);
+    yoke.morphTargetInfluences[slot] = ease;
+  };
+}

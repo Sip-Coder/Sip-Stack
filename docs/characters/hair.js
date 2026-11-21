@@ -54,6 +54,8 @@ function binding(mesh, groupInverse, guide) {
 
 // Express each joint-attached ellipsoid as a unit sphere in its own frame.
 function makeShape(spec, sleeveRoute) {
+  if (spec.support)
+    return { node: spec.node, role: spec.role, support: spec.support, unit: matrix(), local: matrix(), box: new T.Box3() };
   const center = spec.a ?? spec.center;
   const radii = spec.a ? [spec.radius, spec.radius, spec.radius] : spec.radii;
   const worldToUnit = matrix().makeScale(...radii.map((r) => 1 / r));
@@ -81,6 +83,13 @@ function makeShape(spec, sleeveRoute) {
 }
 
 function updateShape(shape, groupWorld, strandRadius) {
+  if (shape.support) {
+    shape.unit.copy(shape.node.matrixWorld).invert().multiply(groupWorld);
+    shape.local.copy(shape.unit).invert();
+    shape.radius = strandRadius * shape.unit.getMaxScaleOnAxis();
+    shape.box.copy(shape.support.bounds).expandByScalar(0.005 + 3 * shape.radius).applyMatrix4(shape.local);
+    return;
+  }
   shape.unit.copy(shape.node.matrixWorld).invert().premultiply(shape.worldToUnit).multiply(groupWorld);
   shape.local.copy(shape.unit).invert();
   // A curl has thickness. Reserve that space around its guide before fitting
@@ -134,7 +143,7 @@ function nearestChord(a, b, shape, out, direction) {
 }
 function updateGuard(shape, nodes, initial, a, b, nearest, direction, normal) {
   shape.planeActive = false;
-  if (!shape.role || shape.role === 'head') return;
+  if (shape.support || !shape.role || shape.role === 'head') return;
   let min = Infinity;
   shape.first = nodes.length;
   shape.last = 0;
@@ -207,6 +216,19 @@ function keepOutside(
     let moved = false;
     for (let j = 0; j < count; j++) {
       const s = shapes[j];
+      if (s.support) {
+        if (isGuide || !s.box.containsPoint(point)) continue;
+        scratch.copy(point).applyMatrix4(s.unit);
+        // Support belongs to one physical top, even where several leather
+        // panels overlap. The blend gives contact continuous force at entry.
+        const lift = s.support.heightAt(scratch.x, scratch.z) + 0.0018 - scratch.y;
+        const blend = 0.001;
+        if (lift <= -blend) continue;
+        scratch.y += lift >= blend ? lift : (lift + blend) ** 2 / (4 * blend);
+        point.copy(scratch).applyMatrix4(s.local);
+        moved ||= lift > 0.00001;
+        continue;
+      }
       // Small pieces such as an earring or one short section of a hood have
       // a local contact patch. Their tangent must not lift a distant curl.
       if (
@@ -251,7 +273,7 @@ function keepOutside(
   for (let pass = 0; pass < count; pass++) {
     let advance = 0;
     for (const shape of shapes) {
-      if (shape.end || !shape.box.containsPoint(point)) continue;
+      if (shape.support || shape.end || !shape.box.containsPoint(point)) continue;
       scratch.copy(point).applyMatrix4(shape.unit);
       const shell = isGuide ? shape.guideShell : surfaceShell;
       const offset = scratch.lengthSq() - shell * shell;
@@ -267,6 +289,49 @@ function keepOutside(
     if (advance === 0) return;
     point.addScaledVector(escape, advance + 0.000001);
   }
+}
+
+// A lock draping over the pack bends at its attachment while the free coil
+// keeps its shape. Lift the connected guide as a unit in the contact frame;
+// projecting each endpoint independently would crush a coil against the flap.
+function drapeGuide(chain, point, delta) {
+  for (const shape of chain.shapes) {
+    if (!shape.support) continue;
+    const nodes = chain.nodes;
+    let rise = 0;
+    for (let i = 1; i < nodes.length; i++) {
+      if (!shape.box.containsPoint(nodes[i])) continue;
+      point.copy(nodes[i]).applyMatrix4(shape.unit);
+      const height = shape.support.sphereHeight(point.x, point.z, shape.radius);
+      const weight = Math.min(1, 2.9 * i / (nodes.length - 1));
+      rise = Math.max(rise, (height + 0.002 - point.y) / weight);
+    }
+    if (!rise) continue;
+    const m = shape.local.elements;
+    delta.set(m[4], m[5], m[6]).multiplyScalar(rise);
+    for (let i = 1; i < nodes.length; i++)
+      nodes[i].addScaledVector(delta, Math.min(1, 2.9 * i / (nodes.length - 1)));
+  }
+}
+
+// Short packed spirals transfer a contact force through the complete final
+// turn. Let that turn translate on the hood or pack as a unit: squeezing its
+// individual guides would turn the coil inside out as a shoulder passes it.
+function retainTerminalTurn(chain, offset, trial, projected, scratch) {
+  const { nodes, freeNodes, shapes } = chain;
+  const last = nodes.length - 1;
+  const first = Math.ceil(last * 0.5);
+  offset.subVectors(nodes[last], freeNodes[last]);
+  for (let pass = 0; pass < 3; pass++) {
+    for (let i = first; i <= last; i++) {
+      trial.copy(freeNodes[i]).add(offset);
+      projected.copy(trial);
+      keepOutside(projected, shapes, scratch, true, shapes, i, shapes.length, chain.sleeveRoute);
+      offset.add(projected.sub(trial));
+    }
+  }
+  for (let i = first; i <= last; i++) nodes[i].copy(freeNodes[i]).add(offset);
+  drapeGuide(chain, trial, projected);
 }
 
 export function createHair(rig, colliders) {
@@ -390,6 +455,8 @@ export function createHair(rig, colliders) {
         updateShape(shape, group.matrixWorld, chain.radius);
         shape.planeActive = false;
       }
+      if (chain.freeNodes)
+        for (let i = 0; i < nodes.length; i++) nodes[i].copy(chain.freeNodes[i]);
       // Shoulder lift and release load the curl twice per stride. A small
       // alternating term makes opposite face tendrils recover independently.
       const phase = (f.phase ?? 0) + chain.variation * (chain.role === 'face' ? 0.17 : 0.065);
@@ -450,11 +517,16 @@ export function createHair(rig, colliders) {
           );
         a.subVectors(n, rest[i]).clampLength(0, chain.maxOffset * weight);
         n.copy(rest[i]).add(a);
-        keepOutside(n, shapes, temp, true);
+        if (chain.freeNodes) chain.freeNodes[i].copy(n);
+        else keepOutside(n, shapes, temp, true);
       }
+      if (chain.freeNodes)
+        for (let i = 1; i < nodes.length; i++) keepOutside(nodes[i], shapes, temp, true);
       for (const shape of shapes) updateGuard(shape, nodes, false, a, b, p, q, temp);
       for (let i = 1; i < nodes.length; i++)
         keepOutside(nodes[i], shapes, temp, true, shapes, i, shapes.length, chain.sleeveRoute);
+      drapeGuide(chain, p, q);
+      if (chain.freeNodes) retainTerminalTurn(chain, delta, a, p, temp);
       for (let i = 0; i < nodes.length; i++) {
         const lo = Math.max(0, i - 1),
           hi = Math.min(nodes.length - 1, i + 1);

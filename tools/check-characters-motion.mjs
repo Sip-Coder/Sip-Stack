@@ -1124,7 +1124,14 @@ async function measure(onlyHero, { mobileHair, designs }) {
             let minimum = report.tipColliders[key] ?? Infinity;
             const world = collider.node.matrixWorld;
             collider.node.getWorldScale(colliderScale);
-            if (collider.radii) {
+            if (collider.support) {
+              inverse.copy(world).invert();
+              for (const tip of sphereTips) {
+                local.copy(tip.center).applyMatrix4(inverse);
+                const top = collider.support.heightAt(local.x, local.z);
+                minimum = Math.min(minimum, (local.y - top) * colliderScale.y - tip.radius);
+              }
+            } else if (collider.radii) {
               inverse.copy(world).invert();
               originLocal.fromArray(collider.center);
               const radii = collider.radii.map((r, i) => r * colliderScale.getComponent(i));
@@ -1244,6 +1251,29 @@ async function measure(onlyHero, { mobileHair, designs }) {
               report.layerContactPoses[label] ??= { ...coat, lock: mesh.parent.name };
             }
             for (const c of system.colliders) {
+              if (c.support) {
+                unit.copy(c.node.matrixWorld).invert().multiply(mesh.matrixWorld);
+                c.node.getWorldScale(colliderScale);
+                if (!g.boundingBox.clone().applyMatrix4(unit).intersectsBox(c.support.bounds)) continue;
+                const checkPoint = (v) => {
+                  const top = c.support.heightAt(v.x, v.z);
+                  const clearance = (v.y - top) * colliderScale.y;
+                  report.minPackTopVerticalGapM = Math.min(report.minPackTopVerticalGapM ?? Infinity, clearance);
+                };
+                const points = Array.from({ length: vertices.count }, (_, i) => {
+                  const vertex = new T.Vector3().fromBufferAttribute(vertices, i).applyMatrix4(unit);
+                  checkPoint(vertex);
+                  return vertex;
+                });
+                const indices = g.index;
+                for (let i = 0; i < (indices?.count ?? vertices.count); i += 3) {
+                  tri.a = points[indices ? indices.getX(i) : i];
+                  tri.b = points[indices ? indices.getX(i + 1) : i + 1];
+                  tri.c = points[indices ? indices.getX(i + 2) : i + 2];
+                  checkPoint(tri.getMidpoint(nearest));
+                }
+                continue;
+              }
               if (!c.radii) {
                 const a = new T.Vector3(...c.a),
                   b = new T.Vector3(...c.b),
@@ -1491,6 +1521,8 @@ async function measure(onlyHero, { mobileHair, designs }) {
         Object.values(report.tipColliders).every((gap) => gap >= -0.0001),
         'physical tip sphere overlaps body collider',
       );
+      if (report.colliderRoles.includes('packTop'))
+        verify(Number.isFinite(report.minPackTopVerticalGapM) && report.minPackTopVerticalGapM >= -0.0002, 'hair triangles cross backpack upper support');
       verify((report.minCapsuleSurfaceGapM ?? 0) >= -0.0002, 'hair triangles penetrate collision capsule');
       verify(
         !report.layerContactPoses,
@@ -1721,7 +1753,8 @@ const mobileHair = process.env.CHARACTERS_HAIR_MOBILE === '1';
 // The 84-strand character now traverses the actual coat and skin triangle
 // trees at every sampled pose. Give a full cast and two-tier pass time to
 // finish on the same software-rendered hosts as the visual acceptance tests.
-const minutes = (process.argv[2] ? 1 : 3) * (mobileHair ? 20 : 10);
+const perHeroMinutes = mobileHair ? 45 : 25;
+const minutes = (process.argv[2] ? 1 : 3) * perHeroMinutes;
 const designs = {};
 for (const name of ['sippy', 'roma', 'hummin']) {
   const spec = JSON.parse(

@@ -127,8 +127,6 @@ export function makeRomaHood(root, cream, body, crew, coat) {
     const origin = new T.Vector3(0, 0.729, 0),
       ray = new T.Ray(origin);
     const a = new T.Vector3(),
-      b = new T.Vector3(),
-      c = new T.Vector3(),
       q = new T.Vector3();
     const bary = new T.Vector3(),
       triangles = [],
@@ -221,8 +219,8 @@ export function makeRomaHood(root, cream, body, crew, coat) {
           sum = ranked.reduce((t, p) => t + p[1], 0);
         const roll =
           0.0065 +
-          0.011 * front * side +
-          0.0085 * back * side +
+          0.029 * front * side +
+          0.025 * back * side +
           0.008 * Math.sin(Math.PI * v) ** 2 +
           0.006 * Math.exp(-(((v - 0.26) / 0.12) ** 2)) +
           0.0012 * Math.sin(3 * ang + 4 * v);
@@ -282,7 +280,8 @@ export function addRomaSneaker(foot, side, mat, geometry) {
   const shoe = node(foot),
     { purple, cream, sole, stitch } = mat;
   shoe.name = 'Roma high-top sneaker';
-  shoe.scale.set(1.32, 1, 1.19);
+  shoe.scale.set(1.23, 1, 1.09);
+  shoe.position.z = 0.0018;
   // Rounded toe and monolithic rubber outsole have a flat planted bottom.
   const stack = (rows, m) => add(shoe, tailored(rows, 52), m);
   stack(
@@ -291,27 +290,27 @@ export function addRomaSneaker(foot, side, mat, geometry) {
       [-0.0469, 0.03, 0.062, 0.02],
       [-0.044, 0.032, 0.064, 0.022],
       [-0.034, 0.032, 0.064, 0.022],
-      [-0.03, 0.03, 0.062, 0.022],
+      [-0.03, 0.03, 0.062, 0.024],
     ],
     sole,
   );
   stack(
     [
-      [-0.03, 0.03, 0.062, 0.022],
-      [-0.023, 0.031, 0.062, 0.021],
-      [-0.014, 0.029, 0.059, 0.018],
-      [-0.006, 0.026, 0.051, 0.013],
-      [0.006, 0.025, 0.043, 0.01],
+      [-0.03, 0.03, 0.062, 0.024],
+      [-0.023, 0.031, 0.062, 0.024],
+      [-0.014, 0.0295, 0.059, 0.0235],
+      [-0.006, 0.026, 0.051, 0.019],
+      [0.006, 0.025, 0.043, 0.012],
       [0.017, 0.025, 0.035, 0.002],
-      [0.034, 0.026, 0.03, -0.005],
-      [0.04, 0.024, 0.027, -0.005],
+      [0.034, 0.026, 0.03, -0.0025],
+      [0.04, 0.024, 0.027, -0.0015],
     ],
     purple,
   );
-  const tongue = node(shoe, 0, 0, 0.019);
+  const tongue = node(shoe, 0, 0, 0.0215);
   oval(tongue, cream, 0, 0.014, 0.001, 0.017, 0.033, 0.006, -0.29);
   // Contrasting toe panel and paired rows of cotton laces.
-  oval(shoe, cream, 0, -0.021, 0.061, 0.025, 0.01, 0.021, -0.18);
+  oval(shoe, cream, 0, -0.021, 0.0645, 0.025, 0.01, 0.021, -0.18);
   for (let i = 0; i < 4; i++) {
     const y = -0.012 + i * 0.009;
     const z = 0.056 - i * 0.007;
@@ -489,7 +488,7 @@ export function seatRomaEmbroidery(root, badge, coat) {
     return g;
   }
   badge.removeFromParent();
-  for (const stitch of colors) {
+  return colors.map((stitch) => {
     const mesh = new T.SkinnedMesh(fit(stitch.geometry, hi), stitch.material);
     mesh.userData.mobileGeometry = fit(stitch.userData.mobileGeometry, lo);
     mesh.name = stitch.name;
@@ -499,7 +498,8 @@ export function seatRomaEmbroidery(root, badge, coat) {
     root.add(mesh);
     mesh.bind(coat.skeleton, coat.bindMatrix);
     mesh.morphTargetInfluences = coat.morphTargetInfluences;
-  }
+    return mesh;
+  });
 }
 
 // Two cream cords emerge on either side of the hood opening. A short brass

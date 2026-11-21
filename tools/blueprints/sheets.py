@@ -126,7 +126,7 @@ def orthos_and_rotations(canvas, directory):
     d.line((MARGIN, 940, WIDTH - MARGIN, 940), fill=RULE, width=2)
 
 
-def design_sheet(spec, folder):
+def design_sheet(spec, folder, design_dir):
     palette = spec['palette']
     rows = math.ceil(len(palette) / 8)
     palette_y = 1216
@@ -140,7 +140,7 @@ def design_sheet(spec, folder):
     canvas = Image.new('RGB', (WIDTH, height), PAPER)
     d = ImageDraw.Draw(canvas)
     header(d, spec, 'Character blueprint')
-    orthos_and_rotations(canvas, folder / 'design')
+    orthos_and_rotations(canvas, design_dir)
     section(d, MARGIN, 969, 'Standing landmarks')
     text(
         d,
@@ -202,24 +202,24 @@ def model_sheet(spec, folder):
     canvas.save(folder / 'model.jpg', quality=94, subsampling=0, optimize=True)
 
 
-def comparison_sheet(spec, folder):
+def comparison_sheet(spec, folder, design_dir):
     canvas = Image.new('RGB', (WIDTH, 1570), PAPER)
     draw = ImageDraw.Draw(canvas)
     header(draw, spec, 'Explorer comparison')
-    for column, (source, title) in enumerate((('design', 'Original design sheet'), ('model', 'Posed production model'))):
+    for column, (source, title) in enumerate(((design_dir, 'Original design sheet'), (folder / 'model', 'Posed production model'))):
         left = MARGIN + column * 1150
         section(draw, left, 247, title)
         for index, (view, w, h) in enumerate((('front', 500, 740), ('left', 500, 740), ('back', 475, 445),
                                                ('high-front', 475, 445))):
             x = left + (index % 2) * 530
             y = 310 if index < 2 else 1080
-            image_panel(canvas, folder / source / (view + '.png'), (x, y, w, h))
+            image_panel(canvas, source / (view + '.png'), (x, y, w, h))
             text(draw, x+w//2, y+h-8, VIEWS[view], 22, 'bold', anchor='ma')
     draw.line((1196, 242, 1196, 1502), fill=RULE, width=2)
     canvas.save(folder / 'comparison.jpg', quality=94, subsampling=0, optimize=True)
 
 
-def overlay_sheet(spec, folder):
+def overlay_sheet(spec, folder, design_dir):
     result = json.loads((folder / 'match.json').read_text())
     canvas = Image.new('RGB', (WIDTH, 1734), PAPER)
     d = ImageDraw.Draw(canvas)
@@ -242,7 +242,7 @@ def overlay_sheet(spec, folder):
         (('front', 'back', 'left', 'right'), ('high-front', 'rear-three-quarter', 'top'))
     ):
         for col, key in enumerate(keys):
-            with Image.open(folder / 'design' / (key + '.png')) as raw:
+            with Image.open(design_dir / (key + '.png')) as raw:
                 a = np.array(raw.getchannel('A')) >= 128
             with Image.open(folder / 'model' / (key + '-mask.png')) as raw:
                 b = np.array(raw.convert('L')) >= 128
@@ -288,11 +288,13 @@ def main():
     for hero in args.hero or ('sippy', 'roma', 'hummin'):
         spec = json.loads((HERE / (hero + '.json')).read_text())
         folder = args.out / hero
-        design_sheet(spec, folder)
+        folder.mkdir(exist_ok=True, parents=True)
+        design_dir = OUTPUT / hero / 'design'
+        design_sheet(spec, folder, design_dir)
         if not args.design_only:
             model_sheet(spec, folder)
-            comparison_sheet(spec, folder)
-            overlay_sheet(spec, folder)
+            comparison_sheet(spec, folder, design_dir)
+            overlay_sheet(spec, folder, design_dir)
 
 
 if __name__ == '__main__':

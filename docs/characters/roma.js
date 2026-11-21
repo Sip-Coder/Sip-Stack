@@ -2,7 +2,7 @@
 import * as T from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createHair } from './hair.js';
-import { bindHoodContacts, clothHairColliders, makeRomaGroom } from './roma-groom.js';
+import { bindHoodContacts, bindPackContacts, clothHairColliders, makeRomaGroom } from './roma-groom.js';
 import { bindRunningHold } from './roma-curl-response.js';
 import { fitRomaAccessories } from './roma-accessories.js';
 import { makeRomaBody, makeJacketPattern, makeCargoPattern, bindJointFans } from './roma-body.js';
@@ -10,10 +10,17 @@ import { fitRomaGarment } from './roma-tailoring.js';
 import { detailMaterial } from './material-detail.js';
 import { fitRomaFigure, originalRomaJoints, romaFigure } from './roma-figure.js';
 
-import {makeRomaBand,addBandStitching,makeRomaHood,addRomaSneaker,seatRomaEmbroidery,makeRomaCords} from './roma-explorer.js';
-import {bindKnitWaist} from './roma-waist.js';
-import {addVineEmbroidery} from './embroidery.js';
-import {makeRomaFieldKit} from './roma-field-kit.js';
+import {
+  makeRomaBand,
+  addBandStitching,
+  makeRomaHood,
+  addRomaSneaker,
+  seatRomaEmbroidery,
+  makeRomaCords,
+} from './roma-explorer.js';
+import { bindKnitWaist, bindJacketWaist } from './roma-waist.js';
+import { addVineEmbroidery } from './embroidery.js';
+import { makeRomaFieldKit } from './roma-field-kit.js';
 
 const tau = Math.PI * 2;
 const xyz = (x, y, z) => new T.Vector3(x, y, z);
@@ -134,16 +141,35 @@ export function buildRoma(rig) {
     detailMaterial(mat, 'hair');
     return mat;
   });
-  const mustard = new T.MeshPhysicalMaterial({color:'#ca982a', roughness:.75,metalness:0,sheen:.16,
-    sheenColor:'#cda668',sheenRoughness:.8,side:T.DoubleSide});
-  const facing=paint('#ab7b1d',.78),binding=paint('#d1af66',.72),gold=paint('#f1c35b',.26,.64);
-  const cream=paint('#f8e8d3',.91), cargoCloth=paint('#0e594d',.87), cargoSeam=paint('#407567',.84);
-  const red=paint('#9f2525',.85), purple=paint('#60375b',.82), leather=paint('#864d15',.65),
-    strap=paint('#6a3e1e',.69),sole=paint('#e4d7bf',.76),brass=paint('#c29b53',.38,.62);
+  const mustard = new T.MeshPhysicalMaterial({
+    color: '#ca982a',
+    roughness: 0.75,
+    metalness: 0,
+    sheen: 0.16,
+    sheenColor: '#cda668',
+    sheenRoughness: 0.8,
+    side: T.DoubleSide,
+  });
+  const facing = paint('#ab7b1d', 0.78),
+    binding = paint('#d1af66', 0.72),
+    gold = paint('#f1c35b', 0.26, 0.64);
+  const cream = paint('#f8e8d3', 0.91),
+    cargoCloth = paint('#0e594d', 0.87),
+    cargoSeam = paint('#407567', 0.84);
+  const red = paint('#9f2525', 0.85),
+    purple = paint('#60375b', 0.82),
+    leather = paint('#864d15', 0.65),
+    strap = paint('#6a3e1e', 0.69),
+    sole = paint('#e4d7bf', 0.76),
+    brass = paint('#c29b53', 0.38, 0.62);
   for (const [type, materials] of [
-    ['skin',[skin]],['cotton',[mustard,facing,cream,cargoCloth,cargoSeam,red]],
-    ['leather',[leather,binding,strap,purple]],['gold',[gold]],['metal',[brass]]
-  ]) for(const mat of materials) detailMaterial(mat,type);
+    ['skin', [skin]],
+    ['cotton', [mustard, facing, cream, cargoCloth, cargoSeam, red]],
+    ['leather', [leather, binding, strap, purple]],
+    ['gold', [gold]],
+    ['metal', [brass]],
+  ])
+    for (const mat of materials) detailMaterial(mat, type);
   const buckets = new Map(),
     renderBatches = new Map();
   const nailLacquer = paint('#d79880', 0.42);
@@ -162,11 +188,16 @@ export function buildRoma(rig) {
     curlBase: hair[1],
     curlWarm: hair[2],
     curlLight: hair[3],
-    jacket:mustard,
+    jacket: mustard,
     facing,
     binding,
     jewelry: gold,
-    hoodie: cream, cargo:cargoCloth,cargoSeam,headband:red,sneaker:purple,strap,
+    hoodie: cream,
+    cargo: cargoCloth,
+    cargoSeam,
+    headband: red,
+    sneaker: purple,
+    strap,
     leather,
     sole,
     brass,
@@ -221,7 +252,7 @@ export function buildRoma(rig) {
   const H = node(rig.head, 0, -0.01, -0.0065),
     C = rig.chest;
   H.name = 'Roma face and hair';
-  H.scale.set(1.10, 1.075, 0.94);
+  H.scale.set(1.1, 1.075, 0.94);
   const contour = [
     [0.003, 0.001, 0.002, 0.012],
     [0.006, 0.02, 0.025, 0.014],
@@ -299,8 +330,8 @@ export function buildRoma(rig) {
     );
     oval(H, skin, s * 0.064, 0.058, -0.003, 0.012, 0.018, 0.01, 0, 0, -s * 0.18);
     oval(H, blush, s * 0.07, 0.058, 0.003, 0.0055, 0.01, 0.0045);
-    oval(H, gold, s * 0.068, 0.049, 0.024, 0.0038, 0.0035, 0.0035);
-    ring(H, gold, s * 0.069, 0.0385, 0.023, 0.0104, 0.0016, 0, s * 0.3);
+    oval(H, gold, s * 0.068, 0.047, 0.005, 0.0038, 0.0035, 0.0035);
+    ring(H, gold, s * 0.069, 0.0365, 0.005, 0.0104, 0.0016, 0, s * 0.3);
   }
 
   // Three freckles on the lit cheek under her right eye.
@@ -418,7 +449,7 @@ export function buildRoma(rig) {
     pupils.push(gaze);
     add(gaze, irisDisk(-0.001, 0.001, 0.0143, 0.0169, 0.00035), pupil);
     add(gaze, irisDisk(-0.001, 0.001, 0.0132, 0.0161, 0.00055), iris);
-    add(gaze, irisDisk(-0.001, 0.001, 0.0070, 0.0108, 0.00086), pupil);
+    add(gaze, irisDisk(-0.001, 0.001, 0.007, 0.0108, 0.00086), pupil);
     oval(gaze, catchlight, -0.005, 0.0078, eyeZ(-0.005, 0.0078) + 0.0012, 0.0026, 0.0032, 0.0007);
     oval(gaze, teeth, 0.003, -0.004, eyeZ(0.003, -0.004) + 0.0011, 0.001, 0.0013, 0.0006);
     lids.push(eyelid(eye, true), eyelid(eye, false));
@@ -497,36 +528,46 @@ export function buildRoma(rig) {
     9,
   );
   const locks = makeRomaGroom(H, hair);
-  const band=makeRomaBand(H,red,'#f1cb9a');
-  addBandStitching(band,node,thread,cream);
+  const band = makeRomaBand(H, red, '#f1cb9a');
+  addBandStitching(band, node, thread, cream);
   // Six soft rows of the cropped hoodie's rib knit sit immediately above
   // the trouser belt. The last two rings anchor into the sweatshirt body.
-  const hemRows=[
-    [.085,.077,.056,0],[.087,.079,.058,0],[.091,.079,.058,0],
-    [.096,.0775,.057,0],[.102,.077,.056,0],[.110,.078,.057,0],
-    [.118,.079,.058,0],[.124,.080,.058,0]
+  const hemRows = [
+    [0.085, 0.077, 0.056, 0],
+    [0.087, 0.079, 0.058, 0],
+    [0.091, 0.079, 0.058, 0],
+    [0.096, 0.0775, 0.057, 0],
+    [0.102, 0.077, 0.056, 0],
+    [0.11, 0.078, 0.057, 0],
+    [0.118, 0.079, 0.058, 0],
+    [0.124, 0.08, 0.058, 0],
   ];
-  const hemShape = tailored(hemRows,64,.009);
-  hemShape.userData.isHoodieHem=true;
-  hemShape.userData.columns=64;hemShape.userData.freeRows=6;
-  hemShape.computeBoundingSphere();hemShape.boundingSphere.radius+=.05;
-  const hoodieHem=new T.Mesh(hemShape,cream);hoodieHem.name='Roma gathered rib-knit hoodie hem';
-  hoodieHem.castShadow=hoodieHem.receiveShadow=true;rig.hips.add(hoodieHem);
-  const hemRest=hemShape.attributes.position.array.slice();
-  const position=hemShape.attributes.position; position.setUsage(T.DynamicDrawUsage);
+  const hemShape = tailored(hemRows, 64, 0.009);
+  hemShape.userData.isHoodieHem = true;
+  hemShape.userData.columns = 64;
+  hemShape.userData.freeRows = 6;
+  hemShape.computeBoundingSphere();
+  hemShape.boundingSphere.radius += 0.05;
+  const hoodieHem = new T.Mesh(hemShape, cream);
+  hoodieHem.name = 'Roma gathered rib-knit hoodie hem';
+  hoodieHem.castShadow = hoodieHem.receiveShadow = true;
+  rig.hips.add(hoodieHem);
+  const hemRest = hemShape.attributes.position.array.slice();
+  const position = hemShape.attributes.position;
+  position.setUsage(T.DynamicDrawUsage);
   // Open canvas panels hang off the shoulders. The bias-cut front edges flare below the waist.
   const jacket = node(C);
   jacket.scale.set(1.065, 1, 1.085);
   const jacketRows = [
-    [-0.043, 0.085, 0.060, 0.80],
-    [-0.035, 0.083, 0.059, 0.78],
-    [-0.024, 0.0815, 0.058, 0.76],
-    [-0.01, 0.079, 0.055, 0.72],
-    [0.003, 0.083, 0.058, 0.67],
-    [0.079, 0.1, 0.069, 0.59],
-    [0.105, 0.101, 0.064, 0.5],
-    [0.127, 0.101, 0.053, 0.44],
-    [0.145, 0.095, 0.042, 0.33],
+    [-0.043, 0.085, 0.06, 0.34],
+    [-0.035, 0.083, 0.059, 0.33],
+    [-0.024, 0.0815, 0.058, 0.32],
+    [-0.01, 0.079, 0.055, 0.315],
+    [0.003, 0.083, 0.058, 0.31],
+    [0.079, 0.1, 0.069, 0.32],
+    [0.105, 0.101, 0.064, 0.36],
+    [0.127, 0.101, 0.053, 0.38],
+    [0.145, 0.095, 0.042, 0.35],
     [0.151, 0.041, 0.032, 0.31],
   ];
   const jp = [],
@@ -541,20 +582,24 @@ export function buildRoma(rig) {
       const rearDart =
         0.024 * T.MathUtils.smoothstep(-Math.cos(a), 0.08, 0.94) * T.MathUtils.clamp(-y / 0.095, 0, 1);
       const frontDrape =
-        0.009 *
+        0.003 *
         T.MathUtils.smoothstep(Math.cos(a), 0.15, 0.72) *
         T.MathUtils.smoothstep(y, -0.043, -0.014) *
         (1 - T.MathUtils.smoothstep(y, 0.047, 0.079));
       // Ease the sewn waist over the belt at each side. Both the upper yoke
       // edge and its lower support inherit this same cut through seamRing().
       const sideEase =
-        0.0016 *
+        (0.0039 +
+          0.013 * Math.exp(-(((Math.abs(Math.atan2(Math.sin(a), Math.cos(a))) - 1.19) / 0.38) ** 2))) *
         T.MathUtils.smoothstep(y, -0.063, -0.011) *
         T.MathUtils.smoothstep(Math.abs(Math.sin(a)), 0.48, 0.93);
       jp.push(
         (rx + fold + 0.006 + sideEase) * Math.sin(a),
         y + (j === 0 ? 0.008 * Math.sin(a * 2) : 0),
-        (rz + fold + 0.009 - rearDart) * Math.cos(a) + 0.002 + frontDrape,
+        (rz + fold + 0.009 - rearDart) * Math.cos(a) +
+          0.002 +
+          frontDrape -
+          0.0068 * T.MathUtils.smoothstep(Math.cos(a), 0.42, 0.91),
       );
       if (i < 40 && j < 4) {
         const k = j * 41 + i;
@@ -564,7 +609,8 @@ export function buildRoma(rig) {
   }
   const jacketShape = surface(jp, ji),
     jacketRest = jacketShape.attributes.position.array.slice();
-  jacketShape.userData.columns=41; jacketShape.userData.freeRows=3;
+  jacketShape.userData.columns = 41;
+  jacketShape.userData.freeRows = 3;
   jacketShape.computeBoundingSphere();
   jacketShape.boundingSphere.radius += 0.18;
   const jacketSkin = new T.Mesh(jacketShape, mustard);
@@ -607,15 +653,30 @@ export function buildRoma(rig) {
     [-0.013, -0.007, 0],
   ];
   thread(buckle, gold, bucklePoints, 0.0019);
-  for(const [side,id] of [[1,'L'],[-1,'R']]){
-    rig['upperArm'+id].position.x=side*.144;
-    ankleCuffs[id]=addRomaSneaker(rig['foot'+id],side,
-      {purple,cream:cream,sole,stitch:binding,cargo:cargoSeam},{node,add,oval,thread,tailored});
+  for (const [side, id] of [
+    [1, 'L'],
+    [-1, 'R'],
+  ]) {
+    rig['upperArm' + id].position.x = side * 0.144;
+    ankleCuffs[id] = addRomaSneaker(
+      rig['foot' + id],
+      side,
+      { purple, cream: cream, sole, stitch: binding, cargo: cargoSeam },
+      { node, add, oval, thread, tailored },
+    );
   }
-  const vine=addVineEmbroidery(rig.upperArmL,{width:.035,height:.064,style:'vine',materials:{leaf:cargoCloth,berry:purple,thread:binding}});
-  const bag=node(rig.hips,-.135,.014,-.055);
-  const kit=makeRomaFieldKit(rig,{bag,leather,strap,binding,brass,gold,cream:cream,purple,green:cargoCloth},
-    {node,oval,thread,ring,add,tailored});
+  const vine = addVineEmbroidery(rig.upperArmL, {
+    width: 0.035,
+    height: 0.064,
+    style: 'vine',
+    materials: { leaf: cargoCloth, berry: purple, thread: binding },
+  });
+  const bag = node(rig.hips, -0.135, 0.014, -0.055);
+  const kit = makeRomaFieldKit(
+    rig,
+    { bag, leather, strap, binding, brass, gold, cream: cream, purple, green: cargoCloth },
+    { node, oval, thread, ring, add, tailored },
+  );
   for (const [parent, list] of buckets) {
     for (const [mat, pieces] of list) {
       const g = mergeGeometries(pieces);
@@ -661,8 +722,8 @@ export function buildRoma(rig) {
         .toArray(normals, i * 3);
   }
   const bodice = fitRomaGarment(bodyMesh, 'hoodie', cream, cream);
-  const cargo=fitRomaGarment(bodyMesh,'cargo',cargoCloth,cargoSeam,makeCargoPattern());
-  const patterns = [bodyMesh, yoke, bodice,cargo];
+  const cargo = fitRomaGarment(bodyMesh, 'cargo', cargoCloth, cargoSeam, makeCargoPattern());
+  const patterns = [bodyMesh, yoke, bodice, cargo];
   const originalJoints = originalRomaJoints(rig);
   const bandSelection = (mesh, side, test) => {
     const vertices = {};
@@ -687,11 +748,12 @@ export function buildRoma(rig) {
   const skinBends = bindJointFans(rig, patterns, () =>
     fitRomaFigure(rig, patterns, originalJoints, ankleCuffs, jacket, buckle),
   );
-  seatRomaEmbroidery(rig.root,vine,yoke);
-  const hood=makeRomaHood(rig.root,cream,bodyMesh,bodice,yoke);
-  const cords=makeRomaCords(rig.root,bodice,hood,cream,brass);
-  const ribKnit=bindKnitWaist(rig,bodyMesh,bodice,hemRest);
-  const collar = [yoke,hood];
+  const foldWaist = bindJacketWaist(jacket, yoke);
+  const stitches = seatRomaEmbroidery(rig.root, vine, yoke);
+  const hood = makeRomaHood(rig.root, cream, bodyMesh, bodice, yoke);
+  const cords = makeRomaCords(rig.root, bodice, hood, cream, brass);
+  const ribKnit = bindKnitWaist(rig, bodyMesh, bodice, hemRest);
+  const collar = [yoke, hood];
   const sleeveFolds = [];
   const shoulderCaps = [];
   const colliders = [
@@ -753,15 +815,26 @@ export function buildRoma(rig) {
   // Grade each moving obstacle with the corresponding fitted coat section.
   for (const shape of colliders) {
     if (shape.node === H) continue;
-    const scale = [romaFigure.torsoX,romaFigure.torsoY,romaFigure.torsoZ];
+    const scale = [romaFigure.torsoX, romaFigure.torsoY, romaFigure.torsoZ];
     shape.center = shape.center.map((v, i) => v * scale[i]);
     shape.radii = shape.radii.map((v, i) => v * scale[i]);
   }
+  const fieldKit = kit.register(layer);
+  const packContacts = bindPackContacts(fieldKit);
   const hoodContacts = bindHoodContacts(hood);
-  colliders.push(...hoodContacts.panels, ...clothHairColliders(band.cloth, 8, 'band'));
+  colliders.push(
+    ...packContacts.shapes,
+    ...hoodContacts.panels,
+    ...clothHairColliders(band.cloth, 8, 'band'),
+  );
   for (const side of [-1, 1]) {
-    colliders.push({ role: 'earring', localContact: true, node: H, center: [side * 0.069, 0.040, 0.023],
-      radii: [0.016, 0.018, 0.009] });
+    colliders.push({
+      role: 'earring',
+      localContact: true,
+      node: H,
+      center: [side * 0.069, 0.038, 0.005],
+      radii: [0.018, 0.02, 0.012],
+    });
   }
   const curlSystem = createHair(rig, colliders);
   for (let k = 0; k < locks.length; k++) {
@@ -804,7 +877,10 @@ export function buildRoma(rig) {
       capsule(0.043, 0.053),
       capsule(0.053, 0.032),
     );
-    jacketCapsules.push(capsule(0.063, 0.056));
+    for (let j = i * 4; j < i * 4 + 4; j++) {
+      const c = hemCapsules[j];
+      jacketCapsules.push(capsule(c.radiusA + 0.007, c.radiusB + 0.007));
+    }
   }
 
   const jacketBody = [
@@ -874,29 +950,42 @@ export function buildRoma(rig) {
       c.b.set(0, -0.065, -0.006).applyQuaternion(legRotation).add(c.a);
       d.a.copy(c.b);
       d.b.set(0, -0.188, 0).applyQuaternion(legRotation).add(c.a);
-      jacketCapsules[i].a.copy(a.a).applyMatrix4(hipsToJacket);
-      jacketCapsules[i].b.copy(a.b).applyMatrix4(hipsToJacket);
+      for (let j = n; j < n + 4; j++) {
+        jacketCapsules[j].a.copy(hemCapsules[j].a).applyMatrix4(hipsToJacket);
+        jacketCapsules[j].b.copy(hemCapsules[j].b).applyMatrix4(hipsToJacket);
+      }
     }
   }
   // Adjacent rings share one outward half-space for each azimuth. Keeping the
   // whole panel on the outside of the leg prevents a large triangle from
   // passing through a knee between two individually valid cloth vertices.
-  function outsidePanel(p,x,z,colliders,verticalMargin) {
-    const radius=Math.hypot(x,z)||1,nx=x/radius,nz=z/radius;
-    let limit=-Infinity;
-    for(const c of colliders) {
-      const r=Math.max(c.radiusA,c.radiusB)+.003;
-      const lo=p.y-verticalMargin-r,hi=p.y+verticalMargin+r;
-      if(Math.min(c.a.y,c.b.y)>hi||Math.max(c.a.y,c.b.y)<lo)continue;
-      const dy=c.b.y-c.a.y;
-      let ta=0,tb=1;
-      if(Math.abs(dy)>1e-6){const a=(lo-c.a.y)/dy,b=(hi-c.a.y)/dy;
-       ta=Math.max(0,Math.min(a,b));tb=Math.min(1,Math.max(a,b));}
-      const d=nx*(c.b.x-c.a.x)+nz*(c.b.z-c.a.z);
-      limit=Math.max(limit,nx*c.a.x+nz*c.a.z+Math.max(ta*d,tb*d)+r);
+  function outsidePanel(p, x, z, colliders, verticalMargin) {
+    const radius = Math.hypot(x, z) || 1,
+      nx = x / radius,
+      nz = z / radius;
+    let limit = -Infinity;
+    for (const c of colliders) {
+      const r = Math.max(c.radiusA, c.radiusB) + 0.003;
+      const lo = p.y - verticalMargin - r,
+        hi = p.y + verticalMargin + r;
+      if (Math.min(c.a.y, c.b.y) > hi || Math.max(c.a.y, c.b.y) < lo) continue;
+      const dy = c.b.y - c.a.y;
+      let ta = 0,
+        tb = 1;
+      if (Math.abs(dy) > 1e-6) {
+        const a = (lo - c.a.y) / dy,
+          b = (hi - c.a.y) / dy;
+        ta = Math.max(0, Math.min(a, b));
+        tb = Math.min(1, Math.max(a, b));
+      }
+      const d = nx * (c.b.x - c.a.x) + nz * (c.b.z - c.a.z);
+      limit = Math.max(limit, nx * c.a.x + nz * c.a.z + Math.max(ta * d, tb * d) + r);
     }
-    const gap=limit-nx*p.x-nz*p.z;
-    if(gap>0){p.x+=nx*gap;p.z+=nz*gap;}
+    const gap = limit - nx * p.x - nz * p.z;
+    if (gap > 0) {
+      p.x += nx * gap;
+      p.z += nz * gap;
+    }
   }
   const simulated = xyz(),
     old = xyz(),
@@ -956,14 +1045,24 @@ export function buildRoma(rig) {
       }
       if (tuck) {
         simulated.y = Math.min(foldedHem, simulated.y);
-        outsidePanel(simulated, rest[n], rest[n + 2], colliders, 0.032);
+        // When the knee has moved forward of the waist, let the hem stay
+        // on the torso side of it. It rides up over the real proximal thigh.
+        for (const c of colliders) solveCapsule(simulated, c);
       }
     } else {
-      outsidePanel(simulated,rest[n],rest[n+2],colliders,.003);
-      ribKnit.support(simulated,i);
-      const rx=.0752,rz=.0523;
-      const d=Math.hypot(simulated.x/rx,simulated.z/rz);
-      if(d>0 && d<1){simulated.x/=d;simulated.z/=d;}
+      outsidePanel(simulated, rest[n], rest[n + 2], colliders, 0.003);
+      // The rib band rests on the top of the real leather belt. A deep
+      // running bank can lower the outer quarter onto that edge.
+      const knitFloor = 0.0808 + 0.48 * (rest[n + 1] - 0.085);
+      simulated.y = Math.max(simulated.y, knitFloor);
+      ribKnit.support(simulated, i);
+      const rx = 0.0752,
+        rz = 0.0523;
+      const d = Math.hypot(simulated.x / rx, simulated.z / rz);
+      if (d > 0 && d < 1) {
+        simulated.x /= d;
+        simulated.z /= d;
+      }
     }
     attr.setXYZ(i, simulated.x, simulated.y, simulated.z);
     // A positional contact projection clears the moving collider but does
@@ -972,32 +1071,52 @@ export function buildRoma(rig) {
     vel[n + 1] = T.MathUtils.clamp(vel[n + 1], -1.1, 1.1);
     vel[n + 2] = T.MathUtils.clamp(vel[n + 2], -1.1, 1.1);
   }
-  const accessories = fitRomaAccessories(rig, bag, hoodieHem, jacketSkin, leather, binding, cream, [
-    yoke,
-    bodice,
-    bodyMesh,hood,
-  ],cargo,kit);
+  const accessories = fitRomaAccessories(
+    rig,
+    bag,
+    hoodieHem,
+    jacketSkin,
+    leather,
+    binding,
+    cream,
+    [yoke, bodice, bodyMesh, hood],
+    cargo,
+    kit,
+  );
   const surfaces = {
     'body-face': faceSkin,
     body: bodyMesh,
-    hoodie: [bodice,hood,...cords],
-    hoodieHem:[hoodieHem,accessories.hem],
+    hoodie: [bodice, hood, ...cords],
+    hoodieHem: [hoodieHem, accessories.hem],
     cargo,
-    headband:band.cloth,
-    hoops:layer(H,gold),
-    ...kit.register(layer),
-    jacket: [jacketSkin, yoke, accessories.jacketHem],
+    headband: band.cloth,
+    hoops: layer(H, gold),
+    ...fieldKit,
+    jacket: [jacketSkin, yoke, accessories.jacketHem, ...stitches],
     belt: layer(rig.hips, leather),
     strap: accessories.strap,
     bag: [layer(bag, leather), layer(bag, strap)],
   };
   const pairs = [];
-  for(const [outer,inner] of [
-    ['hoodie','body'],['hoodieHem','body'],['cargo','body'],['jacket','body'],
-    ['jacket','hoodie'],['jacket','hoodieHem'],['jacket','cargo'],['belt','cargo'],
-    ['strap','jacket'],['bag','cargo'],['backpack','jacket'],['packStraps','jacket'],
-    ['compass','hoodie'],['bracelets','body'],['headband','body-face'],['hoops','body-face']
-  ]) pairs.push({outer,inner});
+  for (const [outer, inner] of [
+    ['hoodie', 'body'],
+    ['hoodieHem', 'body'],
+    ['cargo', 'body'],
+    ['jacket', 'body'],
+    ['jacket', 'hoodie'],
+    ['jacket', 'hoodieHem'],
+    ['jacket', 'cargo'],
+    ['belt', 'cargo'],
+    ['strap', 'jacket'],
+    ['bag', 'cargo'],
+    ['backpack', 'jacket'],
+    ['packStraps', 'jacket'],
+    ['compass', 'hoodie'],
+    ['bracelets', 'body'],
+    ['headband', 'body-face'],
+    ['hoops', 'body-face'],
+  ])
+    pairs.push({ outer, inner });
   const joinedWaist = yoke.geometry.userData.waistEdge;
   const mobileWaist = yoke.userData.mobileGeometry.userData.waistEdge;
   const seams = [
@@ -1048,7 +1167,9 @@ export function buildRoma(rig) {
     faceSkin,
     body: bodyMesh,
     bodyRegions,
-    hoodie:bodice, cargo, hood,
+    hoodie: bodice,
+    cargo,
+    hood,
     yoke,
     collar,
     neck: bodyMesh,
@@ -1063,11 +1184,14 @@ export function buildRoma(rig) {
         { tip: 21, anchor: 144 },
       ],
     },
-    hoodieHem:hoodieHem,
+    hoodieHem: hoodieHem,
     jacket: jacketSkin,
     bag,
-    hoodieHemCapsules:hemCapsules,
-    hoodieHemBody:[[.081,.074,.051,0],[.126,.074,.051,0]],
+    hoodieHemCapsules: hemCapsules,
+    hoodieHemBody: [
+      [0.081, 0.074, 0.051, 0],
+      [0.126, 0.074, 0.051, 0],
+    ],
     jacketCapsules,
     jacketBody,
   };
@@ -1098,16 +1222,7 @@ export function buildRoma(rig) {
       previousHipV = previousHipVX = bobLoad = sideLoad = 0;
       hemVelocity.fill(0);
       jacketVelocity.fill(0);
-      bagPitch =
-        bagV =
-        bagSide =
-        bagSideV =
-        bagLift =
-        bagLiftV =
-        lastSpeed =
-        lastVy =
-        balance =
-          0;
+      bagPitch = bagV = bagSide = bagSideV = bagLift = bagLiftV = lastSpeed = lastVy = balance = 0;
     }
     lastTime = f.time;
     // Give the canvas cuffs clearance beside the flared jacket hem and the satchel strap.
@@ -1115,7 +1230,7 @@ export function buildRoma(rig) {
     const crouch = T.MathUtils.smoothstep(romaFigure.hips - rig.hips.position.y, 0.05, 0.23);
     rig.upperArmL.rotation.z += 0.26 * crouch;
     rig.upperArmR.rotation.z -= 0.26 * crouch;
-    rig.forearmR.rotation.x -= .22 * (1 - T.MathUtils.smoothstep(f.speed, .25, 1.65));
+    rig.forearmR.rotation.x -= 0.095 * (1 - T.MathUtils.smoothstep(f.speed, 0.25, 1.65));
     const bankTarget = T.MathUtils.clamp(f.turn * f.speed * 0.033, -0.37, 0.37);
     balance += (bankTarget - balance) * (1 - Math.exp(-f.dt * 17));
     rig.upperArmL.rotation.z += 0.001 + 0.23 * Math.min(1, f.speed / 3.89) + Math.max(0, balance);
@@ -1147,7 +1262,7 @@ export function buildRoma(rig) {
       rig.upperArmL.rotation.x -= lift * 1.2;
       rig.upperArmL.rotation.z += lift * 0.26;
       rig.forearmL.rotation.x -= lift * 0.86;
-      rig.handL.rotation.z += lift * (.27*Math.sin(27*f.emote)+.19);
+      rig.handL.rotation.z += lift * (0.27 * Math.sin(27 * f.emote) + 0.19);
       rig.head.rotation.y += lift * 0.37;
       rig.head.rotation.z -= lift * 0.075;
     }
@@ -1190,44 +1305,69 @@ export function buildRoma(rig) {
     const laugh = lift * (0.78 + 0.22 * Math.sin(f.emote * 17));
     const glance = 0.0015 * Math.sin(0.78 * t + 0.9) * Math.sin(0.39 * t);
     const gesture = f.emote;
-    const wink = gesture >= 0 ? Math.exp(-(((gesture-.59)/.068)**2)) : 0;
-    const thinking = gesture >= 0 ? Math.exp(-(((gesture-.15)/.088)**2)) : 0;
-    const curious = f.state === 'walk' ? Math.min(1,speed/1.2) : 0;
-    const surprise = f.state === 'jump' ? T.MathUtils.clamp(f.vy/3,0,1) : 0;
+    const wink = gesture >= 0 ? Math.exp(-(((gesture - 0.59) / 0.068) ** 2)) : 0;
+    const thinking = gesture >= 0 ? Math.exp(-(((gesture - 0.15) / 0.088) ** 2)) : 0;
+    const curious = f.state === 'walk' ? Math.min(1, speed / 1.2) : 0;
+    const surprise = f.state === 'jump' ? T.MathUtils.clamp(f.vy / 3, 0, 1) : 0;
     const focus = f.state === 'run' ? moving : 0;
     const determined = f.state === 'roll' ? 1 : 0;
-    for(let i=0;i<lids.length;i++)
-      lids[i](Math.max(blink,i<2 ? wink : 0),
-        laugh+.27*focus+.39*determined+.14*thinking-.5*surprise-.11*curious);
+    for (let i = 0; i < lids.length; i++)
+      lids[i](
+        Math.max(blink, i < 2 ? wink : 0),
+        laugh + 0.27 * focus + 0.39 * determined + 0.14 * thinking - 0.5 * surprise - 0.11 * curious,
+      );
     for (let i = 0; i < 2; i++) {
       const side = i === 0 ? -1 : 1;
-      pupils[i].position.x = side * (glance - .0027*lift + .0017*thinking);
-      pupils[i].position.y = .0012*lift-.0033*thinking+.0016*surprise;
-      brows[i].position.y = .105+lift*(i?.0035:.005)-blink*.002+.006*surprise
-        -.0024*focus-.0021*determined + (i?.0028:-.0005)*curious+(i?-.001:.0034)*thinking;
-      brows[i].rotation.z = side*(lift*.075-.025*blink-.12*focus+.06*surprise
-        -.18*determined+(i?.08:-.045)*thinking);
+      pupils[i].position.x = side * (glance - 0.0027 * lift + 0.0017 * thinking);
+      pupils[i].position.y = 0.0012 * lift - 0.0033 * thinking + 0.0016 * surprise;
+      brows[i].position.y =
+        0.105 +
+        lift * (i ? 0.0035 : 0.005) -
+        blink * 0.002 +
+        0.006 * surprise -
+        0.0024 * focus -
+        0.0021 * determined +
+        (i ? 0.0028 : -0.0005) * curious +
+        (i ? -0.001 : 0.0034) * thinking;
+      brows[i].rotation.z =
+        side *
+        (lift * 0.075 -
+          0.025 * blink -
+          0.12 * focus +
+          0.06 * surprise -
+          0.18 * determined +
+          (i ? 0.08 : -0.045) * thinking);
     }
-    const mouthHeight=1+.38*laugh+.50*surprise-.16*focus-.28*thinking-.24*determined;
-    smile.scale.set(1+.09*laugh-.24*surprise-.11*thinking-.06*focus,mouthHeight,1);
-    smile.position.y = -.0045-.038*(mouthHeight-1);
+    const mouthHeight =
+      1 + 0.38 * laugh + 0.5 * surprise - 0.16 * focus - 0.28 * thinking - 0.24 * determined;
+    smile.scale.set(1 + 0.09 * laugh - 0.24 * surprise - 0.11 * thinking - 0.06 * focus, mouthHeight, 1);
+    smile.position.y = -0.0045 - 0.038 * (mouthHeight - 1);
     smile.position.z = -0.0055;
     // The previous tick's unconstrained panel positions belong only to that
     // continuous take. A reset begins with the fitted neutral garment.
     if (!resetCloth) accessories.release();
+    foldWaist(lateral * moving, rig.chest.rotation.x);
     updateCapsules();
     ribKnit.update();
-    for(let i=0;i<8*64;i++){
-      const n=3*i,x=hemRest[n],y=hemRest[n+1],z=hemRest[n+2];
-      const free=1-Math.floor(i/64)/6;
-      const stepWave=Math.sin(phase-.37), r=Math.hypot(x,z);
-      const air=.0014*breath+.003*moving*(1+Math.cos(2*phase));
-      goal.set(x+free*(x/r*air-.0018*sideLoad+.004*moving*stepWave),
-        y+free*(.0012*breath+.0022*bobLoad+.003*moving*stepWave),
-        z+free*(z/r*air-.0029*hop+.003*stepWave*moving+.010*(x/r)*lateral*moving));
-      ribKnit.anchor(goal,i);
-      if(i<6*64)integrate(i,position,hemVelocity,136,15,dt,hemCapsules,false);
-      else position.setXYZ(i,goal.x,goal.y,goal.z);
+    for (let i = 0; i < 8 * 64; i++) {
+      const n = 3 * i,
+        x = hemRest[n],
+        y = hemRest[n + 1],
+        z = hemRest[n + 2];
+      const free = 1 - Math.floor(i / 64) / 6;
+      const stepWave = Math.sin(phase - 0.37),
+        r = Math.hypot(x, z);
+      const air = 0.0014 * breath + 0.003 * moving * (1 + Math.cos(2 * phase));
+      goal.set(
+        x + free * ((x / r) * air - 0.0018 * sideLoad + 0.004 * moving * stepWave),
+        y + free * (0.0012 * breath + 0.0022 * bobLoad + 0.003 * moving * stepWave),
+        z +
+          free *
+            ((z / r) * air - 0.0029 * hop + 0.003 * stepWave * moving + 0.01 * (x / r) * lateral * moving),
+      );
+      ribKnit.anchor(goal, i);
+      if (i < 6 * 64) integrate(i, position, hemVelocity, 136, 15, dt, hemCapsules, false);
+      else position.setXYZ(i, goal.x, goal.y, goal.z);
     }
     position.needsUpdate = true;
     clothNormals(hemShape, 64, true);
@@ -1242,12 +1382,12 @@ export function buildRoma(rig) {
       const side = x >= 0 ? 1 : -1,
         front = z > 0,
         trail = front ? Math.max(0, -Math.sin(side * phase)) : 0.55 + 0.45 * Math.cos(phase);
-      const rideUp = Math.max(0, minimumHemY + 0.095);
+      const rideUp = Math.max(0, minimumHemY + 0.044);
       const lowerBob = Math.max(0, bobLoad) * 0.027;
       const spread =
-        0.047 * moving +
-        0.091 * Math.abs(lateral) * moving +
-        0.081 * moving * trail +
+        0.028 * moving +
+        0.061 * Math.abs(lateral) * moving +
+        0.029 * moving * trail +
         lowerBob * (front ? 0.57 : 1);
       const folded =
         Math.sin(8 * Math.atan2(x, z) + 0.47 * side) * (0.0018 * moving + 0.00042 * Math.abs(bobLoad));
@@ -1260,14 +1400,15 @@ export function buildRoma(rig) {
           T.MathUtils.smoothstep(z, 0.005, 0.052)
         : 0;
       const edgeRadius = Math.hypot(x, z);
+      const stepFlare = 0.0032 * moving * (0.5 + 0.5 * Math.cos(phase * 2));
       goal.set(
-        x * (1 + (spread * 0.45 + breathFlare / edgeRadius) * weight) +
-          (lateral * 0.003 - 0.0023 * sideLoad) * weight,
-        y + weight * (0.005 * trail * moving + rideUp + 0.0009 * bobLoad + chestLift),
-        z * (1 + (spread + breathFlare / edgeRadius) * weight) +
+        x * (1 + (spread * 0.45 + (breathFlare + stepFlare) / edgeRadius) * weight) +
+          (lateral * 0.003 - 0.00175 * sideLoad) * weight,
+        y + weight * (0.0022 * trail * moving + rideUp + 0.0009 * bobLoad + chestLift),
+        z * (1 + (spread + (breathFlare + stepFlare) / edgeRadius) * weight) +
           weight *
             (0.0021 * hop -
-              0.009 * moving +
+              0.0035 * moving +
               side * 0.006 * lateral +
               folded +
               (front ? chestLift : -0.45 * chestLift)),
@@ -1304,8 +1445,8 @@ export function buildRoma(rig) {
         9.7 * bagLiftV) *
       dt;
     bagLift += bagLiftV * dt;
-    bag.rotation.set(bagPitch, .28 + bagSide, -0.14 + bagSide * 0.33);
-    bag.position.y = 0.026 + bagLift;
+    bag.rotation.set(bagPitch, 0.28 + bagSide, -0.14 + bagSide * 0.33);
+    bag.position.y = 0.032 + bagLift;
     const tailLift = 0.0021 * Math.min(1, moving * 3.1) * T.MathUtils.smoothstep(bobLoad, -0.75, 1.5);
     // When the bag first takes the load of a walking stride, the swinging
     // inner cuff can press the strap toward the inside of the brass ring.
@@ -1317,6 +1458,7 @@ export function buildRoma(rig) {
     jacketShape.attributes.normal.array.set(yoke.geometry.userData.waistNormals, 4 * 41 * 3);
     jacketShape.attributes.normal.needsUpdate = true;
     hoodContacts.update();
+    packContacts.update();
     curlSystem.step(f);
   };
   return step;

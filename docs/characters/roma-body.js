@@ -266,19 +266,19 @@ function sculpt(detail, coat = false, trousers = false) {
           const legAngle = Math.atan2(x - 0.065, z + 0.002);
           const knee = Math.exp(-(((y - 0.255) / 0.056) ** 2));
           const ankle = Math.exp(-(((y - 0.115) / 0.025) ** 2));
-          const folds = (0.0019 * knee + 0.0025 * ankle) *
-            Math.sin(130 * y + 1.35 * Math.sin(legAngle - 0.35));
+          const folds =
+            (0.0019 * knee + 0.0025 * ankle) * Math.sin(130 * y + 1.35 * Math.sin(legAngle - 0.35));
           const side = smooth(Math.sin(legAngle), 0.44, 0.78);
           const pocket = smooth(y, 0.324, 0.331) * (1 - smooth(y, 0.407, 0.412));
           const flap = smooth(y, 0.385, 0.39) * (1 - smooth(y, 0.406, 0.412));
           // The joggers taper towards a close ribbed cuff. Retain more
           // room above the crotch, where the material converges at the hips.
-          const seatEase = smooth(y, .401, .485);
-          const ease = .0052 + .0028 * wide + .010 * seatEase;
+          const seatEase = smooth(y, 0.401, 0.485);
+          const ease = 0.0052 + 0.0028 * wide + 0.01 * seatEase;
           lowerDist -= ease + folds + side * (0.005 * pocket + 0.0045 * flap);
           torso -= 0.008;
         }
-        const trunkAndLeg = join(torso, lowerDist, trousers ? 0.020 : 0.01);
+        const trunkAndLeg = join(torso, lowerDist, trousers ? 0.02 : 0.01);
         const branch = limb < trunkAndLeg ? 1 : lowerDist < torso ? 2 : 0;
         owner[offset + i] = branch;
         field[offset + i] = join(trunkAndLeg, limb, axilla);
@@ -521,20 +521,35 @@ export function bindJointFans(rig, meshes, fitRestPose) {
         // The trouser fork and the skin share a smooth bilateral hip field.
         // At the inseam vertices from the two legs approach the same four
         // influences, so a high knee cannot pull neighboring points apart.
-        if (legSkins.has(mesh) && y > .395 && y < .564 && ax < .118 &&
-            (mesh === meshes[3] || g.userData.anatomicalRegions[i] === 0 ||
-             g.userData.anatomicalRegions[i] === 3)) {
-          const dz = pos.getZ(i), dy = y - .52;
+        if (
+          legSkins.has(mesh) &&
+          y > 0.395 &&
+          y < 0.564 &&
+          ax < 0.118 &&
+          (mesh === meshes[3] ||
+            g.userData.anatomicalRegions[i] === 0 ||
+            g.userData.anatomicalRegions[i] === 3)
+        ) {
+          const dz = pos.getZ(i),
+            dy = y - 0.52;
           // Reserve the upper sector for the pelvis. A linear map on
           // the remaining arc preserves the layer order when the thigh lifts.
           const pole = 1.03;
           const polar = Math.max(0, Math.abs(Math.atan2(dz, dy)) - pole) / (Math.PI - pole);
-          const turn = T.MathUtils.lerp(polar, dy < 0 ? 1 : 0, smooth(Math.hypot(dy, dz), .070, .116));
-          const sideBlend = smooth(px, -.035, .035);
-          const h = turn * steps, k = Math.min(steps - 1, Math.floor(h)), f = h-k;
+          const turn = T.MathUtils.lerp(polar, dy < 0 ? 1 : 0, smooth(Math.hypot(dy, dz), 0.07, 0.116));
+          const sideBlend = smooth(px, -0.035, 0.035);
+          const h = turn * steps,
+            k = Math.min(steps - 1, Math.floor(h)),
+            f = h - k;
           const [left, right] = hipFans;
-          indices.setXYZW(i, left[k], left[k+1], right[k], right[k+1]);
-          weights.setXYZW(i, sideBlend*(1-f),sideBlend*f,(1-sideBlend)*(1-f),(1-sideBlend)*f);
+          indices.setXYZW(i, left[k], left[k + 1], right[k], right[k + 1]);
+          weights.setXYZW(
+            i,
+            sideBlend * (1 - f),
+            sideBlend * f,
+            (1 - sideBlend) * (1 - f),
+            (1 - sideBlend) * f,
+          );
           continue;
         }
         const a = indices.array[off],
@@ -567,42 +582,45 @@ export function bindJointFans(rig, meshes, fitRestPose) {
   // angular warp around the actual hinge, including on the lower detail tier.
   rig.root.updateMatrixWorld(true);
   const inverseRoot = rig.root.matrixWorld.clone().invert();
-  const kneePoints = [rig.shinL, rig.shinR].map(
-    bone => bone.getWorldPosition(new T.Vector3()).applyMatrix4(inverseRoot),
+  const kneePoints = [rig.shinL, rig.shinR].map((bone) =>
+    bone.getWorldPosition(new T.Vector3()).applyMatrix4(inverseRoot),
   );
   for (const mesh of legSkins) {
     for (const geometry of [mesh.geometry, mesh.userData.mobileGeometry]) {
-      const {position, skinIndex, skinWeight} = geometry.attributes;
-      for (let i=0; i<position.count; i++) {
+      const { position, skinIndex, skinWeight } = geometry.attributes;
+      for (let i = 0; i < position.count; i++) {
         if (mesh === meshes[0] && geometry.userData.anatomicalRegions[i] !== 3) continue;
-        const side = position.getX(i)>=0 ? 0 : 1;
+        const side = position.getX(i) >= 0 ? 0 : 1;
         const hinge = kneePoints[side];
-        const y = position.getY(i)-hinge.y;
-        if (Math.abs(y)>.169) continue;
-        const z = position.getZ(i)-hinge.z;
-        const arc = Math.abs(Math.atan2(z,y))/Math.PI;
-        const transition = smooth(Math.hypot(y,z), .123, .169);
+        const y = position.getY(i) - hinge.y;
+        if (Math.abs(y) > 0.169) continue;
+        const z = position.getZ(i) - hinge.z;
+        const arc = Math.abs(Math.atan2(z, y)) / Math.PI;
+        const transition = smooth(Math.hypot(y, z), 0.123, 0.169);
         if (transition >= 1) continue;
-        const h = arc*steps, k = Math.min(steps-1,Math.floor(h)), f = h-k;
+        const h = arc * steps,
+          k = Math.min(steps - 1, Math.floor(h)),
+          f = h - k;
         const nodes = kneeFans[side];
         if (transition === 0) {
-          skinIndex.setXYZW(i,nodes[k],nodes[k+1],0,0);
-          skinWeight.setXYZW(i,1-f,f,0,0);
+          skinIndex.setXYZW(i, nodes[k], nodes[k + 1], 0, 0);
+          skinWeight.setXYZW(i, 1 - f, f, 0, 0);
         } else {
           // The upper transition overlaps the hip fan. Keep both local
           // frames so the fabric continues smoothly from knee to pelvis.
           const mix = new Map();
-          for (let j=0; j<4; j++) {
-            const bone=skinIndex.array[4*i+j], value=skinWeight.array[4*i+j]*transition;
-            if(value>0) mix.set(bone,(mix.get(bone) || 0)+value);
+          for (let j = 0; j < 4; j++) {
+            const bone = skinIndex.array[4 * i + j],
+              value = skinWeight.array[4 * i + j] * transition;
+            if (value > 0) mix.set(bone, (mix.get(bone) || 0) + value);
           }
-          mix.set(nodes[k], (mix.get(nodes[k]) || 0)+(1-transition)*(1-f));
-          mix.set(nodes[k+1], (mix.get(nodes[k+1]) || 0)+(1-transition)*f);
-          const weights=[...mix].sort((a,b)=>b[1]-a[1]).slice(0,4);
-          const total=weights.reduce((sum,pair)=>sum+pair[1],0);
-          for(let j=0;j<4;j++) {
-            skinIndex.array[4*i+j]=weights[j]?.[0] ?? 0;
-            skinWeight.array[4*i+j]=(weights[j]?.[1] ?? 0)/total;
+          mix.set(nodes[k], (mix.get(nodes[k]) || 0) + (1 - transition) * (1 - f));
+          mix.set(nodes[k + 1], (mix.get(nodes[k + 1]) || 0) + (1 - transition) * f);
+          const weights = [...mix].sort((a, b) => b[1] - a[1]).slice(0, 4);
+          const total = weights.reduce((sum, pair) => sum + pair[1], 0);
+          for (let j = 0; j < 4; j++) {
+            skinIndex.array[4 * i + j] = weights[j]?.[0] ?? 0;
+            skinWeight.array[4 * i + j] = (weights[j]?.[1] ?? 0) / total;
           }
         }
       }

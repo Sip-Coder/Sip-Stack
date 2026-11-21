@@ -2,6 +2,7 @@
 // Each spiral has a smooth four-segment mechanical guide under its finer
 // curled surface, so the shape of the curl survives secondary animation.
 import * as T from 'three';
+import { upperSurface } from './hair-heightfield.js';
 import { curlResponse } from './roma-curl-response.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
@@ -102,7 +103,7 @@ function crownPoint(a, t) {
   return point(
     0.006 * t + 0.0735 * Math.sin(a) * breadth,
     hairline + (0.1618 - hairline) * Math.sin(elevation),
-    -0.012 + 0.065 * Math.cos(a) * breadth,
+    -0.012 + (0.065 * Math.cos(a) + 0.008 * Math.max(0, -Math.cos(a))) * breadth,
   );
 }
 
@@ -179,7 +180,7 @@ function crown(head, hair) {
         [side * 0.069, 0.124 + d * 0.55, 0.042 + d * 0.36],
         [side * 0.076, 0.112 + d * 0.6, 0.031],
         [side * 0.069, 0.102 + d * 0.58, 0.036],
-      ].map((p) => point(...p));
+      ].map(([x,y,z]) => point(x, y, z + 0.009 * ease(y, 0.130, 0.155)));
       const radius = (t) => (row === 0 ? 0.007 : 0.0042) * (0.085 + 0.915 * Math.sin(Math.PI * t) ** 0.53);
       piles[row % 3 === 1 ? 2 : 1].push(
         curlRibbon(new T.CatmullRomCurve3(shape), radius, point(side * 0.28, 0.4, 1).normalize(), 32, 10),
@@ -188,7 +189,20 @@ function crown(head, hair) {
   }
   for (let i = 0; i < 4; i++)
     if (piles[i].length) {
-      const m = new T.Mesh(mergeGeometries(piles[i]), hair[i]);
+      const geometry = mergeGeometries(piles[i]);
+      const positions = geometry.getAttribute('position');
+      // Comb the fixed occipital layers close to the skull. At the front,
+      // curl the short crest forward and down over the edge of the part.
+      for (let v = 0; v < positions.count; v++) {
+        const y = positions.getY(v), z = positions.getZ(v);
+        const front = ease(z, 0.023, 0.062), rear = 1 - ease(z, -0.080, -0.027);
+        const crown = rear * ease(y, 0.051, 0.095) * (1 - ease(y, 0.130, 0.155));
+        const forelock = front * ease(y, 0.113, 0.126) * (1 - ease(y, 0.148, 0.165));
+        positions.setZ(v, z + 0.013 * (crown + forelock));
+        positions.setY(v, y - 0.008 * front * ease(y, 0.139, 0.158));
+      }
+      geometry.computeVertexNormals();
+      const m = new T.Mesh(geometry, hair[i]);
       m.castShadow = m.receiveShadow = true;
       m.name = 'Roma parted crown ' + i;
       head.add(m);
@@ -212,7 +226,17 @@ function shapeCurl(head, hair, side, i, inner = false) {
       ? -0.002 + 0.008 * Math.sin(i * 2.13) + 0.005 * side
       : -0.029 - 0.016 * Math.max(0, -z) + 0.028 * temple + 0.008 * seed;
   if (inner && i >= 34 && i <= 38) endY -= 0.015;
+  // The nape falls over the turned-back hood. Graduate the outer row
+  // toward the middle of the back, with a shorter underlayer for volume.
+  const nape = inner ? ease(i, 38, 40) : ease(i, 21, 26);
+  const sideLayer = inner ? 0 : Math.exp(-((i - 23.5) ** 2) / 12);
+  endY -= (nape * (inner ? 0.016 : 0.021) + 0.022 * sideLayer) *
+    (0.9 + 0.1 * Math.cos(i + side));
   if (face && (i === 1 || i === 3)) endY -= 0.019;
+  // Graduate the front of the bob above the right strap. These two
+  // curtains sweep past the hoop as the cheek approaches the shoulder.
+  if (side > 0 && i === 4) endY = 0.048;
+  if (side > 0 && i === 5) endY += 0.024;
   const crossShoulder = angle < 1.4;
   const width = (inner ? 0.0118 : face ? 0.0054 : 0.0041) + 0.0007 * Math.cos(i * 2.63 + side);
   const loops = 2.08 + 0.61 * (0.5 + 0.5 * Math.sin(i * 2.19 + side));
@@ -235,6 +259,11 @@ function shapeCurl(head, hair, side, i, inner = false) {
       // backwards around the jacket yoke instead of entering the sleeves.
       p.z -= under * (0.003 + 0.016 * Math.exp(-((angle - 1.76) ** 2) / 0.3));
     }
+    // Fit the occipital curve close to the skull. Near the hem the two
+    // outer cascades separate, lying on either side of the rucksack lid.
+    p.z += 0.009 * Math.max(0, -z) * ease(p.y, -0.015, 0.052);
+    p.x += side * sideLayer * 0.013 * under;
+    p.z -= (nape * 0.005 + sideLayer * 0.005) * under;
     if (side > 0 && i === 7) {
       // Cross the leading shoulder cup on its anterior face. A little room
       // here lets the tip swing freely instead of sticking on every stride.
@@ -248,6 +277,14 @@ function shapeCurl(head, hair, side, i, inner = false) {
     if (!inner && i <= 8) {
       const atTemple = ease(t, 0.06, 0.33);
       p.z += atTemple * Math.max(0, 0.054 + 0.003 * Math.cos(i) - p.z);
+    }
+    if ((side < 0 && i === 7) || (side > 0 && i >= 3 && i <= 5)) {
+      // Keep the free temple plume lateral to the hoops as they rotate
+      // towards the collar. The low forehead locks still frame the cheek.
+      p.x += side * 0.009 * ease(t, 0.28, 0.67);
+    }
+    if (side > 0 && (i === 4 || i === 5)) {
+      p.z += (i === 4 ? 0.012 : 0.009) * ease(t, 0.28, 0.64);
     }
     if (inner && i >= 34 && i <= 38) {
       // The underside of the bob follows the slope of the shoulder from the
@@ -416,27 +453,49 @@ export function bindHoodContacts(hood) {
       rows[Math.floor(u * count) % count].push(i);
       if (Math.round(station) % 2 === 0) rows[(Math.round(u * count) + count - 1) % count].push(i);
     }
-    tables.set(
-      g,
-      rows.map((ids) => ids.map((id) => ({ id, p: new T.Vector3() }))),
-    );
+    tables.set(g, rows.map((ids, panel) => {
+      const samples = ids.map((id) => ({ id, p: new T.Vector3() }));
+      const anchor = (along, across) => {
+        let nearest, distance = Infinity;
+        const u = (panel + along) / count;
+        for (const sample of samples) {
+          const du = Math.abs(uv.getX(sample.id) - u);
+          const d = Math.min(du, 1 - du) ** 2 + (uv.getY(sample.id) - across) ** 2;
+          if (d < distance) { distance = d; nearest = sample.p; }
+        }
+        return nearest;
+      };
+      return { samples, left: anchor(0, 0.5), right: anchor(1, 0.5),
+        inner: anchor(0.5, 0), outer: anchor(0.5, 1) };
+    }));
   }
   const bounds = new T.Box3();
-  const rel = new T.Vector3();
+  const rel = new T.Vector3(), localCenter = new T.Vector3();
+  const along = new T.Vector3(), across = new T.Vector3(), normal = new T.Vector3();
+  const basis = new T.Matrix4(), inverse = new T.Matrix4();
   function update() {
     const sets = tables.get(hood.geometry);
     for (let i = 0; i < count; i++) {
-      const frame = panels[i].node;
+      const frame = panels[i].node, panel = sets[i];
+      for (const sample of panel.samples) hood.getVertexPosition(sample.id, sample.p);
+      // Fit along the woven meridian and the fall of the roll. A world-axis
+      // box around this diagonal fold fills the air between neck and pack.
+      along.subVectors(panel.right, panel.left).normalize();
+      across.subVectors(panel.outer, panel.inner);
+      normal.crossVectors(along, across).normalize();
+      across.crossVectors(normal, along).normalize();
+      basis.makeBasis(along, across, normal);
+      inverse.copy(basis).transpose();
       bounds.makeEmpty();
-      for (const sample of sets[i]) {
-        hood.getVertexPosition(sample.id, sample.p);
-        bounds.expandByPoint(sample.p);
-      }
-      bounds.getCenter(frame.position);
+      for (const {p} of panel.samples) bounds.expandByPoint(rel.copy(p).applyMatrix4(inverse));
+      bounds.getCenter(localCenter);
+      frame.position.copy(localCenter).applyMatrix4(basis);
+      frame.quaternion.setFromRotationMatrix(basis);
       bounds.getSize(frame.scale).multiplyScalar(0.5).addScalar(0.001);
+      frame.scale.z = Math.max(frame.scale.z, 0.008);
       let enclosing = 1;
-      for (const { p } of sets[i]) {
-        rel.copy(p).sub(frame.position).divide(frame.scale);
+      for (const {p} of panel.samples) {
+        rel.copy(p).applyMatrix4(inverse).sub(localCenter).divide(frame.scale);
         enclosing = Math.max(enclosing, rel.length());
       }
       frame.scale.multiplyScalar(enclosing).addScalar(0.0015);
@@ -444,4 +503,61 @@ export function bindHoodContacts(hood) {
   }
   update();
   return { panels, update };
+}
+
+// The flap and load pads sit above the shoulder blades during a tuck. Fit
+// the dorsal contact volumes to the actual pack in its local frame. The
+// shoulder bands change shape every tick, so their contact volumes follow
+// the current stitched cross sections instead of the neutral skeleton.
+export function bindPackContacts(kit) {
+  const shapes = [];
+  const samples = new T.Box3();
+  const point = new T.Vector3();
+  const extent = new T.Vector3();
+  function fit(node, points, padding) {
+    samples.setFromPoints(points).getCenter(node.position);
+    samples.getSize(node.scale).multiplyScalar(0.5);
+    node.scale.max(extent.setScalar(padding));
+    let shell = 1;
+    for (const p of points) {
+      point.copy(p).sub(node.position).divide(node.scale);
+      shell = Math.max(shell, point.length());
+    }
+    node.scale.multiplyScalar(shell).addScalar(padding);
+  }
+  function contact(parent) {
+    const node = new T.Group();
+    node.name = 'Hair contact on ' + parent.name;
+    parent.add(node);
+    shapes.push({ node, localContact: true, role: 'pack', center: [0, 0, 0], radii: [1, 1, 1] });
+    return node;
+  }
+  const pack = kit.backpack[0].parent;
+  shapes.push(upperSurface(pack, kit.backpack));
+
+  const ribbons = [];
+  for (const mesh of kit.packStraps) {
+    const uv = mesh.geometry.getAttribute('uv');
+    // Four overlapping patches follow the bound section up the back and
+    // over the crest. The lower front ends are below the bob.
+    for (let panel = 0; panel < 4; panel++) {
+      const ids = [], points = [];
+      for (let i = 0; i < uv.count; i++) {
+        const u = uv.getX(i);
+        if (u < panel * 0.13 - 0.02 || u > (panel + 1) * 0.13 + 0.02) continue;
+        ids.push(i);
+        points.push(new T.Vector3());
+      }
+      if (ids.length) ribbons.push({ mesh, node: contact(mesh), ids, points });
+    }
+  }
+  function update() {
+    for (const { mesh, node, ids, points } of ribbons) {
+      const pos = mesh.geometry.getAttribute('position');
+      for (let i = 0; i < ids.length; i++) points[i].fromBufferAttribute(pos, ids[i]);
+      fit(node, points, 0.004);
+    }
+  }
+  update();
+  return { shapes, update };
 }

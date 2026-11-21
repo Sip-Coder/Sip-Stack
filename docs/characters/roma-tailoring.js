@@ -1,4 +1,4 @@
-// Cut an actual open-front jacket and its inset dress bodice from the body's
+// Cut an actual open-front jacket and its cream hoodie from the body's
 // surface. Sew the outer shell to its lining around every cut edge. Shoulders,
 // underarms, elbow bends and the rest of the sleeve share the skin skeleton.
 import * as T from 'three';
@@ -69,7 +69,7 @@ export function fitRomaGarment(body, kind, fabric, trim, pattern, waist) {
       // holes in the medial upper arm as the elbow blend gives way to the shoulder.
       const region = g.userData.anatomicalRegions[i];
       const anatomicalArm = region === 1 || region === 2;
-      const opening = 0.027 + 0.023 * (1 - smooth(y, 0.704, 0.802)) + 0.009 * (1 - smooth(y, 0.635, 0.71));
+      const opening = 0.022 + 0.004 * smooth(y, 0.704, 0.802) + 0.002 * (1 - smooth(y, 0.635, 0.71));
       const edge = Math.max(ax - opening, -z + 0.001);
       let cut;
       if (coat) {

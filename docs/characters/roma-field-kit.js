@@ -389,6 +389,30 @@ export function makeRomaFieldKit(rig, materials, tools) {
     ],
     0.00075,
   );
+  // The saddle flap rounds the forward corner of the case. Its fastening
+  // faces slightly forward so the front and side both show the closure.
+  add(
+    bag,
+    leatherCase([
+      [-0.046, 0.01, 0.002, 0.044, -0.003],
+      [-0.04, 0.019, 0.0035, 0.045, -0.003],
+      [-0.019, 0.022, 0.003, 0.045, -0.002],
+      [-0.006, 0.019, 0.002, 0.043, -0.002],
+    ]),
+    strap,
+  );
+  thread(
+    bag,
+    brass,
+    [
+      [-0.019, -0.031, 0.046],
+      [-0.014, -0.039, 0.048],
+      [-0.004, -0.043, 0.048],
+      [0.009, -0.037, 0.048],
+    ],
+    0.0007,
+  );
+  oval(bag, brass, -0.004, -0.036, 0.048, 0.0036, 0.0036, 0.0015);
   // A slotted inside divider and hem surround the stash compartment at the mouth.
   thread(
     bag,
@@ -507,6 +531,7 @@ export function makeRomaFieldKit(rig, materials, tools) {
     direction.set(point.x * 0.44, (0.05 + crown) * 0.105, point.z).normalize();
   }
   const profile = Array.from({ length: 9 }, (_, i) => [Math.cos((TAU * i) / 8), Math.sin((TAU * i) / 8)]);
+  const padRails = [null, ...belts.map((b) => b.centers)];
   return {
     fit(torso, bind, supportLower, padSupport) {
       if (!wristFit) wristFit = braceletGroups.map((g) => bindBracelet(torso[2], g));
@@ -536,6 +561,12 @@ export function makeRomaFieldKit(rig, materials, tools) {
           point.y += 0.006 * hood;
           point.z -= 0.007 * hood;
           supportLower(point);
+          // The front harness tabs cross the jacket's two pressed waist seams.
+          // Ease their lower faces over the ridges as the torso twists.
+          if (point.z > 0.035) {
+            const waist = 1 - T.MathUtils.smoothstep(Math.abs(point.y), 0.012, 0.045);
+            point.z += 0.007 * waist;
+          }
         }
         for (let i = 0; i < centers.length; i++) centers[i].copy(belt.points[3 * i + 1]);
         for (let i = 0; i < centers.length; i++) {
@@ -563,6 +594,7 @@ export function makeRomaFieldKit(rig, materials, tools) {
       }
     },
     settlePads(sling, normals) {
+      padRails[0] = sling;
       for (const pad of pads) {
         const geo = pad.mesh.geometry,
           pos = geo.attributes.position,
@@ -573,23 +605,27 @@ export function makeRomaFieldKit(rig, materials, tools) {
             col = i % 7,
             row = Math.floor(i / 7);
           const bevel = Math.max(1 - Math.min(col, 6 - col), 1 - Math.min(row, 13 - row), 0);
-          let z = seat.z - 0.0015 - 0.003 * bevel;
+          // Lower binding turns up before the hip belt, including in a deep bank.
+          const hem = 1 - T.MathUtils.smoothstep(p.y, -0.058, -0.029);
+          let z = seat.z - 0.0015 - 0.003 * bevel - 0.013 * hem;
           // The sling is sandwiched between the padding and jacket. Compress
           // only the leather below the narrow strip, retaining the pad either side.
-          for (let j = 1; j < sling.length; j++) {
-            const a = sling[j - 1],
-              b = sling[j];
-            if (a.z > -0.035 && b.z > -0.035) continue;
-            const dx = b.x - a.x,
-              dy = b.y - a.y,
-              denom = dx * dx + dy * dy;
-            const t =
-              denom > 1e-12 ? T.MathUtils.clamp(((p.x - a.x) * dx + (p.y - a.y) * dy) / denom, 0, 1) : 0;
-            const d = Math.hypot(p.x - a.x - t * dx, p.y - a.y - t * dy);
-            if (d >= 0.025) continue;
-            const w = 1 - T.MathUtils.smoothstep(d, 0.013, 0.025);
-            const space = a.z + t * (b.z - a.z) - 0.006;
-            if (space < z) z += w * (space - z);
+          for (const rail of padRails) {
+            for (let j = 1; j < rail.length; j++) {
+              const a = rail[j - 1],
+                b = rail[j];
+              if (a.z > -0.035 && b.z > -0.035) continue;
+              const dx = b.x - a.x,
+                dy = b.y - a.y,
+                denom = dx * dx + dy * dy;
+              const t =
+                denom > 1e-12 ? T.MathUtils.clamp(((p.x - a.x) * dx + (p.y - a.y) * dy) / denom, 0, 1) : 0;
+              const d = Math.hypot(p.x - a.x - t * dx, p.y - a.y - t * dy);
+              if (d >= 0.025) continue;
+              const w = 1 - T.MathUtils.smoothstep(d, 0.013, 0.025);
+              const space = a.z + t * (b.z - a.z) - 0.008;
+              if (space < z) z += w * (space - z);
+            }
           }
           pos.setXYZ(i, p.x, p.y, z);
           pos.setXYZ(i + count, p.x, p.y, Math.min(z - 0.002, -0.103));
@@ -603,20 +639,22 @@ export function makeRomaFieldKit(rig, materials, tools) {
       outward(center, normal);
       for (const belt of belts) {
         for (let i = 1; i < belt.centers.length; i++) {
-          const a = belt.centers[i - 1],
-            b = belt.centers[i];
-          tangent.subVectors(b, a);
-          const len = tangent.lengthSq();
-          if (len < 1e-10) continue;
-          const t = T.MathUtils.clamp(unit.subVectors(center, a).dot(tangent) / len, 0, 1);
-          unit.copy(a).addScaledVector(tangent, t);
-          across.subVectors(center, unit);
-          const distance = across.lengthSq();
-          if (distance > 0.027 * 0.027) continue;
-          const above = across.dot(normal),
-            lateral = Math.sqrt(Math.max(0, distance - above * above));
-          const rise = 0.009 * (1 - T.MathUtils.smoothstep(lateral, 0.013, 0.025));
-          if (above < rise) center.addScaledVector(normal, rise - above);
+          for (let edge = 0; edge < 3; edge++) {
+            const a = belt.points[3 * (i - 1) + edge],
+              b = belt.points[3 * i + edge];
+            tangent.subVectors(b, a);
+            const len = tangent.lengthSq();
+            if (len < 1e-10) continue;
+            const t = T.MathUtils.clamp(unit.subVectors(center, a).dot(tangent) / len, 0, 1);
+            unit.copy(a).addScaledVector(tangent, t);
+            across.subVectors(center, unit);
+            const distance = across.lengthSq();
+            if (distance > 0.027 * 0.027) continue;
+            const above = across.dot(normal),
+              lateral = Math.sqrt(Math.max(0, distance - above * above));
+            const rise = 0.011 * (1 - T.MathUtils.smoothstep(lateral, 0.009, 0.022));
+            if (above < rise) center.addScaledVector(normal, rise - above);
+          }
         }
       }
     },

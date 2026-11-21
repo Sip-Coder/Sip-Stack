@@ -177,10 +177,10 @@ function turnedHem(cloth, count, closed, material, name) {
   return { edge, update };
 }
 
-// Cross-sections of the animated skirt in hip space. For each jacket vertex,
-// intersect its radial plane with the actual skirt triangles and take the
+// Cross-sections of the knitted waistband in hip space. For each jacket vertex,
+// intersect its radial plane with the actual waistband triangles and take the
 // outermost piece of fabric at that height. A small interval also protects
-// the span between adjacent jacket vertices when the knees lift the skirt.
+// the span between adjacent jacket vertices when the wearer crouches.
 function radialEnvelope(garment) {
   const positions = garment.geometry.attributes.position,
     index = garment.geometry.index?.array ?? Uint32Array.from({ length: positions.count }, (_, i) => i);
@@ -284,7 +284,7 @@ function radialEnvelope(garment) {
 // Seat the upper strap on the actual neckline, back and turning shoulder.
 // Bind the rail to cloth triangles once per detail level. Each fixed step then
 // follows only three posed vertices per guide, including during a high reach.
-function bindShoulderRail(chest, layers, guides, outward, standOff = 0.0115) {
+function bindShoulderRail(cache, chest, layers, guides, outward, standOff = 0.0115) {
   const chestInverse = chest.matrixWorld.clone().invert();
   const bindShapes = layers.map((mesh) => mesh.geometry);
   const sample = new T.Vector3(),
@@ -303,6 +303,16 @@ function bindShoulderRail(chest, layers, guides, outward, standOff = 0.0115) {
       mesh.updateWorldMatrix(true, false);
       xform.multiplyMatrices(chestInverse, mesh.matrixWorld);
       const g = mesh.geometry;
+      let shapes = cache.get(mesh);
+      if (!shapes) {
+        shapes = new Map();
+        cache.set(mesh, shapes);
+      }
+      const existing = shapes.get(g);
+      if (existing) {
+        existing.visited.fill(0);
+        return existing;
+      }
       const xyz = new T.BufferAttribute(new Float32Array(g.attributes.position.count * 3), 3);
       const limb = new Uint8Array(xyz.count);
       const joint = g.attributes.skinIndex,
@@ -347,7 +357,9 @@ function bindShoulderRail(chest, layers, guides, outward, standOff = 0.0115) {
           slabs.get(band).push(j);
         }
       }
-      return { mesh, xyz, index: idx, limb, slabs, bounds, visited, resolution };
+      const surface = { mesh, xyz, index: idx, limb, slabs, bounds, visited, resolution };
+      shapes.set(g, surface);
+      return surface;
     });
     const contacts = guides.map((point, guideId) => {
       if (outward) outward(point, direction);
@@ -446,7 +458,7 @@ function bindShoulderRail(chest, layers, guides, outward, standOff = 0.0115) {
 }
 
 // The inside face of the right sleeve passes the bag hardware as the arm
-// starts swinging. Track its actual satin surface in each visible pattern and
+// starts swinging. Track its actual jacket surface in each visible pattern and
 // give the nearby width of the leather room to turn over the brass ring.
 function bindCuffFacing(mesh, chest) {
   const rest = new T.Vector3(-0.127, 0.435, -0.005);
@@ -553,9 +565,20 @@ function bindCargoHip(hips, cargo) {
   };
 }
 
-export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, silk, torsoLayers, cargo, kit) {
+export function fitRomaAccessories(
+  rig,
+  bag,
+  hoodieHem,
+  jacket,
+  leather,
+  lining,
+  knit,
+  torsoLayers,
+  cargo,
+  kit,
+) {
   const fitCuff = bindCuffFacing(torsoLayers[0], rig.chest);
-  const envelope = radialEnvelope(skirt);
+  const envelope = radialEnvelope(hoodieHem);
   const cargoHip = bindCargoHip(rig.hips, cargo);
   const jacketEnvelope = radialEnvelope(jacket);
   const chestToJacket = new T.Matrix4(),
@@ -570,7 +593,7 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
   const bagSupportHeights = [-0.08, -0.048, -0.016];
   const bagSupportAngles = [-0.22, 0, 0.27];
   const belt = rig.hips.children.find((child) => child.isMesh && child.material === leather);
-  const harnessSupport = [...torsoLayers, jacket, skirt, belt];
+  const harnessSupport = [...torsoLayers, jacket, hoodieHem, belt];
   const padSupport = [...harnessSupport, cargo];
   belt.updateMatrix();
   const beltGeometry = belt.geometry.clone().applyMatrix4(belt.matrix);
@@ -587,7 +610,7 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
   const samples = 49;
   const geometry = stripGeometry(samples, section.length, true);
   const strap = mesh(rig.chest, geometry, saddleStitch(leather), 'Roma stitched saddle strap');
-  const hem = turnedHem(skirt, 64, true, silk, 'Roma turned dress hem');
+  const hem = turnedHem(hoodieHem, 64, true, knit, 'Roma rib-knit hem facing');
   const jacketHem = turnedHem(jacket, 41, false, lining, 'Roma jacket hem facing');
   const positions = geometry.attributes.position;
   const chestToBag = new T.Matrix4(),
@@ -599,6 +622,10 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
   const minimumDistance = new Float32Array(samples);
   const bearing = centers.map(() => new T.Vector3());
   const bearingNormal = centers.map(() => new T.Vector3());
+  // All five rails bind in the same pose. Share their temporary triangle grids,
+  // then release the grids once each rail owns its exact triangle witnesses.
+  const bindGrid = new Map();
+  const bindRail = bindShoulderRail.bind(null, bindGrid);
   let shoulderRail;
   const targetPoint = new T.Vector3();
   const tangent = new T.Vector3(),
@@ -654,7 +681,7 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
     hipsToJacket.copy(jacketToHips).invert();
     envelope.refresh();
     cargoHip.update();
-    // The waist belt and the skirt move with the pelvis. Fit the lower jacket
+    // The waist belt and the hoodie hem move with the pelvis. Fit the lower jacket
     // to their posed cross-sections, so its weighted hem can pass over either.
     freePosition.set(lowerPositions);
     let coatMoved = false;
@@ -663,11 +690,14 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
       const a = Math.atan2(shellPoint.x, shellPoint.z),
         r = Math.hypot(shellPoint.x, shellPoint.z);
       const beltRadius = beltSections.radius(shellPoint.y, a, 0.024);
-      const skirtRadius = envelope.radius(shellPoint.y, a, 0.012);
-      // The accelerating skirt lifts a shallow pocket of air under the loose
+      const knitRadius = envelope.radius(shellPoint.y, a, 0.012);
+      // The accelerating hoodie hem lifts a shallow pocket of air under the loose
       // back quarters. The sewn waist receives no extra ease.
-      const tail = T.MathUtils.smoothstep(-shellPoint.z, 0.012, 0.065) * (1 - Math.floor(i / 41) / 3);
-      const outside = Math.max(r, skirtRadius + 0.007, beltRadius + 0.0065) + tail * tailLift;
+      const free = 1 - Math.floor(i / 41) / 3;
+      const tail = T.MathUtils.smoothstep(-shellPoint.z, .012, .065);
+      const placket = T.MathUtils.smoothstep(shellPoint.z, .012, .048);
+      const outside = Math.max(r, knitRadius + .007, beltRadius + .0065) +
+        Math.max(tail, .64 * placket) * free * tailLift;
       if (r < outside && r > 0.001) {
         shellPoint.x *= outside / r;
         shellPoint.z *= outside / r;
@@ -682,7 +712,7 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
     chestToJacket.copy(jacket.matrixWorld).invert().multiply(rig.chest.matrixWorld);
     jacketToChest.copy(chestToJacket).invert();
     // The pouch rests against the back of the hip. Lift it away only when the
-    // moving skirt actually fills that space, keeping the load under its strap.
+    // moving waist layers actually fill that space, keeping the load under its strap.
     inv.copy(rig.hips.matrixWorld).invert();
     rig.handR.getWorldPosition(v).applyMatrix4(inv);
     const bagAngle = -1.53;
@@ -776,8 +806,11 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
     // The contact reads the skinned triangles before the renderer's own
     // traversal. Refresh both bones and attached bind-matrix inverses here.
     rig.root.updateMatrixWorld(true);
-    kit?.fit(harnessSupport, bindShoulderRail, supportHarness, padSupport);
-    if (!shoulderRail) shoulderRail = bindShoulderRail(rig.chest, torsoLayers, centers);
+    kit?.fit(harnessSupport, bindRail, supportHarness, padSupport);
+    if (!shoulderRail) {
+      shoulderRail = bindRail(rig.chest, torsoLayers, centers);
+      bindGrid.clear();
+    }
     shoulderRail.refresh();
     // Leather has enough bending stiffness to bridge a fold in the shell. Relax
     // both ends of the shoulder strap as continuous curves, preserving the two
@@ -811,15 +844,15 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
       for (let i = 1; i < samples - 1; i++) centers[i].copy(relaxed[i]);
     }
     // Seat the upper length against the moving shoulder. Under the waist it
-    // rests on the draped skirt and slung pouch as the forearm swings beside it.
+    // rests on the knit waistband and slung pouch as the forearm swings beside it.
     for (let row = 1; row < samples - 1; row++) {
       const center = centers[row];
       if (!shoulderRail.seat(row, center) || center.z < 0) continue;
-      // At the folded lapel the leather bridges both silk plies. The bearing
+      // At the front of the jacket the leather bridges the placket and hood. The bearing
       // surface turns sharply along this line, so ease that span forward.
-      const lapel =
+      const collarEase =
         T.MathUtils.smoothstep(center.y, 0.034, 0.057) * (1 - T.MathUtils.smoothstep(center.y, 0.089, 0.113));
-      center.z += 0.015 * lapel;
+      center.z += 0.015 * collarEase;
     }
     for (let pass = 0; pass < 3; pass++) {
       for (let i = 1; i < samples - 1; i++) {
@@ -828,11 +861,11 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
         v.copy(center).applyMatrix4(chestToHips);
         let angle = Math.atan2(v.x, v.z),
           r = Math.hypot(v.x, v.z);
-        const underdress =
+        const waistClearance =
           Math.max(envelope.radius(v.y, angle, 0.02), beltSections.radius(v.y, angle, 0.012)) + 0.009;
-        if (r < underdress && r > 0.001) {
-          v.x *= underdress / r;
-          v.z *= underdress / r;
+        if (r < waistClearance && r > 0.001) {
+          v.x *= waistClearance / r;
+          v.z *= waistClearance / r;
           center.copy(v).applyMatrix4(hipsToChest);
         }
         v.copy(center).applyMatrix4(chestToJacket);
@@ -867,8 +900,8 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
       }
       for (let i = 1; i < samples - 1; i++) centers[i].copy(relaxed[i]);
     }
-    // A strongly tucked knee can lift the skirt through the chord between
-    // two bearings; re-seat that local span on the crease of the dress.
+    // A strongly tucked knee can lift the cargo leg through the chord between
+    // two bearings; re-seat that local span on the trouser crease.
     for (let i = 1; i < samples - 1; i++) {
       const center = centers[i];
       if (center.y > 0.042) continue;

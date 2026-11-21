@@ -3,28 +3,28 @@
 // long curls that already pick up the motion of a passing shoulder.
 const shoulderCoupling = {
   right: [
-    1.554, 1.514, 0.849, 1.034, 0.604, 0.986, 0.716, 0.573,
-    0.694, 0.516, 1.197, 1.28, 0.773, 0.676, 0.826, 0.803,
-    1.084, 0.839, 0.649, 1.107, 2.018, 2.173, 1.359, 1.559,
-    1.641, 2.041, 1.663, 0.66, 0.628, 0.642, 3.113, 2.782,
-    0.875, 0.547, 1.91, 2.555, 1.953, 1.141, 0.958, 1.39,
-    1.182, 3.514,
+    1.554, 0.356, 0.322, 1.293, 0.604, 0.986, 0.716, 0.573,
+    0.694, 0.516, 1.197, 1.28, 0.773, 0.676, 1.152, 0.803,
+    1.084, 0.639, 1.44, 0.609, 1.323, 0.217, 0.992, 0.347,
+    0.471, 1.08, 1.264, 0.112, 0.745, 0.563, 3.113, 1.759,
+    1.44, 0.684, 0.783, 1.917, 1.953, 1.141, 1.824, 1.39,
+    1.724, 2.217,
   ],
   left: [
     1.099, 0.93, 1.236, 0.874, 0.827, 0.877, 0.417, 0.706,
     0.738, 0.919, 0.838, 0.697, 0.706, 1.464, 0.873, 0.791,
-    0.559, 0.82, 1.24, 1.403, 1.448, 0.981, 2.135, 2.367,
-    1.673, 1.749, 0.803, 0.486, 1.089, 1.036, 1.907, 1.83,
-    0.526, 1.052, 2.519, 2.356, 1.359, 0.772, 1.304, 1.874,
-    0.653, 1.894,
+    0.624, 1.408, 1.08, 0.868, 0.109, 0.372, 0.366, 2.367,
+    1.673, 1.189, 0.988, 0.486, 1.426, 2.693, 1.997, 1.904,
+    0.663, 1.659, 1.234, 2.356, 0.849, 1.861, 1.794, 0.32,
+    1.334, 2.381,
   ],
 };
 
 // The nape rests against the layered, moving hood. Its supported coils
 // have different free lengths than the face-framing and crown regions.
 const napeFlex = {
-  right: {19: 2.075, 20: 1.536, 21: 2.851, 22: 1.744, 23: 1.777, 24: 3.336, 25: 3.44, 26: 1.609, 29: 0.514, 34: 1.098, 35: 1.406, 39: 3.344},
-  left: {20: 1.984, 22: 3.333, 23: 3.767, 24: 3.431, 25: 3.419, 31: 3.015, 34: 1.476, 35: 1.368, 36: 1.512, 39: 2.231},
+  right: {1: 0.104, 17: 0.259, 18: 1.817, 19: 0.724, 20: 1.061, 21: 0.143, 23: 0.089, 24: 0.291, 30: 0.927, 31: 0.511, 32: 1.7, 36: 7.473, 38: 3.15, 39: 1.475, 41: 0.915},
+  left: {1: 0.221, 18: 0.639, 19: 0.696, 20: 0.675, 21: 0.042, 23: 1.318, 24: 0.652, 25: 0.957, 30: 0.506, 31: 1.839, 35: 2.794, 36: 1.935, 37: 5.627, 38: 3.15, 39: 0.112, 41: 1.508},
 };
 
 // The inner layer rests over the front of each shoulder. At running speed it
@@ -41,12 +41,20 @@ function runningHold(side, index, coupling) {
   return { pitch: 0, roll: -0.18 * side * wrap, coupling: 1 };
 }
 
+// Bundles against earring posts and the folds of the pack retain their tight
+// terminal turn. A loaded curl slides as a unit while its root bends.
+const retainedTurns = {
+  right: new Set([3, 4, 22, 26, 33, 34, 35]),
+  left: new Set([3, 7, 14, 25, 26, 32, 34]),
+};
+
 export function curlResponse(side, index, face) {
   const bank = side < 0 ? 'right' : 'left';
   // The shorter face locks and the springy nape layer bend more under a breath.
   const breathFlex = napeFlex[bank][index] ?? (face ? 0.98 : index >= 34 && index <= 38 ? 0.90 : 0.83);
   const coupling = (face ? 1.06 : 1.02) * shoulderCoupling[bank][index];
   return {
+    retainTurn: retainedTurns[bank].has(index),
     runningHold: runningHold(side, index, coupling),
     gaitCoupling: coupling,
     breathingBend: (face ? 0.016 : 0.019) * breathFlex,
@@ -58,9 +66,10 @@ export function curlResponse(side, index, face) {
 export function bindRunningHold(system, strands) {
   const held = [];
   for (let i = 0; i < strands.length; i++) {
+    const chain = system.chains[i];
+    if (strands[i].retainTurn) chain.freeNodes = chain.rest.map((node) => node.clone());
     const hold = strands[i].runningHold;
     if (!hold) continue;
-    const chain = system.chains[i];
     held.push({ chain, gaitGain: chain.gaitGain, ...hold });
   }
   const simulate = system.step;
