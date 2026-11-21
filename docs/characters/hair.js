@@ -3,7 +3,7 @@
 // All integration, length limits and skinning run on the controller's fixed clock.
 import * as T from 'three';
 import { ellipsoidFaceGuard } from './hair-support-faces.js';
-import { ribbonSpanConstraint } from './hair-ribbon-spans.js';
+import { ribbonTravel, ribbonSpanConstraint } from './hair-ribbon-spans.js';
 
 const v = () => new T.Vector3();
 const matrix = () => new T.Matrix4();
@@ -422,6 +422,8 @@ export function createHair(rig, colliders, { materialSlackM = 0 } = {}) {
       gaitCoupling = 1,
       sleeveRoute = null,
       contactSlide = null,
+      fineSpeedMps = 0,
+      coarseSpeedMps = 0,
     } = {},
   ) {
     if (points.length < 2) throw new Error('A hair guide needs a root and tip');
@@ -503,6 +505,9 @@ export function createHair(rig, colliders, { materialSlackM = 0 } = {}) {
     for (const surface of surfaces) {
       if (chain.faceGuards.length) surface.fitFaces = ellipsoidFaceGuard(surface);
       if (materialSlackM) surface.fitSpans = ribbonSpanConstraint(surface, group, materialSlackM);
+      if (coarseSpeedMps && surface.mesh.userData.mobileGeometry)
+        surface.coarseTravel = ribbonTravel(surface, surface.mesh.userData.mobileGeometry, coarseSpeedMps);
+      if (fineSpeedMps) surface.fineTravel = ribbonTravel(surface, surface.mesh.geometry, fineSpeedMps);
       surface.mesh.geometry.computeBoundingBox();
       for (let i = 0; i < surface.position.count; i++) {
         const j = surface.segment[i];
@@ -637,6 +642,8 @@ export function createHair(rig, colliders, { materialSlackM = 0 } = {}) {
       for (const s of chain.surfaces) {
         const geometry = s.mesh.geometry,
           box = geometry.boundingBox;
+        const travel = geometry === s.mesh.userData.mobileGeometry ? s.coarseTravel : s.fineTravel;
+        travel?.begin(f.dt, restart);
         box.makeEmpty();
         for (let i = 0; i < s.position.count; i++) {
           const j = s.segment[i],
@@ -660,6 +667,7 @@ export function createHair(rig, colliders, { materialSlackM = 0 } = {}) {
         if (s.fitFaces || s.fitSpans) {
           for (let pass = 0; pass < 4; pass++) {
             let moved = s.fitSpans?.(geometry) ?? false;
+            if (travel?.adjust(box)) moved = true;
             for (const shape of chain.faceGuards) {
               if (shape.protectsFaces === 'coarse' && geometry !== s.mesh.userData.mobileGeometry) continue;
               if (s.fitFaces(shape, box)) moved = true;

@@ -862,6 +862,8 @@ export function buildRoma(rig) {
       maxOffset: strand.maxOffset,
       radius: strand.radius,
       contactSlide: strand.contactSlide,
+      fineSpeedMps: strand.fineSpeedMps,
+      coarseSpeedMps: strand.coarseSpeedMps,
     });
   }
   bindRunningHold(curlSystem, locks);

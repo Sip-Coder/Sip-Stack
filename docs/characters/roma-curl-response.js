@@ -93,6 +93,11 @@ export function curlResponse(side, index, face) {
       side < 0 && (index === 21 || index === 39)
         ? { role: index === 39 ? 'collar' : null, fraction: 0.2 }
         : null,
+    // This pair of long nape coils slips past the outer shoulder straps.
+    fineSpeedMps: index === 23 ? 3.3 : 0,
+    // On the coarse mesh these four tips cross a forearm or hood fold with
+    // fewer vertices to distribute the contact through the surrounding curl.
+    coarseSpeedMps: (side < 0 ? index === 1 || index === 18 || index === 38 : index === 23) ? 2.64 : 0,
     retainTurn: retainedTurns[bank].has(index),
     fittedTurn: fittedTurns[bank].has(index),
     runningHold: runningHold(side, index, coupling),

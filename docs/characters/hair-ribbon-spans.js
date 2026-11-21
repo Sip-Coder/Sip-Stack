@@ -69,3 +69,41 @@ export function ribbonSpanConstraint(surface, group, slackM) {
     return moved;
   };
 }
+// A curl can reach the other side of a folded strap in one contact update.
+// Carry its material toward the new solution at a finite physical speed,
+// then resolve the penultimate and final contacts on the same fixed tick.
+export function ribbonTravel(surface, geometry, speedMps) {
+  const indices = Uint32Array.from(new Set(geometry.index.array));
+  const previous = new Float32Array(surface.position.array.length);
+  const point = new T.Vector3(),
+    delta = new T.Vector3(),
+    metric = new T.Matrix3();
+  let limit = 0;
+  return {
+    begin(dt, restart) {
+      limit = restart ? 0 : dt * speedMps;
+      if (limit) previous.set(surface.position.array);
+      metric.setFromMatrix4(surface.mesh.matrixWorld);
+    },
+    adjust(box) {
+      if (!limit) return false;
+      const threshold2 = (limit + 0.00005) ** 2;
+      let moved = false;
+      for (const i of indices) {
+        const k = 3 * i;
+        point.fromBufferAttribute(surface.position, i);
+        const x = point.x - previous[k],
+          y = point.y - previous[k + 1],
+          z = point.z - previous[k + 2];
+        const distance2 = delta.set(x, y, z).applyMatrix3(metric).lengthSq();
+        if (distance2 <= threshold2) continue;
+        const f = limit / Math.sqrt(distance2);
+        point.set(previous[k] + x * f, previous[k + 1] + y * f, previous[k + 2] + z * f);
+        surface.position.setXYZ(i, point.x, point.y, point.z);
+        box.expandByPoint(point);
+        moved = true;
+      }
+      return moved;
+    },
+  };
+}
