@@ -1,3 +1,4 @@
+import { batchStaticMeshes } from '../life/static-batches.js';
 import { SCENE_M, m, scaleSpec } from '../life/scale.js';
 import { inspectCask } from '../life/tasks.js';
 import * as T from 'three';
@@ -336,6 +337,11 @@ export function cellar(scene, wood, rng) {
     for (const dz of [-0.11, 0.11]) box(hanger, lx + dx, ly, lz + dz, 0.024, 0.23, 0.024, iron);
   hanger.position.set(lx, 2.03, lz);
   for (const part of hanger.children) part.position.sub(hanger.position);
+  // The lantern swings around its own pivot. All the cooper's wood, iron
+  // bands and furnishings are rigid relative to the platform, including
+  // the casks themselves; their measurement frames remain in place.
+  batchStaticMeshes(hanger);
+  batchStaticMeshes(station, { exclude: new Set([hanger]), worldSpaceMaterials: new Set([wood]) });
   const cooper = worker(station, 7, SCENE_M.creek, 'Cooper');
   nav.place(cooper, 0.215, 0, -Math.PI / 2);
   // Keep the stave working arc in comfortable reach for this cooper's stature.

@@ -13,8 +13,10 @@ import { villageStairs } from '../life/stairs.js';
 import { peopleNav } from '../life/nav.js';
 import { m, SCENE_M, scaleSpec } from '../life/scale.js';
 import { villageLife } from '../life/village.js';
-import { cutter, crate, clothPanel, tableService } from '../life/harbor.js';
-import { wind } from '../life/forms.js';
+import { villageCanvas } from '../village/canvas.js';
+import { instanceRigidParts } from '../life/rigid-instances.js';
+import { batchStaticMeshes } from '../life/static-batches.js';
+import { cutter, crate, tableService } from '../life/harbor.js';
 import { primePeople, finishPeople, restorePeople } from '../life/scene-people.js';
 import { warmShaders } from './sip-warm.js';
 
@@ -360,7 +362,7 @@ function buildWorld(scene) {
   const R = rng(20261103);
   const nav = peopleNav(scene,'.vl-stage'), k = new Kit(nav), slab = new THREE.Group(), ks = new Kit(nav,slab);
   const kFor = x => (x >= 6 ? ks : k);
-  const dyn = { canvas: [] };
+  const dyn = {}, panels = [];
 
   // strata under everything (the cutaway block)
   k.box(-10, 10, -3, -2.1, -10, 10, C.bed);
@@ -650,10 +652,8 @@ function buildWorld(scene) {
   // The café awning follows the quay frontage in alternating woven panels.
   for(let i=0;i<13;i++) {
     const ax=-9.8+i*.34;
-    const panel=clothPanel(.343,.83,i%2?'#ece0c6':'#9a5141');
-    panel.position.set(ax,3.34,-1.38); panel.rotation.x=-1.38;scene.add(panel);dyn.canvas.push(panel);
-    const valance=clothPanel(.343,.115,i%2?'#e5d7bb':'#99513e');
-    valance.position.set(ax,3.21,-.986);scene.add(valance);dyn.canvas.push(valance);
+    panels.push([ax,3.34,-1.38,.343,.83,-1.38,0,i%2?'#ece0c6':'#9a5141'],
+      [ax,3.21,-.986,.343,.115,0,0,i%2?'#e5d7bb':'#99513e']);
   }
   table(-8.6, .35, true); table(-8.3, -.85, true); table(-6.6, .5, false); table(-6.75, -.9, true);
   k.tag='lamp';
@@ -675,20 +675,26 @@ function buildWorld(scene) {
   for (const [x, z] of [[3.15, 3], [4.45, 4.5], [6, 6.85], [8, 6.85], [9.15, 5.75]]) k.cyl(x, 1.15, z, .1, .3, '#3d3b38');
   for (let i = 0; i < 5; i++) k.box(4.6, 4.66, .2 + i * .18, .23 + i * .18, 3.6, 4.0, '#6b5a45');
   k.measure('lamp post',[2.8,null,null],'Pier lamp post',()=>k.cyl(4.4,1.85,6.75,metres(.05),metres(2.8),'#2f2f2c')); k.push('lamp', [4.4, 2.75, 6.75], [.11, .11, .11], '#fff');
-  for (const [x, z] of [[3.05, 2.6], [4.55, 3.0], [5.6, 7.05], [7.6, 7.05]]) { const t = new THREE.Mesh(new THREE.TorusGeometry(.17, .06, 6, 14), M.std); t.material = new THREE.MeshStandardMaterial({ color: '#222', roughness: .9 }); t.position.set(x, .7, z); t.rotation.y = Math.abs(x - 3.05) < .1 || Math.abs(x - 4.55) < .1 ? PI / 2 : 0; scene.add(t); }
+  const fenders = new THREE.Group(), rubber = new THREE.MeshStandardMaterial({color:'#222',roughness:.9});
+  for (const [x, z] of [[3.05,2.6],[4.55,3.0],[5.6,7.05],[7.6,7.05]]) {
+    const tire=new THREE.Mesh(new THREE.TorusGeometry(.17,.06,6,14),rubber);
+    tire.position.set(x,.7,z); tire.rotation.y=z<4?PI/2:0;
+    fenders.add(tire);
+  }
+  batchStaticMeshes(fenders);
+  scene.add(fenders);
 
   k.tag=null;
   // laundry lines
-  dyn.laundry = [];
   const line = (xa, xb, y, z) => {
     k.box(xa, xb, y - .01, y + .01, z - .01, z + .01, '#efe8dc');
     for (let x = xa + .3; x < xb - .2; x += .42) {
-      const p = new THREE.Group(); p.position.set(x, y, z);
-      const cl = clothPanel(.28,.36,['#f4f1ea','#9fc3d6','#e7b3a3','#d8e6da','#e9d58f'][Math.floor(R()*5)]);
-      cl.position.y = -.2; cl.castShadow = true; p.add(cl); scene.add(p); dyn.laundry.push(p);
+      panels.push([x,y,z,.28,.36,0,1,['#f4f1ea','#9fc3d6','#e7b3a3','#d8e6da','#e9d58f'][Math.floor(R()*5)]]);
     }
   };
   line(-9.7, -4.8, 5.9, -1.55); line(-6.4, -3.1, 8.5, -4.55); line(-5.2, -.8, 10.6, -7.6);
+
+  villageCanvas(scene,panels);
 
   const registerRow = (z,y) => {
     if(y<7) nav.box('vine row',6.1,z,3.92,.17,y,y+.88);
@@ -744,10 +750,13 @@ function buildWorld(scene) {
   dyn.caseBoat = dyn.boats[5].b;
   // buoys
   dyn.buoys = [];
+  const buoyShell = new THREE.Mesh(new THREE.LatheGeometry([[.035,-.155],[.075,-.11],[.096,-.04],[.091,.051],[.06,.1],[.025,.118]].map(([r,y])=>new THREE.Vector2(r,y)),16),
+    new THREE.MeshStandardMaterial({color:'#c66d37',roughness:.64}));
+  buoyShell.castShadow=buoyShell.receiveShadow=true;
+  const buoyBand = new THREE.Mesh(new THREE.CylinderGeometry(.095,.096,.031,16),
+    new THREE.MeshStandardMaterial({color:'#e8d8bf'}));
   for (const [x, z] of [[0, 8.9], [-4.3, 3.1], [7, 4.4], [-8.2, 8.3], [2.6, 5.2], [-1, 6], [6.4, 9.4]]) {
-    const m=new THREE.Group(),shell=new THREE.Mesh(new THREE.LatheGeometry([[.035,-.155],[.075,-.11],[.096,-.04],[.091,.051],[.06,.1],[.025,.118]].map(([r,y])=>new THREE.Vector2(r,y)),16),new THREE.MeshStandardMaterial({color:'#c66d37',roughness:.64}));
-    shell.castShadow=shell.receiveShadow=true;m.add(shell);
-    const band=new THREE.Mesh(new THREE.CylinderGeometry(.095,.096,.031,16),new THREE.MeshStandardMaterial({color:'#e8d8bf'}));m.add(band);
+    const m=new THREE.Group(); m.add(buoyShell.clone(),buoyBand.clone());
     m.position.set(x,.58,z);scene.add(m);scaleSpec(m,'village','buoy',[.45,.32,.32],'Mooring buoy '+(dyn.buoys.length+1));dyn.buoys.push(m);
   }
 
@@ -830,6 +839,7 @@ function buildWorld(scene) {
   // lamps (night)
   dyn.lamps = [[-5.4, 2.7, -1.0], [5.3, 4.4, -1.9], [4.4, 2.6, 6.6]].map(p => { const l = new THREE.PointLight('#ffc27a', 0, 9, 1.4); l.position.set(...p); scene.add(l); return l; });
 
+  dyn.syncHarbor = instanceRigidParts(scene,[...dyn.boats.map(boat=>boat.b),...dyn.buoys,...dyn.cases.map(c=>c.m)]);
   dyn.life=villageLife(scene,dyn.boats,swell,H,nav);
   return dyn;
 }
@@ -1186,6 +1196,7 @@ export function mountVillage(root, { onPin } = {}) {
     if(!warmed || renderer.getContext().isContextLost()) return;
     if(!state.orbit) pose(elapsed,camera,controls.target);
     else controls.update();
+    dyn.syncHarbor();
     lighting.captureSky(); post.render(); placePins();
     renderer.domElement.style.visibility='visible';status.hidden=true;
     finishPeople(renderer, scene, camera, post.target);
@@ -1217,12 +1228,6 @@ export function mountVillage(root, { onPin } = {}) {
     d.sea.uniforms.oarWake.value.set(rowboat.position.x,rowboat.position.z,Math.cos(rowboat.rotation.y),-Math.sin(rowboat.rotation.y));
     for(const m of d.buoys)m.position.y=.56+swell(m.position.x,m.position.z,t);
     for(const c of d.cases)if(c.onBoat)c.obstacle.updateBounds();
-    for(const p of d.laundry){
-      p.rotation.x=wind(t,p.position.x,p.position.z)*.22;
-      p.children[0].userData.billow(t,p.position.x,p.position.z);
-    }
-    for(const p of d.canvas)p.userData.billow(t,p.position.x,p.position.z);
-
   }
   function frame() { if (running) animate(); }
 

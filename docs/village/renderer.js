@@ -2,7 +2,7 @@ import * as T from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
-import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
+import { depthLighting } from './depth-light.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
@@ -30,7 +30,8 @@ export function pipeline(renderer, scene, camera, sea, sun) {
   const composer = new EffectComposer(renderer, target);
   const beauty = new RenderPass(scene, camera);
   composer.addPass(beauty);
-  let ao, reflect;
+  const shadeOpaque = depthLighting(camera);
+  let opaque;
   const bloom = new UnrealBloomPass(new T.Vector2(1, 1), 0.16, 0.37, 1.28);
   const solarScreen = new T.Vector3();
   const grade = new ShaderPass({
@@ -74,9 +75,14 @@ export function pipeline(renderer, scene, camera, sea, sun) {
     width = 0,
     height = 0,
     pendingResize = true;
-  const detail = [];
+  const detail = [], clearFinishes = new Map(), transparentLayer = 1;
   scene.traverse((o) => {
     if (o.userData.detail) detail.push(o);
+    // Preserve the normal forward order: glass, spills and the wine are drawn
+    // over the water and the dry scene. Lights illuminate both layers.
+    if (o.isLight || o === sea.water || o.material?.transparent) o.layers.enable(transparentLayer);
+    if (o.material?.transparent && !clearFinishes.has(o.material))
+      clearFinishes.set(o.material, [o.material.colorWrite, o.material.depthWrite]);
   });
   function resize(w, h) {
     if (w > 0 && h > 0 && (width !== w || height !== h)) {
@@ -104,30 +110,20 @@ export function pipeline(renderer, scene, camera, sea, sun) {
     composer.setPixelRatio(ratio);
     composer.setSize(w, h);
     renderer.getDrawingBufferSize(size);
-    if (ao?.enabled) ao.setSize(Math.ceil(size.x * 0.58), Math.ceil(size.y * 0.58));
-    else ao?.setSize(1, 1);
+
     // UnrealBloomPass starts its mip chain at half the supplied resolution.
     bloom.setSize(size.x, size.y);
-    if (tier === 'High') reflect.setSize(Math.ceil(size.x * 0.5), Math.ceil(size.y * 0.5));
-    else reflect?.setSize(1, 1);
+    if (tier === 'Mobile') opaque?.setSize(1, 1);
+    else opaque.setSize(size.x, size.y);
   }
   function quality(next) {
     tier = next;
-    if (next !== 'Mobile' && !ao) {
-      ao = new SSAOPass(scene, camera, 1, 1, 12);
-      ao.kernelRadius = 0.69;
-      ao.minDistance = 0.0004;
-      ao.maxDistance = 0.014;
-      for (const rt of [ao.ssaoRenderTarget, ao.normalRenderTarget, ao.blurRenderTarget])
-        rt.texture.type = hdr;
-      composer.insertPass(ao, 1);
-    }
-    if (ao) ao.enabled = next !== 'Mobile';
-    if (next === 'High' && !reflect) {
-      reflect = new T.WebGLRenderTarget(1, 1, { type: hdr, depthTexture: new T.DepthTexture(1, 1) });
-      grade.uniforms.depthMap.value = reflect.depthTexture;
-      sea.uniforms.opaque.value = reflect.texture;
-      sea.uniforms.sceneDepth.value = reflect.depthTexture;
+    beauty.enabled = next === 'Mobile';
+    if (!beauty.enabled && !opaque) {
+      opaque = new T.WebGLRenderTarget(1, 1, { type: hdr, depthTexture: new T.DepthTexture(1, 1) });
+      grade.uniforms.depthMap.value = opaque.depthTexture;
+      sea.uniforms.opaque.value = opaque.texture;
+      sea.uniforms.sceneDepth.value = opaque.depthTexture;
     }
     sea.uniforms.useSSR.value = next === 'High';
     renderer.shadowMap.enabled = true;
@@ -156,11 +152,34 @@ export function pipeline(renderer, scene, camera, sea, sun) {
         grade.uniforms.sunUV.value.set(solarScreen.x * 0.5 + 0.5, solarScreen.y * 0.5 + 0.5);
         grade.uniforms.shafts.value = 0.055 * (1 - sea.uniforms.dusk.value);
       }
+    }
+    if (!beauty.enabled) {
       sea.water.visible = false;
-      renderer.setRenderTarget(reflect);
+      for (const material of clearFinishes.keys()) {
+        // Keep the original shadow caster (especially the held glass). Its
+        // translucent colour is composited only after drawing the water.
+        material.colorWrite = material.depthWrite = false;
+      }
+      renderer.setRenderTarget(opaque);
       renderer.clear();
       renderer.render(scene, camera);
       sea.water.visible = true;
+      for (const [material, mask] of clearFinishes) {
+        material.colorWrite = mask[0];
+        material.depthWrite = mask[1];
+      }
+      // Copy lit dry geometry and its exact depth once. Water now tests against
+      // that depth while sampling the independent colour/depth targets for SSR.
+      renderer.setRenderTarget(composer.readBuffer);
+      renderer.clear();
+      shadeOpaque(renderer, opaque);
+      const background = scene.background, layers = camera.layers.mask;
+      scene.background = null;
+      camera.layers.set(transparentLayer);
+      renderer.render(scene, camera);
+      camera.layers.mask = layers;
+      scene.background = background;
+      renderer.setRenderTarget(null);
     }
     composer.render();
   }

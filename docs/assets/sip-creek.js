@@ -328,8 +328,8 @@ export function mountCreek(root) {
     height = h;
     const ratio = Math.min(
       devicePixelRatio || 1,
-      [1, 1.35, 1.65][tier],
-      Math.sqrt([420000, 920000, 1800000][tier] / (w * h)),
+      [1, 1.1, 1.25][tier],
+      Math.sqrt([420000, 720000, 1200000][tier] / (w * h)),
     );
     renderer.setPixelRatio(ratio);
     renderer.setSize(w, h, false);
@@ -349,8 +349,9 @@ export function mountCreek(root) {
     if (wasMobile !== (tier === 0)) moodDirty = true;
     quality.options[0].textContent = 'Auto · ' + tiers[automaticTier(renderer, stage.clientWidth)];
     for (const { mesh, max, fractions } of densities) mesh.count = Math.ceil(max * fractions[tier]);
+    aa.enabled = tier > 0;
     renderer.shadowMap.enabled = tier > 0;
-    sun.shadow.mapSize.setScalar(tier === 2 ? 2048 : 1024);
+    sun.shadow.mapSize.setScalar(tier === 2 ? 1024 : 512);
     sun.shadow.map?.dispose();
     sun.shadow.map = null;
     renderer.shadowMap.needsUpdate = true;

@@ -112,6 +112,7 @@ export function makePipeline(renderer, land, water, camera, opaque, u) {
       composer.render(dt);
     },
     size(w, h, mobile) {
+      aa.enabled = !mobile;
       composer.setSize(w, h);
       opaque.setSize(w, h);
       base.base.material.uniforms.invSize.value.set(1 / w, 1 / h);

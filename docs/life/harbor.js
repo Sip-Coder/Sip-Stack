@@ -379,34 +379,38 @@ export function floatHull(g, t, height, weather = 0, offset = 0) {
   g.rotation.x = -Math.atan2(star - port, 0.66);
 }
 export function clothPanel(w, h, color, axis = 'hem') {
-  const geo = new T.PlaneGeometry(w, h, 10, 7),
-    pos = geo.attributes.position;
-  const rest = pos.array.slice(),
-    normal = geo.attributes.normal,
-    m = material(color),
-    o = new T.Mesh(geo, m);
-  o.castShadow = o.receiveShadow = true;
-  o.userData.billow = (t, x, z) => {
-    const gust = wind(t, x, z);
-    for (let i = 0; i < pos.count; i++) {
-      const k = i * 3,
-        u = rest[k] / w + 0.5,
-        v = 0.5 - rest[k + 1] / h,
-        weight = axis === 'flag' ? u : v;
-      const angle = u * 11 + v * 2 - t * 2,
-        ripple = 0.036 * Math.sin(angle),
-        slope = 0.036 * Math.cos(angle);
-      const size = axis === 'flag' ? w : h,
-        displacement = 0.12 * gust + ripple;
-      pos.setZ(i, weight * displacement * size);
-      const dx = (size / w) * (weight * 11 * slope + (axis === 'flag' ? displacement : 0));
-      const dy = (-size / h) * (weight * 2 * slope + (axis === 'hem' ? displacement : 0));
-      const inv = 1 / Math.hypot(dx, dy, 1);
-      normal.setXYZ(i, -dx * inv, -dy * inv, inv);
+  const geometry = new T.PlaneGeometry(w, h, 10, 7);
+  const uv = geometry.attributes.uv;
+  const flag = axis === 'flag', size = flag ? w : h;
+  geometry.morphTargetsRelative = true;
+  geometry.morphAttributes.position = [];
+  geometry.morphAttributes.normal = [];
+  // sin(a - t) = sin(a)cos(t) - cos(a)sin(t). The original traveling
+  // wave and its two tangent slopes are three fixed shapes on the GPU.
+  for (let shape = 0; shape < 3; shape++) {
+    const position = new Float32Array(3 * uv.count);
+    const normal = new Float32Array(3 * uv.count);
+    for (let i = 0; i < uv.count; i++) {
+      const u = uv.getX(i), v = 1 - uv.getY(i), phase = 11*u + 2*v;
+      const weight = flag ? u : v;
+      const lift = shape === 0 ? 0.12 : 0.036*(shape === 1 ? Math.sin(phase) : -Math.cos(phase));
+      const slope = shape === 0 ? 0 : 0.036*(shape === 1 ? Math.cos(phase) : Math.sin(phase));
+      position[3*i + 2] = size * weight * lift;
+      normal[3*i] = -size / w * (11 * weight * slope + (flag ? lift : 0));
+      normal[3*i+1] = size / h * (2 * weight * slope + (flag ? 0 : lift));
     }
-    pos.needsUpdate = normal.needsUpdate = true;
+    geometry.morphAttributes.position.push(new T.BufferAttribute(position,3));
+    geometry.morphAttributes.normal.push(new T.BufferAttribute(normal,3));
+  }
+  const panel = new T.Mesh(geometry, material(color));
+  panel.castShadow = panel.receiveShadow = true;
+  panel.userData.billow = (t, x, z) => {
+    const weights = panel.morphTargetInfluences;
+    weights[0] = wind(t,x,z);
+    weights[1] = Math.cos(t*2);
+    weights[2] = Math.sin(t*2);
   };
-  return o;
+  return panel;
 }
 
 // The fill meshes start at the bottoms of their bowls.

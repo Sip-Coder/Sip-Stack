@@ -1,3 +1,4 @@
+import { batchStaticMeshes } from '../life/static-batches.js';
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { seeded } from './sip-craft-sky.js';
@@ -486,6 +487,7 @@ export function buildHarbor(scene, u, grain) {
   });
   const fish = trout(scene, 8, 2.05, 3.83, (x, z, t) => hullWave(x, z, t, u.storm.value), 0.72, 'tidelight', 0.35);
   const insectsAtVines = insects(scene, 'butterfly', 5, [-3.1, 3.48, -2.49], [1.02, 0.22, 0.48], 'tidelight');
+  for (const hanger of lanterns) batchStaticMeshes(hanger);
   const dockhand = worker(scene,7,SCENE_M.tidelight,'Pier hand');
   nav.place(dockhand,1.64,2.54,.71);
   const guest = worker(scene,6,SCENE_M.tidelight,'Terrace taster');

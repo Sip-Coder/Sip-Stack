@@ -1,4 +1,5 @@
 import * as T from 'three';
+import { instanceRigidParts } from './rigid-instances.js';
 import { m, scaleSpec } from './scale.js';
 import { Sections, finish, mesh, smooth, sat, tau } from './forms.js';
 
@@ -356,6 +357,7 @@ export function flock(scene, { sceneKey, kind, count, center, radii, perch, obst
       head: root.getObjectByName('bird head'),
     });
   }
+  const updateParts = instanceRigidParts(scene, birds.map(bird => bird.root));
   let last = null;
   return (t, mobile = false, camera = null) => {
     const dt = last === null ? 0 : Math.min(0.1, Math.max(0, t - last));
@@ -436,5 +438,6 @@ export function flock(scene, { sceneKey, kind, count, center, radii, perch, obst
         );
       }
     }
+    updateParts();
   };
 }

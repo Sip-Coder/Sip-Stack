@@ -247,6 +247,7 @@ function sampleObjects(scene, key, unit, out, failures) {
       });
       o.updateWorldMatrix(true, true);
     }
+    o.userData.syncScaleInstances?.(o);
     const instances =
       o.isInstancedMesh && !o.userData.scaleParts
         ? Array.from({ length: o.count }, (_, i) => i)
@@ -294,6 +295,7 @@ function sampleObjects(scene, key, unit, out, failures) {
     }
     for (const [p, q] of wings) p.quaternion.copy(q);
     if (wings.length) o.updateWorldMatrix(true, true);
+    o.userData.syncScaleInstances?.();
   });
   out.inventory = {};
   for (const [kind, minimum] of Object.entries(inventory[key])) {
