@@ -32,6 +32,7 @@ function makeCapsules(rig, build, waist) {
     (_, i) => segments.findIndex((v) => v.name === (i ? 'right foot' : 'left foot')) * 8,
   );
   const names = segments.map((v) => v.name);
+  grid.legOffsets = segments.flatMap((s, i) => (/pelvis|thigh|shin/.test(s.name) ? [8 * i] : []));
   let mass = 0;
   for (let i = 0; i < segments.length; i++) {
     const s = segments[i];

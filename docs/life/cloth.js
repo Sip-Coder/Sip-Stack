@@ -128,6 +128,98 @@ export function warmGarmentMesh() {
   return mesh;
 }
 
+// The four corners of a cloth cell must clear the same side of a leg.
+// Independent vertex projections alone let a triangle cut through a raised
+// knee even when each of its vertices is outside. Its supporting plane is
+// needed only through the vertical interval spanned by that cell.
+function legDrape(cols, rows, wrapped) {
+  const cells = wrapped ? cols : cols - 1;
+  const step = (wrapped ? TAU : 2.7) / cells;
+  const outward = new Float64Array(2 * cols),
+    normals = new Float64Array(2 * cells);
+  const extension = new Float64Array(cols * rows);
+  const rest = new Float64Array(2 * cols);
+  for (let c = 0; c < cols; c++) {
+    const angle = c * step - (wrapped ? 0 : 1.35);
+    rest[2 * c] = Math.sin(angle);
+    rest[2 * c + 1] = Math.cos(angle);
+  }
+  const halfCos = Math.cos(step / 2),
+    halfSin = Math.sin(step / 2);
+  function orient(matrix) {
+    const e = matrix.elements;
+    const length = Math.hypot(e[8], e[10]);
+    const sin = length > 1e-8 ? e[8] / length : 0;
+    const cos = length > 1e-8 ? e[10] / length : 1;
+    for (let c = 0; c < cols; c++) {
+      const x = cos * rest[2 * c] + sin * rest[2 * c + 1],
+        z = cos * rest[2 * c + 1] - sin * rest[2 * c];
+      outward[2 * c] = x;
+      outward[2 * c + 1] = z;
+      if (c < cells) {
+        normals[2 * c] = halfCos * x + halfSin * z;
+        normals[2 * c + 1] = halfCos * z - halfSin * x;
+      }
+    }
+  }
+  function fit(points, capsules, legOffsets) {
+    extension.fill(0);
+    for (let r = 0; r + 1 < rows; r++)
+      for (let c = 0; c < cells; c++) {
+        const a = r * cols + c,
+          b = r * cols + ((c + 1) % cols);
+        const lo = Math.min(
+          points[3 * a + 1],
+          points[3 * b + 1],
+          points[3 * (a + cols) + 1],
+          points[3 * (b + cols) + 1],
+        );
+        const hi = Math.max(
+          points[3 * a + 1],
+          points[3 * b + 1],
+          points[3 * (a + cols) + 1],
+          points[3 * (b + cols) + 1],
+        );
+        const nx = normals[2 * c],
+          nz = normals[2 * c + 1];
+        let limit = -Infinity;
+        for (let j = 0; j < legOffsets.length; j++) {
+          const k = legOffsets[j],
+            y = capsules[k + 1],
+            endY = capsules[k + 5],
+            dy = endY - y;
+          const r0 = capsules[k + 3],
+            r1 = capsules[k + 7],
+            radius = Math.max(r0, r1);
+          if (Math.max(y, endY) + radius < lo || Math.min(y, endY) - radius > hi) continue;
+          let from = 0,
+            to = 1;
+          if (Math.abs(dy) > 1e-8) {
+            const low = (lo - radius - y) / dy,
+              high = (hi + radius - y) / dy;
+            from = Math.max(0, Math.min(low, high));
+            to = Math.min(1, Math.max(low, high));
+          }
+          const start = nx * capsules[k] + nz * capsules[k + 2] + r0;
+          const slope =
+            nx * (capsules[k + 4] - capsules[k]) + nz * (capsules[k + 6] - capsules[k + 2]) + r1 - r0;
+          limit = Math.max(limit, start + slope * (slope > 0 ? to : from));
+        }
+        for (let j = 0; j < 4; j++) {
+          const i = (j & 1 ? b : a) + (j >> 1) * cols;
+          const extra = (limit + 0.0005 - nx * points[3 * i] - nz * points[3 * i + 2]) / halfCos;
+          extension[i] = Math.max(extension[i], extra);
+        }
+      }
+    for (let i = 0; i < extension.length; i++) {
+      const c = 2 * (i % cols);
+      points[3 * i] += extension[i] * outward[c];
+      points[3 * i + 2] += extension[i] * outward[c + 1];
+    }
+  }
+  return { orient, fit };
+}
+
 export function createPanel(root, kind, side, build, waist, color, anchorY) {
   const skirt = kind === 'skirt',
     apron = kind === 'apron',
@@ -247,11 +339,14 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
       neighbours[4 * i + 3] = 3 * (Math.min(rh - 1, r + 1) * rw + c);
     }
   }
+  const drape = skirt || apron ? legDrape(cols, rows, wrapped) : null;
+  const surface = wrapped ? new Float32Array(position.length) : renderPosition;
   let anchored = false,
     lastX = 0,
     lastY = 0,
     lastZ = 0;
   function anchor(m) {
+    drape?.orient(m);
     const e = m.elements;
     // Carry the sewing frame through changes in solved hip height (a stair
     // landing can lower the pelvis dramatically in a single animation sample).
@@ -347,12 +442,12 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
     }
   }
   function render(f, caps, bounds) {
-    for (let i = 0; i < nv; i++) {
-      const k = i * 3,
-        j = source[i];
-      for (let axis = 0; axis < 3; axis++)
-        renderPosition[k + axis] = previous[j + axis] + (position[j + axis] - previous[j + axis]) * f;
-      collide(renderPosition, k, caps, bounds, 0.003);
+    for (let i = 0; i < surface.length; i++) surface[i] = previous[i] + (position[i] - previous[i]) * f;
+    for (let k = 0; k < surface.length; k += 3) collide(surface, k, caps, bounds, 0.003);
+    drape?.fit(surface, caps, bounds.legOffsets);
+    if (wrapped) {
+      for (let i = 0; i < nv; i++)
+        for (let k = 0; k < 3; k++) renderPosition[3 * i + k] = surface[source[i] + k];
     }
     for (let i = 0; i < nv; i++) {
       const k = i * 3,
