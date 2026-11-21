@@ -66,7 +66,7 @@ function makeShape(spec, sleeveRoute) {
     node: spec.node,
     role: spec.role,
     localContact: spec.localContact === true,
-    protectsFaces: spec.protectsFaces === true,
+    protectsFaces: spec.protectsFaces,
     sleeveRoute: spec.sleeveJoint ? sleeveRoute : null,
     sleeveJoint: spec.sleeveJoint,
     restNormal: v(),
@@ -621,7 +621,10 @@ export function createHair(rig, colliders) {
         if (s.fitFaces) {
           for (let pass = 0; pass < 4; pass++) {
             let moved = false;
-            for (const shape of chain.faceGuards) if (s.fitFaces(shape, box)) moved = true;
+            for (const shape of chain.faceGuards) {
+              if (shape.protectsFaces === 'coarse' && geometry !== s.mesh.userData.mobileGeometry) continue;
+              if (s.fitFaces(shape, box)) moved = true;
+            }
             if (!moved || chain.faceGuards.length === 1) break;
           }
         }

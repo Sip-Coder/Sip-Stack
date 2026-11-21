@@ -11,15 +11,19 @@ const turn = 2 * Math.PI;
 const ease = T.MathUtils.smoothstep;
 const point = (x, y, z) => new T.Vector3(x, y, z);
 
-function indices(rings, sides, stride = 1, seal = true) {
+function indices(rings, sides, stride = 1, seal = true, contactFrom = rings) {
   const data = [];
-  for (let j = 0; j < rings; j += stride) {
+  for (let j = 0; j < rings;) {
+    // At the end of a rear curl, preserve the longitudinal bend over the
+    // pack handle. The mobile cross-section still uses half the samples.
+    const rowStep = j >= contactFrom ? 1 : stride;
     for (let i = 0; i < sides; i += stride) {
       const a = j * sides + i,
         b = j * sides + ((i + stride) % sides),
-        d = stride * sides;
+        d = rowStep * sides;
       data.push(a, b, a + d, b, b + d, a + d);
     }
+    j += rowStep;
   }
   if (!seal) return data;
   for (let i = stride; i < sides - stride; i += stride) {
@@ -81,14 +85,14 @@ function curlRibbon(curve, radius, outward, rings, sides, origin = point(0, 0, 0
   });
 }
 
-function addCurlMesh(group, geometry, material, rings, sides) {
+function addCurlMesh(group, geometry, material, rings, sides, restsOnPack = false) {
   const m = new T.Mesh(geometry, material);
   m.castShadow = m.receiveShadow = true;
   // Both index sets share the simulated attributes. Mobile draws half the
   // longitudinal and circumferential stations, including the same fine tip.
   const mobile = new T.BufferGeometry();
   for (const [key, attr] of Object.entries(geometry.attributes)) mobile.setAttribute(key, attr);
-  mobile.setIndex(indices(rings, sides, 2));
+  mobile.setIndex(indices(rings, sides, 2, true, restsOnPack ? Math.floor(rings * 0.75) : rings));
   mobile.computeBoundingBox();
   mobile.computeBoundingSphere();
   m.userData.mobileGeometry = mobile;
@@ -346,6 +350,7 @@ function shapeCurl(head, hair, side, i, inner = false) {
     hair[i % 5 === 0 ? 2 : i % 4 === 1 ? 0 : 1],
     40,
     10,
+    nape > 0,
   );
   if (!inner && i % 5 === 1) {
     const ridge = path.map((p, j) => {
@@ -369,6 +374,7 @@ function shapeCurl(head, hair, side, i, inner = false) {
       hair[3],
       32,
       6,
+      nape > 0,
     );
   }
   return {
@@ -439,7 +445,9 @@ export function bindHoodContacts(hood, hips) {
     node.name = 'Folded hood contact';
     node.matrixAutoUpdate = false;
     hips.add(node);
-    return { node, role: 'collar', localContact: true, center: [0, 0, 0], radii: [1, 1, 1] };
+    // The longer triangles of the coarse ribbon can span the fold between
+    // clear endpoints when the shoulder compresses during a roll.
+    return { node, role: 'collar', localContact: true, protectsFaces: 'coarse', center: [0, 0, 0], radii: [1, 1, 1] };
   });
   const tables = new Map();
   for (const g of [hood.geometry, hood.userData.mobileGeometry]) {
