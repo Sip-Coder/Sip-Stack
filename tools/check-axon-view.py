@@ -120,9 +120,12 @@ def check_layer_controls(page, section):
         opacity.press("Home")
         settle(page)
         assert opacity.input_value() == "0" and group.get_attribute("disabled") is not None
+        transparent = stage["frame_digest"](canvas)
         opacity.click()
         assert 0 < int(opacity.input_value()) < 100
         assert group.get_attribute("disabled") is None
+        settle(page)
+        assert stage["frame_digest"](canvas) not in (transparent, complete), layer
         opacity.press("End")
         assert opacity.input_value() == "100"
     settle(page)
