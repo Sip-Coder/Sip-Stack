@@ -43,3 +43,7 @@ python tools/benchmark-route-load.py --repo . --audit --output /tmp/ref-after.js
 python tools/compare-route-load.py /tmp/ref-before.json /tmp/ref-after.json
 python tools/check-character-ref-performance.py --output /tmp/ref-render-budget.json
 ```
+
+## Cost of opening the sheet
+
+A separate single-core Chromium 155 probe without a GL context measured the CPU work after opening Character Ref. Constructing Sippy Mobile’s complete production rig and preparing its reference data took 1.27 seconds, including a 737 ms main-thread task. Roma Mobile took 187 ms and Hummin Mobile took 940 ms. Extraction yields between batches, but a production builder can still pause interaction while constructing its geometry. First-visit Heros figures above exclude this deferred work. [Model-construction samples](model-construction.json)
