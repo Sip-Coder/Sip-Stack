@@ -8,6 +8,7 @@ export function fitPouches(rig, apron, m, parts) {
   function casework(name, x, y, z, angle, width, height, depth, base) {
     const frame = group(name === 'rearPack' ? rig.chest : apron.skirt, x, y, z);
     frame.rotation.y = angle;
+    frame.userData.dynamicPose = name !== 'rearPack';
     const radius = 0.004;
     const outline = new T.Shape();
     outline.moveTo(-width / 2 + radius, 0);
@@ -145,8 +146,10 @@ export function fitPouches(rig, apron, m, parts) {
     },
     0.0015,
   );
+  beltFace.userData.dynamicPose = true;
   apron.pairs.push({ outer: 'frontBelt', inner: 'apronSkirt' });
   const buckle = group(apron.skirt, 0, 0, 0);
+  buckle.userData.dynamicPose = true;
   const loop = [];
   for (let k = 0; k <= 36; k++) {
     const a = (2 * Math.PI * k) / 36;

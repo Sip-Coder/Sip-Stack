@@ -588,7 +588,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
       );
     }
     const pants = surfaces['trousers-' + side][0];
-    const pocket = addShell('cargo-pockets', pants.parent, m.trousers, 16, 18, () => [0, 0, 0]);
+    const pocket = tailoring.add('cargo-pockets', pants.parent, shell(16, 18, () => [0, 0, 0]), m.trousers, true);
     pocket.name = 'Sippy gusseted cargo pocket ' + side;
     pocket.material = [m.trousers, m.cargoSeam];
     const tagStitch = (g) => {
@@ -671,6 +671,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
       });
       out.needsUpdate = norm.needsUpdate = true;
       pocket.geometry.computeBoundingSphere();
+      tailoring.limbs['leg' + side].bind(pocket);
     });
     mesh(
       foot,
@@ -753,7 +754,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
     pack,
     drawcord,
     step,
-    fitPockets: () => {
+    bakeFit: () => {
       for (const fit of mobilePockets) fit();
       for (const fit of fitStraps) fit();
       fitPack();

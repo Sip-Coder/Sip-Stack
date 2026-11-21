@@ -173,7 +173,9 @@ function handField(x, y, z) {
 
 // Sample only the fingers at sculpt resolution. A horizontal slice at the
 // wrist supplies a single ordered ring that the forearm can sew directly.
+const handCache = new Map();
 function sculptHand(step) {
+  if (handCache.has(step)) return handCache.get(step);
   const limits = [
     [-0.027, 0.025],
     [-0.062, 0.005],
@@ -234,7 +236,9 @@ function sculptHand(step) {
         for (let q = inside * 16; triTable[q] !== -1; q += 3)
           indices.push(points[triTable[q]], points[triTable[q + 2]], points[triTable[q + 1]]);
       }
-  return { pos, indices, ring };
+  const shape = { pos, indices, ring };
+  handCache.set(step, shape);
+  return shape;
 }
 
 function orientedRing(indices, points) {
@@ -331,7 +335,7 @@ export function makeSippyBody(rig, skin) {
     }
   function build(mobile) {
     const n = mobile ? 24 : 40,
-      hand = sculptHand(mobile ? 0.00315 : 0.00235),
+      hand = sculptHand(mobile ? 0.0042 : 0.0032),
       pos = [],
       skinIndices = [],
       weights = [],
@@ -493,7 +497,7 @@ export function makeSippyBody(rig, skin) {
       );
     }
     const g = new T.BufferGeometry();
-    g.setAttribute('position', new T.Float32BufferAttribute(pos.flat(), 3).setUsage(T.DynamicDrawUsage));
+    g.setAttribute('position', new T.Float32BufferAttribute(pos.flat(), 3));
     g.setIndex(index);
     const uv = new Float32Array(pos.length * 2);
     for (let i = 0; i < pos.length; i++) {
@@ -508,20 +512,7 @@ export function makeSippyBody(rig, skin) {
     g.computeBoundingSphere();
     for (let i = 1; i < 7; i++)
       for (let j = 0; j < n; j++) hips.trunk.push({ i: trunk[i][j], y: chestShape[i][0] });
-    // Recalculate only the portions which slide on the pelvis and turn in
-    // the armscyes. Rigid hand detail and the axial limb normals stay on
-    // their bones and do not need to be regenerated every simulation tick.
-    const moving = new Set(
-      [...hips.trunk, ...hips.interior, ...hips.fork, ...caps.flatMap((c) => c.ring)].map((p) => p.i),
-    );
-    const faces = [];
-    for (let j = 0; j < index.length; j += 3)
-      if (moving.has(index[j]) || moving.has(index[j + 1]) || moving.has(index[j + 2]))
-        faces.push(index[j] * 3, index[j + 1] * 3, index[j + 2] * 3);
-    const offsets = Uint32Array.from(moving, (i) => i * 3),
-      touched = new Uint8Array(pos.length);
-    for (const i of moving) touched[i] = 1;
-    return { g, regions, knees, hips, caps, faces: Uint32Array.from(faces), offsets, touched };
+    return { g, regions, knees, hips, caps };
   }
   const high = build(false),
     mobile = build(true),
@@ -685,39 +676,24 @@ export function makeSippyBody(rig, skin) {
       }
     }
   }
-  function updateNormals({ g, faces, offsets, touched }) {
-    const p = g.attributes.position.array,
-      norm = g.attributes.normal,
-      n = norm.array;
-    for (const i of offsets) n[i] = n[i + 1] = n[i + 2] = 0;
-    for (let i = 0; i < faces.length; i += 3) {
-      const a = faces[i],
-        b = faces[i + 1],
-        c = faces[i + 2],
-        x1 = p[b] - p[a],
-        y1 = p[b + 1] - p[a + 1],
-        z1 = p[b + 2] - p[a + 2],
-        x2 = p[c] - p[a],
-        y2 = p[c + 1] - p[a + 1],
-        z2 = p[c + 2] - p[a + 2],
-        x = y1 * z2 - z1 * y2,
-        y = z1 * x2 - x1 * z2,
-        z = x1 * y2 - y1 * x2;
-      for (let j = i; j < i + 3; j++) {
-        const k = faces[j];
-        if (!touched[k / 3]) continue;
-        n[k] += x;
-        n[k + 1] += y;
-        n[k + 2] += z;
+  for (const shape of [high, mobile]) {
+    posePelvis(shape);
+    poseShoulders(shape);
+    shape.g.computeVertexNormals();
+    // Grade the covered skin bridges with the same end bones as the fitted costume.
+    const index = shape.g.attributes.skinIndex, weight = shape.g.attributes.skinWeight;
+    for (const cap of shape.caps) {
+      const w = T.MathUtils.smoothstep(cap.row / 10, 0, 1);
+      for (const {i} of cap.ring) {
+        index.setXY(i, 0, frames['arm' + cap.side] + armShape.length - 1);
+        weight.setXY(i, 1 - w, w);
       }
     }
-    for (const i of offsets) {
-      const inv = 1 / (Math.sqrt(n[i] * n[i] + n[i + 1] * n[i + 1] + n[i + 2] * n[i + 2]) || 1);
-      n[i] *= inv;
-      n[i + 1] *= inv;
-      n[i + 2] *= inv;
+    for (const v of shape.hips.interior) {
+      const w = T.MathUtils.smoothstep(v.sample / 14, 0, 1);
+      index.setXY(v.i, frames['leg' + v.side] + legShape.length - 1, 0);
+      weight.setXY(v.i, 1 - w, w);
     }
-    norm.needsUpdate = true;
   }
   return {
     mesh,
@@ -728,10 +704,7 @@ export function makeSippyBody(rig, skin) {
     },
     update() {
       for (const fn of updates) fn();
-      const shape = mesh.geometry === mobile.g ? mobile : high;
-      posePelvis(shape);
-      poseShoulders(shape);
-      updateNormals(shape);
+
     },
   };
 }

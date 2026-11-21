@@ -2,6 +2,7 @@
 // openings all the way round, and their upper edges join at the fly and
 // seat under one waistband. The rear vents are sewn to the back jacket row.
 import * as T from 'three';
+import { bindCloth } from './sippy-skin.js';
 import { shell } from './sippy-tailoring.js';
 
 const tau = Math.PI * 2,
@@ -141,6 +142,7 @@ export function fitHipSeams(suit) {
           true,
         ),
         leg.material,
+        true,
       );
     layer.name = 'sippy-seat-' + side;
     const geometry = layer.geometry;
@@ -183,7 +185,7 @@ export function fitHipSeams(suit) {
     tails.push({ m, sign, data: new Float32Array(total * 3) });
     seams.push(seam('tail-' + (sign === 1 ? 'L' : 'R'), m, 18 * count, count, false, jacket));
   }
-  return function () {
+  {
     chest.updateWorldMatrix(true, false);
     chestInv.copy(chest.matrixWorld).invert();
     const rp = rise.geometry.attributes.position,
@@ -356,5 +358,8 @@ export function fitHipSeams(suit) {
       }
       p.needsUpdate = true;
     }
-  };
+  }
+  for (const { layer, leg } of parts) {
+    bindCloth(layer, [leg.parent, chest], (i, g) => [0, 1, T.MathUtils.smoothstep(g.attributes.uv.getY(i), 0, 1)]);
+  }
 }

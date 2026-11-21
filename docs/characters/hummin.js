@@ -162,8 +162,8 @@ export function buildHummin(rig) {
     return node;
   };
   function oval(parent, mat, x, y, z, rx, ry, rz) {
-    const mesh = part(parent, new T.SphereGeometry(1, 24, 16), mat, x, y, z);
-    mesh.userData.mobileGeometry = new T.SphereGeometry(1, 12, 8);
+    const mesh = part(parent, new T.SphereGeometry(1, 18, 12), mat, x, y, z);
+    mesh.userData.mobileGeometry = new T.SphereGeometry(1, 10, 7);
     mesh.scale.set(rx, ry, rz);
     return mesh;
   }
@@ -171,7 +171,7 @@ export function buildHummin(rig) {
     const a = new T.Vector3(...start),
       b = new T.Vector3(...end);
     const axis = b.clone().sub(a);
-    const mesh = part(parent, new T.CylinderGeometry(capRadius, radius, axis.length(), 12), mat);
+    const mesh = part(parent, new T.CylinderGeometry(capRadius, radius, axis.length(), 8), mat);
     mesh.position.copy(a).lerp(b, 0.5);
     mesh.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), axis.normalize());
     return mesh;
@@ -184,7 +184,7 @@ export function buildHummin(rig) {
     );
     return part(
       parent,
-      new T.TubeGeometry(path, smooth ? Math.max(10, points.length * 4) : points.length, radius, 6, false),
+      new T.TubeGeometry(path, smooth ? Math.max(6, points.length * 2) : points.length, radius, 5, false),
       mat,
     );
   }
@@ -195,10 +195,10 @@ export function buildHummin(rig) {
     if (!cuff && rings.at(-1)[1] !== 0) rings.push([rings.at(-1)[0], 0]);
     const g = new T.LatheGeometry(
       rings.map(([h, r]) => new T.Vector2(r, h)),
-      32,
+      22,
     );
     const mesh = part(parent, g, mat, x, y, z);
-    mesh.userData.mobileGeometry = new T.LatheGeometry(g.parameters.points, 16);
+    mesh.userData.mobileGeometry = new T.LatheGeometry(g.parameters.points, 12);
     mesh.scale.z = depth;
     return mesh;
   }
@@ -221,7 +221,7 @@ export function buildHummin(rig) {
   }
   function pivot(parent, x, y, z, radius, thickness) {
     function disc(mat, r, length, offset) {
-      const disk = part(parent, new T.CylinderGeometry(r, r, length, 28), mat, x + offset, y, z);
+      const disk = part(parent, new T.CylinderGeometry(r, r, length, 18), mat, x + offset, y, z);
       disk.rotation.z = PI / 2;
       return disk;
     }
@@ -265,8 +265,8 @@ export function buildHummin(rig) {
     const p = [],
       uv = [],
       idx = [];
-    const steps = 88,
-      rings = 12;
+    const steps = 52,
+      rings = 8;
     for (let row = 0; row <= rings; row++) {
       const radius = row / rings;
       for (let i = 0; i <= steps; i++) {
@@ -419,6 +419,7 @@ export function buildHummin(rig) {
   // The short receiver whisker is mounted on the port service pod. Its
   // hinge sits below the crown even when the spring points straight up.
   const antenna = group(head, 0.12, 0.046, -0.033);
+  antenna.userData.dynamicPose = true;
   antenna.scale.set(-0.28, 0.78, 1.0);
   rod(antenna, titanium, [0, 0, 0], [-0.004, 0.022, -0.013], 0.0039, 0.0025);
   rod(antenna, graphite, [-0.004, 0.019, -0.011], [-0.016, 0.053, -0.037], 0.0025, 0.0019);
@@ -637,8 +638,9 @@ export function buildHummin(rig) {
   }
   const worm = line(tools, titanium, spiral, 0.00125).geometry;
   const ends = Array.from(worm.index.array),
-    lastRing = worm.attributes.position.count - 7;
-  for (let k = 1; k < 5; k++) ends.push(0, k + 1, k, lastRing, lastRing + k, lastRing + k + 1);
+    sides = worm.parameters.radialSegments,
+    lastRing = worm.attributes.position.count - (sides + 1);
+  for (let k = 1; k < sides - 1; k++) ends.push(0, k + 1, k, lastRing, lastRing + k, lastRing + k + 1);
   worm.setIndex(ends);
   rod(tools, agedBrass, [0.025, 0.024, -0.001], [0.025, 0.033, -0.001], 0.0024);
   rod(tools, darkLeather, [0.013, 0.032, -0.001], [0.038, 0.034, -0.001], 0.0033);
@@ -1010,7 +1012,15 @@ export function buildHummin(rig) {
         'uv',
         new T.BufferAttribute(new Float32Array(geometry.attributes.position.count * 2), 2),
       );
-    const baked = geometry.index ? geometry.toNonIndexed() : geometry.clone();
+    // A smooth ring vertex serves several triangles. Fit its casting once and
+    // preserve that index through both the joint and final render batches.
+    const baked = geometry;
+    if (!baked.index) {
+      const count = baked.attributes.position.count;
+      const indices = count > 65535 ? new Uint32Array(count) : new Uint16Array(count);
+      for (let i = 0; i < count; i++) indices[i] = i;
+      baked.setIndex(new T.BufferAttribute(indices, 1));
+    }
     baked.applyMatrix4(mesh.matrix);
     fitCasting(baked, parent);
     fieldCasting(baked, parent);

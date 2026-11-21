@@ -1,14 +1,11 @@
 // The field educator. All dimensions here are fractions of standing height.
 import * as T from 'three';
 import { outfitExplorer, quiltFinish } from './sippy-explorer.js';
-import { createHair } from './hair.js';
 import { fitExpression } from './sippy-expression.js';
 import { fitHipSeams } from './sippy-hips.js';
 import { makeSippyBody } from './sippy-body.js';
 import { cutExplorerLayers, fitLimb, anatomyRegions, fitOpenings } from './sippy-tailoring.js';
 import { setSleeveHeads } from './sippy-shoulders.js';
-import { detailMaterial } from './material-detail.js';
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const tau = Math.PI * 2;
 const vec = (x, y, z) => new T.Vector3(x, y, z);
@@ -32,7 +29,7 @@ function mesh(parent, shape, material, x = 0, y = 0, z = 0) {
   return m;
 }
 function ellipsoid(p, mat, x, y, z, rx, ry, rz) {
-  const shape = new T.SphereGeometry(1, 24, 16);
+  const shape = new T.SphereGeometry(1, 16, 11);
   shape.scale(rx, ry, rz);
   return mesh(p, shape, mat, x, y, z);
 }
@@ -151,32 +148,47 @@ function panel(parent, mat, outline) {
   return mesh(parent, g, mat);
 }
 
-// Batch detail by joint and material once, keeping eyes, glass and loose tailoring movable.
-function batch(root) {
-  const byMaterial = new Map();
-  for (const child of [...root.children]) {
-    if (child.isGroup || child.isBone) {
-      batch(child);
-      continue;
+// A few roots carry whole swept sections of the groom; their meshes keep their
+// original local vertices and can be batched together under each moving root.
+function styleQuiff(head, locks) {
+  const sections = new Map();
+  for (const lock of locks) {
+    const x = lock.points[0][0];
+    const crest = lock.group.name.startsWith('sippy-quiff-');
+    const id = crest ? (x < -0.014 ? 0 : x > 0.014 ? 2 : 1) : x < 0 ? 3 : 4;
+    if (!sections.has(id)) sections.set(id, { pivot: vec(0,0,0), locks: [], crest, side: Math.sign(x) });
+    const section = sections.get(id);
+    section.pivot.add(vec(...lock.points[0]));
+    section.locks.push(lock.group);
+  }
+  const banks = [];
+  for (const [id, section] of sections) {
+    const pivot = section.pivot.divideScalar(section.locks.length);
+    const root = group(head, pivot.x, pivot.y, pivot.z);
+    root.name = 'Sippy quiff spring ' + id;
+    root.userData.dynamicPose = true;
+    for (const lock of section.locks) {
+      root.add(lock);
+      lock.position.sub(pivot);
     }
-    if (!child.isMesh || child.userData.patternPiece || Array.isArray(child.material)) continue;
-    if (!byMaterial.has(child.material)) byMaterial.set(child.material, []);
-    byMaterial.get(child.material).push(child);
+    banks.push({ root, amplitude: section.crest ? 0.87 : 0.60, phase: id * 0.42, side: section.side });
   }
-  for (const [mat, parts] of byMaterial) {
-    if (parts.length < 2) continue;
-    const geometries = parts.map((m) => {
-      m.updateMatrix();
-      const g = m.geometry.index ? m.geometry.toNonIndexed() : m.geometry.clone();
-      g.deleteAttribute('uv');
-      g.applyMatrix4(m.matrix);
-      root.remove(m);
-      m.geometry.dispose();
-      return g;
-    });
-    mesh(root, mergeGeometries(geometries), mat);
-    for (const g of geometries) g.dispose();
-  }
+  let pitch = 0, roll = 0, pitchV = 0, rollV = 0, last = -Infinity;
+  return (f) => {
+    if (f.time <= last) pitch = roll = pitchV = rollV = 0;
+    last = f.time;
+    const walk = Math.min(1, f.speed / 2.5), dt = f.dt;
+    const target = 0.09 * walk * Math.sin(2*f.phase) + 0.023 * Math.sin(f.time*1.23)
+      + 0.019 * T.MathUtils.clamp(f.vy, -3, 3);
+    pitchV += (95 * (target - pitch) - 10 * pitchV) * dt;
+    rollV += (80 * (T.MathUtils.clamp(f.turn * -0.018, -0.13, 0.13) - roll) - 11 * rollV) * dt;
+    pitch += pitchV * dt;
+    roll += rollV * dt;
+    for (const bank of banks) {
+      bank.root.rotation.x = bank.amplitude * (pitch + 0.014 * walk * Math.sin(2*f.phase - bank.phase));
+      bank.root.rotation.z = bank.amplitude * (roll + bank.side * 0.15 * pitch);
+    }
+  };
 }
 
 // Iris, limbus, pupil, wet catchlight and sclera share one corneal dome.
@@ -246,18 +258,15 @@ function eyelid(parent, skin, lash, upper) {
       if (upper) index.push(k, k + 1, k + cols + 1, k + 1, k + cols + 2, k + cols + 1);
       else index.push(k, k + cols + 1, k + 1, k + 1, k + cols + 1, k + cols + 2);
     }
-  geometry.setAttribute('position', new T.BufferAttribute(positions, 3).setUsage(T.DynamicDrawUsage));
-  geometry.setAttribute('normal', new T.BufferAttribute(normals, 3).setUsage(T.DynamicDrawUsage));
+  geometry.setAttribute('position', new T.BufferAttribute(positions, 3));
+  geometry.setAttribute('normal', new T.BufferAttribute(normals, 3));
   geometry.setIndex(index);
   const lid = mesh(parent, geometry, [lash, skin]);
   lid.frustumCulled = false;
   geometry.addGroup(0, cols * 6, 0);
   geometry.addGroup(cols * 6, index.length - cols * 6, 1);
   const offsets = [0, 0.047, 0.32, 0.68, 1];
-  let lastClosure = -1;
-  function pose(closure) {
-    if (Math.abs(closure - lastClosure) < 0.0001) return;
-    lastClosure = closure;
+  function sample(closure) {
     for (let i = 0; i <= cols; i++) {
       const x = (i / cols) * 2 - 1,
         radius = Math.sqrt(Math.max(0, 1 - x * x));
@@ -279,11 +288,21 @@ function eyelid(parent, skin, lash, upper) {
         normals[k + 2] = nz / length;
       }
     }
-    geometry.attributes.position.needsUpdate = true;
-    geometry.attributes.normal.needsUpdate = true;
   }
-  pose(0);
-  return pose;
+  const stops = 3;
+  geometry.morphAttributes.position = [];
+  geometry.morphAttributes.normal = [];
+  for (let i = 1; i <= stops; i++) {
+    sample(i / stops);
+    geometry.morphAttributes.position.push(new T.Float32BufferAttribute(positions.slice(), 3));
+    geometry.morphAttributes.normal.push(new T.Float32BufferAttribute(normals.slice(), 3));
+  }
+  sample(0);
+  lid.updateMorphTargets();
+  return (closure) => {
+    const t = T.MathUtils.clamp(closure, 0, 1) * stops;
+    for (let i = 0; i < stops; i++) lid.morphTargetInfluences[i] = Math.max(0, 1 - Math.abs(t - (i + 1)));
+  };
 }
 
 // Pinstripes follow the cut of each pattern piece. Filter their footprint on
@@ -355,15 +374,6 @@ export function buildSippy(rig) {
     arm.position.y = 0.135;
   }
   quiltFinish(suit);
-  for (const [kind, materials] of [
-    ['skin', [skin, blush, lip]],
-    ['cotton', [white, waistcoat, trousers, knit, cargoSeam]],
-    ['wool', [suit, lapel]],
-    ['gold', [gold]],
-    ['leather', [leather, saddle, saddleEdge, pad]],
-    ['metal', [button]],
-  ])
-    for (const m of materials) detailMaterial(m, kind);
   for (const [side, s] of [
     ['L', 1],
     ['R', -1],
@@ -452,6 +462,7 @@ export function buildSippy(rig) {
     gazes.push(gaze);
     const brow = group(headSkin, s * 0.025, 0.1012, 0.0418);
     brow.name = 'sippy-brow-' + (s === 1 ? 'L' : 'R');
+    brow.userData.dynamicPose = true;
     brows.push(brow);
     sweep(
       brow,
@@ -549,8 +560,8 @@ export function buildSippy(rig) {
     capColor = [],
     capUV = [],
     capI = [];
-  const sectors = 128,
-    latitudes = 34;
+  const sectors = 88,
+    latitudes = 24;
   for (let j = 0; j <= latitudes; j++)
     for (let i = 0; i <= sectors; i++) {
       const a = (i / sectors) * tau,
@@ -586,7 +597,6 @@ export function buildSippy(rig) {
     sheenRoughness: 0.65,
     sheenColor: '#bd9274',
   });
-  detailMaterial(combed, 'hair');
   combed.userData.blueprintId = 'hair';
   const scalpCap = mesh(headSkin, cap, combed);
   scalpCap.userData.patternPiece = true;
@@ -606,8 +616,8 @@ export function buildSippy(rig) {
       uv = [],
       ix = [],
       base = new T.Color(colour);
-    const along = 28,
-      around = 18,
+    const along = 18,
+      around = 12,
       centre = vec(),
       tangent = vec(),
       side = vec(),
@@ -965,6 +975,7 @@ export function buildSippy(rig) {
     vec,
   });
   const { pack, drawcord } = explorer;
+  for (const node of [pack, drawcord, ...tails]) node.userData.dynamicPose = true;
   // A small irregular constellation over each malar prominence.
   for (const s of [-1, 1]) {
     for (const [x, y, z, r] of [
@@ -977,46 +988,17 @@ export function buildSippy(rig) {
       ellipsoid(headSkin, blush, x * s, y, z, r, r * 0.69, r * 0.4);
     }
   }
-  // Preserve bone and accessory group origins while collapsing seams and trim.
-  for (const key of [
-    'head',
-    'chest',
-    'hips',
-    'upperArmL',
-    'upperArmR',
-    'forearmL',
-    'forearmR',
-    'handL',
-    'handR',
-    'thighL',
-    'thighR',
-    'shinL',
-    'shinR',
-    'footL',
-    'footR',
-  ]) {
-    // A rig may nest several of these joints; a group is batched only at its own level.
-    batch(rig[key]);
-  }
-  const hairMotion = createHair(rig, [
-    { role: 'head', node: headSkin, center: [0, 0.068, -0.001], radii: [0.0635, 0.0725, 0.0585] },
-    { role: 'neck', node: neck, center: [0, 0.18, 0.002], radii: [0.037, 0.05, 0.035] },
-    { role: 'back', node: chest, center: [0, 0.105, -0.003], radii: [0.163, 0.085, 0.102] },
-    { role: 'collar', node: chest, center: [0, 0.16, 0.012], radii: [0.059, 0.042, 0.065] },
-    { role: 'shoulder', node: rig.upperArmL, center: [0, -0.022, 0], radii: [0.0475, 0.0465, 0.0505] },
-    { role: 'shoulder', node: rig.upperArmR, center: [0, -0.022, 0], radii: [0.0475, 0.0465, 0.0505] },
-  ]);
-  // The barbered sides and swept crest retain their shape through the walk cycle.
-  for (const groom of grooms)
-    hairMotion.add(groom.group, groom.points, { gaitCoupling: 0.71, ...groom.flex });
+  const followGroom = styleQuiff(headSkin, grooms);
+  rig.hair = { step: followGroom };
   rig.secondary ??= {};
-  // Use the final batched render skin (cheeks, nose and ears) for contact checks.
+  // Keep the actual face and collar surfaces available to the review tools.
   const faceSkin = headSkin.children
     .filter((part) => part.isMesh && part.material === skin)
     .concat(orbitalRims);
-  const finishSuit = fitOpenings(tailoring),
-    sleeveHeads = setSleeveHeads(tailoring),
-    hipSeams = fitHipSeams(tailoring);
+  fitOpenings(tailoring)();
+  setSleeveHeads(tailoring);
+  fitHipSeams(tailoring);
+  explorer.bakeFit();
   const g = tailoring.surfaces;
   const body = makeSippyBody(rig, skin);
   g.body = [body.mesh];
@@ -1123,11 +1105,7 @@ export function buildSippy(rig) {
     tails[1].rotation.x = lag - 0.02 * Math.sin(f.phase);
     explorer.step(f, lag);
     for (let i = 0; i < tailoring.updates.length; i++) tailoring.updates[i]();
-    finishSuit();
-    hipSeams();
-    sleeveHeads();
     body.update();
-    explorer.fitPockets();
-    hairMotion.step(f);
+    followGroom(f);
   };
 }

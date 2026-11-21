@@ -75,6 +75,7 @@ export function makeScarf(rig, wool, apron) {
   // the apron straps. The rounded hem carries individually twisted tassels.
   const tail = new T.Group();
   tail.name = 'Scarf free end';
+  tail.userData.dynamicPose = true;
   rig.chest.add(tail);
   tail.position.set(0.077, 0.125, 0.083);
   const profile = [

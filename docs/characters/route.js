@@ -25,6 +25,19 @@ function loadStyles() {
 }
 
 let styles;
+function preloadFloor() {
+  // Start the critical module graph together once the Heros tab is requested.
+  const modules = ['three', './stage.js', './rig.js', './motion.js', './input.js', './ui.js',
+    './material-detail.js', './render-batches.js', './sippy.js'];
+  for (const specifier of modules) {
+    const link = document.createElement('link');
+    link.rel = 'modulepreload';
+    link.crossOrigin = 'anonymous';
+    if (specifier === 'three' && !import.meta.resolve) continue;
+    link.href = specifier === 'three' ? import.meta.resolve(specifier) : new URL(specifier, import.meta.url);
+    document.head.append(link);
+  }
+}
 async function syncScene() {
   if (instance) {
     instance.setVisible(active());
@@ -33,7 +46,10 @@ async function syncScene() {
   if (!active() || loading || failed) return;
   loading = true;
   try {
-    styles ??= loadStyles();
+    if (!styles) {
+      preloadFloor();
+      styles = loadStyles();
+    }
     const [{ mountCharacters }] = await Promise.all([import('./main.js'), styles]);
     if (active()) {
       instance = await mountCharacters(host);

@@ -103,6 +103,7 @@ export function makeApron(rig, m, parts) {
   // Darts shape a broad curved bib around the belly. Preserve room below the
   // battery shell for the independently rotating waist and the pocket backs.
   const bibNode = group(rig.chest, 0, 0, 0);
+  bibNode.userData.dynamicPose = true;
   const bibZ = (x, y) => {
     const [rx, rz, origin] = chestSection(y);
     const low = smoothstep(-y, 0.038, 0.085);
@@ -207,6 +208,7 @@ export function makeApron(rig, m, parts) {
     0.0016,
   );
   const strapNode = group(rig.chest, 0, 0, 0);
+  strapNode.userData.dynamicPose = true;
   const strapAt = (s, u, v) => {
     const a = Math.PI * v,
       front = v <= 0.5,
@@ -337,10 +339,12 @@ export function makeApron(rig, m, parts) {
   pocket('toolPocket', -0.073, 0.021, 0.006, -0.05, 0.02);
   pocket('penPocket', 0.028, 0.065, 0.002, -0.045, 0.014);
   const tools = group(tray, -0.042, 0.005, bibZ(-0.042, 0.005) + 0.0115);
+  tools.userData.dynamicPose = true;
   const pen = group(tray, 0.047, 0.001, bibZ(0.047, 0.001) + 0.01);
   // The skirt is cut in one continuous piece. A rounded hem sweeps up at
   // both side seams; the central panel spans both thighs through a stride.
   const skirt = group(rig.hips, 0, 0.043, 0.087);
+  skirt.userData.dynamicPose = true;
   flaps.push(skirt);
   const pattern = (u, v) => {
     const across = 2 * u - 1;
@@ -359,6 +363,7 @@ export function makeApron(rig, m, parts) {
     );
   };
   const panel = patch(skirt, 'apronSkirt', denim, 42, 23, pattern, 0.0024);
+  panel.userData.dynamicPose = true;
   moving.push({ mesh: panel, sign: 0, type: 'flap' });
   layer('apronSkirt', 'pelvis', 'thighL', 'thighR', 'chassis');
   {
@@ -383,6 +388,7 @@ export function makeApron(rig, m, parts) {
         [0.86, 1, denimEdge],
       ]) {
         const strip = patch(cloth, 'towel', mat, 20, 5, (u, v) => towel(u, lerp(v0, v1, v)), 0.0014);
+        strip.userData.dynamicPose = true;
         moving.push({ mesh: strip, sign: s, type: 'towel' });
       }
       layer('towel', 'apronSkirt');

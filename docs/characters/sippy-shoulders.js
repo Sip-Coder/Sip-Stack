@@ -1,6 +1,7 @@
 // Cut the jacket armscye through its lining. The sleeve crown is a separate,
 // shaped two-ply pattern sewn between the cut body and sleeve edges.
 import * as T from 'three';
+import { bindCloth } from './sippy-skin.js';
 
 const tau = Math.PI * 2,
   sections = 10;
@@ -495,8 +496,9 @@ export function setSleeveHeads(suit) {
   const { rig, surfaces } = suit,
     jacket = surfaces['quilted-vest'][0],
     seams = (rig.garments.seams ??= []),
-    inverse = new T.Matrix4(),
-    active = [];
+    inverse = new T.Matrix4();
+  rig.chest.updateWorldMatrix(true, false);
+  inverse.copy(rig.chest.matrixWorld).invert();
   const sites = [1, -1].map((side) => ({ side, cy: 0.129, cz: -0.002, ry: 0.029, rz: 0.042 }));
   const collarHoles = cutBodyPorts(jacket, sites);
   // Enlarge the holes in the layers below. The outer shell covers their
@@ -519,7 +521,7 @@ export function setSleeveHeads(suit) {
     const high = makeCrown(jacket, sleeve, collarHoles[0][i], cuts[0][0], side);
     const mobile = makeCrown(jacket, sleeve, collarHoles[1][i], cuts[1][0], side);
     const name = 'shoulder-' + suffix,
-      mesh = suit.add(name, rig.chest, high.geom, sleeve.material);
+      mesh = suit.add(name, rig.chest, high.geom, sleeve.material, true);
     mesh.userData.mobileGeometry = mobile.geom;
     for (const [end, target, key] of [
       ['body', jacket, 'bodyEdge'],
@@ -532,13 +534,10 @@ export function setSleeveHeads(suit) {
       });
       suit.beneath(name, end === 'body' ? 'quilted-vest' : 'sleeve-' + suffix);
     }
-    active.push({ mesh, high, mobile });
+    high.redraw(inverse);
+    mobile.redraw(inverse);
+    // The ends of each cut remain on their respective stitched vest/sleeve edges.
+    bindCloth(mesh, [rig.chest, sleeve.parent], (j, g) =>
+      [0, 1, T.MathUtils.smoothstep(g.attributes.uv.getX(j), 0, 1)]);
   }
-  const update = () => {
-    rig.chest.updateWorldMatrix(true, false);
-    inverse.copy(rig.chest.matrixWorld).invert();
-    for (const p of active) (p.mesh.geometry === p.mobile.geom ? p.mobile : p.high).redraw(inverse);
-  };
-  update();
-  return update;
 }

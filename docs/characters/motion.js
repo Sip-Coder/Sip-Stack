@@ -82,43 +82,84 @@ function makeSoleProfile(ankle, restClearance) {
   return { profile: hull, ankleClearance: -lowest, halfWidth, halfDepth };
 }
 
-// Skinning is affine for each influencing joint. A roll only needs one row
-// (world-space height) of each bone matrix to seat every posed skin vertex.
-function skinnedFloor(mesh) {
-  const { skeleton } = mesh,
-    rows = new Float64Array(skeleton.bones.length * 4);
-  const model = new T.Matrix4(),
-    transform = new T.Matrix4();
-  return (lowest) => {
-    model.multiplyMatrices(mesh.matrixWorld, mesh.bindMatrixInverse);
-    for (let j = 0; j < skeleton.bones.length; j++) {
-      transform
-        .copy(model)
-        .multiply(skeleton.bones[j].matrixWorld)
-        .multiply(skeleton.boneInverses[j])
-        .multiply(mesh.bindMatrix);
-      const e = transform.elements,
-        k = 4 * j;
-      rows[k] = e[1];
-      rows[k + 1] = e[5];
-      rows[k + 2] = e[9];
-      rows[k + 3] = e[13];
-    }
-    const { position, skinWeight, skinIndex } = mesh.geometry.attributes;
-    for (let i = 0; i < position.count; i++) {
-      const x = position.getX(i),
-        y = position.getY(i),
-        z = position.getZ(i);
-      let floor = 0;
-      for (let j = 0; j < 4; j++) {
-        const weight = skinWeight.getComponent(i, j);
-        if (weight === 0) continue;
-        const k = 4 * skinIndex.getComponent(i, j);
-        floor += weight * (rows[k] * x + rows[k + 1] * y + rows[k + 2] * z + rows[k + 3]);
+// Bake a compact set of exposed material points per moving joint. The floor
+// follows those points through the roll, including the real skin weights at a
+// bent elbow. The cost of posing the contacts is independent of render detail.
+function rollHull(rig) {
+  const moving = new Set(rig.joints);
+  const groups = new Map(), probe = new T.Vector3(), coordinates = new T.Vector3();
+  const local = new T.Matrix4();
+  const directions = [];
+  for (let i = 0; i < 64; i++) {
+    const y = 1 - (2 * i + 1) / 64, r = Math.sqrt(1 - y * y), azimuth = i * 2.39996322973;
+    directions.push([r * Math.cos(azimuth), y, r * Math.sin(azimuth)]);
+  }
+  directions.push([1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]);
+  function group(bone) {
+    if (!groups.has(bone)) groups.set(bone, {
+      extent: new Float64Array(directions.length).fill(-Infinity),
+      samples: new Array(directions.length),
+    });
+    return groups.get(bone);
+  }
+  rig.root.updateWorldMatrix(true, true);
+  rig.root.traverse((mesh) => {
+    if (!mesh.isMesh || !mesh.visible || mesh.userData.debug || mesh.userData.highDetail) return;
+    let parent = mesh.parent;
+    while (parent !== rig.root && !moving.has(parent) && !parent.userData.dynamicPose) parent = parent.parent;
+    const {position, skinIndex, skinWeight} = mesh.geometry.attributes;
+    if (!position) return;
+    local.copy(parent.matrixWorld).invert().multiply(mesh.matrixWorld);
+    const matrices = mesh.isSkinnedMesh && mesh.skeleton.boneInverses.map(
+      (inverse) => new T.Matrix4().multiplyMatrices(inverse, mesh.bindMatrix));
+    const count = Math.min(position.count, 768);
+    for (let k = 0; k < count; k++) {
+      const i = Math.floor(k * position.count / count);
+      let major = 0, influence = -1, bone = parent;
+      probe.fromBufferAttribute(position, i);
+      if (matrices) {
+        for (let j = 0; j < 4; j++) {
+          const weight = skinWeight.getComponent(i, j);
+          if (weight > influence) {
+            influence = weight;
+            major = skinIndex.getComponent(i, j);
+          }
+        }
+        bone = mesh.skeleton.bones[major];
+        coordinates.copy(probe).applyMatrix4(matrices[major]);
+      } else coordinates.copy(probe).applyMatrix4(local);
+      const {extent, samples} = group(bone);
+      let point;
+      for (let j = 0; j < directions.length; j++) {
+        const direction = directions[j];
+        const d = coordinates.x * direction[0] + coordinates.y * direction[1] + coordinates.z * direction[2];
+        if (d <= extent[j]) continue;
+        extent[j] = d;
+        if (!point) {
+          point = [];
+          if (!matrices) point.push({row: parent.matrixWorld.elements, x:coordinates.x, y:coordinates.y, z:coordinates.z, w:1});
+          else for (let n = 0; n < 4; n++) {
+            const w = skinWeight.getComponent(i, n);
+            if (!w) continue;
+            const index = skinIndex.getComponent(i,n);
+            const v = probe.clone().applyMatrix4(matrices[index]);
+            point.push({row:mesh.skeleton.bones[index].matrixWorld.elements, x:v.x*w, y:v.y*w, z:v.z*w, w});
+          }
+        }
+        samples[j] = point;
       }
-      if (floor < lowest) lowest = floor;
     }
-    return lowest;
+  });
+  const contacts = new Set();
+  for (const {samples} of groups.values()) for (const point of samples) if (point) contacts.add(point);
+  return () => {
+    let min = Infinity;
+    for (const point of contacts) {
+      let y = 0;
+      for (const p of point) y += p.row[1]*p.x + p.row[5]*p.y + p.row[9]*p.z + p.row[13]*p.w;
+      if (y < min) min = y;
+    }
+    return min;
   };
 }
 
@@ -191,14 +232,7 @@ export function createController(rig, x = 0, z = 0) {
     worldFoot = new T.Quaternion();
   const axisX = new T.Vector3(1, 0, 0),
     sample = new T.Vector3();
-  const rollMeshes = [],
-    skinnedFloors = new Map();
-  root.traverse((node) => {
-    if (!node.isMesh || !node.geometry.attributes.position || node.userData.debug) return;
-    rollMeshes.push(node);
-    if (node.isSkinnedMesh) skinnedFloors.set(node, skinnedFloor(node));
-    else if (!node.geometry.boundingSphere) node.geometry.computeBoundingSphere();
-  });
+  const rollFloor = rollHull(rig);
   let travel = 0.25,
     heading = 0,
     speed = 0,
@@ -654,29 +688,8 @@ export function createController(rig, x = 0, z = 0) {
 
   function finishPose() {
     if (frame.state !== 'roll') return;
-    // A capsule bounds the path, but the supporting surface of a shoulder
-    // roll travels from boot to shoulder to back. Seat the actual silhouette
-    // on the test floor, pruning meshes by their transformed bounding spheres.
     root.updateMatrixWorld(true);
-    let lowest = Infinity;
-    for (const mesh of rollMeshes) {
-      if (!mesh.visible) continue;
-      if (mesh.isSkinnedMesh) {
-        lowest = skinnedFloors.get(mesh)(lowest);
-        continue;
-      }
-      const geo = mesh.geometry,
-        m = mesh.matrixWorld,
-        e = m.elements,
-        sphere = geo.boundingSphere;
-      sample.copy(sphere.center).applyMatrix4(m);
-      if (sample.y - sphere.radius * Math.hypot(e[1], e[5], e[9]) >= lowest) continue;
-      const a = geo.attributes.position;
-      for (let i = 0; i < a.count; i++) {
-        const y = e[1] * a.getX(i) + e[5] * a.getY(i) + e[9] * a.getZ(i) + e[13];
-        if (y < lowest) lowest = y;
-      }
-    }
+    const lowest = rollFloor();
     if (Number.isFinite(lowest)) {
       rollSupport = altitude - lowest;
       rig.hips.position.y += rollSupport / metresPerUnit;
