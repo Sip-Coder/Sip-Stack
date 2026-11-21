@@ -1,4 +1,5 @@
-// Node 22+, Chromium and three@0.170.0. Example:
+// Current speed rigs: node tools/check-characters-motion.mjs --speed [hero]
+// Detailed PR #16 rigs: Node 22+, Chromium and three@0.170.0. Example:
 // THREE_ROOT=/path/to/three CHROME=/usr/bin/chromium node tools/check-characters-motion.mjs
 // Pass sippy, roma or hummin as an optional argument to isolate a single model.
 // Set CHARACTERS_HAIR_MOBILE=1 to include Mobile hair contacts. Set it to
@@ -36,6 +37,10 @@ async function measure(onlyHero, { mobileHair, onlyMobile, designs }) {
     const rig = createActor(name, height),
       animate = build(rig),
       controller = createController(rig);
+    if (name !== 'hummin' && !rig.hair?.chains) {
+      failures.push(name + ': the strand/contact atlas belongs to PR #16 at a59620d. Use --speed for the current production rigs. See tools/heros-checks.md.');
+      continue;
+    }
     const input = { x: 0, z: 0, run: false, roll: false, jump: false, emote: false };
     // Extract actual toe and heel vertices in ankle-local coordinates. Monitoring
     // both picks up rotation/skating around a stationary IK anchor.
@@ -1785,18 +1790,23 @@ async function measure(onlyHero, { mobileHair, onlyMobile, designs }) {
   };
 }
 
-const onlyMobile = process.env.CHARACTERS_HAIR_MOBILE === 'only';
-const mobileHair = onlyMobile || process.env.CHARACTERS_HAIR_MOBILE === '1';
-// The 84-strand character now traverses the actual coat and skin triangle
-// trees at every sampled pose. Give a full cast and two-tier pass time to
-// finish on the same software-rendered hosts as the visual acceptance tests.
-const perHeroMinutes = onlyMobile ? 25 : 45;
-const minutes = (process.argv[2] ? 1 : 3) * perHeroMinutes;
-const designs = {};
-for (const name of ['sippy', 'roma', 'hummin']) {
-  const spec = JSON.parse(
-    await readFile(new URL('./blueprints/' + name + '.json', import.meta.url), 'utf8'),
-  );
-  designs[name] = { heightM: spec.heightM, chin: spec.landmarks.chin };
+if (process.argv[2] === '--speed') {
+  process.argv.splice(2, 1);
+  await import('./check-heros-motion.mjs');
+} else {
+  const onlyMobile = process.env.CHARACTERS_HAIR_MOBILE === 'only';
+  const mobileHair = onlyMobile || process.env.CHARACTERS_HAIR_MOBILE === '1';
+  // The 84-strand character now traverses the actual coat and skin triangle
+  // trees at every sampled pose. Give a full cast and two-tier pass time to
+  // finish on the same software-rendered hosts as the visual acceptance tests.
+  const perHeroMinutes = onlyMobile ? 25 : 45;
+  const minutes = (process.argv[2] ? 1 : 3) * perHeroMinutes;
+  const designs = {};
+  for (const name of ['sippy', 'roma', 'hummin']) {
+    const spec = JSON.parse(
+      await readFile(new URL('./blueprints/' + name + '.json', import.meta.url), 'utf8'),
+    );
+    designs[name] = { heightM: spec.heightM, chin: spec.landmarks.chin };
+  }
+  await runCharacterProbe(measure, { mobileHair, onlyMobile, designs, timeoutMs: minutes * 60000 });
 }
-await runCharacterProbe(measure, { mobileHair, onlyMobile, designs, timeoutMs: minutes * 60000 });
