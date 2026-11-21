@@ -82,7 +82,7 @@ def header(draw, spec, subtitle):
         39,
         'body',
     )
-    text(draw, WIDTH - MARGIN, 60, f"{spec['heightM']:.2f} m  /  standing height", 25, 'mono', anchor='ra')
+    text(draw, WIDTH - MARGIN, 60, f"{spec['heightIn']//12} ft {spec['heightIn']%12} in  /  standing height", 25, 'mono', anchor='ra')
     text(draw, WIDTH - MARGIN, 114, spec['role'], 23, fill=MUTED, anchor='ra')
     draw.line((MARGIN, 208, WIDTH - MARGIN, 208), fill=EMERALD, width=3)
 
@@ -158,7 +158,7 @@ def design_sheet(spec, folder):
             d, x, 1029, 'Dome width' if key == 'hairWidth' and spec['name'] == 'Hummin' else label, 22, 'bold'
         )
         text(d, x, 1069, f'{value:g}%', 39, 'title', EMERALD)
-        text(d, x, 1130, f'{value*spec["heightM"]:.1f} cm', 22, 'mono', MUTED)
+        text(d, x, 1130, f'{value*spec["heightIn"]/100:.1f} in', 22, 'mono', MUTED)
     d.line((MARGIN, 1182, WIDTH - MARGIN, 1182), fill=RULE, width=2)
     section(d, MARGIN, palette_y, 'Lit material palette')
     text(d, WIDTH - MARGIN, palette_y + 8, 'D65 neutral light  /  sRGB', 20, 'mono', MUTED, 'ra')

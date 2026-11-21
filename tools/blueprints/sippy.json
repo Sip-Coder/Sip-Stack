@@ -1,21 +1,22 @@
 {
   "name": "Sippy",
-  "role": "Young vineyard sommelier",
-  "heightM": 1.78,
+  "role": "Vineyard field explorer",
+  "heightIn": 70,
+  "heightM": 1.778,
   "landmarks": {
-    "eyes": 16.42,
-    "chin": 29.9,
-    "shoulders": 33.0,
-    "waist": 54.9,
-    "knee": 78.2,
-    "ankleCuff": 94.5,
-    "hairWidth": 26.8
+    "eyes": 9.3,
+    "chin": 17.2,
+    "shoulders": 23,
+    "waist": 44.5,
+    "knee": 74.7,
+    "ankleCuff": 91.8,
+    "hairWidth": 15.7
   },
   "palette": [
     {
       "id": "skin",
-      "label": "Warm apricot skin",
-      "hex": "#D8A076"
+      "label": "Apricot skin",
+      "hex": "#DDA278"
     },
     {
       "id": "flush",
@@ -31,11 +32,6 @@
       "id": "mouth",
       "label": "Smile shadow",
       "hex": "#602F29"
-    },
-    {
-      "id": "lining",
-      "label": "Macaroon Cream waistcoat lining",
-      "hex": "#EDD4A8"
     },
     {
       "id": "sclera",
@@ -59,109 +55,101 @@
     },
     {
       "id": "hair",
-      "label": "Espresso hair base and brows",
-      "hex": "#3B281F"
+      "label": "Espresso quiff",
+      "hex": "#37271F"
     },
     {
       "id": "chestnut",
-      "label": "Creamy Espresso comb highlights",
-      "hex": "#914C2C"
+      "label": "Chestnut highlight",
+      "hex": "#865332"
     },
     {
-      "id": "jacket",
-      "label": "Smoked charcoal wool",
-      "hex": "#514740"
+      "id": "hoodie",
+      "label": "Burgundy fleece",
+      "hex": "#823440"
     },
     {
-      "id": "stripe",
-      "label": "Fine warm pinstripe",
-      "hex": "#776A5E"
+      "id": "cuff",
+      "label": "Wine ribbing",
+      "hex": "#652B35"
     },
     {
-      "id": "lapel",
-      "label": "Turned charcoal lapel",
-      "hex": "#63564B"
+      "id": "quilt",
+      "label": "Charcoal quilting",
+      "hex": "#434345"
     },
     {
-      "id": "vest",
-      "label": "Walnut waistcoat",
-      "hex": "#685447"
-    },
-    {
-      "id": "trousers",
-      "label": "Charcoal trousers",
-      "hex": "#48413E"
+      "id": "binding",
+      "label": "Smoked piping",
+      "hex": "#353539"
     },
     {
       "id": "shirt",
-      "label": "Warm white cotton",
-      "hex": "#F3E6D3"
+      "label": "Cream jersey",
+      "hex": "#EADBBE"
     },
     {
-      "id": "bow",
-      "label": "Burgundy bow silk",
-      "hex": "#7D3037"
+      "id": "trousers",
+      "label": "Sanded cargo twill",
+      "hex": "#E6D7B9"
     },
     {
-      "id": "pocketSquare",
-      "label": "Wine pocket square",
-      "hex": "#8B3740"
+      "id": "cargoSeam",
+      "label": "Khaki topstitch",
+      "hex": "#BBAB89"
     },
     {
-      "id": "metalButton",
-      "label": "Dark horn button",
-      "hex": "#3E302A"
+      "id": "leather",
+      "label": "Chestnut hide",
+      "hex": "#875536"
+    },
+    {
+      "id": "saddleEdge",
+      "label": "Saddle edges",
+      "hex": "#A57449"
     },
     {
       "id": "gold",
-      "label": "Aged gold",
-      "hex": "#B98E52"
+      "label": "Antique gold",
+      "hex": "#B29357"
     },
     {
-      "id": "shoe",
-      "label": "Polished oxford leather",
-      "hex": "#44342D"
+      "id": "metal",
+      "label": "Gunmetal",
+      "hex": "#55565A"
     },
     {
       "id": "sole",
-      "label": "Dark leather welt",
-      "hex": "#2E2724"
+      "label": "Warm cream rubber",
+      "hex": "#E8DBC4"
     },
     {
-      "id": "glass",
-      "label": "Cool wineglass edge",
-      "hex": "#BDD0CE"
+      "id": "shoe",
+      "label": "Burgundy suede",
+      "hex": "#79313D"
     },
     {
-      "id": "wine",
-      "label": "Red wine",
-      "hex": "#712536"
+      "id": "pad",
+      "label": "Headphone cushion",
+      "hex": "#303035"
     }
   ],
   "callouts": [
     {
-      "label": "Proportions",
-      "text": "3.34 heads tall. Broad sleeve caps, generous cheeks, compact waist and weighted oxford toes."
+      "label": "Silhouette",
+      "text": "A swept espresso quiff sits above open shoulders. Quilted vest and soft joggers taper into a pair of thick, cream-soled sneakers."
     },
     {
-      "label": "Hairline",
-      "text": "A high asymmetric pompadour rolls back over a fitted short nape. Seven overlapping tapered clumps carry chestnut highlights; two shorter temple curls frame the face."
+      "label": "Layers",
+      "text": "Burgundy fleece peeks through the charcoal vest. Grape embroidery, ribbing and quilt channels distinguish the two fabrics."
     },
     {
-      "label": "Expression",
-      "text": "Large warm chestnut irises with twin catchlights, broad expressive brows, a rounded nose and an open, turned-up smile."
-    },
-    {
-      "label": "Tailoring",
-      "text": "Warm charcoal pinstripes follow the suit and trouser grain. Notched lapels reveal ivory cotton, a walnut waistcoat, burgundy silk and a wine pocket square."
-    },
-    {
-      "label": "Accessories",
-      "text": "The right hand carries a stemmed red-wine glass. A brass-gold watch chain loops across the left waistcoat and ends at a small keeper."
-    },
-    {
-      "label": "Construction",
-      "text": "Eye centres, mandibular base, sleeve-cap peaks, top waist seam, patella centres and lower ankle hems define the vertical guides."
+      "label": "Equipment",
+      "text": "Over-ear headphones rest on his collarbones. The chestnut backpack has twin buckle tabs. A wristwatch sits above the hand."
     }
+  ],
+  "headCountRange": [
+    5.5,
+    6.1
   ]
 }
