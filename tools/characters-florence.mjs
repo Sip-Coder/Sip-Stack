@@ -115,6 +115,10 @@ export function captureIdleMotion(rig, system) {
       nodes.add(p);
       if (p === rig.root) break;
     }
+  // Fitted hood contact frames carry an affine mesh-to-pelvis transform.
+  // Their TRS fields alone describe the panel in the hood's local space.
+  let size = 0;
+  for (const node of nodes) size += node.matrixAutoUpdate ? 10 : 26;
   function pose(item, time) {
     let i = 0;
     for (const node of nodes) {
@@ -122,19 +126,28 @@ export function captureIdleMotion(rig, system) {
       node.quaternion.fromArray(item.pose, i + 3);
       node.scale.fromArray(item.pose, i + 7);
       i += 10;
+      if (!node.matrixAutoUpdate) {
+        node.matrix.fromArray(item.pose, i);
+        node.matrixWorldNeedsUpdate = true;
+        i += 16;
+      }
     }
     rig.root.updateMatrixWorld(true);
     system.step({ ...item.frame, time });
   }
   return {
     remember(frame) {
-      const coords = new Float64Array(nodes.size * 10);
+      const coords = new Float64Array(size);
       let i = 0;
       for (const n of nodes) {
         n.position.toArray(coords, i);
         n.quaternion.toArray(coords, i + 3);
         n.scale.toArray(coords, i + 7);
         i += 10;
+        if (!n.matrixAutoUpdate) {
+          n.matrix.toArray(coords, i);
+          i += 16;
+        }
       }
       frames.push({ pose: coords, frame: { ...frame } });
     },
