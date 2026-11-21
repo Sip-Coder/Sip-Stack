@@ -1,0 +1,3925 @@
+{
+ "base": "85d3ad1",
+ "fixture": {
+  "resolution": [
+   448,
+   448
+  ],
+  "perspective": "six orthographic views",
+  "coverageThresholdInches": 0.02,
+  "states": [
+   "rest",
+   "walk",
+   "run",
+   "roll",
+   "leg-raise"
+  ]
+ },
+ "cases": {
+  "sippy-mobile": [
+   {
+    "pose": "rest",
+    "frame": 0,
+    "main": {
+     "sampled": 60178,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.694,
+      "clavicularSpan": 14.007,
+      "corticalAttachmentSamples": 637,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 637,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 12.456,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.154
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.13
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 11.289,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.147
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.154
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 42.239,
+       "lumbarDeg": 17.19
+      }
+     },
+     "skin": {
+      "sampled": 77543,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "walk",
+    "frame": 28,
+    "main": {
+     "sampled": 63980,
+     "exposedFemurByRegion": {
+      "proximal": 163
+     },
+     "exposed": 163,
+     "maximumRayDepthInches": 0.896,
+     "parts": {
+      "Right femur": 146,
+      "Left femur": 17
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.694,
+      "clavicularSpan": 14.006,
+      "corticalAttachmentSamples": 637,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 637,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 18.789,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.149
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.127
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 13.008,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.145
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.138
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 42.268,
+       "lumbarDeg": 17.224
+      }
+     },
+     "skin": {
+      "sampled": 80682,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "walk",
+    "frame": 45,
+    "main": {
+     "sampled": 65310,
+     "exposedFemurByRegion": {
+      "proximal": 279
+     },
+     "exposed": 280,
+     "maximumRayDepthInches": 3.222,
+     "parts": {
+      "Left femur": 278,
+      "Left rectus femoris": 1,
+      "Right femur": 1
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.694,
+      "clavicularSpan": 14.001,
+      "corticalAttachmentSamples": 637,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 637,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 16.004,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.145
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.147
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 14.841,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.153
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.156
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 42.74,
+       "lumbarDeg": 17.774
+      }
+     },
+     "skin": {
+      "sampled": 81160,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "walk",
+    "frame": 65,
+    "main": {
+     "sampled": 64194,
+     "exposedFemurByRegion": {
+      "proximal": 294
+     },
+     "exposed": 296,
+     "maximumRayDepthInches": 13.178,
+     "parts": {
+      "Right femur": 291,
+      "Left femur": 3,
+      "Right rectus femoris": 2
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.694,
+      "clavicularSpan": 14.005,
+      "corticalAttachmentSamples": 637,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 637,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 12.108,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.149
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.127
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 17.427,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.145
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.128
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 42.265,
+       "lumbarDeg": 17.231
+      }
+     },
+     "skin": {
+      "sampled": 81098,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "run",
+    "frame": 28,
+    "main": {
+     "sampled": 58848,
+     "exposedFemurByRegion": {
+      "proximal": 798,
+      "distal": 90,
+      "shaft": 114
+     },
+     "exposed": 1123,
+     "maximumRayDepthInches": 8.306,
+     "parts": {
+      "Right femur": 584,
+      "Left femur": 418,
+      "Left rectus femoris": 89,
+      "Right rectus femoris": 30,
+      "Left vastus lateralis": 2
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.694,
+      "clavicularSpan": 14.06,
+      "corticalAttachmentSamples": 637,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 637,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 17.239,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.143
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.139
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 19.244,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.143
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.134
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 42.76,
+       "lumbarDeg": 20.161
+      }
+     },
+     "skin": {
+      "sampled": 74027,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "run",
+    "frame": 45,
+    "main": {
+     "sampled": 61431,
+     "exposedFemurByRegion": {
+      "proximal": 534,
+      "shaft": 3
+     },
+     "exposed": 771,
+     "maximumRayDepthInches": 11.697,
+     "parts": {
+      "Right femur": 270,
+      "Left femur": 267,
+      "Left rectus femoris": 108,
+      "Left vastus lateralis": 59,
+      "Left hamstrings": 56,
+      "Left gluteus maximus": 11
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.694,
+      "clavicularSpan": 14.062,
+      "corticalAttachmentSamples": 637,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 637,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 42.212,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.134
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.119
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 13.979,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.142
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.129
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 43.4,
+       "lumbarDeg": 19.868
+      }
+     },
+     "skin": {
+      "sampled": 76305,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "run",
+    "frame": 65,
+    "main": {
+     "sampled": 60540,
+     "exposedFemurByRegion": {
+      "proximal": 540,
+      "distal": 13,
+      "shaft": 64
+     },
+     "exposed": 773,
+     "maximumRayDepthInches": 21.007,
+     "parts": {
+      "Right femur": 329,
+      "Left femur": 288,
+      "Right rectus femoris": 153,
+      "Right vastus lateralis": 3
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.694,
+      "clavicularSpan": 14.064,
+      "corticalAttachmentSamples": 637,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 637,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 20.38,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.148
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.133
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 20.021,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.138
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.134
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 49.568,
+       "lumbarDeg": 19.615
+      }
+     },
+     "skin": {
+      "sampled": 75452,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "roll",
+    "frame": 4,
+    "main": {
+     "sampled": 64356,
+     "exposedFemurByRegion": {
+      "proximal": 412
+     },
+     "exposed": 412,
+     "maximumRayDepthInches": 1.17,
+     "parts": {
+      "Left femur": 252,
+      "Right femur": 160
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.694,
+      "clavicularSpan": 14.041,
+      "corticalAttachmentSamples": 637,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 637,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 12.601,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.146
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.154
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 11.961,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.145
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.137
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 42.234,
+       "lumbarDeg": 18.89
+      }
+     },
+     "skin": {
+      "sampled": 81375,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "roll",
+    "frame": 17,
+    "main": {
+     "sampled": 54783,
+     "exposedFemurByRegion": {
+      "shaft": 12,
+      "proximal": 363,
+      "distal": 6
+     },
+     "exposed": 636,
+     "maximumRayDepthInches": 10.776,
+     "parts": {
+      "Left femur": 213,
+      "Right femur": 168,
+      "Left gluteus maximus": 78,
+      "Left rectus femoris": 68,
+      "Left vastus lateralis": 30,
+      "Left hamstrings": 27,
+      "Right vastus lateralis": 22,
+      "Right rectus femoris": 13,
+      "Right gluteus maximus": 13,
+      "Right hamstrings": 4
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.694,
+      "clavicularSpan": 14.072,
+      "corticalAttachmentSamples": 637,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 637,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 81.971,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.152
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.122
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 23.678,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.154
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.123
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 43.172,
+       "lumbarDeg": 16.2
+      }
+     },
+     "skin": {
+      "sampled": 63203,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "roll",
+    "frame": 30,
+    "main": {
+     "sampled": 56553,
+     "exposedFemurByRegion": {
+      "proximal": 439
+     },
+     "exposed": 625,
+     "maximumRayDepthInches": 9.11,
+     "parts": {
+      "Right femur": 233,
+      "Left femur": 206,
+      "Left vastus lateralis": 83,
+      "Right rectus femoris": 45,
+      "Right vastus lateralis": 44,
+      "Left rectus femoris": 14
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.694,
+      "clavicularSpan": 14.05,
+      "corticalAttachmentSamples": 637,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 637,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 19.871,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.15
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.129
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 16.352,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.162
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.136
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 41.419,
+       "lumbarDeg": 14.621
+      }
+     },
+     "skin": {
+      "sampled": 66765,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "leg-raise",
+    "frame": 18,
+    "main": {
+     "sampled": 61521,
+     "exposedFemurByRegion": {
+      "proximal": 177
+     },
+     "exposed": 236,
+     "maximumRayDepthInches": 22.191,
+     "parts": {
+      "Left femur": 177,
+      "Left rectus femoris": 30,
+      "Left vastus lateralis": 27,
+      "Left gluteus maximus": 2
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.694,
+      "clavicularSpan": 14.585,
+      "corticalAttachmentSamples": 637,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 637,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 3.123,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.099,
+        "worstIn": 0.149
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.141
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 11.294,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.152
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.153
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 42.776,
+       "lumbarDeg": 17.755
+      },
+      "legRaise": {
+       "thighFromVerticalDeg": 59.341,
+       "kneeFlexionDeg": 72.309,
+       "ankleLiftIn": 12.507,
+       "rigPivotOffsetsIn": {
+        "hip": 0.98,
+        "knee": 3.098,
+        "ankle": 0.515
+       }
+      }
+     },
+     "skin": {
+      "sampled": 76487,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   }
+  ],
+  "sippy-high": [
+   {
+    "pose": "rest",
+    "frame": 0,
+    "main": {
+     "sampled": 60596,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.702,
+      "clavicularSpan": 14.021,
+      "corticalAttachmentSamples": 640,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 640,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 12.854,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.149
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.131
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 11.299,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.151
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.141
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 39.547,
+       "lumbarDeg": 15.219
+      }
+     },
+     "skin": {
+      "sampled": 77683,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "walk",
+    "frame": 28,
+    "main": {
+     "sampled": 64357,
+     "exposedFemurByRegion": {
+      "proximal": 147
+     },
+     "exposed": 147,
+     "maximumRayDepthInches": 0.826,
+     "parts": {
+      "Right femur": 137,
+      "Left femur": 10
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.702,
+      "clavicularSpan": 14.019,
+      "corticalAttachmentSamples": 640,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 640,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 19.555,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.152
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.132
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 12.999,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.148
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.13
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 39.568,
+       "lumbarDeg": 15.246
+      }
+     },
+     "skin": {
+      "sampled": 80931,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "walk",
+    "frame": 45,
+    "main": {
+     "sampled": 65553,
+     "exposedFemurByRegion": {
+      "proximal": 277
+     },
+     "exposed": 277,
+     "maximumRayDepthInches": 3.209,
+     "parts": {
+      "Left femur": 277
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.702,
+      "clavicularSpan": 14.016,
+      "corticalAttachmentSamples": 640,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 640,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 16.509,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.1,
+        "worstIn": 0.149
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.149
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 15.263,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.155
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.142
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 39.859,
+       "lumbarDeg": 15.611
+      }
+     },
+     "skin": {
+      "sampled": 82057,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "walk",
+    "frame": 65,
+    "main": {
+     "sampled": 64550,
+     "exposedFemurByRegion": {
+      "proximal": 290
+     },
+     "exposed": 299,
+     "maximumRayDepthInches": 13.151,
+     "parts": {
+      "Right femur": 290,
+      "Right rectus femoris": 9
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.702,
+      "clavicularSpan": 14.019,
+      "corticalAttachmentSamples": 640,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 640,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 12.709,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.153
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.132
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 17.82,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.148
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.118
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 39.564,
+       "lumbarDeg": 15.254
+      }
+     },
+     "skin": {
+      "sampled": 81643,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "run",
+    "frame": 28,
+    "main": {
+     "sampled": 59056,
+     "exposedFemurByRegion": {
+      "proximal": 787,
+      "distal": 85,
+      "shaft": 104
+     },
+     "exposed": 1061,
+     "maximumRayDepthInches": 8.317,
+     "parts": {
+      "Right femur": 563,
+      "Left femur": 413,
+      "Left rectus femoris": 75,
+      "Right rectus femoris": 10
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.702,
+      "clavicularSpan": 14.076,
+      "corticalAttachmentSamples": 640,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 640,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 17.673,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.139
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.143
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 20.264,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.147
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.121
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 39.615,
+       "lumbarDeg": 17.308
+      }
+     },
+     "skin": {
+      "sampled": 74507,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "run",
+    "frame": 45,
+    "main": {
+     "sampled": 61749,
+     "exposedFemurByRegion": {
+      "proximal": 509,
+      "shaft": 2
+     },
+     "exposed": 786,
+     "maximumRayDepthInches": 11.279,
+     "parts": {
+      "Right femur": 259,
+      "Left femur": 252,
+      "Left vastus lateralis": 108,
+      "Left rectus femoris": 92,
+      "Left hamstrings": 57,
+      "Left gluteus maximus": 18
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.702,
+      "clavicularSpan": 14.076,
+      "corticalAttachmentSamples": 640,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 640,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 43.011,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.138
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.13
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 15.056,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.142
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.126
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 40.682,
+       "lumbarDeg": 17.28
+      }
+     },
+     "skin": {
+      "sampled": 76753,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "run",
+    "frame": 65,
+    "main": {
+     "sampled": 60745,
+     "exposedFemurByRegion": {
+      "proximal": 551,
+      "shaft": 65,
+      "distal": 3
+     },
+     "exposed": 742,
+     "maximumRayDepthInches": 20.896,
+     "parts": {
+      "Right femur": 349,
+      "Left femur": 270,
+      "Right rectus femoris": 118,
+      "Right vastus lateralis": 5
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.702,
+      "clavicularSpan": 14.076,
+      "corticalAttachmentSamples": 640,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 640,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 21.238,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.15
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.14
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 20.39,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.141
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.128
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 39.324,
+       "lumbarDeg": 16.884
+      }
+     },
+     "skin": {
+      "sampled": 76207,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "roll",
+    "frame": 4,
+    "main": {
+     "sampled": 64773,
+     "exposedFemurByRegion": {
+      "proximal": 393
+     },
+     "exposed": 393,
+     "maximumRayDepthInches": 1.169,
+     "parts": {
+      "Left femur": 244,
+      "Right femur": 149
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.702,
+      "clavicularSpan": 14.057,
+      "corticalAttachmentSamples": 640,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 640,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 13.03,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.153
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.159
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 11.943,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.154
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.127
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 39.226,
+       "lumbarDeg": 16.186
+      }
+     },
+     "skin": {
+      "sampled": 81795,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "roll",
+    "frame": 17,
+    "main": {
+     "sampled": 55187,
+     "exposedFemurByRegion": {
+      "shaft": 16,
+      "proximal": 376,
+      "distal": 5
+     },
+     "exposed": 681,
+     "maximumRayDepthInches": 10.817,
+     "parts": {
+      "Left femur": 220,
+      "Right femur": 177,
+      "Left hamstrings": 101,
+      "Left gluteus maximus": 48,
+      "Left vastus lateralis": 43,
+      "Left rectus femoris": 40,
+      "Right vastus lateralis": 35,
+      "Right rectus femoris": 8,
+      "Right gluteus maximus": 6,
+      "Right hamstrings": 3
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.702,
+      "clavicularSpan": 14.088,
+      "corticalAttachmentSamples": 640,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 640,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 85.679,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.151
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.122
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 23.471,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.163
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.126
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 33.179,
+       "lumbarDeg": 14.749
+      }
+     },
+     "skin": {
+      "sampled": 63727,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "roll",
+    "frame": 30,
+    "main": {
+     "sampled": 56856,
+     "exposedFemurByRegion": {
+      "proximal": 435
+     },
+     "exposed": 604,
+     "maximumRayDepthInches": 8.864,
+     "parts": {
+      "Right femur": 228,
+      "Left femur": 207,
+      "Left vastus lateralis": 51,
+      "Right vastus lateralis": 50,
+      "Left gluteus maximus": 28,
+      "Right rectus femoris": 26,
+      "Left rectus femoris": 13,
+      "Right gluteus maximus": 1
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.702,
+      "clavicularSpan": 14.067,
+      "corticalAttachmentSamples": 640,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 640,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 20.256,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.159
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.13
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 16.233,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.159
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.126
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 31.705,
+       "lumbarDeg": 13.169
+      }
+     },
+     "skin": {
+      "sampled": 67503,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "leg-raise",
+    "frame": 18,
+    "main": {
+     "sampled": 61836,
+     "exposedFemurByRegion": {
+      "proximal": 178
+     },
+     "exposed": 256,
+     "maximumRayDepthInches": 22.199,
+     "parts": {
+      "Left femur": 178,
+      "Left rectus femoris": 52,
+      "Left vastus lateralis": 26
+     }
+    },
+    "candidate": {
+     "measures": {
+      "bones": 142,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 24,
+      "crestWidth": 9.702,
+      "clavicularSpan": 14.6,
+      "corticalAttachmentSamples": 640,
+      "muscleAtlas": {
+       "individualMeshes": 323,
+       "dbcls": 323,
+       "visibleHumanFemale": 0,
+       "corticalVertices": 640,
+       "musclesWithCorticalVertices": 270,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 3.066,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.099,
+        "worstIn": 0.153
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.142
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 11.304,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.148
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.141
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 40.6,
+       "lumbarDeg": 16.298
+      },
+      "legRaise": {
+       "thighFromVerticalDeg": 59.341,
+       "kneeFlexionDeg": 72.309,
+       "ankleLiftIn": 12.507,
+       "rigPivotOffsetsIn": {
+        "hip": 0.981,
+        "knee": 3.098,
+        "ankle": 0.515
+       }
+      }
+     },
+     "skin": {
+      "sampled": 77053,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   }
+  ],
+  "roma-mobile": [
+   {
+    "pose": "rest",
+    "frame": 0,
+    "main": {
+     "sampled": 67802,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.732,
+      "clavicularSpan": 12.354,
+      "corticalAttachmentSamples": 667,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 667,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 17.041,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.1,
+        "worstIn": 0.141
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.142
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 16.498,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.137
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.163
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 28.451,
+       "lumbarDeg": 19.776
+      }
+     },
+     "skin": {
+      "sampled": 94902,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "walk",
+    "frame": 28,
+    "main": {
+     "sampled": 69524,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.732,
+      "clavicularSpan": 12.35,
+      "corticalAttachmentSamples": 667,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 667,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 17.279,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.1,
+        "worstIn": 0.14
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.137
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 15.076,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.139
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.171
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 22.301,
+       "lumbarDeg": 18.538
+      }
+     },
+     "skin": {
+      "sampled": 96526,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "walk",
+    "frame": 45,
+    "main": {
+     "sampled": 72177,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.732,
+      "clavicularSpan": 12.334,
+      "corticalAttachmentSamples": 667,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 667,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 15.665,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.099,
+        "worstIn": 0.133
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.14
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 20.079,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.099,
+        "worstIn": 0.134
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.177
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 27.8,
+       "lumbarDeg": 19.107
+      }
+     },
+     "skin": {
+      "sampled": 101303,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "walk",
+    "frame": 65,
+    "main": {
+     "sampled": 71260,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.732,
+      "clavicularSpan": 12.298,
+      "corticalAttachmentSamples": 667,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 667,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 17.441,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.14
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.129
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 15.817,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.144
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.158
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 21.491,
+       "lumbarDeg": 17.906
+      }
+     },
+     "skin": {
+      "sampled": 99265,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "run",
+    "frame": 28,
+    "main": {
+     "sampled": 66908,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.732,
+      "clavicularSpan": 12.329,
+      "corticalAttachmentSamples": 667,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 667,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 14.804,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.131
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.128
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 24.419,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.141
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.124
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 29.022,
+       "lumbarDeg": 6.995
+      }
+     },
+     "skin": {
+      "sampled": 93407,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "run",
+    "frame": 45,
+    "main": {
+     "sampled": 69062,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.732,
+      "clavicularSpan": 12.338,
+      "corticalAttachmentSamples": 667,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 667,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 18.85,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.131
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.14
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 39.939,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.144
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.153
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 30.508,
+       "lumbarDeg": 6.268
+      }
+     },
+     "skin": {
+      "sampled": 95298,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "run",
+    "frame": 65,
+    "main": {
+     "sampled": 69422,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.732,
+      "clavicularSpan": 12.325,
+      "corticalAttachmentSamples": 667,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 667,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 19.279,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.132
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.14
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 22.583,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.145
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.168
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 28.647,
+       "lumbarDeg": 6.162
+      }
+     },
+     "skin": {
+      "sampled": 95755,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "roll",
+    "frame": 4,
+    "main": {
+     "sampled": 70218,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.732,
+      "clavicularSpan": 12.354,
+      "corticalAttachmentSamples": 667,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 667,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 15.811,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.136
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.125
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 15.586,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.135
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.173
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 9.041,
+       "lumbarDeg": 15.613
+      }
+     },
+     "skin": {
+      "sampled": 96951,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "roll",
+    "frame": 17,
+    "main": {
+     "sampled": 64206,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.732,
+      "clavicularSpan": 12.449,
+      "corticalAttachmentSamples": 667,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 667,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 31.375,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.144
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.102,
+        "worstIn": 0.137
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 22.629,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.148
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.095,
+        "worstIn": 0.135
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 21.609,
+       "lumbarDeg": 8.184
+      }
+     },
+     "skin": {
+      "sampled": 81764,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "roll",
+    "frame": 30,
+    "main": {
+     "sampled": 64448,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.732,
+      "clavicularSpan": 12.356,
+      "corticalAttachmentSamples": 667,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 667,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 17.147,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.134
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.149
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 16.205,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.147
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.155
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 28.752,
+       "lumbarDeg": 8.078
+      }
+     },
+     "skin": {
+      "sampled": 82545,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "leg-raise",
+    "frame": 18,
+    "main": {
+     "sampled": 69192,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.732,
+      "clavicularSpan": 12.354,
+      "corticalAttachmentSamples": 667,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 667,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 4.587,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.129
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.15
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 16.503,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.141
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.163
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 28.451,
+       "lumbarDeg": 19.726
+      },
+      "legRaise": {
+       "thighFromVerticalDeg": 71.015,
+       "kneeFlexionDeg": 94.469,
+       "ankleLiftIn": 11.061,
+       "rigPivotOffsetsIn": {
+        "hip": 0.341,
+        "knee": 0.359,
+        "ankle": 0.517
+       }
+      }
+     },
+     "skin": {
+      "sampled": 95433,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   }
+  ],
+  "roma-high": [
+   {
+    "pose": "rest",
+    "frame": 0,
+    "main": {
+     "sampled": 68055,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.738,
+      "clavicularSpan": 12.355,
+      "corticalAttachmentSamples": 671,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 671,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 16.67,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.141
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.142
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 16.413,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.144
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.155
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 20.196,
+       "lumbarDeg": 19.339
+      }
+     },
+     "skin": {
+      "sampled": 95598,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "walk",
+    "frame": 28,
+    "main": {
+     "sampled": 69779,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.738,
+      "clavicularSpan": 12.351,
+      "corticalAttachmentSamples": 671,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 671,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 18.443,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.142
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.136
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 15.009,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.144
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.169
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 20.202,
+       "lumbarDeg": 19.156
+      }
+     },
+     "skin": {
+      "sampled": 97176,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "walk",
+    "frame": 45,
+    "main": {
+     "sampled": 72405,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.738,
+      "clavicularSpan": 12.338,
+      "corticalAttachmentSamples": 671,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 671,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 15.423,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.099,
+        "worstIn": 0.14
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.141
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 15.337,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.148
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.168
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 23.32,
+       "lumbarDeg": 18.84
+      }
+     },
+     "skin": {
+      "sampled": 102062,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "walk",
+    "frame": 65,
+    "main": {
+     "sampled": 71510,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.738,
+      "clavicularSpan": 12.296,
+      "corticalAttachmentSamples": 671,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 671,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 16.427,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.139
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.139
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 15.727,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.15
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.153
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 18.052,
+       "lumbarDeg": 17.566
+      }
+     },
+     "skin": {
+      "sampled": 100082,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "run",
+    "frame": 28,
+    "main": {
+     "sampled": 67084,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.738,
+      "clavicularSpan": 12.328,
+      "corticalAttachmentSamples": 671,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 671,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 19.473,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.137
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.14
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 24.014,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.147
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.114
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 29.761,
+       "lumbarDeg": 6.625
+      }
+     },
+     "skin": {
+      "sampled": 93944,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "run",
+    "frame": 45,
+    "main": {
+     "sampled": 69310,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.738,
+      "clavicularSpan": 12.342,
+      "corticalAttachmentSamples": 671,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 671,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 16.455,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.133
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.144
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 35.217,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.149
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.145
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 31.687,
+       "lumbarDeg": 5.869
+      }
+     },
+     "skin": {
+      "sampled": 96136,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "run",
+    "frame": 65,
+    "main": {
+     "sampled": 69646,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.738,
+      "clavicularSpan": 12.329,
+      "corticalAttachmentSamples": 671,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 671,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 19.148,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.133
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.14
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 23.898,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.148
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.16
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 31.679,
+       "lumbarDeg": 5.771
+      }
+     },
+     "skin": {
+      "sampled": 96490,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "roll",
+    "frame": 4,
+    "main": {
+     "sampled": 70474,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.738,
+      "clavicularSpan": 12.355,
+      "corticalAttachmentSamples": 671,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 671,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 15.459,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.137
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.134
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 15.451,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.147
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.169
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 14.035,
+       "lumbarDeg": 13.998
+      }
+     },
+     "skin": {
+      "sampled": 97541,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "roll",
+    "frame": 17,
+    "main": {
+     "sampled": 64420,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.738,
+      "clavicularSpan": 12.43,
+      "corticalAttachmentSamples": 671,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 671,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 31.521,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.152
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.134
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 21.59,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.159
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.096,
+        "worstIn": 0.137
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 23.295,
+       "lumbarDeg": 5.947
+      }
+     },
+     "skin": {
+      "sampled": 82289,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "roll",
+    "frame": 30,
+    "main": {
+     "sampled": 64662,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.738,
+      "clavicularSpan": 12.356,
+      "corticalAttachmentSamples": 671,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 671,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 15.171,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.14
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.149
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 13.698,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.151
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.148
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 31.884,
+       "lumbarDeg": 7.1
+      }
+     },
+     "skin": {
+      "sampled": 83379,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   },
+   {
+    "pose": "leg-raise",
+    "frame": 18,
+    "main": {
+     "sampled": 69436,
+     "exposedFemurByRegion": {},
+     "exposed": 0,
+     "maximumRayDepthInches": 0,
+     "parts": {}
+    },
+    "candidate": {
+     "measures": {
+      "bones": 143,
+      "invalidBoneNormals": [],
+      "ribs": 24,
+      "vertebrae": 25,
+      "crestWidth": 10.738,
+      "clavicularSpan": 12.355,
+      "corticalAttachmentSamples": 671,
+      "muscleAtlas": {
+       "individualMeshes": 339,
+       "dbcls": 263,
+       "visibleHumanFemale": 76,
+       "corticalVertices": 671,
+       "musclesWithCorticalVertices": 286,
+       "p95GapInches": 0,
+       "maxGapInches": 0,
+       "maxGapByRegion": {
+        "trunk": 0,
+        "oral": 0,
+        "arm": 0,
+        "shoulder": 0,
+        "thumb": 0,
+        "pecMinor": 0,
+        "leg": 0,
+        "gluteal": 0,
+        "hip": 0,
+        "adductor": 0,
+        "flexHallux": 0,
+        "flexToes": 0,
+        "extendHallux": 0,
+        "extendToes": 0
+       }
+      },
+      "L": {
+       "coronalQAngleDeg": 3.174,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.131
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.153
+       }
+      },
+      "R": {
+       "coronalQAngleDeg": 16.417,
+       "shoulder": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.143
+       },
+       "hip": {
+        "hits": 5,
+        "medianIn": 0.098,
+        "worstIn": 0.155
+       }
+      },
+      "corticalEndplateAngle": {
+       "thoracicDeg": 20.196,
+       "lumbarDeg": 19.289
+      },
+      "legRaise": {
+       "thighFromVerticalDeg": 71.015,
+       "kneeFlexionDeg": 94.47,
+       "ankleLiftIn": 11.061,
+       "rigPivotOffsetsIn": {
+        "hip": 0.341,
+        "knee": 0.359,
+        "ankle": 0.517
+       }
+      }
+     },
+     "skin": {
+      "sampled": 96077,
+      "exposedFemurByRegion": {},
+      "exposed": 0,
+      "maximumRayDepthInches": 0,
+      "parts": {}
+     }
+    }
+   }
+  ]
+ }
+}
