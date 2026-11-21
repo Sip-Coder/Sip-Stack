@@ -1,0 +1,2405 @@
+{
+  "revision": "702e298aee00263e901ac07ba0da150caf1306ed",
+  "rows": [
+    {
+      "hero": "sippy",
+      "tier": "mobile",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "stepMs": 0.14999999990686774,
+      "stepMedianMs": 0.07499999925494194,
+      "scriptMs": 3.0499999970197678,
+      "fps": 10.645504693699795,
+      "drawsMean": 60.833333333333336,
+      "drawsRefresh": 80,
+      "drawsMax": 80,
+      "poseSamples": [
+        0.6750000007450581,
+        0.14999999850988388,
+        0.05000000074505806,
+        0.07499999925494194,
+        0.05000000074505806,
+        0.07499999925494194,
+        0.05000000074505806,
+        0.07499999925494194
+      ],
+      "frames": [
+        {
+          "now": 3031.2,
+          "ms": 2.2999999970197678,
+          "draws": 57
+        },
+        {
+          "now": 3097.8,
+          "ms": 2.7999999970197678,
+          "draws": 57
+        },
+        {
+          "now": 3181.1,
+          "ms": 4.4000000059604645,
+          "draws": 80
+        },
+        {
+          "now": 3297.8,
+          "ms": 2.7999999970197678,
+          "draws": 57
+        },
+        {
+          "now": 3381.2,
+          "ms": 1.7999999970197678,
+          "draws": 57
+        },
+        {
+          "now": 3481.1,
+          "ms": 2.2999999970197678,
+          "draws": 57
+        },
+        {
+          "now": 3547.8,
+          "ms": 1.699999988079071,
+          "draws": 57
+        },
+        {
+          "now": 3631.1,
+          "ms": 2.199999988079071,
+          "draws": 57
+        },
+        {
+          "now": 3697.8,
+          "ms": 2.6000000089406967,
+          "draws": 57
+        },
+        {
+          "now": 3914.4,
+          "ms": 9.399999991059303,
+          "draws": 57
+        },
+        {
+          "now": 3981.1,
+          "ms": 2.2999999970197678,
+          "draws": 80
+        },
+        {
+          "now": 4064.5,
+          "ms": 2,
+          "draws": 57
+        }
+      ],
+      "cold": {
+        "hero": "sippy",
+        "ms": 3517.2999999970198,
+        "actionMs": 3517.2999999970198,
+        "selected": [
+          "sippy"
+        ],
+        "width": 497,
+        "height": 449
+      },
+      "resources": [
+        {
+          "path": "/",
+          "body": 16892,
+          "wire": 17192,
+          "kind": "navigation"
+        },
+        {
+          "path": "/__system-fonts",
+          "body": 0,
+          "wire": 300,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-stack.css",
+          "body": 10021,
+          "wire": 10321,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-app.js",
+          "body": 1871,
+          "wire": 2171,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/route.js",
+          "body": 1790,
+          "wire": 2090,
+          "kind": "script"
+        },
+        {
+          "path": "/__three/build/three.module.js",
+          "body": 266601,
+          "wire": 266901,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/stage.js",
+          "body": 5607,
+          "wire": 5907,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/motion.js",
+          "body": 8947,
+          "wire": 9247,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy.js",
+          "body": 13087,
+          "wire": 13387,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/characters.css",
+          "body": 2144,
+          "wire": 2444,
+          "kind": "link"
+        },
+        {
+          "path": "/characters/main.js",
+          "body": 5291,
+          "wire": 5591,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/model-tier.js",
+          "body": 316,
+          "wire": 616,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/rig.js",
+          "body": 543,
+          "wire": 843,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/ui.js",
+          "body": 1460,
+          "wire": 1760,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/input.js",
+          "body": 2005,
+          "wire": 2305,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/render-batches.js",
+          "body": 3480,
+          "wire": 3780,
+          "kind": "script"
+        },
+        {
+          "path": "/assets/sip-warm.js",
+          "body": 522,
+          "wire": 822,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/secondary.js",
+          "body": 545,
+          "wire": 845,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-expression.js",
+          "body": 2452,
+          "wire": 2752,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-hips.js",
+          "body": 4613,
+          "wire": 4913,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-explorer.js",
+          "body": 7641,
+          "wire": 7941,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-body.js",
+          "body": 8709,
+          "wire": 9009,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-tailoring.js",
+          "body": 5881,
+          "wire": 6181,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-shoulders.js",
+          "body": 6567,
+          "wire": 6867,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-skin.js",
+          "body": 1335,
+          "wire": 1635,
+          "kind": "script"
+        }
+      ],
+      "bytes": 378320,
+      "transferBytes": 385820,
+      "modules": 21
+    },
+    {
+      "hero": "roma",
+      "tier": "mobile",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "stepMs": 0.028125000186264515,
+      "stepMedianMs": 0.02500000037252903,
+      "scriptMs": 2.7916666666666665,
+      "fps": 14.66862248299774,
+      "drawsMean": 28.666666666666668,
+      "drawsRefresh": 36,
+      "drawsMax": 36,
+      "poseSamples": [
+        0.02500000223517418,
+        0.07499999925494194,
+        0.02499999850988388,
+        0.05000000074505806,
+        0.02499999850988388,
+        0,
+        0.02500000223517418,
+        0
+      ],
+      "frames": [
+        {
+          "now": 3495.8,
+          "ms": 2.3999999910593033,
+          "draws": 28
+        },
+        {
+          "now": 3562.4,
+          "ms": 10.899999991059303,
+          "draws": 28
+        },
+        {
+          "now": 3645.7,
+          "ms": 3.800000011920929,
+          "draws": 28
+        },
+        {
+          "now": 3662.4,
+          "ms": 1,
+          "draws": 28
+        },
+        {
+          "now": 3729.1,
+          "ms": 1.7000000029802322,
+          "draws": 36
+        },
+        {
+          "now": 3795.7,
+          "ms": 2,
+          "draws": 28
+        },
+        {
+          "now": 3845.7,
+          "ms": 2.0999999940395355,
+          "draws": 28
+        },
+        {
+          "now": 3929.1,
+          "ms": 2.5,
+          "draws": 28
+        },
+        {
+          "now": 3995.7,
+          "ms": 2,
+          "draws": 28
+        },
+        {
+          "now": 4112.4,
+          "ms": 1.7000000029802322,
+          "draws": 28
+        },
+        {
+          "now": 4195.7,
+          "ms": 1.4000000059604645,
+          "draws": 28
+        },
+        {
+          "now": 4245.7,
+          "ms": 2,
+          "draws": 28
+        }
+      ],
+      "cold": {
+        "hero": "roma",
+        "ms": 4594,
+        "actionMs": 1074.2000000029802,
+        "selected": [
+          "roma"
+        ],
+        "width": 497,
+        "height": 449
+      },
+      "resources": [
+        {
+          "path": "/",
+          "body": 16892,
+          "wire": 17192,
+          "kind": "navigation"
+        },
+        {
+          "path": "/__system-fonts",
+          "body": 0,
+          "wire": 300,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-stack.css",
+          "body": 10021,
+          "wire": 10321,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-app.js",
+          "body": 1871,
+          "wire": 2171,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/route.js",
+          "body": 1790,
+          "wire": 2090,
+          "kind": "script"
+        },
+        {
+          "path": "/__three/build/three.module.js",
+          "body": 266601,
+          "wire": 266901,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/stage.js",
+          "body": 5607,
+          "wire": 5907,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/motion.js",
+          "body": 8947,
+          "wire": 9247,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy.js",
+          "body": 13087,
+          "wire": 13387,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/characters.css",
+          "body": 2144,
+          "wire": 2444,
+          "kind": "link"
+        },
+        {
+          "path": "/characters/main.js",
+          "body": 5291,
+          "wire": 5591,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/model-tier.js",
+          "body": 316,
+          "wire": 616,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/rig.js",
+          "body": 543,
+          "wire": 843,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/ui.js",
+          "body": 1460,
+          "wire": 1760,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/input.js",
+          "body": 2005,
+          "wire": 2305,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/render-batches.js",
+          "body": 3480,
+          "wire": 3780,
+          "kind": "script"
+        },
+        {
+          "path": "/assets/sip-warm.js",
+          "body": 522,
+          "wire": 822,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/secondary.js",
+          "body": 545,
+          "wire": 845,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-expression.js",
+          "body": 2452,
+          "wire": 2752,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-hips.js",
+          "body": 4613,
+          "wire": 4913,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-explorer.js",
+          "body": 7641,
+          "wire": 7941,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-body.js",
+          "body": 8709,
+          "wire": 9009,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-tailoring.js",
+          "body": 5881,
+          "wire": 6181,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-shoulders.js",
+          "body": 6567,
+          "wire": 6867,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-skin.js",
+          "body": 1335,
+          "wire": 1635,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma.js",
+          "body": 7122,
+          "wire": 7422,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma-forms.js",
+          "body": 2603,
+          "wire": 2903,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma-light-groom.js",
+          "body": 3378,
+          "wire": 3678,
+          "kind": "script"
+        }
+      ],
+      "bytes": 391423,
+      "transferBytes": 399823,
+      "modules": 24
+    },
+    {
+      "hero": "hummin",
+      "tier": "mobile",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "stepMs": 0.6281249998137355,
+      "stepMedianMs": 0.6124999988824129,
+      "scriptMs": 4.758333332836628,
+      "fps": 11.786135219114966,
+      "drawsMean": 58.833333333333336,
+      "drawsRefresh": 78,
+      "drawsMax": 78,
+      "poseSamples": [
+        0.7749999985098839,
+        0.625,
+        0.5750000029802322,
+        0.5999999977648258,
+        0.5500000007450581,
+        0.75,
+        0.75,
+        0.3999999985098839
+      ],
+      "frames": [
+        {
+          "now": 4533.5,
+          "ms": 5,
+          "draws": 55
+        },
+        {
+          "now": 4650.2,
+          "ms": 4.399999991059303,
+          "draws": 55
+        },
+        {
+          "now": 4733.5,
+          "ms": 2.7000000029802322,
+          "draws": 55
+        },
+        {
+          "now": 4866.8,
+          "ms": 8.099999994039536,
+          "draws": 78
+        },
+        {
+          "now": 4950.2,
+          "ms": 2.9000000059604645,
+          "draws": 55
+        },
+        {
+          "now": 4983.5,
+          "ms": 4.0999999940395355,
+          "draws": 55
+        },
+        {
+          "now": 5033.4,
+          "ms": 2.9000000059604645,
+          "draws": 55
+        },
+        {
+          "now": 5100.1,
+          "ms": 3.5,
+          "draws": 55
+        },
+        {
+          "now": 5183.5,
+          "ms": 2.7000000029802322,
+          "draws": 55
+        },
+        {
+          "now": 5316.8,
+          "ms": 2.9000000059604645,
+          "draws": 55
+        },
+        {
+          "now": 5333.5,
+          "ms": 2.7000000029802322,
+          "draws": 55
+        },
+        {
+          "now": 5466.8,
+          "ms": 15.199999988079071,
+          "draws": 78
+        }
+      ],
+      "cold": {
+        "hero": "hummin",
+        "ms": 6419.29999999702,
+        "actionMs": 1824.2000000029802,
+        "selected": [
+          "hummin"
+        ],
+        "width": 497,
+        "height": 449
+      },
+      "resources": [
+        {
+          "path": "/",
+          "body": 16892,
+          "wire": 17192,
+          "kind": "navigation"
+        },
+        {
+          "path": "/__system-fonts",
+          "body": 0,
+          "wire": 300,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-stack.css",
+          "body": 10021,
+          "wire": 10321,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-app.js",
+          "body": 1871,
+          "wire": 2171,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/route.js",
+          "body": 1790,
+          "wire": 2090,
+          "kind": "script"
+        },
+        {
+          "path": "/__three/build/three.module.js",
+          "body": 266601,
+          "wire": 266901,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/stage.js",
+          "body": 5607,
+          "wire": 5907,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/motion.js",
+          "body": 8947,
+          "wire": 9247,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy.js",
+          "body": 13087,
+          "wire": 13387,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/characters.css",
+          "body": 2144,
+          "wire": 2444,
+          "kind": "link"
+        },
+        {
+          "path": "/characters/main.js",
+          "body": 5291,
+          "wire": 5591,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/model-tier.js",
+          "body": 316,
+          "wire": 616,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/rig.js",
+          "body": 543,
+          "wire": 843,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/ui.js",
+          "body": 1460,
+          "wire": 1760,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/input.js",
+          "body": 2005,
+          "wire": 2305,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/render-batches.js",
+          "body": 3480,
+          "wire": 3780,
+          "kind": "script"
+        },
+        {
+          "path": "/assets/sip-warm.js",
+          "body": 522,
+          "wire": 822,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/secondary.js",
+          "body": 545,
+          "wire": 845,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-expression.js",
+          "body": 2452,
+          "wire": 2752,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-hips.js",
+          "body": 4613,
+          "wire": 4913,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-explorer.js",
+          "body": 7641,
+          "wire": 7941,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-body.js",
+          "body": 8709,
+          "wire": 9009,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-tailoring.js",
+          "body": 5881,
+          "wire": 6181,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-shoulders.js",
+          "body": 6567,
+          "wire": 6867,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-skin.js",
+          "body": 1335,
+          "wire": 1635,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma.js",
+          "body": 7122,
+          "wire": 7422,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma-forms.js",
+          "body": 2603,
+          "wire": 2903,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma-light-groom.js",
+          "body": 3378,
+          "wire": 3678,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin.js",
+          "body": 13460,
+          "wire": 13760,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-shell-fit.js",
+          "body": 2083,
+          "wire": 2383,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-panels.js",
+          "body": 1977,
+          "wire": 2277,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-textiles.js",
+          "body": 758,
+          "wire": 1058,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/material-detail.js",
+          "body": 2145,
+          "wire": 2445,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-scarf.js",
+          "body": 1939,
+          "wire": 2239,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-pouches.js",
+          "body": 2429,
+          "wire": 2729,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-leather.js",
+          "body": 5107,
+          "wire": 5407,
+          "kind": "script"
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "body": 6912,
+          "wire": 7212,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/embroidery.js",
+          "body": 2197,
+          "wire": 2497,
+          "kind": "script"
+        }
+      ],
+      "bytes": 430430,
+      "transferBytes": 441830,
+      "modules": 34
+    },
+    {
+      "hero": "lineup",
+      "tier": "mobile",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "stepMs": 0.8374999999068677,
+      "stepMedianMs": 0.7250000014901161,
+      "scriptMs": 9.766666669398546,
+      "fps": 7.674597083653107,
+      "drawsMean": 144.33333333333334,
+      "drawsRefresh": 186,
+      "drawsMax": 186,
+      "poseSamples": [
+        1.3499999977648258,
+        0.6750000007450581,
+        0.8249999992549419,
+        1.375,
+        0.7750000022351742,
+        0.625,
+        0.5500000007450581,
+        0.5249999985098839
+      ],
+      "frames": [
+        {
+          "now": 4773.8,
+          "ms": 8.400000005960464,
+          "draws": 136
+        },
+        {
+          "now": 4873.8,
+          "ms": 25.30000001192093,
+          "draws": 136
+        },
+        {
+          "now": 5007.2,
+          "ms": 10.5,
+          "draws": 136
+        },
+        {
+          "now": 5240.5,
+          "ms": 8.600000008940697,
+          "draws": 186
+        },
+        {
+          "now": 5357.2,
+          "ms": 4.200000002980232,
+          "draws": 136
+        },
+        {
+          "now": 5457.2,
+          "ms": 5.700000002980232,
+          "draws": 136
+        },
+        {
+          "now": 5623.8,
+          "ms": 11.299999997019768,
+          "draws": 136
+        },
+        {
+          "now": 5740.5,
+          "ms": 14,
+          "draws": 136
+        },
+        {
+          "now": 5857.2,
+          "ms": 4.299999997019768,
+          "draws": 136
+        },
+        {
+          "now": 5990.5,
+          "ms": 9.199999988079071,
+          "draws": 136
+        },
+        {
+          "now": 6107.1,
+          "ms": 6.300000011920929,
+          "draws": 136
+        },
+        {
+          "now": 6207.1,
+          "ms": 9.400000005960464,
+          "draws": 186
+        }
+      ],
+      "cold": {
+        "hero": "lineup",
+        "ms": 7139.399999991059,
+        "actionMs": 717.2999999970198,
+        "selected": [
+          "sippy",
+          "hummin",
+          "roma"
+        ],
+        "width": 497,
+        "height": 449
+      },
+      "resources": [
+        {
+          "path": "/",
+          "body": 16892,
+          "wire": 17192,
+          "kind": "navigation"
+        },
+        {
+          "path": "/__system-fonts",
+          "body": 0,
+          "wire": 300,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-stack.css",
+          "body": 10021,
+          "wire": 10321,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-app.js",
+          "body": 1871,
+          "wire": 2171,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/route.js",
+          "body": 1790,
+          "wire": 2090,
+          "kind": "script"
+        },
+        {
+          "path": "/__three/build/three.module.js",
+          "body": 266601,
+          "wire": 266901,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/stage.js",
+          "body": 5607,
+          "wire": 5907,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/motion.js",
+          "body": 8947,
+          "wire": 9247,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy.js",
+          "body": 13087,
+          "wire": 13387,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/characters.css",
+          "body": 2144,
+          "wire": 2444,
+          "kind": "link"
+        },
+        {
+          "path": "/characters/main.js",
+          "body": 5291,
+          "wire": 5591,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/model-tier.js",
+          "body": 316,
+          "wire": 616,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/rig.js",
+          "body": 543,
+          "wire": 843,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/ui.js",
+          "body": 1460,
+          "wire": 1760,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/input.js",
+          "body": 2005,
+          "wire": 2305,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/render-batches.js",
+          "body": 3480,
+          "wire": 3780,
+          "kind": "script"
+        },
+        {
+          "path": "/assets/sip-warm.js",
+          "body": 522,
+          "wire": 822,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/secondary.js",
+          "body": 545,
+          "wire": 845,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-expression.js",
+          "body": 2452,
+          "wire": 2752,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-hips.js",
+          "body": 4613,
+          "wire": 4913,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-explorer.js",
+          "body": 7641,
+          "wire": 7941,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-body.js",
+          "body": 8709,
+          "wire": 9009,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-tailoring.js",
+          "body": 5881,
+          "wire": 6181,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-shoulders.js",
+          "body": 6567,
+          "wire": 6867,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-skin.js",
+          "body": 1335,
+          "wire": 1635,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma.js",
+          "body": 7122,
+          "wire": 7422,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma-forms.js",
+          "body": 2603,
+          "wire": 2903,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma-light-groom.js",
+          "body": 3378,
+          "wire": 3678,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin.js",
+          "body": 13460,
+          "wire": 13760,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-shell-fit.js",
+          "body": 2083,
+          "wire": 2383,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-panels.js",
+          "body": 1977,
+          "wire": 2277,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-textiles.js",
+          "body": 758,
+          "wire": 1058,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/material-detail.js",
+          "body": 2145,
+          "wire": 2445,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-scarf.js",
+          "body": 1939,
+          "wire": 2239,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-pouches.js",
+          "body": 2429,
+          "wire": 2729,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-leather.js",
+          "body": 5107,
+          "wire": 5407,
+          "kind": "script"
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "body": 6912,
+          "wire": 7212,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/embroidery.js",
+          "body": 2197,
+          "wire": 2497,
+          "kind": "script"
+        }
+      ],
+      "bytes": 430430,
+      "transferBytes": 441830,
+      "modules": 34
+    },
+    {
+      "hero": "sippy",
+      "tier": "high",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "stepMs": 0.125,
+      "stepMedianMs": 0.08750000037252903,
+      "scriptMs": 3.316666666418314,
+      "fps": 6.168339595132618,
+      "drawsMean": 65.75,
+      "drawsRefresh": 83,
+      "drawsMax": 83,
+      "poseSamples": [
+        0.125,
+        0.10000000149011612,
+        0.07499999925494194,
+        0.07499999925494194,
+        0.07499999925494194,
+        0.375,
+        0.10000000149011612,
+        0.07499999925494194
+      ],
+      "frames": [
+        {
+          "now": 3432.3,
+          "ms": 3,
+          "draws": 60
+        },
+        {
+          "now": 3482.3,
+          "ms": 2.7000000029802322,
+          "draws": 60
+        },
+        {
+          "now": 3499,
+          "ms": 3.8999999910593033,
+          "draws": 83
+        },
+        {
+          "now": 3882.2,
+          "ms": 3.0999999940395355,
+          "draws": 60
+        },
+        {
+          "now": 4032.2,
+          "ms": 2.5,
+          "draws": 60
+        },
+        {
+          "now": 4198.9,
+          "ms": 4.600000008940697,
+          "draws": 60
+        },
+        {
+          "now": 4365.5,
+          "ms": 4,
+          "draws": 83
+        },
+        {
+          "now": 4615.5,
+          "ms": 5.700000002980232,
+          "draws": 60
+        },
+        {
+          "now": 4682.2,
+          "ms": 2.9000000059604645,
+          "draws": 60
+        },
+        {
+          "now": 4798.9,
+          "ms": 2.2999999970197678,
+          "draws": 60
+        },
+        {
+          "now": 5165.5,
+          "ms": 2.8999999910593033,
+          "draws": 83
+        },
+        {
+          "now": 5215.6,
+          "ms": 2.2000000029802322,
+          "draws": 60
+        }
+      ],
+      "cold": {
+        "hero": "sippy",
+        "ms": 3638.9000000059605,
+        "actionMs": 3638.9000000059605,
+        "selected": [
+          "sippy"
+        ],
+        "width": 497,
+        "height": 449
+      },
+      "resources": [
+        {
+          "path": "/",
+          "body": 16892,
+          "wire": 17192,
+          "kind": "navigation"
+        },
+        {
+          "path": "/__system-fonts",
+          "body": 0,
+          "wire": 300,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-stack.css",
+          "body": 10021,
+          "wire": 10321,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-app.js",
+          "body": 1871,
+          "wire": 2171,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/route.js",
+          "body": 1790,
+          "wire": 2090,
+          "kind": "script"
+        },
+        {
+          "path": "/__three/build/three.module.js",
+          "body": 266601,
+          "wire": 266901,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/stage.js",
+          "body": 5607,
+          "wire": 5907,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/motion.js",
+          "body": 8947,
+          "wire": 9247,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy.js",
+          "body": 13087,
+          "wire": 13387,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/characters.css",
+          "body": 2144,
+          "wire": 2444,
+          "kind": "link"
+        },
+        {
+          "path": "/characters/main.js",
+          "body": 5291,
+          "wire": 5591,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/model-tier.js",
+          "body": 316,
+          "wire": 616,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/rig.js",
+          "body": 543,
+          "wire": 843,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/ui.js",
+          "body": 1460,
+          "wire": 1760,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/input.js",
+          "body": 2005,
+          "wire": 2305,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/render-batches.js",
+          "body": 3480,
+          "wire": 3780,
+          "kind": "script"
+        },
+        {
+          "path": "/assets/sip-warm.js",
+          "body": 522,
+          "wire": 822,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/secondary.js",
+          "body": 545,
+          "wire": 845,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-expression.js",
+          "body": 2452,
+          "wire": 2752,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-explorer.js",
+          "body": 7641,
+          "wire": 7941,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-hips.js",
+          "body": 4613,
+          "wire": 4913,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-body.js",
+          "body": 8709,
+          "wire": 9009,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-tailoring.js",
+          "body": 5881,
+          "wire": 6181,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-shoulders.js",
+          "body": 6567,
+          "wire": 6867,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-skin.js",
+          "body": 1335,
+          "wire": 1635,
+          "kind": "script"
+        }
+      ],
+      "bytes": 378320,
+      "transferBytes": 385820,
+      "modules": 21
+    },
+    {
+      "hero": "roma",
+      "tier": "high",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "stepMs": 0.05000000027939677,
+      "stepMedianMs": 0.02500000037252903,
+      "scriptMs": 2.7666666669150195,
+      "fps": 6.734831323088229,
+      "drawsMean": 30,
+      "drawsRefresh": 36,
+      "drawsMax": 36,
+      "poseSamples": [
+        0.05000000074505806,
+        0.02500000223517418,
+        0.02499999850988388,
+        0,
+        0.02499999850988388,
+        0.22500000149011612,
+        0.05000000074505806,
+        0
+      ],
+      "frames": [
+        {
+          "now": 5224.6,
+          "ms": 2.5,
+          "draws": 28
+        },
+        {
+          "now": 5407.9,
+          "ms": 2.0999999940395355,
+          "draws": 28
+        },
+        {
+          "now": 5608,
+          "ms": 3.2999999970197678,
+          "draws": 28
+        },
+        {
+          "now": 5741.2,
+          "ms": 2.7000000029802322,
+          "draws": 36
+        },
+        {
+          "now": 5874.6,
+          "ms": 6.799999997019768,
+          "draws": 28
+        },
+        {
+          "now": 6107.9,
+          "ms": 1.9000000059604645,
+          "draws": 28
+        },
+        {
+          "now": 6124.5,
+          "ms": 0.7999999970197678,
+          "draws": 28
+        },
+        {
+          "now": 6257.9,
+          "ms": 2.4000000059604645,
+          "draws": 36
+        },
+        {
+          "now": 6374.5,
+          "ms": 1.7999999970197678,
+          "draws": 28
+        },
+        {
+          "now": 6524.5,
+          "ms": 2.2999999970197678,
+          "draws": 28
+        },
+        {
+          "now": 6657.9,
+          "ms": 2,
+          "draws": 28
+        },
+        {
+          "now": 6857.9,
+          "ms": 4.600000008940697,
+          "draws": 36
+        }
+      ],
+      "cold": {
+        "hero": "roma",
+        "ms": 5004.100000008941,
+        "actionMs": 1363.7000000029802,
+        "selected": [
+          "roma"
+        ],
+        "width": 497,
+        "height": 449
+      },
+      "resources": [
+        {
+          "path": "/",
+          "body": 16892,
+          "wire": 17192,
+          "kind": "navigation"
+        },
+        {
+          "path": "/__system-fonts",
+          "body": 0,
+          "wire": 300,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-stack.css",
+          "body": 10021,
+          "wire": 10321,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-app.js",
+          "body": 1871,
+          "wire": 2171,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/route.js",
+          "body": 1790,
+          "wire": 2090,
+          "kind": "script"
+        },
+        {
+          "path": "/__three/build/three.module.js",
+          "body": 266601,
+          "wire": 266901,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/stage.js",
+          "body": 5607,
+          "wire": 5907,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/motion.js",
+          "body": 8947,
+          "wire": 9247,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy.js",
+          "body": 13087,
+          "wire": 13387,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/characters.css",
+          "body": 2144,
+          "wire": 2444,
+          "kind": "link"
+        },
+        {
+          "path": "/characters/main.js",
+          "body": 5291,
+          "wire": 5591,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/model-tier.js",
+          "body": 316,
+          "wire": 616,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/rig.js",
+          "body": 543,
+          "wire": 843,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/ui.js",
+          "body": 1460,
+          "wire": 1760,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/input.js",
+          "body": 2005,
+          "wire": 2305,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/render-batches.js",
+          "body": 3480,
+          "wire": 3780,
+          "kind": "script"
+        },
+        {
+          "path": "/assets/sip-warm.js",
+          "body": 522,
+          "wire": 822,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/secondary.js",
+          "body": 545,
+          "wire": 845,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-expression.js",
+          "body": 2452,
+          "wire": 2752,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-explorer.js",
+          "body": 7641,
+          "wire": 7941,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-hips.js",
+          "body": 4613,
+          "wire": 4913,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-body.js",
+          "body": 8709,
+          "wire": 9009,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-tailoring.js",
+          "body": 5881,
+          "wire": 6181,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-shoulders.js",
+          "body": 6567,
+          "wire": 6867,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-skin.js",
+          "body": 1335,
+          "wire": 1635,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma.js",
+          "body": 7122,
+          "wire": 7422,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma-forms.js",
+          "body": 2603,
+          "wire": 2903,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma-light-groom.js",
+          "body": 3378,
+          "wire": 3678,
+          "kind": "script"
+        }
+      ],
+      "bytes": 391423,
+      "transferBytes": 399823,
+      "modules": 24
+    },
+    {
+      "hero": "hummin",
+      "tier": "high",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "stepMs": 0.6031249999068677,
+      "stepMedianMs": 0.5875000022351742,
+      "scriptMs": 4.408333335071802,
+      "fps": 4.099582587954681,
+      "drawsMean": 72.75,
+      "drawsRefresh": 90,
+      "drawsMax": 90,
+      "poseSamples": [
+        0.7750000022351742,
+        0.6499999985098839,
+        0.6000000014901161,
+        0.5499999970197678,
+        0.5750000029802322,
+        0.6999999992549419,
+        0.5749999992549419,
+        0.3999999985098839
+      ],
+      "frames": [
+        {
+          "now": 5173.2,
+          "ms": 4.800000011920929,
+          "draws": 90
+        },
+        {
+          "now": 5589.9,
+          "ms": 4.799999997019768,
+          "draws": 67
+        },
+        {
+          "now": 5939.9,
+          "ms": 4.9000000059604645,
+          "draws": 67
+        },
+        {
+          "now": 6189.8,
+          "ms": 4.200000002980232,
+          "draws": 67
+        },
+        {
+          "now": 6423.2,
+          "ms": 5.700000002980232,
+          "draws": 90
+        },
+        {
+          "now": 6639.9,
+          "ms": 3.2999999970197678,
+          "draws": 67
+        },
+        {
+          "now": 6856.5,
+          "ms": 3.2999999970197678,
+          "draws": 67
+        },
+        {
+          "now": 7089.8,
+          "ms": 3.2000000029802322,
+          "draws": 67
+        },
+        {
+          "now": 7273.1,
+          "ms": 3.4000000059604645,
+          "draws": 90
+        },
+        {
+          "now": 7456.5,
+          "ms": 3,
+          "draws": 67
+        },
+        {
+          "now": 7639.8,
+          "ms": 3.5,
+          "draws": 67
+        },
+        {
+          "now": 7856.4,
+          "ms": 8.799999997019768,
+          "draws": 67
+        }
+      ],
+      "cold": {
+        "hero": "hummin",
+        "ms": 7161.29999999702,
+        "actionMs": 2155.8999999910593,
+        "selected": [
+          "hummin"
+        ],
+        "width": 497,
+        "height": 449
+      },
+      "resources": [
+        {
+          "path": "/",
+          "body": 16892,
+          "wire": 17192,
+          "kind": "navigation"
+        },
+        {
+          "path": "/__system-fonts",
+          "body": 0,
+          "wire": 300,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-stack.css",
+          "body": 10021,
+          "wire": 10321,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-app.js",
+          "body": 1871,
+          "wire": 2171,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/route.js",
+          "body": 1790,
+          "wire": 2090,
+          "kind": "script"
+        },
+        {
+          "path": "/__three/build/three.module.js",
+          "body": 266601,
+          "wire": 266901,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/stage.js",
+          "body": 5607,
+          "wire": 5907,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/motion.js",
+          "body": 8947,
+          "wire": 9247,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy.js",
+          "body": 13087,
+          "wire": 13387,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/characters.css",
+          "body": 2144,
+          "wire": 2444,
+          "kind": "link"
+        },
+        {
+          "path": "/characters/main.js",
+          "body": 5291,
+          "wire": 5591,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/model-tier.js",
+          "body": 316,
+          "wire": 616,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/rig.js",
+          "body": 543,
+          "wire": 843,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/ui.js",
+          "body": 1460,
+          "wire": 1760,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/input.js",
+          "body": 2005,
+          "wire": 2305,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/render-batches.js",
+          "body": 3480,
+          "wire": 3780,
+          "kind": "script"
+        },
+        {
+          "path": "/assets/sip-warm.js",
+          "body": 522,
+          "wire": 822,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/secondary.js",
+          "body": 545,
+          "wire": 845,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-expression.js",
+          "body": 2452,
+          "wire": 2752,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-explorer.js",
+          "body": 7641,
+          "wire": 7941,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-hips.js",
+          "body": 4613,
+          "wire": 4913,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-body.js",
+          "body": 8709,
+          "wire": 9009,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-tailoring.js",
+          "body": 5881,
+          "wire": 6181,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-shoulders.js",
+          "body": 6567,
+          "wire": 6867,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-skin.js",
+          "body": 1335,
+          "wire": 1635,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma.js",
+          "body": 7122,
+          "wire": 7422,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma-forms.js",
+          "body": 2603,
+          "wire": 2903,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma-light-groom.js",
+          "body": 3378,
+          "wire": 3678,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin.js",
+          "body": 13460,
+          "wire": 13760,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-shell-fit.js",
+          "body": 2083,
+          "wire": 2383,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-panels.js",
+          "body": 1977,
+          "wire": 2277,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/material-detail.js",
+          "body": 2145,
+          "wire": 2445,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-textiles.js",
+          "body": 758,
+          "wire": 1058,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-scarf.js",
+          "body": 1939,
+          "wire": 2239,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-pouches.js",
+          "body": 2429,
+          "wire": 2729,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-leather.js",
+          "body": 5107,
+          "wire": 5407,
+          "kind": "script"
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "body": 6912,
+          "wire": 7212,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/embroidery.js",
+          "body": 2197,
+          "wire": 2497,
+          "kind": "script"
+        }
+      ],
+      "bytes": 430430,
+      "transferBytes": 441830,
+      "modules": 34
+    },
+    {
+      "hero": "lineup",
+      "tier": "high",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "stepMs": 0.9750000000931323,
+      "stepMedianMs": 1.037499999627471,
+      "scriptMs": 6.958333334575097,
+      "fps": 3.333434346495349,
+      "drawsMean": 163.5,
+      "drawsRefresh": 201,
+      "drawsMax": 201,
+      "poseSamples": [
+        1.175000000745058,
+        1.199999999254942,
+        0.8250000029802322,
+        0.9249999970197678,
+        1.1500000022351742,
+        1.199999999254942,
+        0.4750000014901161,
+        0.8499999977648258
+      ],
+      "frames": [
+        {
+          "now": 6479.9,
+          "ms": 5.399999991059303,
+          "draws": 151
+        },
+        {
+          "now": 6496.6,
+          "ms": 5,
+          "draws": 151
+        },
+        {
+          "now": 6763.3,
+          "ms": 5.9000000059604645,
+          "draws": 201
+        },
+        {
+          "now": 7213.3,
+          "ms": 4.4000000059604645,
+          "draws": 151
+        },
+        {
+          "now": 7496.6,
+          "ms": 4.5999999940395355,
+          "draws": 151
+        },
+        {
+          "now": 7863.3,
+          "ms": 5.5,
+          "draws": 151
+        },
+        {
+          "now": 8213.2,
+          "ms": 18.099999994039536,
+          "draws": 201
+        },
+        {
+          "now": 8563.2,
+          "ms": 4.9000000059604645,
+          "draws": 151
+        },
+        {
+          "now": 8863.2,
+          "ms": 4.600000008940697,
+          "draws": 151
+        },
+        {
+          "now": 9213.2,
+          "ms": 15.5,
+          "draws": 151
+        },
+        {
+          "now": 9529.8,
+          "ms": 5.200000002980232,
+          "draws": 201
+        },
+        {
+          "now": 9779.8,
+          "ms": 4.4000000059604645,
+          "draws": 151
+        }
+      ],
+      "cold": {
+        "hero": "lineup",
+        "ms": 7915.9000000059605,
+        "actionMs": 753.7000000029802,
+        "selected": [
+          "sippy",
+          "hummin",
+          "roma"
+        ],
+        "width": 497,
+        "height": 449
+      },
+      "resources": [
+        {
+          "path": "/",
+          "body": 16892,
+          "wire": 17192,
+          "kind": "navigation"
+        },
+        {
+          "path": "/__system-fonts",
+          "body": 0,
+          "wire": 300,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-stack.css",
+          "body": 10021,
+          "wire": 10321,
+          "kind": "link"
+        },
+        {
+          "path": "/assets/sip-app.js",
+          "body": 1871,
+          "wire": 2171,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/route.js",
+          "body": 1790,
+          "wire": 2090,
+          "kind": "script"
+        },
+        {
+          "path": "/__three/build/three.module.js",
+          "body": 266601,
+          "wire": 266901,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/stage.js",
+          "body": 5607,
+          "wire": 5907,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/motion.js",
+          "body": 8947,
+          "wire": 9247,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy.js",
+          "body": 13087,
+          "wire": 13387,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/characters.css",
+          "body": 2144,
+          "wire": 2444,
+          "kind": "link"
+        },
+        {
+          "path": "/characters/main.js",
+          "body": 5291,
+          "wire": 5591,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/model-tier.js",
+          "body": 316,
+          "wire": 616,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/rig.js",
+          "body": 543,
+          "wire": 843,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/ui.js",
+          "body": 1460,
+          "wire": 1760,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/input.js",
+          "body": 2005,
+          "wire": 2305,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/render-batches.js",
+          "body": 3480,
+          "wire": 3780,
+          "kind": "script"
+        },
+        {
+          "path": "/assets/sip-warm.js",
+          "body": 522,
+          "wire": 822,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/secondary.js",
+          "body": 545,
+          "wire": 845,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-expression.js",
+          "body": 2452,
+          "wire": 2752,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-explorer.js",
+          "body": 7641,
+          "wire": 7941,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-hips.js",
+          "body": 4613,
+          "wire": 4913,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-body.js",
+          "body": 8709,
+          "wire": 9009,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-tailoring.js",
+          "body": 5881,
+          "wire": 6181,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-shoulders.js",
+          "body": 6567,
+          "wire": 6867,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/sippy-skin.js",
+          "body": 1335,
+          "wire": 1635,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma.js",
+          "body": 7122,
+          "wire": 7422,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma-forms.js",
+          "body": 2603,
+          "wire": 2903,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/roma-light-groom.js",
+          "body": 3378,
+          "wire": 3678,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin.js",
+          "body": 13460,
+          "wire": 13760,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-shell-fit.js",
+          "body": 2083,
+          "wire": 2383,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-panels.js",
+          "body": 1977,
+          "wire": 2277,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/material-detail.js",
+          "body": 2145,
+          "wire": 2445,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-textiles.js",
+          "body": 758,
+          "wire": 1058,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-scarf.js",
+          "body": 1939,
+          "wire": 2239,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-pouches.js",
+          "body": 2429,
+          "wire": 2729,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/hummin-leather.js",
+          "body": 5107,
+          "wire": 5407,
+          "kind": "script"
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "body": 6912,
+          "wire": 7212,
+          "kind": "script"
+        },
+        {
+          "path": "/characters/embroidery.js",
+          "body": 2197,
+          "wire": 2497,
+          "kind": "script"
+        }
+      ],
+      "bytes": 430430,
+      "transferBytes": 441830,
+      "modules": 34
+    }
+  ],
+  "browser": "155.0.8059.79",
+  "network": {
+    "offline": false,
+    "latency": 60,
+    "downloadThroughput": 1125000.0,
+    "uploadThroughput": 187500.0,
+    "connectionType": "cellular4g"
+  },
+  "coldCpuMultiplier": 4,
+  "hotCpuMultiplier": 1,
+  "sourceSha256": {
+    "/": "c7abb21b74be5e33fe15957a3de7e701ad470e4997a3e15d473a29a4a8535159",
+    "/__three/build/three.module.js": "ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb",
+    "/__three/examples/jsm/utils/BufferGeometryUtils.js": "c25b7930e570e9ec56173cd3b866ec8d2e10016630db3937efb439daf1cedbf6",
+    "/assets/sip-app.js": "c80d5bcfad97e9dfba3d0ebc4d80309b5937998fa6f8a28ff2e95b13eeba2193",
+    "/assets/sip-stack.css": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
+    "/assets/sip-warm.js": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
+    "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
+    "/characters/embroidery.js": "67fdf06663210a5715febb6510e5d92f0ddca9777cb595d9f1bd79966e2a81e5",
+    "/characters/hummin-cloth.js": "e8f91456619a83a331ef170b1d313d45a691e0b7bb9d6e9532f34228c976718a",
+    "/characters/hummin-leather.js": "b308a1fd91a605aee7ae3c7af648cca289bb9ec7f599f5d07794af7d6ca365b9",
+    "/characters/hummin-panels.js": "bfba2d8006b4f7e6ab27016a9fc5dd886df805dd5343201337a558bfb489f7ff",
+    "/characters/hummin-pouches.js": "6c64e8a3ae01e0734a7e7108c13824ee1dd9ebca3c53fdfd3df279a93e9c3fdb",
+    "/characters/hummin-scarf.js": "e9641fad314ded58f071ab43803b38b40ffa41a5c1361bfdca6dcdcd77a46e2d",
+    "/characters/hummin-secondary.js": "d4c5d5d15109b1837d77687c4d12caf85e0775a219d8f911fe3251ea28f626cf",
+    "/characters/hummin-shell-fit.js": "6408ef12663c389886509e83b41132b5d93e26e1a78dc54a7f825d153e5447a4",
+    "/characters/hummin-textiles.js": "35a8cf775f9d165e64aef73ade868f6b7b9555c4f5eb9893b0b282c76eec5cef",
+    "/characters/hummin.js": "cb4c8e9ce22c12a8afd634301ea07aac3f7fd6934a8657b92412a20b100bb8f3",
+    "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
+    "/characters/main.js": "3fea4f0da88e7330c1512861213aac9e3bcdfd82a57c134ce7aef2e03ef7fb3d",
+    "/characters/material-detail.js": "ca5364d5e570943552bb6d40b3e50a956acb8431548da591f600fd280d0fa63d",
+    "/characters/model-tier.js": "f1c83eb8d91b243948aea6d45c04fcb19e4340a52fc63bb40c960885aa1e11a9",
+    "/characters/motion.js": "88132184dde77d7b3ccb2d9b370a212a6da4811cee6072fd865dc2a55eaf98b2",
+    "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
+    "/characters/review-controls.js": "dfdca6623c28089521b54872645e0783033bd7f7c892c2b143dc443e9a3c000d",
+    "/characters/rig.js": "fc0c1d81f2695004894aa0dd4e12f9886d5ea6f5d375bce4dadc71026537bb5c",
+    "/characters/roma-forms.js": "b7c27e14d407728c661dbd79c75a001941ae1d14aaaf1992907be868dad581ec",
+    "/characters/roma-light-groom.js": "b76a5f82ecd48cab4dccdab3d4da5c78197e765603eda0a35411f008be87dccd",
+    "/characters/roma-secondary.js": "060e2570ca690746a2912606d7e711218289f1121ef10853cb2bdc184e8de51a",
+    "/characters/roma.js": "db55e1e5155eefa3a4e8a1e286473b0a93cc630bf6c47dfd9c84284e9ebebe34",
+    "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+    "/characters/secondary.js": "80ed341ab1b5bdc86164c46e3585f724c919c6fcb5a90a3b59f2a681bf47e24d",
+    "/characters/sippy-body.js": "2d5690035f0fbd2bd648d908db99524e3878357e1973d673655623ef6fc2ee8b",
+    "/characters/sippy-explorer.js": "99a3d325033ddb551220398462bb28f92317ecea5b35dc02262906e70f38f172",
+    "/characters/sippy-expression.js": "5ad54467f42692d2bbd42a3abbdba2038e9dc9cae67a1c35bcd675eb88591e46",
+    "/characters/sippy-hips.js": "dde1e1080e348fdf994266e99515ef4af91c110333905746925f59d1ec894eb9",
+    "/characters/sippy-secondary.js": "3e8cf51201dc946a4b90d19369eb6f3c26d6ff465b8d5a5bf0c4cd11c9e267a7",
+    "/characters/sippy-shoulders.js": "178d942fab123c16eabcd0ef8a3d948e9a121e68fe568364d0eaacbb14423b6e",
+    "/characters/sippy-skin.js": "a40f2bf5b900c4be94e6b9ced5a0c7a640ce27c2c2bddf96e0cac95cebe90a0f",
+    "/characters/sippy-tailoring.js": "a3e917d000cc04c0f78f5e0956617669cba914067a6ba5ff084861c02b1ed1dc",
+    "/characters/sippy.js": "ab4fc809a7b73b6ec5d100dfaf8436b5db4a7d752ab208f5c4d1203dee4c4305",
+    "/characters/stage.js": "d206cbd7a4cfb063c1f86c41cbe345e133023021ef9a940650dc05a80fc4d112",
+    "/characters/ui.js": "145b3db0740fcfd83535c2250edc0e52dcda7843c41ed62b2a394d5df934a7cd"
+  },
+  "verifiedRuntimeRevision": "702e298aee00263e901ac07ba0da150caf1306ed",
+  "verifiedServedSources": true
+}
