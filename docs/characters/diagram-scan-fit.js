@@ -68,6 +68,67 @@ function longSegment(a, b, across, c, d, acrossTarget, width, depth) {
   return betweenCharts(source, destination, width, target.length() / along.length(), depth);
 }
 
+// Unit vectors point distally along the anatomical shaft. Each is the
+// least-squares line through nine closed cortical section centroids between
+// 28% and 59% of the source femur's height, measured from the distal end.
+const femoralShaftDirections = {
+  sippy: { L: [-0.019776, -0.999773, 0.007968], R: [0.004725, -0.999962, 0.007272] },
+  roma: { L: [-0.187393, -0.981437, 0.040818], R: [0.177907, -0.983514, 0.032398] },
+};
+
+function fitFemur(
+  sourceHead,
+  sourceKnee,
+  targetHead,
+  targetKnee,
+  targetAcross,
+  sourceShaft,
+  scale,
+  fitCondyles,
+) {
+  const sourceAxis = sourceKnee.clone().sub(sourceHead);
+  const targetAxis = targetKnee.clone().sub(targetHead);
+  const sourceLength = sourceAxis.dot(sourceShaft);
+  const targetDistance = targetAxis.length();
+  const targetDirection = targetAxis.clone().normalize();
+  const sourceFrame = chart(
+    sourceHead,
+    right.clone().projectOnPlane(sourceAxis.clone().normalize()),
+    sourceAxis,
+  );
+  const targetFrame = chart(targetHead, targetAcross.clone().projectOnPlane(targetDirection), targetAxis);
+  const rotation = new T.Quaternion()
+    .setFromRotationMatrix(targetFrame)
+    .multiply(new T.Quaternion().setFromRotationMatrix(sourceFrame).invert());
+
+  // The mechanical axis from head to knee is oblique to the cortical shaft.
+  // Keep the source head offset normal to that shaft. With both hip and knee
+  // fixed, this offset determines the target shaft orientation and length.
+  const rotatedShaft = sourceShaft.clone().applyQuaternion(rotation);
+  const headOffset = sourceAxis.clone().addScaledVector(sourceShaft, -sourceLength).length() * scale;
+  const targetLength = Math.sqrt(targetDistance ** 2 - headOffset ** 2);
+  const towardShaft = rotatedShaft.clone().projectOnPlane(targetDirection).normalize();
+  const targetShaft = targetDirection
+    .clone()
+    .multiplyScalar(targetLength / targetDistance)
+    .addScaledVector(towardShaft, headOffset / targetDistance);
+  rotation.premultiply(new T.Quaternion().setFromUnitVectors(rotatedShaft, targetShaft));
+  const lengthAdjustment = targetLength - scale * sourceLength;
+
+  return (point) => {
+    const offset = point.clone().sub(sourceHead);
+    const station = offset.dot(sourceShaft) / sourceLength;
+    // The proximal fifth contains the spherical head, narrow neck and both
+    // trochanters. Its scale is equal in every direction. Redistribute length
+    // along the shaft below it, leaving the neck–shaft angle intact.
+    const fitted = offset.applyQuaternion(rotation).multiplyScalar(scale).add(targetHead);
+    fitted.addScaledVector(targetShaft, lengthAdjustment * T.MathUtils.smoothstep(station, 0.2, 0.9));
+    // Transition across the distal third. Both condyles and their articular
+    // surface use exactly the prior knee transform by the final 9%.
+    return fitted.lerp(fitCondyles(point), T.MathUtils.smoothstep(station, 0.72, 0.91));
+  };
+}
+
 function averageUpperPlate(geometry) {
   const pos = geometry.attributes.position,
     top = geometry.boundingBox.max.y,
@@ -183,7 +244,7 @@ function fitSide(rig, roma, side, atlas, bones, landmarks, chest, hips, envelope
   leg.knee.addScaledVector(leg.outer, rig.height * (roma ? 0.006 : 0.008));
   leg.femoralHead.copy(femoralHead);
   leg.acetabulum.copy(femoralHead);
-  const femur = longSegment(
+  const distalFemur = longSegment(
     hip,
     knee,
     right,
@@ -192,6 +253,16 @@ function fitSide(rig, roma, side, atlas, bones, landmarks, chest, hips, envelope
     direction(rig['thigh' + side], right),
     roma ? 0.85 : 0.81,
     roma ? 0.8 : 0.76,
+  );
+  const femur = fitFemur(
+    hip,
+    knee,
+    femoralHead,
+    leg.knee,
+    direction(rig['thigh' + side], right),
+    vec(femoralShaftDirections[rig.name][side]),
+    roma ? 0.84 : 0.8,
+    distalFemur,
   );
   const shinWidth = roma ? 0.64 : 0.61;
   const shinBase = longSegment(
