@@ -297,7 +297,10 @@ def check_missing_module(browser, url, package, system_fonts):
         stage["ready"](page, url)
         with page.expect_navigation(wait_until="domcontentloaded"):
             page.locator(SECTION + " [data-study-body]").evaluate("el=>el.scrollIntoView({block:'start'})")
-        page.wait_for_function("document.querySelector('#character-test')?.characterTest")
+        page.bring_to_front()
+        page.wait_for_function(
+            "document.visibilityState === 'visible' && document.querySelector('#character-test')?.characterTest"
+        )
         stage["call"](page, "setManual", True)
         page.locator('[data-setting="tier"]').select_option("mobile")
         # The previous scroll position is restored during this navigation.
@@ -326,6 +329,17 @@ def check_missing_module(browser, url, package, system_fonts):
             "One stale Character Ref module caused one recovery reload and a successful live portrait.",
             flush=True,
         )
+    except Exception:
+        print(
+            "Recovery state",
+            page.evaluate("""() => ({hash:location.hash,document:document.visibilityState,
+          selection:document.querySelector('[data-pick][aria-pressed="true"]')?.dataset.pick,
+          sheet:document.querySelector('[data-ref]')?.characterRef?.stats(),
+          status:document.querySelector('[data-ref] [role=status]')?.textContent,
+          error:document.querySelector('[data-ref] [data-open-study]')?.textContent})"""),
+            flush=True,
+        )
+        raise
     finally:
         context.close()
 
