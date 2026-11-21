@@ -87,35 +87,52 @@ function makeSoleProfile(ankle, restClearance) {
 // bent elbow. The cost of posing the contacts is independent of render detail.
 function rollHull(rig) {
   const moving = new Set(rig.joints);
-  const groups = new Map(), probe = new T.Vector3(), coordinates = new T.Vector3();
+  const groups = new Map(),
+    probe = new T.Vector3(),
+    coordinates = new T.Vector3();
   const local = new T.Matrix4();
   const directions = [];
   for (let i = 0; i < 64; i++) {
-    const y = 1 - (2 * i + 1) / 64, r = Math.sqrt(1 - y * y), azimuth = i * 2.39996322973;
+    const y = 1 - (2 * i + 1) / 64,
+      r = Math.sqrt(1 - y * y),
+      azimuth = i * 2.39996322973;
     directions.push([r * Math.cos(azimuth), y, r * Math.sin(azimuth)]);
   }
-  directions.push([1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]);
+  // A shoulder roll sweeps mostly through its sagittal plane; sample that
+  // great circle more densely so a rounded helmet or shoe stays grounded.
+  for (let i = 0; i < 48; i++) {
+    const t = (i * Math.PI) / 24;
+    directions.push([0, Math.sin(t), Math.cos(t)]);
+  }
+  directions.push([1, 0, 0], [-1, 0, 0]);
   function group(bone) {
-    if (!groups.has(bone)) groups.set(bone, {
-      extent: new Float64Array(directions.length).fill(-Infinity),
-      samples: new Array(directions.length),
-    });
+    if (!groups.has(bone))
+      groups.set(bone, {
+        extent: new Float64Array(directions.length).fill(-Infinity),
+        sample: new Array(directions.length),
+        index: new Uint32Array(directions.length),
+      });
     return groups.get(bone);
   }
   rig.root.updateWorldMatrix(true, true);
   rig.root.traverse((mesh) => {
     if (!mesh.isMesh || !mesh.visible || mesh.userData.debug || mesh.userData.highDetail) return;
-    let parent = mesh.parent;
+    let parent = mesh;
     while (parent !== rig.root && !moving.has(parent) && !parent.userData.dynamicPose) parent = parent.parent;
-    const {position, skinIndex, skinWeight} = mesh.geometry.attributes;
+    const { position, skinIndex, skinWeight } = mesh.geometry.attributes;
     if (!position) return;
-    local.copy(parent.matrixWorld).invert().multiply(mesh.matrixWorld);
-    const matrices = mesh.isSkinnedMesh && mesh.skeleton.boneInverses.map(
-      (inverse) => new T.Matrix4().multiplyMatrices(inverse, mesh.bindMatrix));
-    const count = Math.min(position.count, 768);
+    const transform = local.copy(parent.matrixWorld).invert().multiply(mesh.matrixWorld).clone();
+    const matrices =
+      mesh.isSkinnedMesh &&
+      mesh.skeleton.boneInverses.map((inverse) => new T.Matrix4().multiplyMatrices(inverse, mesh.bindMatrix));
+    const source = { mesh, parent, position, skinIndex, skinWeight, matrices, transform, kept: new Set() };
+    const count = Math.min(position.count, 576);
+    const rigid = !matrices && group(parent);
     for (let k = 0; k < count; k++) {
-      const i = Math.floor(k * position.count / count);
-      let major = 0, influence = -1, bone = parent;
+      const i = Math.floor((k * position.count) / count);
+      let major = 0,
+        influence = -1;
+      let cluster = rigid;
       probe.fromBufferAttribute(position, i);
       if (matrices) {
         for (let j = 0; j < 4; j++) {
@@ -125,38 +142,60 @@ function rollHull(rig) {
             major = skinIndex.getComponent(i, j);
           }
         }
-        bone = mesh.skeleton.bones[major];
+        cluster = group(mesh.skeleton.bones[major]);
         coordinates.copy(probe).applyMatrix4(matrices[major]);
-      } else coordinates.copy(probe).applyMatrix4(local);
-      const {extent, samples} = group(bone);
-      let point;
+      } else coordinates.copy(probe).applyMatrix4(transform);
+      const { extent, sample, index } = cluster;
       for (let j = 0; j < directions.length; j++) {
         const direction = directions[j];
         const d = coordinates.x * direction[0] + coordinates.y * direction[1] + coordinates.z * direction[2];
         if (d <= extent[j]) continue;
         extent[j] = d;
-        if (!point) {
-          point = [];
-          if (!matrices) point.push({row: parent.matrixWorld.elements, x:coordinates.x, y:coordinates.y, z:coordinates.z, w:1});
-          else for (let n = 0; n < 4; n++) {
-            const w = skinWeight.getComponent(i, n);
-            if (!w) continue;
-            const index = skinIndex.getComponent(i,n);
-            const v = probe.clone().applyMatrix4(matrices[index]);
-            point.push({row:mesh.skeleton.bones[index].matrixWorld.elements, x:v.x*w, y:v.y*w, z:v.z*w, w});
-          }
-        }
-        samples[j] = point;
+        sample[j] = source;
+        index[j] = i;
       }
     }
   });
-  const contacts = new Set();
-  for (const {samples} of groups.values()) for (const point of samples) if (point) contacts.add(point);
+  const contacts = [];
+  for (const { sample, index } of groups.values()) {
+    for (let j = 0; j < sample.length; j++) {
+      const src = sample[j],
+        i = index[j];
+      if (!src || src.kept.has(i)) continue;
+      src.kept.add(i);
+      probe.fromBufferAttribute(src.position, i);
+      const point = [];
+      if (!src.matrices) {
+        coordinates.copy(probe).applyMatrix4(src.transform);
+        point.push({
+          row: src.parent.matrixWorld.elements,
+          x: coordinates.x,
+          y: coordinates.y,
+          z: coordinates.z,
+          w: 1,
+        });
+      } else
+        for (let n = 0; n < 4; n++) {
+          const w = src.skinWeight.getComponent(i, n);
+          if (!w) continue;
+          const k = src.skinIndex.getComponent(i, n);
+          coordinates.copy(probe).applyMatrix4(src.matrices[k]).multiplyScalar(w);
+          point.push({
+            row: src.mesh.skeleton.bones[k].matrixWorld.elements,
+            x: coordinates.x,
+            y: coordinates.y,
+            z: coordinates.z,
+            w,
+          });
+        }
+      contacts.push(point);
+    }
+  }
   return () => {
     let min = Infinity;
     for (const point of contacts) {
       let y = 0;
-      for (const p of point) y += p.row[1]*p.x + p.row[5]*p.y + p.row[9]*p.z + p.row[13]*p.w;
+      for (const p of point) y += p.row[1] * p.x + p.row[5] * p.y + p.row[9] * p.z + p.row[13] * p.w;
       if (y < min) min = y;
     }
     return min;
@@ -691,7 +730,9 @@ export function createController(rig, x = 0, z = 0) {
     root.updateMatrixWorld(true);
     const lowest = rollFloor();
     if (Number.isFinite(lowest)) {
-      rollSupport = altitude - lowest;
+      // A finite directional hull inscribes the curved boot, pack and helmet.
+      // Reserve a thin contact margin for the unsampled arc between support points.
+      rollSupport = altitude + 0.0043 - lowest;
       rig.hips.position.y += rollSupport / metresPerUnit;
       for (const c of contacts) c.sole.y += rollSupport;
     }
