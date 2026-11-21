@@ -207,13 +207,15 @@ function supportPelvicRing(parts, rig, pelvis) {
   )) {
     const a = p.mesh.geometry.attributes.position;
     const proximal =
-      p.scanNode.startsWith('FEMUR') && !roma ? pelvis[p.scanNode.endsWith('LEFT') ? 'L' : 'R'] : null;
+      p.scanNode.startsWith('FEMUR') ? pelvis[p.scanNode.endsWith('LEFT') ? 'L' : 'R'] : null;
     const shaft = proximal?.knee.clone().sub(proximal.femoralHead).normalize();
+    const flexing = proximal && (!roma || shaft.dot(yAxis)>-0.82);
+    const neckLength = h * (roma ? .062 : .082);
     for (let j = 0; j < a.count; j++) {
       v.fromBufferAttribute(a, j);
       // A lifted femoral shaft crosses the height of the waistband. Only its
       // proximal head/neck support the pelvis; the thigh encloses the shaft.
-      if (proximal && v.clone().sub(proximal.femoralHead).dot(shaft) > h * 0.082) continue;
+      if (flexing && v.clone().sub(proximal.femoralHead).dot(shaft) > neckLength) continue;
       v.sub(origin);
       const x = v.dot(xAxis),
         z = v.dot(zAxis),
