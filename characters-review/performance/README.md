@@ -2,7 +2,7 @@
 
 Both revisions ran in headless Chromium 155.0.8059.79 with ANGLE Vulkan SwiftShader on an AMD EPYC 9V74 host (five visible logical CPUs, four CPUs of cgroup quota). Both used the same 800 × 680 CSS viewport and DPR 1. The WebGL canvas was 497 × 449 pixels. The FPS figures describe this software renderer.
 
-The left side of each arrow is main at `a59620d`. The right side is the speed build at `910a1c9` with the sampled-roll grounding correction in `motion.js`. The raw measurements retain the per-frame timings, resource lists, submitted mesh names and content hashes of the served source files. [Before](before.json) · [After](after.json)
+The left side of each arrow is main at `a59620d`. The right side uses the application files committed at `ebbf2ad`. Their recorded hashes match that revision. The raw measurements retain the per-frame timings, resource lists, submitted mesh names and content hashes of the served source files. [Before](before.json) · [After](after.json)
 
 ## Navigation and selection
 

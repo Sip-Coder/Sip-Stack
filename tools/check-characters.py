@@ -16,7 +16,7 @@ from playwright.sync_api import sync_playwright
 
 PROBE = """
 (() => {
-  const contexts = new Set(), result = { contexts, clears: 0, black: 0, frames: 0, sample: false };
+  const contexts = new Set(), result = { contexts, clears: 0, black: 0, frames: 0, byTab: {}, sample: false };
   window.characterChecks = result;
   const get = HTMLCanvasElement.prototype.getContext;
   HTMLCanvasElement.prototype.getContext = function(kind, ...args) {
@@ -51,6 +51,8 @@ PROBE = """
         const rect = c.getBoundingClientRect();
         if (rect.width && rect.height && rect.bottom > 0 && rect.top < innerHeight) {
           result.frames++;
+          const tab = document.body.dataset.mode;
+          result.byTab[tab] = (result.byTab[tab] || 0) + 1;
           if (!result.painted(c)) result.black++;
         }
       }
@@ -142,6 +144,31 @@ def call(page, fn, *args):
     return page.locator(HOST).evaluate("(e,[fn,args]) => e.characterTest[fn](...args)", [fn, args])
 
 
+def check_lazy_cast(page):
+    page.wait_for_function("document.querySelector('#character-test').characterTest.snapshot().firstHeroPainted")
+    assert page.evaluate("performance.getEntriesByName('heros-first-hero-frame').length") == 1
+    call(page, "setManual", True)
+    cast_modules = """() => performance.getEntriesByType('resource')
+      .map(r=>new URL(r.name).pathname).filter(p=>/\\/characters\\/(sippy|roma|hummin)\\.js$/.test(p)).map(p=>p.split('/').pop()).sort()"""
+    assert call(page, "snapshot")["built"] == ["sippy"]
+    assert page.evaluate(cast_modules) == ["sippy.js"]
+    call(page, "select", "hummin")
+    assert call(page, "snapshot")["built"] == ["sippy", "hummin"]
+    assert page.evaluate(cast_modules) == ["hummin.js", "sippy.js"]
+    call(page, "view", "lineup")
+    assert call(page, "snapshot")["built"] == list(HEROES)
+    warmed = page.evaluate("characterChecks.warms")
+    modules = page.evaluate(cast_modules)
+    assert modules == ["hummin.js", "roma.js", "sippy.js"]
+    for hero in HEROES:
+        call(page, "select", hero)
+        call(page, "render")
+        assert call(page, "snapshot")["name"] == hero
+    assert page.evaluate(cast_modules) == modules and page.evaluate("characterChecks.warms") == warmed
+    print("First frame Sippy alone; selecting Hummin and then Lineup loads each builder once. "
+          "Cached selections reuse the prepared actors.", flush=True)
+
+
 def switch(page, mode):
     page.locator(f'.seg button[data-mode="{mode}"]').evaluate("b => b.click()")
     page.wait_for_function("mode => document.body.dataset.mode === mode", arg=mode)
@@ -174,18 +201,22 @@ def formation(page):
     group.evaluate("button=>button.click()")
     assert group.get_attribute("aria-pressed") == "true"
     # While walking together, selecting the next driver preserves all world positions.
-    travel = page.locator(HOST).evaluate("""h => {
+    travel = page.locator(HOST).evaluate("""async h => {
       const t = h.characterTest;
-      const positions = () => ['sippy','roma','hummin'].map(name => {
-        t.select(name); const {x,z}=t.snapshot(); return [x,z];
-      });
-      const start=positions();
-      t.select('sippy'); t.tick(180,{x:0,z:1});
-      const end=positions();
+      const positions = async () => {
+        const points = [];
+        for (const name of ['sippy','roma','hummin']) {
+          await t.select(name); const {x,z}=t.snapshot(); points.push([x,z]);
+        }
+        return points;
+      };
+      const start=await positions();
+      await t.select('sippy'); t.tick(180,{x:0,z:1});
+      const end=await positions();
       return end.map(([x,z],i)=>Math.hypot(x-start[i][0],z-start[i][1]));
     }""")
     assert min(travel) > 1.0, travel
-    print("Three-character formation travel (m)", travel, flush=True)
+    print("Three-character formation travel (ft)", [round(d * 3.28084, 2) for d in travel], flush=True)
     group.evaluate("button=>button.click()")
 
 
@@ -193,7 +224,7 @@ def controls(page):
     canvas = page.locator(HOST + " canvas")
     canvas.focus()
     page.keyboard.press("Digit2")
-    assert call(page, "snapshot")["name"].lower() == "roma"
+    page.wait_for_function("document.querySelector('#character-test').characterTest.snapshot().name === 'roma'")
     page.keyboard.down("KeyW")
     page.wait_for_function("document.querySelector('#character-test').characterTest.snapshot().speed > 0.9")
     page.keyboard.down("Shift")
@@ -261,15 +292,39 @@ def touch_controls(browser, url, package, system_fonts):
 def exercise(browser, url, package, system_fonts):
     context = browser_context(browser, package=package, system_fonts=system_fonts)
     context.add_init_script(PROBE)
+    # Observe the production shader compiler and its render-target handoff.
+    # Querying the same module under a distinct URL bypasses this wrapper.
+    context.route("**/assets/sip-warm.js", lambda r: r.fulfill(content_type="text/javascript", body="""
+        import {warmShaders as native} from './sip-warm.js?observed';
+        export function warmShaders(renderer,jobs) {
+          if (!renderer.domElement.closest('#character-test')) return native(renderer,jobs);
+          const c = window.characterChecks, before = renderer.getRenderTarget();
+          const compile = renderer.compileAsync, inject = c.rejectOneWarm;
+          if (inject) renderer.compileAsync = function(...args) {
+            if (!c.rejectOneWarm) return compile.apply(this,args);
+            c.rejectOneWarm = false;
+            return Promise.reject(Error('test warm-up rejection'));
+          };
+          let work;
+          try { work = native(renderer,jobs); }
+          finally { if (inject) renderer.compileAsync = compile; }
+          if (renderer.getRenderTarget() !== before) throw Error('Warm-up changed the render target');
+          return work.then(duration => { c.warms = (c.warms || 0) + 1; return duration; });
+        }
+    """))
     page = context.new_page()
     page.set_default_timeout(120000)
     errors = []
+    warm_warnings = []
     page.on("pageerror", lambda e: errors.append(str(e)))
     page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
+    page.on("console", lambda m: warm_warnings.append(m.text) if
+            m.type == "warning" and "test warm-up rejection" in m.text else None)
     try:
         check_saved_links(page, url)
         ready(page, url)
-        call(page, "setManual", True)
+        check_lazy_cast(page)
+        call(page, "view", "front")
         canvas = page.locator(HOST + " canvas")
         assert canvas.evaluate("c=>c.getContext('webgl2').getContextAttributes().preserveDrawingBuffer")
         for tier in ("mobile", "high"):
@@ -281,19 +336,26 @@ def exercise(browser, url, package, system_fonts):
                 stats = call(page, "snapshot")
                 assert stats["name"].lower() == hero, stats
                 assert canvas.evaluate("c => characterChecks.painted(c)"), (tier, hero)
+            before = page.evaluate("characterChecks.warms")
+            assert before > 0
             canvas.evaluate("""c => {
                 window.contextLoss = c.getContext('webgl2').getExtension('WEBGL_lose_context');
                 contextLoss.loseContext();
             }""")
             page.wait_for_function("document.querySelector('#character-test canvas').style.visibility==='hidden'")
             page.wait_for_timeout(120)
+            if tier == "mobile":
+                page.evaluate("characterChecks.rejectOneWarm=true")
             page.evaluate("contextLoss.restoreContext()")
             page.wait_for_function("""() => {
                 const c=document.querySelector('#character-test canvas');
                 return c.checkVisibility({visibilityProperty:true}) && characterChecks.painted(c);
             }""")
             assert canvas.evaluate("c=>{const gl=c.getContext('webgl2');return gl.getError()===gl.NO_ERROR}"), tier
-            print(f"{tier} · three heroes rendered and context restored", flush=True)
+            assert page.evaluate("characterChecks.warms") > before
+            print(f"{tier} · three heroes rendered, context restored and shaders rewarmed", flush=True)
+        assert len(warm_warnings) == 1, warm_warnings
+        print("Rejected shader warm-up returned to the preserved target and the stage painted", flush=True)
         formation(page)
         call(page, "tier", "mobile")
         call(page, "view", "follow")
@@ -311,11 +373,12 @@ def exercise(browser, url, package, system_fonts):
             if (cycle + 1) % 5 == 0:
                 print(f"Completed {cycle + 1} four-tab cycles", flush=True)
         result = page.evaluate("""() => {
-          const {contexts,clears,black,frames}=characterChecks;
-          return {contexts:contexts.size,clears,black,frames};
+          const {contexts,clears,black,frames,byTab}=characterChecks;
+          return {contexts:contexts.size,clears,black,frames,byTab};
         }""")
         assert result["contexts"] == baseline, (baseline, result)
         assert result["frames"] >= 40 and result["clears"] == result["black"] == 0, result
+        assert all(result["byTab"].get(tab, 0) >= 20 for tab in ("village", "heros")), result
         print("20 four-tab cycles", json.dumps(result), flush=True)
         assert not errors, errors
     finally:
@@ -324,16 +387,71 @@ def exercise(browser, url, package, system_fonts):
         context.close()
 
 
+def check_recovery(browser, url, package, system_fonts):
+    for permanent in (False, True):
+        print("Injecting", "persistent" if permanent else "transient", "missing hero builder", flush=True)
+        context = browser_context(browser, package=package, system_fonts=system_fonts, width=420, touch=True)
+        context.add_init_script(PROBE)
+        try:
+            page = context.new_page()
+            page.set_default_timeout(120000)
+            requests, documents = [], []
+            page.on("request", lambda r: documents.append(r.url) if r.is_navigation_request() else None)
+
+            def stale_builder(route):
+                kind = route.request.resource_type
+                requests.append(kind)
+                if kind == "script" and (permanent or requests.count("script") == 1):
+                    route.fulfill(status=404, body="Missing hero module", content_type="text/javascript")
+                else:
+                    route.continue_()
+
+            page.route("**/characters/sippy.js", stale_builder)
+            page.goto(url.rstrip("/") + "/#world", wait_until="domcontentloaded")
+            page.wait_for_selector("#world svg.scene", state="visible")
+            assert not requests, requests
+            page.locator('.seg button[data-mode="heros"]').evaluate("b => b.click()")
+            if permanent:
+                page.get_by_text("Could not load the character", exact=False).wait_for()
+                suppressed = page.evaluate("""async () =>
+                  (await import('./assets/sip-recover.js')).recover('QA repeat', Error('still stale'))""")
+                assert suppressed is False
+            else:
+                page.wait_for_function("""() => {
+                  const c=document.querySelector('#character-test canvas');
+                  return sessionStorage.getItem('sip-recovered-at') &&
+                    performance.getEntriesByName('heros-first-hero-frame').length &&
+                    c?.checkVisibility({visibilityProperty:true}) && characterChecks.painted(c);
+                }""")
+            assert_heros_route(page)
+            assert len(documents) == 2 and requests.count("script") == 2 and "fetch" in requests, (documents, requests)
+            print("Stale selected hero", "loop suppressed" if permanent else "restored",
+                  json.dumps({"documents":len(documents), "requests":requests}), flush=True)
+        finally:
+            context.close()
+
+
+def launch(pw, mesa=False):
+    args = ["--no-sandbox", "--disable-dev-shm-usage", "--hide-scrollbars"]
+    if mesa:
+        args += ["--ozone-platform=x11", "--enable-gpu", "--ignore-gpu-blocklist",
+                 "--disable-gpu-watchdog", "--use-gl=angle", "--use-angle=gl", "--disable-software-rasterizer"]
+    else:
+        args += ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"]
+    return pw.chromium.launch(executable_path=os.getenv("CHROME", "/usr/bin/chromium"), headless=not mesa, args=args)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("url")
     parser.add_argument("--system-fonts", action="store_true")
+    parser.add_argument("--mesa", action="store_true", help="Use the local X11 display with Mesa OpenGL")
     args = parser.parse_args()
     package = Path(os.environ["THREE_ROOT"]).resolve() if os.getenv("THREE_ROOT") else None
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(executable_path=os.getenv("CHROME", "/usr/bin/chromium"),
-            args=["--no-sandbox", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--disable-dev-shm-usage"])
+        browser = launch(pw, args.mesa)
         try:
+            check_recovery(browser, args.url, package, args.system_fonts)
             exercise(browser, args.url, package, args.system_fonts)
             touch_controls(browser, args.url, package, args.system_fonts)
         finally:
