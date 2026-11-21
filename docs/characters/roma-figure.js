@@ -43,6 +43,17 @@ function gradePoint(x, y, z, leg, out, arm = false, pattern = false, relaxedCut 
     const calf = Math.exp(-(((y - 0.204) / 0.052) ** 2));
     out.z -= 0.01 * knee + 0.075 * z * calf;
     out.x -= 0.055 * (x - Math.sign(x) * 0.065) * calf;
+    // The back of the calf tapers above the ankle, widens at the gastrocnemius
+    // and draws in again behind the knee. Shape the skin and cloth together.
+    const h = out.y;
+    const midCalf = T.MathUtils.smoothstep(h, 0.123, 0.168) * (1 - T.MathUtils.smoothstep(h, 0.195, 0.218));
+    out.z -= midCalf * (0.0028 * T.MathUtils.smoothstep(z, 0.018, 0.040) -
+      0.0032 * (1 - T.MathUtils.smoothstep(z, -0.032, -0.018)));
+    out.z -= 0.0032 * Math.exp(-(((h - 0.114) / 0.022) ** 2)) * (1 - T.MathUtils.smoothstep(z, -0.026, -0.016));
+    out.z += 0.0032 * Math.exp(-(((h - 0.218) / 0.014) ** 2)) * T.MathUtils.smoothstep(z, 0.018, 0.044);
+    const lowerThigh = T.MathUtils.smoothstep(h, 0.267, 0.295) * (1 - T.MathUtils.smoothstep(h, 0.326, 0.343));
+    out.z += lowerThigh * (0.002 * T.MathUtils.smoothstep(z, 0.014, 0.043) -
+      0.0028 * (1 - T.MathUtils.smoothstep(z, -0.034, -0.014)));
     // Grade the flesh and the trouser pattern together through the upper thigh.
     const upperThigh = T.MathUtils.smoothstep(y, 0.355, 0.422) * (1 - T.MathUtils.smoothstep(y, 0.48, 0.51));
     out.z -= upperThigh * (0.068 * out.z + 0.0012);
@@ -201,6 +212,13 @@ export function fitRomaFigure(rig, patterns, nodes, cuffs, jacket, buckle) {
           const behindKnee =
             T.MathUtils.smoothstep(y, 0.23, 0.266) * (1 - T.MathUtils.smoothstep(y, 0.285, 0.33));
           p.z -= behindKnee * (1 - T.MathUtils.smoothstep(z, -0.014, 0.008)) * 0.0045;
+        }
+        if (isCargo) {
+          // The joggers gather at the waist and carry more ease over the
+          // seat than along the soft front panel beneath the darts.
+          const rise = T.MathUtils.smoothstep(p.y, 0.479, 0.504) * (1 - T.MathUtils.smoothstep(p.y, 0.530, 0.557));
+          p.z += rise * (0.005 * T.MathUtils.smoothstep(p.z, 0.010, 0.041) -
+            0.008 * (1 - T.MathUtils.smoothstep(p.z, -0.043, -0.014)));
         }
         base.setXYZ(i, p.x, p.y, p.z);
       }

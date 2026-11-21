@@ -284,7 +284,7 @@ function radialEnvelope(garment) {
 // Seat the upper strap on the actual neckline, back and turning shoulder.
 // Bind the rail to cloth triangles once per detail level. Each fixed step then
 // follows only three posed vertices per guide, including during a high reach.
-function bindShoulderRail(cache, chest, layers, guides, outward, standOff = 0.0115) {
+function bindShoulderRail(cache, chest, layers, guides, outward, standOff = 0.0043) {
   const chestInverse = chest.matrixWorld.clone().invert();
   const bindShapes = layers.map((mesh) => mesh.geometry);
   const sample = new T.Vector3(),
@@ -417,6 +417,7 @@ function bindShoulderRail(cache, chest, layers, guides, outward, standOff = 0.01
               bi,
               ci,
               weights: sample.clone(),
+              standOff: typeof standOff === 'function' ? standOff(point) : standOff,
               orientation: normal.dot(direction) < 0 ? -1 : 1,
             };
           }
@@ -451,7 +452,7 @@ function bindShoulderRail(cache, chest, layers, guides, outward, standOff = 0.01
         .multiplyScalar(weights.x)
         .addScaledVector(b, weights.y)
         .addScaledVector(c, weights.z)
-        .addScaledVector(normal, standOff * orientation);
+        .addScaledVector(normal, contact.standOff * orientation);
       return true;
     },
   };
@@ -626,7 +627,8 @@ export function fitRomaAccessories(
   // then release the grids once each rail owns its exact triangle witnesses.
   const bindGrid = new Map();
   const bindRail = bindShoulderRail.bind(null, bindGrid);
-  let shoulderRail;
+  const frontSeat = new T.Vector3();
+  let shoulderRail, frontRail;
   const targetPoint = new T.Vector3();
   const tangent = new T.Vector3(),
     side = new T.Vector3(),
@@ -674,6 +676,30 @@ export function fitRomaAccessories(
       point.copy(v).applyMatrix4(hipsToChest);
     }
   }
+  // A pad seam stays at its stitched X/Y position. Move only along the back
+  // normal to pass the fitted circumference of the waist and leather belt.
+  function clearPadSection(point, matrix, shell, margin) {
+    v.copy(point).applyMatrix4(matrix);
+    const angle = Math.atan2(v.x, v.z);
+    const radius = shell.radius(v.y, angle, margin);
+    if (radius <= 0) return;
+    const outside = radius + 0.004;
+    const squared = v.x * v.x + v.z * v.z - outside * outside;
+    if (squared >= 0) return;
+    const dx = -matrix.elements[8],
+      dz = -matrix.elements[10];
+    const along = dx * dx + dz * dz;
+    const dot = v.x * dx + v.z * dz;
+    if (along > 0.001) point.z -= (Math.sqrt(dot * dot - along * squared) - dot) / along;
+  }
+  function supportPad(point) {
+    if (point.y > 0.045) return;
+    for (let i = 0; i < 3; i++) {
+      clearPadSection(point, chestToJacket, jacketEnvelope, 0.011);
+      clearPadSection(point, chestToHips, beltSections, 0.014);
+      clearPadSection(point, chestToHips, envelope, 0.01);
+    }
+  }
   function update(tailLift, takeup = 0) {
     jacket.updateWorldMatrix(true, false);
     rig.hips.updateWorldMatrix(true, false);
@@ -694,10 +720,11 @@ export function fitRomaAccessories(
       // The accelerating hoodie hem lifts a shallow pocket of air under the loose
       // back quarters. The sewn waist receives no extra ease.
       const free = 1 - Math.floor(i / 41) / 3;
-      const tail = T.MathUtils.smoothstep(-shellPoint.z, .012, .065);
-      const placket = T.MathUtils.smoothstep(shellPoint.z, .012, .048);
-      const outside = Math.max(r, knitRadius + .007, beltRadius + .0065) +
-        Math.max(tail, .64 * placket) * free * tailLift;
+      const tail = T.MathUtils.smoothstep(-shellPoint.z, 0.012, 0.065);
+      const placket = T.MathUtils.smoothstep(shellPoint.z, 0.012, 0.048);
+      const outside =
+        Math.max(r, knitRadius + 0.007, beltRadius + 0.0065) +
+        Math.max(tail, 0.64 * placket) * free * tailLift;
       if (r < outside && r > 0.001) {
         shellPoint.x *= outside / r;
         shellPoint.z *= outside / r;
@@ -739,8 +766,8 @@ export function fitRomaAccessories(
     for (let i = 0; i < 2; i++) {
       const from = arm[i],
         to = arm[i + 1];
-      const rx = i === 0 ? 0.047 : 0.045,
-        rz = i === 0 ? 0.062 : 0.059;
+      const rx = i === 0 ? 0.046 : 0.044,
+        rz = i === 0 ? 0.0605 : 0.058;
       for (let j = 0; j < 5; j++) {
         const y = bag.position.y + 0.004 - j * 0.019;
         const dy = to.y - from.y;
@@ -753,6 +780,9 @@ export function fitRomaAccessories(
       }
     }
     bag.position.z = Math.max(-0.085, safeZ);
+    // The satchel tucks toward the waist only after the swinging forearm has
+    // carried it behind the fuller front of the hip.
+    bag.position.x += 0.002 * T.MathUtils.smoothstep(-bag.position.z, 0.015, 0.039);
     bag.updateWorldMatrix(true, false);
     inv.copy(rig.chest.matrixWorld).invert();
     // Both strap ends stay in the real brass rings as the bag swings.
@@ -795,7 +825,7 @@ export function fitRomaAccessories(
       v.copy(center).applyMatrix4(chestToJacket);
       const jacketAngle = Math.atan2(v.x, v.z),
         jacketRadius = Math.hypot(v.x, v.z);
-      const coatClearance = jacketEnvelope.radius(v.y, jacketAngle, 0.012) + 0.009;
+      const coatClearance = jacketEnvelope.radius(v.y, jacketAngle, 0.012) + 0.0048;
       if (jacketRadius < coatClearance && jacketRadius > 0.001) {
         v.x *= coatClearance / jacketRadius;
         v.z *= coatClearance / jacketRadius;
@@ -806,12 +836,20 @@ export function fitRomaAccessories(
     // The contact reads the skinned triangles before the renderer's own
     // traversal. Refresh both bones and attached bind-matrix inverses here.
     rig.root.updateMatrixWorld(true);
-    kit?.fit(harnessSupport, bindRail, supportHarness, padSupport);
+    kit?.fit(harnessSupport, bindRail, supportHarness, padSupport, supportPad);
     if (!shoulderRail) {
       shoulderRail = bindRail(rig.chest, torsoLayers, centers);
+      frontRail = bindRail(
+        rig.chest,
+        harnessSupport,
+        centers,
+        (_, direction) => direction.set(0, 0, 1),
+        0.008,
+      );
       bindGrid.clear();
     }
     shoulderRail.refresh();
+    frontRail.refresh();
     // Leather has enough bending stiffness to bridge a fold in the shell. Relax
     // both ends of the shoulder strap as continuous curves, preserving the two
     // brass attachment points and the radial support from the moving layers.
@@ -852,7 +890,7 @@ export function fitRomaAccessories(
       // surface turns sharply along this line, so ease that span forward.
       const collarEase =
         T.MathUtils.smoothstep(center.y, 0.034, 0.057) * (1 - T.MathUtils.smoothstep(center.y, 0.089, 0.113));
-      center.z += 0.015 * collarEase;
+      center.z += 0.004 * collarEase;
     }
     for (let pass = 0; pass < 3; pass++) {
       for (let i = 1; i < samples - 1; i++) {
@@ -871,7 +909,7 @@ export function fitRomaAccessories(
         v.copy(center).applyMatrix4(chestToJacket);
         angle = Math.atan2(v.x, v.z);
         r = Math.hypot(v.x, v.z);
-        const support = jacketEnvelope.radius(v.y, angle, 0.021) + 0.011;
+        const support = jacketEnvelope.radius(v.y, angle, 0.014) + 0.0048;
         if (r < support && r > 0.001) {
           v.x *= support / r;
           v.z *= support / r;
@@ -931,6 +969,17 @@ export function fitRomaAccessories(
         v.y = height;
         center.copy(v).applyMatrix4(bagToChest);
       }
+    }
+    // The sling rests on the actual outer placket. It bridges the crossing
+    // rucksack harness below, while its flanks stay seated on the shell.
+    for (let row = 1; row < samples - 1; row++) {
+      const p = centers[row];
+      if (p.z < 0.043 || p.y < -0.065 || p.y > 0.096 || !frontRail.seat(row, frontSeat)) continue;
+      const delta = Math.hypot(p.x - frontSeat.x, p.y - frontSeat.y);
+      const weight = 1 - T.MathUtils.smoothstep(delta, 0.006, 0.027);
+      const lower = T.MathUtils.smoothstep(p.y, -0.065, -0.039);
+      const upper = 1 - T.MathUtils.smoothstep(p.y, -0.027, -0.006);
+      if (p.z > frontSeat.z) p.z -= Math.min(0.013, p.z - frontSeat.z) * weight * lower * upper;
     }
     if (takeup > 0) fitCuff(centers, takeup);
     for (let row = 1; row < samples - 1; row++) kit?.liftCrossbody(centers[row]);

@@ -1,8 +1,8 @@
 # Explorer design sheets
 
-Sippy’s headphones rest on his collarbones above a charcoal quilted vest. Roma’s red headband, mustard jacket, emerald cargos and separate field bag follow her individual explorer design. Hummin wears cream armor, a tan knitted scarf and an indigo work apron. The sheets use feet and inches.
+Sippy’s headphones rest on his collarbones above a charcoal quilted vest. Roma’s red headband, mustard jacket, emerald cargos and separate field bag follow her individual explorer design. Hummin wears cream armor, a tan knitted scarf and an indigo work apron. The independently authored seven-view blueprints use Jonathan’s individual sheets as visual references and show dimensions in feet and inches.
 
-| Hero | Original artwork | Production model | Comparison | Geometry and colour |
+| Hero | Authored blueprint | Production model | Comparison | Geometry and colour |
 | --- | --- | --- | --- | --- |
 | Sippy | [Design sheet](sippy/blueprint.jpg) | [Turnaround](sippy/model.jpg) | [Side by side](sippy/comparison.jpg) · [Silhouette overlay](sippy/overlay.jpg) | [Measurements](sippy/match.json) |
 | Roma | [Design sheet](roma/blueprint.jpg) | [Turnaround](roma/model.jpg) | [Side by side](roma/comparison.jpg) · [Silhouette overlay](roma/overlay.jpg) | [Measurements](roma/match.json) |

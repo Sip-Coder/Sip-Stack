@@ -322,15 +322,28 @@ function retainTerminalTurn(chain, offset, trial, projected, scratch) {
   const last = nodes.length - 1;
   const first = Math.ceil(last * 0.5);
   offset.subVectors(nodes[last], freeNodes[last]);
+  // A cut fitted against a shoulder or earring already has a curved resting
+  // shape. Remember that supported shape along the hook, relative to the
+  // tip, before asking its terminal turn to slide as one piece.
+  const supported = chain.supportedRest;
+  if (supported && !chain.hasSupportedRest) {
+    for (let i = first; i <= last; i++)
+      supported[i].subVectors(nodes[i], freeNodes[i]).sub(offset);
+    chain.hasSupportedRest = true;
+  }
   for (let pass = 0; pass < 3; pass++) {
     for (let i = first; i <= last; i++) {
       trial.copy(freeNodes[i]).add(offset);
+      if (supported) trial.add(supported[i]);
       projected.copy(trial);
       keepOutside(projected, shapes, scratch, true, shapes, i, shapes.length, chain.sleeveRoute);
       offset.add(projected.sub(trial));
     }
   }
-  for (let i = first; i <= last; i++) nodes[i].copy(freeNodes[i]).add(offset);
+  for (let i = first; i <= last; i++) {
+    nodes[i].copy(freeNodes[i]).add(offset);
+    if (supported) nodes[i].add(supported[i]);
+  }
   drapeGuide(chain, trial, projected);
 }
 

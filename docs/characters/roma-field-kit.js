@@ -37,6 +37,41 @@ function leatherCase(rows, exponent = 0.53, segments = 40) {
   return geometry;
 }
 
+// Round the outward corners of the luggage in its own rest frame. The sewn
+// flap, badges and grip follow the same bend as the leather beneath them.
+function bevelPackExterior(meshes) {
+  const smooth = T.MathUtils.smoothstep;
+  function inset(y, z) {
+    const base = smooth(y, -0.090, -0.073) * (1 - smooth(y, -0.016, -0.001));
+    const flap = smooth(y, 0.068, 0.088) * (1 - smooth(y, 0.104, 0.115));
+    return 0.006 * base * (1 - smooth(z, -0.154, -0.127)) +
+      0.010 * flap * (1 - smooth(z, -0.119, -0.089));
+  }
+  const normal = new T.Vector3();
+  const step = 0.0001;
+  for (const { geometry } of meshes) {
+    const { position, normal: normals } = geometry.attributes;
+    for (let i = 0; i < position.count; i++) {
+      const y = position.getY(i), z = position.getZ(i);
+      const offset = inset(y, z);
+      if (offset === 0) continue;
+      position.setZ(i, z + offset);
+      // Transport the existing curved normal through the bend, preserving
+      // the distinct polish of the case, metal badges and rounded grip.
+      const dy = (inset(y + step, z) - inset(y - step, z)) / (2 * step);
+      const dz = (inset(y, z + step) - inset(y, z - step)) / (2 * step);
+      normal.fromBufferAttribute(normals, i);
+      normal.z /= 1 + dz;
+      normal.y -= dy * normal.z;
+      normal.normalize();
+      normals.setXYZ(i, normal.x, normal.y, normal.z);
+    }
+    position.needsUpdate = true;
+    normals.needsUpdate = true;
+    geometry.computeBoundingSphere();
+  }
+}
+
 // The harness turns over a shoulder. Its width is measured across the shoulder
 // while the narrow edge follows the strap normal, including across the crest.
 function strapGeometry(points, halfWidth, halfDepth) {
@@ -73,7 +108,7 @@ function strapGeometry(points, halfWidth, halfDepth) {
 // the diagonal satchel sling. Their outer ply is sewn into the rigid case.
 function backpackPads(chest, leather) {
   const cols = 7,
-    rows = 14,
+    rows = 19,
     sideCount = cols * rows,
     pads = [];
   for (const sign of [-1, 1]) {
@@ -87,7 +122,7 @@ function backpackPads(chest, leather) {
             u = col / (cols - 1),
             round = 0.8 + 0.2 * Math.sin(Math.PI * v);
           const x = sign * (0.009 + 0.049 * u) * round,
-            y = -0.058 + 0.154 * v;
+            y = -0.072 + 0.207 * v;
           if (!face) points.push(new T.Vector3(x, y, -0.08));
         }
     for (let i = 0; i < points.length; i++) {
@@ -118,7 +153,7 @@ function backpackPads(chest, leather) {
     mesh.name = 'Roma backpack contact pad ' + (sign > 0 ? 'L' : 'R');
     mesh.castShadow = mesh.receiveShadow = true;
     chest.add(mesh);
-    pads.push({ mesh, points, seat: points.map((p) => p.clone()), rail: null });
+    pads.push({ mesh, rows, points, seat: points.map((p) => p.clone()), rail: null });
   }
   return pads;
 }
@@ -168,16 +203,20 @@ export function makeRomaFieldKit(rig, materials, tools) {
   const pack = node(rig.chest),
     harness = node(rig.chest),
     compass = node(rig.chest);
-  pack.position.set(0, 0.009, -0.005);
+  pack.position.set(0, 0.025, -0.005);
   pack.scale.set(0.84, 1.11, 0.74);
-  pack.rotation.x = 0.145;
+  pack.rotation.x = 0.005;
   pack.name = 'Roma field backpack';
   harness.name = 'Roma shoulder harness';
   compass.name = 'Roma compass necklace';
   const packZ = -0.131;
+  const shoulderRoll = new T.Vector3(),
+    localShoulder = new T.Vector3(),
+    backToChest = new T.Matrix4();
   const belts = [];
   const pads = backpackPads(rig.chest, leather);
-  let wristFit;
+  let wristFit,
+    packTravel = 0;
   add(
     pack,
     leatherCase(
@@ -188,7 +227,15 @@ export function makeRomaFieldKit(rig, materials, tools) {
         [0.049, 0.084, 0.036, packZ - 0.001],
         [0.091, 0.077, 0.029, packZ],
         [0.104, 0.066, 0.019, packZ],
-      ].map(([y, width, depth, z]) => [y, width, depth * 0.7, z - depth * 0.3]),
+      ].map(([y, width, depth, z]) => [
+        y,
+        width,
+        depth * 0.7 - 0.007 * T.MathUtils.smoothstep(y, 0.064, 0.099),
+        z -
+          depth * 0.3 +
+          0.014 * T.MathUtils.smoothstep(y, 0.058, 0.105) -
+          0.007 * T.MathUtils.smoothstep(y, 0.064, 0.099),
+      ]),
     ),
     leather,
   );
@@ -198,9 +245,9 @@ export function makeRomaFieldKit(rig, materials, tools) {
       [0.012, 0.061, 0.006, -0.171],
       [0.02, 0.075, 0.009, -0.168],
       [0.058, 0.081, 0.015, -0.159],
-      [0.088, 0.078, 0.016, -0.149],
-      [0.105, 0.068, 0.016, -0.134],
-      [0.107, 0.061, 0.009, -0.126],
+      [0.088, 0.078, 0.012, -0.144],
+      [0.105, 0.068, 0.008, -0.128],
+      [0.107, 0.061, 0.003, -0.12],
     ]),
     strap,
   );
@@ -249,6 +296,9 @@ export function makeRomaFieldKit(rig, materials, tools) {
     }
     belts.push({
       mesh,
+      raised: 0,
+      upperArm: side < 0 ? rig.upperArmR : rig.upperArmL,
+      forearm: side < 0 ? rig.forearmR : rig.forearmL,
       guides: guidesWithEdges,
       points: guidesWithEdges.map((p) => p.clone()),
       centers: guides.map((p) => p.clone()),
@@ -338,11 +388,11 @@ export function makeRomaFieldKit(rig, materials, tools) {
     pack,
     leather,
     [
-      [-0.025, 0.102, -0.128],
-      [-0.02, 0.116, -0.127],
-      [0, 0.121, -0.126],
-      [0.02, 0.116, -0.127],
-      [0.025, 0.102, -0.128],
+      [-0.025, 0.102, -0.114],
+      [-0.02, 0.116, -0.113],
+      [0, 0.121, -0.112],
+      [0.02, 0.116, -0.113],
+      [0.025, 0.102, -0.114],
     ],
     0.003,
   );
@@ -530,10 +580,21 @@ export function makeRomaFieldKit(rig, materials, tools) {
       (1 - T.MathUtils.smoothstep(Math.abs(point.z), 0.026, 0.076));
     direction.set(point.x * 0.44, (0.05 + crown) * 0.105, point.z).normalize();
   }
+  const railGap = (p) =>
+    0.0042 +
+    0.0054 *
+      Math.max(1 - T.MathUtils.smoothstep(p.z, -0.02, 0.036), T.MathUtils.smoothstep(p.y, 0.09, 0.125));
   const profile = Array.from({ length: 9 }, (_, i) => [Math.cos((TAU * i) / 8), Math.sin((TAU * i) / 8)]);
   const padRails = [null, ...belts.map((b) => b.centers)];
   return {
-    fit(torso, bind, supportLower, padSupport) {
+    fit(torso, bind, supportLower, padSupport, supportPad) {
+      // The rear waist rises as the torso folds. Let the lower pack stand off
+      // on its padded mount rather than forcing the jacket under a rigid rim.
+      const fold = T.MathUtils.smoothstep(rig.chest.rotation.x, 0.26, 0.46);
+      const bank = T.MathUtils.smoothstep(Math.abs(rig.chest.rotation.z), 0.12, 0.31);
+      packTravel = 0.015 * Math.max(fold, bank);
+      pack.position.z = -0.005 - packTravel;
+      pack.updateWorldMatrix(true, true);
       if (!wristFit) wristFit = braceletGroups.map((g) => bindBracelet(torso[2], g));
       for (const fit of wristFit) fit();
       for (const pad of pads) {
@@ -542,11 +603,18 @@ export function makeRomaFieldKit(rig, materials, tools) {
         pad.rail.refresh();
         for (let i = 0; i < pad.points.length; i++) {
           if (!pad.rail.seat(i, pad.seat[i])) pad.seat[i].copy(pad.points[i]);
-          supportLower(pad.seat[i]);
+          pad.seat[i].x = pad.points[i].x;
+          pad.seat[i].y = pad.points[i].y;
+          supportPad(pad.seat[i]);
         }
       }
+      backToChest.copy(rig.chest.matrixWorld).invert();
       for (const belt of belts) {
-        if (!belt.rail) belt.rail = bind(rig.chest, torso, belt.guides, outward, 0.0096);
+        belt.upperArm.getWorldPosition(localShoulder).applyMatrix4(backToChest);
+        belt.forearm.getWorldPosition(shoulderRoll).applyMatrix4(backToChest);
+        const raised = T.MathUtils.smoothstep(shoulderRoll.y - localShoulder.y, -0.055, 0.06);
+        belt.raised = raised;
+        if (!belt.rail) belt.rail = bind(rig.chest, torso, belt.guides, outward, railGap);
         belt.rail.refresh();
         const { centers, mesh } = belt,
           pos = mesh.geometry.attributes.position,
@@ -560,12 +628,27 @@ export function makeRomaFieldKit(rig, materials, tools) {
             (1 - T.MathUtils.smoothstep(point.y, 0.144, 0.161));
           point.y += 0.006 * hood;
           point.z -= 0.007 * hood;
+          // A tucked hood bunches against the inside edge of the strap.
+          // Give the collared shoulder its additional local thickness.
+          const collar =
+            T.MathUtils.smoothstep(-point.z, 0.042, 0.057) *
+            (1 - T.MathUtils.smoothstep(Math.abs(point.y - 0.115), 0.01, 0.033));
+          point.z -= 0.008 * collar;
+          const upperFacing =
+            T.MathUtils.smoothstep(-point.z, 0.026, 0.045) * T.MathUtils.smoothstep(point.y, 0.129, 0.148);
+          point.y += 0.007 * upperFacing;
+          point.z -= 0.006 * upperFacing;
+          // An overhead reach rolls the deltoid and its sleeve up beneath the shoulder strap.
+          const crest =
+            T.MathUtils.smoothstep(point.y, 0.104, 0.15) *
+            (1 - T.MathUtils.smoothstep(Math.abs(point.z), 0.035, 0.066));
+          point.y += 0.019 * raised * crest;
           supportLower(point);
           // The front harness tabs cross the jacket's two pressed waist seams.
           // Ease their lower faces over the ridges as the torso twists.
           if (point.z > 0.035) {
             const waist = 1 - T.MathUtils.smoothstep(Math.abs(point.y), 0.012, 0.045);
-            point.z += 0.007 * waist;
+            point.z += 0.007 * waist * T.MathUtils.smoothstep(point.y, -0.024, -0.003);
           }
         }
         for (let i = 0; i < centers.length; i++) centers[i].copy(belt.points[3 * i + 1]);
@@ -604,10 +687,14 @@ export function makeRomaFieldKit(rig, materials, tools) {
             seat = pad.seat[i],
             col = i % 7,
             row = Math.floor(i / 7);
-          const bevel = Math.max(1 - Math.min(col, 6 - col), 1 - Math.min(row, 13 - row), 0);
+          const bevel = Math.max(1 - Math.min(col, 6 - col), 1 - Math.min(row, pad.rows - 1 - row), 0);
           // Lower binding turns up before the hip belt, including in a deep bank.
           const hem = 1 - T.MathUtils.smoothstep(p.y, -0.058, -0.029);
-          let z = seat.z - 0.0015 - 0.003 * bevel - 0.013 * hem;
+          const lumbar = 1 - T.MathUtils.smoothstep(p.y, -0.028, 0.017);
+          const inside = Math.min(seat.z, -0.058 * lumbar);
+          const bend =
+            T.MathUtils.smoothstep(p.y, -0.03, 0.004) * (1 - T.MathUtils.smoothstep(p.y, 0.041, 0.073));
+          let z = inside - 0.0015 - 0.003 * bevel - 0.013 * hem - 0.98 * packTravel * bend;
           // The sling is sandwiched between the padding and jacket. Compress
           // only the leather below the narrow strip, retaining the pad either side.
           for (const rail of padRails) {
@@ -621,14 +708,14 @@ export function makeRomaFieldKit(rig, materials, tools) {
               const t =
                 denom > 1e-12 ? T.MathUtils.clamp(((p.x - a.x) * dx + (p.y - a.y) * dy) / denom, 0, 1) : 0;
               const d = Math.hypot(p.x - a.x - t * dx, p.y - a.y - t * dy);
-              if (d >= 0.025) continue;
-              const w = 1 - T.MathUtils.smoothstep(d, 0.013, 0.025);
-              const space = a.z + t * (b.z - a.z) - 0.008;
+              if (d >= 0.032) continue;
+              const w = 1 - T.MathUtils.smoothstep(d, 0.018, 0.032);
+              const space = a.z + t * (b.z - a.z) - 0.012;
               if (space < z) z += w * (space - z);
             }
           }
           pos.setXYZ(i, p.x, p.y, z);
-          pos.setXYZ(i + count, p.x, p.y, Math.min(z - 0.002, -0.103));
+          pos.setXYZ(i + count, p.x, p.y, Math.min(z - 0.002, -0.103 - packTravel));
         }
         pos.needsUpdate = true;
         normals(geo);
@@ -652,7 +739,11 @@ export function makeRomaFieldKit(rig, materials, tools) {
             if (distance > 0.027 * 0.027) continue;
             const above = across.dot(normal),
               lateral = Math.sqrt(Math.max(0, distance - above * above));
-            const rise = 0.011 * (1 - T.MathUtils.smoothstep(lateral, 0.009, 0.022));
+            const crown = T.MathUtils.smoothstep(center.y, 0.095, 0.135);
+            const chest = T.MathUtils.smoothstep(center.y, -0.025, 0.015);
+            const gap = 0.0044 + 0.0026 * chest + 0.003 * crown + 0.012 * crown * belt.raised;
+            const rise =
+              gap * (1 - T.MathUtils.smoothstep(lateral, 0.006 + 0.004 * chest, 0.01 + 0.013 * chest));
             if (above < rise) center.addScaledVector(normal, rise - above);
           }
         }
@@ -661,11 +752,10 @@ export function makeRomaFieldKit(rig, materials, tools) {
     register(layer) {
       const layers = (parents, swatches) =>
         parents.flatMap((parent) => swatches.map((mat) => layer(parent, mat)).filter(Boolean));
+      const caseMeshes = layers([pack], [leather, strap, brass, gold, green, cream]);
+      bevelPackExterior(caseMeshes);
       return {
-        backpack: [
-          ...layers([pack], [leather, strap, brass, gold, green, cream]),
-          ...pads.map((p) => p.mesh),
-        ],
+        backpack: [...caseMeshes, ...pads.map((p) => p.mesh)],
         packStraps: belts.map((b) => b.mesh),
         compass: layers([compass], [gold, brass, cream, green]),
         bracelets: layers(braceletGroups, [leather, green, brass, purple, cream]),
