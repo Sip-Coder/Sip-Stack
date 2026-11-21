@@ -35,15 +35,15 @@
       ]
     }
   ],
-  "materialCount": 32,
-  "sampleCount": 41,
+  "materialCount": 28,
+  "sampleCount": 34,
   "materials": [
     {
       "id": "skin",
       "material": "skin #1",
       "index": 1,
       "type": "MeshStandardMaterial",
-      "base": "#d99e6f",
+      "base": "#dfa071",
       "footprint": [],
       "roughness": 0.54,
       "metalness": 0,
@@ -58,35 +58,35 @@
         128,
         128
       ],
-      "hex": "#d8a076",
+      "hex": "#dda277",
       "modelViews": {
         "front": {
-          "pixels": 13045,
-          "medianSrgb": "#dc9b6f"
+          "pixels": 5567,
+          "medianSrgb": "#e29d70"
         },
         "back": {
-          "pixels": 6493,
-          "medianSrgb": "#b38461"
+          "pixels": 3353,
+          "medianSrgb": "#c08a64"
         },
         "left": {
-          "pixels": 8919,
-          "medianSrgb": "#b98761"
+          "pixels": 3848,
+          "medianSrgb": "#bf8963"
         },
         "right": {
-          "pixels": 7912,
-          "medianSrgb": "#d08f66"
+          "pixels": 3807,
+          "medianSrgb": "#d9946a"
         },
         "high-front": {
-          "pixels": 9106,
-          "medianSrgb": "#e2a274"
+          "pixels": 4172,
+          "medianSrgb": "#e7a375"
         },
         "rear-three-quarter": {
-          "pixels": 6184,
-          "medianSrgb": "#b48461"
+          "pixels": 3455,
+          "medianSrgb": "#be8a64"
         },
         "top": {
-          "pixels": 367,
-          "medianSrgb": "#edab7b"
+          "pixels": 242,
+          "medianSrgb": "#f4ae7e"
         }
       }
     },
@@ -113,20 +113,20 @@
       "hex": "#602f29",
       "modelViews": {
         "front": {
-          "pixels": 225,
-          "medianSrgb": "#592720"
+          "pixels": 71,
+          "medianSrgb": "#582620"
         },
         "left": {
-          "pixels": 7,
-          "medianSrgb": "#5f3834"
+          "pixels": 3,
+          "medianSrgb": "#5b3532"
         },
         "right": {
           "pixels": 3,
-          "medianSrgb": "#5c2d28"
+          "medianSrgb": "#5a2822"
         },
         "high-front": {
-          "pixels": 143,
-          "medianSrgb": "#592721"
+          "pixels": 43,
+          "medianSrgb": "#582721"
         }
       }
     },
@@ -153,20 +153,20 @@
       "hex": "#f5e8d8",
       "modelViews": {
         "front": {
-          "pixels": 80,
-          "medianSrgb": "#ebdece"
+          "pixels": 25,
+          "medianSrgb": "#e9dccc"
         },
         "left": {
-          "pixels": 4,
-          "medianSrgb": "#e6dacc"
+          "pixels": 2,
+          "medianSrgb": "#e4d8ca"
         },
         "right": {
-          "pixels": 2,
-          "medianSrgb": "#ecdfd0"
+          "pixels": 1,
+          "medianSrgb": "#e9dccd"
         },
         "high-front": {
-          "pixels": 51,
-          "medianSrgb": "#ebdece"
+          "pixels": 14,
+          "medianSrgb": "#eadece"
         }
       }
     },
@@ -193,20 +193,20 @@
       "hex": "#ae6f58",
       "modelViews": {
         "front": {
-          "pixels": 253,
-          "medianSrgb": "#ae664c"
+          "pixels": 88,
+          "medianSrgb": "#ab644a"
         },
         "left": {
-          "pixels": 43,
-          "medianSrgb": "#875643"
+          "pixels": 14,
+          "medianSrgb": "#865442"
         },
         "right": {
-          "pixels": 36,
-          "medianSrgb": "#9c5b46"
+          "pixels": 14,
+          "medianSrgb": "#985a44"
         },
         "high-front": {
-          "pixels": 182,
-          "medianSrgb": "#c0765a"
+          "pixels": 64,
+          "medianSrgb": "#c0775a"
         }
       }
     },
@@ -243,20 +243,20 @@
       "hex": "#f5e8d8",
       "modelViews": {
         "front": {
-          "pixels": 1204,
-          "medianSrgb": "#79523e"
+          "pixels": 398,
+          "medianSrgb": "#90867c"
         },
         "left": {
-          "pixels": 9,
-          "medianSrgb": "#d5cabc"
+          "pixels": 2,
+          "medianSrgb": "#f3e6d6"
         },
         "right": {
-          "pixels": 408,
-          "medianSrgb": "#b3a89c"
+          "pixels": 152,
+          "medianSrgb": "#aca094"
         },
         "high-front": {
-          "pixels": 1123,
-          "medianSrgb": "#79645b"
+          "pixels": 380,
+          "medianSrgb": "#94887e"
         }
       }
     },
@@ -293,20 +293,20 @@
       "hex": "#734621",
       "modelViews": {
         "front": {
-          "pixels": 1204,
-          "medianSrgb": "#79523e"
+          "pixels": 398,
+          "medianSrgb": "#90867c"
         },
         "left": {
-          "pixels": 9,
-          "medianSrgb": "#d5cabc"
+          "pixels": 2,
+          "medianSrgb": "#f3e6d6"
         },
         "right": {
-          "pixels": 408,
-          "medianSrgb": "#b3a89c"
+          "pixels": 152,
+          "medianSrgb": "#aca094"
         },
         "high-front": {
-          "pixels": 1123,
-          "medianSrgb": "#79645b"
+          "pixels": 380,
+          "medianSrgb": "#94887e"
         }
       }
     },
@@ -343,20 +343,20 @@
       "hex": "#251a17",
       "modelViews": {
         "front": {
-          "pixels": 1204,
-          "medianSrgb": "#79523e"
+          "pixels": 398,
+          "medianSrgb": "#90867c"
         },
         "left": {
-          "pixels": 9,
-          "medianSrgb": "#d5cabc"
+          "pixels": 2,
+          "medianSrgb": "#f3e6d6"
         },
         "right": {
-          "pixels": 408,
-          "medianSrgb": "#b3a89c"
+          "pixels": 152,
+          "medianSrgb": "#aca094"
         },
         "high-front": {
-          "pixels": 1123,
-          "medianSrgb": "#79645b"
+          "pixels": 380,
+          "medianSrgb": "#94887e"
         }
       }
     },
@@ -393,20 +393,20 @@
       "hex": "#fff8e7",
       "modelViews": {
         "front": {
-          "pixels": 1204,
-          "medianSrgb": "#79523e"
+          "pixels": 398,
+          "medianSrgb": "#90867c"
         },
         "left": {
-          "pixels": 9,
-          "medianSrgb": "#d5cabc"
+          "pixels": 2,
+          "medianSrgb": "#f3e6d6"
         },
         "right": {
-          "pixels": 408,
-          "medianSrgb": "#b3a89c"
+          "pixels": 152,
+          "medianSrgb": "#aca094"
         },
         "high-front": {
-          "pixels": 1123,
-          "medianSrgb": "#79645b"
+          "pixels": 380,
+          "medianSrgb": "#94887e"
         }
       }
     },
@@ -433,24 +433,24 @@
       "hex": "#251a17",
       "modelViews": {
         "front": {
-          "pixels": 29,
-          "medianSrgb": "#271b17"
+          "pixels": 10,
+          "medianSrgb": "#2a1e1c"
         },
         "left": {
-          "pixels": 7,
-          "medianSrgb": "#291f1d"
+          "pixels": 3,
+          "medianSrgb": "#2a211f"
         },
         "right": {
-          "pixels": 5,
-          "medianSrgb": "#291c1a"
+          "pixels": 3,
+          "medianSrgb": "#281c1a"
         },
         "high-front": {
-          "pixels": 27,
-          "medianSrgb": "#241713"
+          "pixels": 8,
+          "medianSrgb": "#251816"
         },
         "top": {
-          "pixels": 6,
-          "medianSrgb": "#281f1d"
+          "pixels": 1,
+          "medianSrgb": "#271c19"
         }
       }
     },
@@ -477,28 +477,28 @@
       "hex": "#c68a70",
       "modelViews": {
         "front": {
-          "pixels": 434,
-          "medianSrgb": "#ca8569"
+          "pixels": 145,
+          "medianSrgb": "#c88468"
         },
         "left": {
-          "pixels": 136,
-          "medianSrgb": "#be795f"
+          "pixels": 51,
+          "medianSrgb": "#be785e"
         },
         "right": {
-          "pixels": 131,
-          "medianSrgb": "#d08b6e"
+          "pixels": 50,
+          "medianSrgb": "#ce886c"
         },
         "high-front": {
-          "pixels": 257,
-          "medianSrgb": "#d18b6e"
+          "pixels": 87,
+          "medianSrgb": "#d18c6f"
         },
         "rear-three-quarter": {
-          "pixels": 24,
-          "medianSrgb": "#aa745c"
+          "pixels": 8,
+          "medianSrgb": "#a7725a"
         },
         "top": {
-          "pixels": 22,
-          "medianSrgb": "#d08a6c"
+          "pixels": 10,
+          "medianSrgb": "#d28a6c"
         }
       }
     },
@@ -507,7 +507,7 @@
       "material": "hair #8",
       "index": 8,
       "type": "MeshPhysicalMaterial",
-      "base": "#321805",
+      "base": "#2d1605",
       "footprint": [],
       "roughness": 0.44,
       "metalness": 0,
@@ -522,35 +522,35 @@
         128,
         128
       ],
-      "hex": "#3b281f",
+      "hex": "#37271f",
       "modelViews": {
         "front": {
-          "pixels": 1107,
-          "medianSrgb": "#311e15"
+          "pixels": 324,
+          "medianSrgb": "#2b1c13"
         },
         "back": {
-          "pixels": 13,
-          "medianSrgb": "#38261d"
+          "pixels": 2,
+          "medianSrgb": "#32221a"
         },
         "left": {
-          "pixels": 295,
-          "medianSrgb": "#301f16"
+          "pixels": 139,
+          "medianSrgb": "#2a1a12"
         },
         "right": {
-          "pixels": 198,
-          "medianSrgb": "#342016"
+          "pixels": 75,
+          "medianSrgb": "#2f1e14"
         },
         "high-front": {
-          "pixels": 670,
-          "medianSrgb": "#342117"
+          "pixels": 176,
+          "medianSrgb": "#301f15"
         },
         "rear-three-quarter": {
-          "pixels": 114,
-          "medianSrgb": "#342016"
+          "pixels": 39,
+          "medianSrgb": "#301f16"
         },
         "top": {
-          "pixels": 47,
-          "medianSrgb": "#382318"
+          "pixels": 27,
+          "medianSrgb": "#332016"
         }
       }
     },
@@ -587,20 +587,20 @@
       "hex": "#f5e8d8",
       "modelViews": {
         "front": {
-          "pixels": 1184,
-          "medianSrgb": "#6f524a"
+          "pixels": 392,
+          "medianSrgb": "#7e766c"
         },
         "left": {
-          "pixels": 456,
-          "medianSrgb": "#867265"
+          "pixels": 169,
+          "medianSrgb": "#8c7f73"
         },
         "high-front": {
-          "pixels": 653,
-          "medianSrgb": "#90887f"
+          "pixels": 198,
+          "medianSrgb": "#8e8076"
         },
         "top": {
-          "pixels": 23,
-          "medianSrgb": "#6a5646"
+          "pixels": 12,
+          "medianSrgb": "#8c7c70"
         }
       }
     },
@@ -637,20 +637,20 @@
       "hex": "#734621",
       "modelViews": {
         "front": {
-          "pixels": 1184,
-          "medianSrgb": "#6f524a"
+          "pixels": 392,
+          "medianSrgb": "#7e766c"
         },
         "left": {
-          "pixels": 456,
-          "medianSrgb": "#867265"
+          "pixels": 169,
+          "medianSrgb": "#8c7f73"
         },
         "high-front": {
-          "pixels": 653,
-          "medianSrgb": "#90887f"
+          "pixels": 198,
+          "medianSrgb": "#8e8076"
         },
         "top": {
-          "pixels": 23,
-          "medianSrgb": "#6a5646"
+          "pixels": 12,
+          "medianSrgb": "#8c7c70"
         }
       }
     },
@@ -687,20 +687,20 @@
       "hex": "#251a17",
       "modelViews": {
         "front": {
-          "pixels": 1184,
-          "medianSrgb": "#6f524a"
+          "pixels": 392,
+          "medianSrgb": "#7e766c"
         },
         "left": {
-          "pixels": 456,
-          "medianSrgb": "#867265"
+          "pixels": 169,
+          "medianSrgb": "#8c7f73"
         },
         "high-front": {
-          "pixels": 653,
-          "medianSrgb": "#90887f"
+          "pixels": 198,
+          "medianSrgb": "#8e8076"
         },
         "top": {
-          "pixels": 23,
-          "medianSrgb": "#6a5646"
+          "pixels": 12,
+          "medianSrgb": "#8c7c70"
         }
       }
     },
@@ -737,20 +737,20 @@
       "hex": "#fff8e7",
       "modelViews": {
         "front": {
-          "pixels": 1184,
-          "medianSrgb": "#6f524a"
+          "pixels": 392,
+          "medianSrgb": "#7e766c"
         },
         "left": {
-          "pixels": 456,
-          "medianSrgb": "#867265"
+          "pixels": 169,
+          "medianSrgb": "#8c7f73"
         },
         "high-front": {
-          "pixels": 653,
-          "medianSrgb": "#90887f"
+          "pixels": 198,
+          "medianSrgb": "#8e8076"
         },
         "top": {
-          "pixels": 23,
-          "medianSrgb": "#6a5646"
+          "pixels": 12,
+          "medianSrgb": "#8c7c70"
         }
       }
     },
@@ -759,7 +759,7 @@
       "material": "hair #10",
       "index": 10,
       "type": "MeshPhysicalMaterial",
-      "base": "#9a7551",
+      "base": "#876b51",
       "footprint": [],
       "roughness": 0.44,
       "metalness": 0,
@@ -774,35 +774,35 @@
         128,
         128
       ],
-      "hex": "#3b281f",
+      "hex": "#37271f",
       "modelViews": {
         "front": {
-          "pixels": 11092,
-          "medianSrgb": "#3c2a21"
+          "pixels": 3721,
+          "medianSrgb": "#3a2a21"
         },
         "back": {
-          "pixels": 20611,
-          "medianSrgb": "#38241a"
+          "pixels": 6779,
+          "medianSrgb": "#34231a"
         },
         "left": {
-          "pixels": 12027,
-          "medianSrgb": "#3c2820"
+          "pixels": 4460,
+          "medianSrgb": "#36261e"
         },
         "right": {
-          "pixels": 12523,
-          "medianSrgb": "#422d24"
+          "pixels": 4706,
+          "medianSrgb": "#3c2b22"
         },
         "high-front": {
-          "pixels": 13826,
-          "medianSrgb": "#473229"
+          "pixels": 5028,
+          "medianSrgb": "#45332a"
         },
         "rear-three-quarter": {
-          "pixels": 18395,
-          "medianSrgb": "#39241b"
+          "pixels": 6216,
+          "medianSrgb": "#34231b"
         },
         "top": {
-          "pixels": 17719,
-          "medianSrgb": "#493227"
+          "pixels": 6864,
+          "medianSrgb": "#453228"
         }
       }
     },
@@ -811,7 +811,7 @@
       "material": "hair #11",
       "index": 11,
       "type": "MeshPhysicalMaterial",
-      "base": "#edc77b",
+      "base": "#e2c47b",
       "footprint": [],
       "roughness": 0.41,
       "metalness": 0,
@@ -826,35 +826,35 @@
         128,
         128
       ],
-      "hex": "#3a281f",
+      "hex": "#37271f",
       "modelViews": {
         "front": {
-          "pixels": 188,
-          "medianSrgb": "#30221a"
+          "pixels": 66,
+          "medianSrgb": "#332218"
         },
         "back": {
-          "pixels": 1534,
-          "medianSrgb": "#312017"
+          "pixels": 506,
+          "medianSrgb": "#2f1f16"
         },
         "left": {
-          "pixels": 2044,
-          "medianSrgb": "#2e1e15"
+          "pixels": 794,
+          "medianSrgb": "#2c1d15"
         },
         "right": {
-          "pixels": 1926,
-          "medianSrgb": "#322017"
+          "pixels": 717,
+          "medianSrgb": "#2f1f16"
         },
         "high-front": {
-          "pixels": 187,
-          "medianSrgb": "#33231c"
+          "pixels": 108,
+          "medianSrgb": "#32231b"
         },
         "rear-three-quarter": {
-          "pixels": 1852,
-          "medianSrgb": "#311f16"
+          "pixels": 628,
+          "medianSrgb": "#2e1f16"
         },
         "top": {
-          "pixels": 189,
-          "medianSrgb": "#36241a"
+          "pixels": 81,
+          "medianSrgb": "#372519"
         }
       }
     },
@@ -863,7 +863,7 @@
       "material": "chestnut #12",
       "index": 12,
       "type": "MeshPhysicalMaterial",
-      "base": "#8e4418",
+      "base": "#834c23",
       "footprint": [],
       "roughness": 0.46,
       "metalness": 0,
@@ -878,35 +878,35 @@
         128,
         128
       ],
-      "hex": "#914c2b",
+      "hex": "#865332",
       "modelViews": {
         "front": {
-          "pixels": 392,
-          "medianSrgb": "#9c5432"
+          "pixels": 131,
+          "medianSrgb": "#925c3c"
         },
         "back": {
-          "pixels": 139,
-          "medianSrgb": "#a56852"
+          "pixels": 34,
+          "medianSrgb": "#aa826e"
         },
         "left": {
-          "pixels": 169,
-          "medianSrgb": "#a15b3d"
+          "pixels": 64,
+          "medianSrgb": "#956243"
         },
         "right": {
-          "pixels": 219,
-          "medianSrgb": "#a35634"
+          "pixels": 72,
+          "medianSrgb": "#985e3a"
         },
         "high-front": {
-          "pixels": 661,
-          "medianSrgb": "#a55c3d"
+          "pixels": 258,
+          "medianSrgb": "#9b6648"
         },
         "rear-three-quarter": {
-          "pixels": 135,
-          "medianSrgb": "#a86d5a"
+          "pixels": 47,
+          "medianSrgb": "#a27965"
         },
         "top": {
-          "pixels": 1127,
-          "medianSrgb": "#a55b39"
+          "pixels": 431,
+          "medianSrgb": "#9a6444"
         }
       }
     },
@@ -933,40 +933,40 @@
       "hex": "#c68a70",
       "modelViews": {
         "front": {
-          "pixels": 19,
-          "medianSrgb": "#ae765d"
+          "pixels": 16,
+          "medianSrgb": "#b27860"
         },
         "back": {
-          "pixels": 15,
-          "medianSrgb": "#a36e57"
+          "pixels": 13,
+          "medianSrgb": "#a6715a"
         },
         "left": {
-          "pixels": 23,
+          "pixels": 20,
           "medianSrgb": "#986752"
         },
         "high-front": {
           "pixels": 13,
-          "medianSrgb": "#d69173"
+          "medianSrgb": "#d49072"
         },
         "rear-three-quarter": {
-          "pixels": 16,
-          "medianSrgb": "#986651"
+          "pixels": 15,
+          "medianSrgb": "#a16d57"
         }
       }
     },
     {
-      "id": "metalButton",
-      "material": "metalButton #14",
+      "id": "cuff",
+      "material": "cuff #14",
       "index": 14,
-      "type": "MeshPhysicalMaterial",
-      "base": "#352014",
+      "type": "MeshStandardMaterial",
+      "base": "#630b23",
       "footprint": [],
-      "roughness": 0.43,
+      "roughness": 0.83,
       "metalness": 0,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
-      "boundMeshes": 4,
+      "boundMeshes": 5,
       "source": "forearmL",
       "tile": [
         384,
@@ -974,266 +974,346 @@
         128,
         128
       ],
-      "hex": "#3e302a",
+      "hex": "#652b35",
       "modelViews": {
         "front": {
-          "pixels": 185,
-          "medianSrgb": "#35261f"
+          "pixels": 752,
+          "medianSrgb": "#61232f"
         },
         "back": {
-          "pixels": 36,
-          "medianSrgb": "#32221a"
+          "pixels": 450,
+          "medianSrgb": "#571f2a"
         },
         "left": {
-          "pixels": 72,
-          "medianSrgb": "#342720"
+          "pixels": 318,
+          "medianSrgb": "#541d28"
         },
         "right": {
-          "pixels": 41,
-          "medianSrgb": "#382820"
+          "pixels": 450,
+          "medianSrgb": "#5d222d"
         },
         "high-front": {
-          "pixels": 125,
-          "medianSrgb": "#3b2a22"
+          "pixels": 674,
+          "medianSrgb": "#642430"
         },
         "rear-three-quarter": {
-          "pixels": 26,
-          "medianSrgb": "#31221a"
+          "pixels": 432,
+          "medianSrgb": "#581f2a"
         },
         "top": {
-          "pixels": 22,
-          "medianSrgb": "#3c2920"
+          "pixels": 54,
+          "medianSrgb": "#6c2936"
         }
       }
     },
     {
-      "id": "gold",
-      "material": "gold #15",
+      "id": "leather",
+      "material": "leather #15",
       "index": 15,
       "type": "MeshStandardMaterial",
-      "base": "#cd9d54",
+      "base": "#884c19",
       "footprint": [],
-      "roughness": 0.31,
-      "metalness": 0.6,
+      "roughness": 0.6,
+      "metalness": 0,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
       "boundMeshes": 5,
-      "source": "forearmL",
+      "source": "",
       "tile": [
         512,
         256,
         128,
         128
       ],
-      "hex": "#b98e51",
+      "hex": "#875536",
       "modelViews": {
         "front": {
-          "pixels": 135,
-          "medianSrgb": "#9e7740"
+          "pixels": 2262,
+          "medianSrgb": "#8d5836"
         },
         "back": {
-          "pixels": 1,
-          "medianSrgb": "#8c6937"
+          "pixels": 10859,
+          "medianSrgb": "#794a2b"
         },
         "left": {
-          "pixels": 99,
-          "medianSrgb": "#8e6b3a"
+          "pixels": 5535,
+          "medianSrgb": "#794a2c"
         },
         "right": {
-          "pixels": 29,
-          "medianSrgb": "#886636"
+          "pixels": 5330,
+          "medianSrgb": "#7f5131"
         },
         "high-front": {
-          "pixels": 122,
-          "medianSrgb": "#a87f45"
+          "pixels": 2531,
+          "medianSrgb": "#8c552f"
         },
         "rear-three-quarter": {
-          "pixels": 1,
-          "medianSrgb": "#b68c53"
+          "pixels": 9975,
+          "medianSrgb": "#7a4a2a"
         },
         "top": {
-          "pixels": 1,
-          "medianSrgb": "#ab8246"
+          "pixels": 3294,
+          "medianSrgb": "#8e5734"
         }
       }
     },
     {
-      "id": "shirt",
-      "material": "shirt #16",
+      "id": "metal",
+      "material": "metal #16",
       "index": 16,
       "type": "MeshStandardMaterial",
-      "base": "#fff1dc",
+      "base": "#54565b",
       "footprint": [],
-      "roughness": 0.51,
-      "metalness": 0,
+      "roughness": 0.46,
+      "metalness": 0.45,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
-      "boundMeshes": 4,
-      "source": "sippy-shirtsleeve-L",
+      "boundMeshes": 1,
+      "source": "",
       "tile": [
         640,
         256,
         128,
         128
       ],
-      "hex": "#f3e6d3",
+      "hex": "#55575b",
       "modelViews": {
         "front": {
-          "pixels": 1721,
-          "medianSrgb": "#ffffec"
+          "pixels": 4,
+          "medianSrgb": "#4c4e52"
         },
         "back": {
-          "pixels": 514,
-          "medianSrgb": "#faedd9"
+          "pixels": 69,
+          "medianSrgb": "#494a4e"
         },
         "left": {
-          "pixels": 443,
-          "medianSrgb": "#fff4e0"
-        },
-        "right": {
-          "pixels": 423,
-          "medianSrgb": "#fffff1"
-        },
-        "high-front": {
-          "pixels": 2101,
-          "medianSrgb": "#ffffec"
+          "pixels": 103,
+          "medianSrgb": "#4a4c4f"
         },
         "rear-three-quarter": {
-          "pixels": 497,
-          "medianSrgb": "#f9ebd7"
+          "pixels": 113,
+          "medianSrgb": "#47484c"
+        },
+        "top": {
+          "pixels": 8,
+          "medianSrgb": "#525457"
         }
       }
     },
     {
-      "id": "jacket",
-      "material": "jacket #17",
+      "id": "shirt",
+      "material": "shirt #17",
       "index": 17,
       "type": "MeshStandardMaterial",
-      "base": "#4c3e34",
-      "footprint": [
-        {
-          "mesh": "sippy-jacket",
-          "triangle": 5446,
-          "space": "xy",
-          "point": [
-            0.038550999999999995,
-            0.017
-          ]
-        }
-      ],
-      "roughness": 0.83,
+      "base": "#f5e5c5",
+      "footprint": [],
+      "roughness": 0.64,
       "metalness": 0,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
-      "boundMeshes": 7,
-      "source": "sippy-sleeve-L",
+      "boundMeshes": 6,
+      "source": "",
       "tile": [
         768,
         256,
         128,
         128
       ],
-      "hex": "#514740",
+      "hex": "#eadbbe",
       "modelViews": {
         "front": {
-          "pixels": 30606,
-          "medianSrgb": "#51463e"
+          "pixels": 144,
+          "medianSrgb": "#fff6d5"
         },
         "back": {
-          "pixels": 45609,
-          "medianSrgb": "#4a3f38"
+          "pixels": 774,
+          "medianSrgb": "#daccb0"
         },
         "left": {
-          "pixels": 16564,
-          "medianSrgb": "#4b4139"
+          "pixels": 153,
+          "medianSrgb": "#dcceb2"
         },
         "right": {
-          "pixels": 16563,
-          "medianSrgb": "#52473f"
+          "pixels": 152,
+          "medianSrgb": "#d3c5aa"
         },
         "high-front": {
-          "pixels": 28248,
-          "medianSrgb": "#53473f"
+          "pixels": 170,
+          "medianSrgb": "#fff0ce"
         },
         "rear-three-quarter": {
-          "pixels": 40720,
-          "medianSrgb": "#4a3f38"
+          "pixels": 673,
+          "medianSrgb": "#daccb0"
         },
         "top": {
-          "pixels": 6756,
-          "medianSrgb": "#594c44"
+          "pixels": 2,
+          "medianSrgb": "#ebdcbe"
         }
       }
     },
     {
-      "id": "stripe",
-      "material": "jacket #17",
-      "index": 17,
+      "id": "gold",
+      "material": "gold #18",
+      "index": 18,
       "type": "MeshStandardMaterial",
-      "base": "#4c3e34",
-      "footprint": [
-        {
-          "mesh": "sippy-jacket",
-          "triangle": 5446,
-          "space": "xy",
-          "point": [
-            0.033174999999999996,
-            0.017
-          ]
-        }
-      ],
-      "roughness": 0.83,
-      "metalness": 0,
+      "base": "#c5a35b",
+      "footprint": [],
+      "roughness": 0.36,
+      "metalness": 0.57,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
-      "boundMeshes": 7,
-      "source": "sippy-sleeve-L",
+      "boundMeshes": 11,
+      "source": "",
       "tile": [
         896,
         256,
         128,
         128
       ],
-      "hex": "#776a5e",
+      "hex": "#b29357",
       "modelViews": {
         "front": {
-          "pixels": 30606,
-          "medianSrgb": "#51463e"
+          "pixels": 213,
+          "medianSrgb": "#9b8048"
         },
         "back": {
-          "pixels": 45609,
-          "medianSrgb": "#4a3f38"
+          "pixels": 169,
+          "medianSrgb": "#8f7541"
         },
         "left": {
-          "pixels": 16564,
-          "medianSrgb": "#4b4139"
+          "pixels": 230,
+          "medianSrgb": "#8a713e"
         },
         "right": {
-          "pixels": 16563,
-          "medianSrgb": "#52473f"
+          "pixels": 189,
+          "medianSrgb": "#957a44"
         },
         "high-front": {
-          "pixels": 28248,
-          "medianSrgb": "#53473f"
+          "pixels": 181,
+          "medianSrgb": "#9f8349"
         },
         "rear-three-quarter": {
-          "pixels": 40720,
-          "medianSrgb": "#4a3f38"
+          "pixels": 175,
+          "medianSrgb": "#8f7541"
         },
         "top": {
-          "pixels": 6756,
-          "medianSrgb": "#594c44"
+          "pixels": 106,
+          "medianSrgb": "#a4874e"
+        }
+      }
+    },
+    {
+      "id": "hoodie",
+      "material": "hoodie #19",
+      "index": 19,
+      "type": "MeshStandardMaterial",
+      "base": "#841e32",
+      "footprint": [],
+      "roughness": 0.78,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 9,
+      "source": "forearmL",
+      "tile": [
+        0,
+        384,
+        128,
+        128
+      ],
+      "hex": "#823440",
+      "modelViews": {
+        "front": {
+          "pixels": 20277,
+          "medianSrgb": "#84303d"
+        },
+        "back": {
+          "pixels": 13926,
+          "medianSrgb": "#752a36"
+        },
+        "left": {
+          "pixels": 7869,
+          "medianSrgb": "#752a36"
+        },
+        "right": {
+          "pixels": 7935,
+          "medianSrgb": "#83313d"
+        },
+        "high-front": {
+          "pixels": 18290,
+          "medianSrgb": "#852f3d"
+        },
+        "rear-three-quarter": {
+          "pixels": 11392,
+          "medianSrgb": "#752a36"
+        },
+        "top": {
+          "pixels": 4299,
+          "medianSrgb": "#8b3241"
+        }
+      }
+    },
+    {
+      "id": "saddleEdge",
+      "material": "saddleEdge #20",
+      "index": 20,
+      "type": "MeshStandardMaterial",
+      "base": "#aa723b",
+      "footprint": [],
+      "roughness": 0.59,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 3,
+      "source": "Embroidered sleeve vine / saddleEdge",
+      "tile": [
+        128,
+        384,
+        128,
+        128
+      ],
+      "hex": "#a57449",
+      "modelViews": {
+        "front": {
+          "pixels": 100,
+          "medianSrgb": "#a37041"
+        },
+        "back": {
+          "pixels": 5260,
+          "medianSrgb": "#9a6b42"
+        },
+        "left": {
+          "pixels": 819,
+          "medianSrgb": "#98683d"
+        },
+        "right": {
+          "pixels": 823,
+          "medianSrgb": "#9e7144"
+        },
+        "high-front": {
+          "pixels": 104,
+          "medianSrgb": "#aa7443"
+        },
+        "rear-three-quarter": {
+          "pixels": 4263,
+          "medianSrgb": "#996a3f"
+        },
+        "top": {
+          "pixels": 1290,
+          "medianSrgb": "#9e7049"
         }
       }
     },
     {
       "id": "flush",
-      "material": "flush #18",
-      "index": 18,
+      "material": "flush #21",
+      "index": 21,
       "type": "MeshStandardMaterial",
       "base": "#c48366",
       "footprint": [],
@@ -1245,7 +1325,7 @@
       "boundMeshes": 1,
       "source": "",
       "tile": [
-        0,
+        256,
         384,
         128,
         128
@@ -1253,689 +1333,287 @@
       "hex": "#c68a70",
       "modelViews": {
         "front": {
-          "pixels": 31,
-          "medianSrgb": "#ab745c"
+          "pixels": 15,
+          "medianSrgb": "#b37a61"
         },
         "back": {
-          "pixels": 5,
-          "medianSrgb": "#b77c62"
-        },
-        "left": {
-          "pixels": 10,
-          "medianSrgb": "#b87c62"
+          "pixels": 13,
+          "medianSrgb": "#ab745b"
         },
         "right": {
-          "pixels": 20,
-          "medianSrgb": "#996a56"
+          "pixels": 22,
+          "medianSrgb": "#a06c56"
         },
         "high-front": {
-          "pixels": 14,
-          "medianSrgb": "#c6866b"
+          "pixels": 8,
+          "medianSrgb": "#b67c62"
         },
-        "top": {
-          "pixels": 6,
-          "medianSrgb": "#d99476"
-        }
-      }
-    },
-    {
-      "id": "glass",
-      "material": "glass #19",
-      "index": 19,
-      "type": "MeshStandardMaterial",
-      "base": "#e5fffc",
-      "footprint": [
-        {
-          "mesh": "",
-          "triangle": 8,
-          "space": "xy",
-          "point": [
-            0.003,
-            0.052
-          ]
-        }
-      ],
-      "roughness": 0.12,
-      "metalness": 0.12,
-      "opacity": 0.622,
-      "texture": false,
-      "vertexColors": false,
-      "boundMeshes": 1,
-      "source": "",
-      "tile": [
-        128,
-        384,
-        128,
-        128
-      ],
-      "hex": "#bdcfcd",
-      "modelViews": {
-        "front": {
-          "pixels": 809,
-          "medianSrgb": "#a0a9a2"
-        },
-        "left": {
-          "pixels": 533,
-          "medianSrgb": "#bccfcd"
-        },
-        "right": {
-          "pixels": 652,
-          "medianSrgb": "#c4bab6"
-        },
-        "high-front": {
-          "pixels": 731,
-          "medianSrgb": "#b0b2ae"
-        },
-        "top": {
-          "pixels": 172,
-          "medianSrgb": "#b6a9aa"
-        }
-      }
-    },
-    {
-      "id": "wine",
-      "material": "wine #20",
-      "index": 20,
-      "type": "MeshPhysicalMaterial",
-      "base": "#6e0929",
-      "footprint": [],
-      "roughness": 0.22,
-      "metalness": 0.1,
-      "opacity": 1,
-      "texture": false,
-      "vertexColors": false,
-      "boundMeshes": 1,
-      "source": "",
-      "tile": [
-        256,
-        384,
-        128,
-        128
-      ],
-      "hex": "#712536",
-      "modelViews": {
-        "top": {
-          "pixels": 148,
-          "medianSrgb": "#7a1b34"
-        }
-      }
-    },
-    {
-      "id": "wine",
-      "material": "wine #21",
-      "index": 21,
-      "type": "MeshPhysicalMaterial",
-      "base": "#6c0327",
-      "footprint": [],
-      "roughness": 0.23,
-      "metalness": 0,
-      "opacity": 1,
-      "texture": false,
-      "vertexColors": false,
-      "boundMeshes": 1,
-      "source": "",
-      "tile": [
-        384,
-        384,
-        128,
-        128
-      ],
-      "hex": "#712536",
-      "modelViews": {
-        "top": {
-          "pixels": 194,
-          "medianSrgb": "#7c1934"
-        }
-      }
-    },
-    {
-      "id": "glass",
-      "material": "glass #22",
-      "index": 22,
-      "type": "MeshStandardMaterial",
-      "base": "#c8ddda",
-      "footprint": [],
-      "roughness": 0.24,
-      "metalness": 0.24,
-      "opacity": 1,
-      "texture": false,
-      "vertexColors": false,
-      "boundMeshes": 1,
-      "source": "",
-      "tile": [
-        512,
-        384,
-        128,
-        128
-      ],
-      "hex": "#bdd0ce",
-      "modelViews": {
-        "front": {
-          "pixels": 160,
-          "medianSrgb": "#bed2d0"
-        },
-        "back": {
-          "pixels": 130,
-          "medianSrgb": "#a4b4b2"
-        },
-        "left": {
-          "pixels": 168,
-          "medianSrgb": "#a9bbb9"
-        },
-        "right": {
-          "pixels": 153,
-          "medianSrgb": "#b3c6c3"
-        },
-        "high-front": {
-          "pixels": 312,
-          "medianSrgb": "#d2e7e4"
-        },
-        "top": {
-          "pixels": 94,
-          "medianSrgb": "#cbe0dd"
+        "rear-three-quarter": {
+          "pixels": 15,
+          "medianSrgb": "#b47a60"
         }
       }
     },
     {
       "id": "trousers",
-      "material": "trousers #23",
-      "index": 23,
+      "material": "trousers #22",
+      "index": 22,
       "type": "MeshStandardMaterial",
-      "base": "#403531",
-      "footprint": [
-        {
-          "mesh": "sippy-seat-L",
-          "triangle": 2013,
-          "space": "xy",
-          "point": [
-            0.021075999999999998,
-            -0.18
-          ]
-        }
-      ],
+      "base": "#f1e1c0",
+      "footprint": [],
       "roughness": 0.79,
       "metalness": 0,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
-      "boundMeshes": 5,
+      "boundMeshes": 9,
       "source": "sippy-trouser-rise",
+      "tile": [
+        384,
+        384,
+        128,
+        128
+      ],
+      "hex": "#e6d7b9",
+      "modelViews": {
+        "front": {
+          "pixels": 28401,
+          "medianSrgb": "#e4d5b6"
+        },
+        "back": {
+          "pixels": 27355,
+          "medianSrgb": "#d1c3a7"
+        },
+        "left": {
+          "pixels": 13869,
+          "medianSrgb": "#cdc0a4"
+        },
+        "right": {
+          "pixels": 14000,
+          "medianSrgb": "#dbcdaf"
+        },
+        "high-front": {
+          "pixels": 25361,
+          "medianSrgb": "#e9daba"
+        },
+        "rear-three-quarter": {
+          "pixels": 27430,
+          "medianSrgb": "#d0c3a7"
+        },
+        "top": {
+          "pixels": 209,
+          "medianSrgb": "#ebdbbc"
+        }
+      }
+    },
+    {
+      "id": "quilt",
+      "material": "quilt #23",
+      "index": 23,
+      "type": "MeshStandardMaterial",
+      "base": "#39393c",
+      "footprint": [],
+      "roughness": 0.76,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 3,
+      "source": "sippy-quilted-vest",
+      "tile": [
+        512,
+        384,
+        128,
+        128
+      ],
+      "hex": "#434345",
+      "modelViews": {
+        "front": {
+          "pixels": 9418,
+          "medianSrgb": "#404042"
+        },
+        "back": {
+          "pixels": 4659,
+          "medianSrgb": "#3c3c3e"
+        },
+        "left": {
+          "pixels": 6593,
+          "medianSrgb": "#3c3c3e"
+        },
+        "right": {
+          "pixels": 6623,
+          "medianSrgb": "#424244"
+        },
+        "high-front": {
+          "pixels": 8665,
+          "medianSrgb": "#414143"
+        },
+        "rear-three-quarter": {
+          "pixels": 6513,
+          "medianSrgb": "#3b3b3d"
+        },
+        "top": {
+          "pixels": 328,
+          "medianSrgb": "#3f3f41"
+        }
+      }
+    },
+    {
+      "id": "binding",
+      "material": "binding #24",
+      "index": 24,
+      "type": "MeshStandardMaterial",
+      "base": "#1d1d24",
+      "footprint": [],
+      "roughness": 0.71,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 6,
+      "source": "sippy-zipper-plackets",
       "tile": [
         640,
         384,
         128,
         128
       ],
-      "hex": "#48413e",
+      "hex": "#353539",
       "modelViews": {
         "front": {
-          "pixels": 27882,
-          "medianSrgb": "#48403d"
-        },
-        "back": {
-          "pixels": 23172,
-          "medianSrgb": "#403835"
+          "pixels": 956,
+          "medianSrgb": "#303034"
         },
         "left": {
-          "pixels": 13444,
-          "medianSrgb": "#403836"
+          "pixels": 320,
+          "medianSrgb": "#252529"
         },
         "right": {
-          "pixels": 14272,
-          "medianSrgb": "#473f3c"
+          "pixels": 319,
+          "medianSrgb": "#2c2c31"
         },
         "high-front": {
-          "pixels": 24198,
-          "medianSrgb": "#48403d"
-        },
-        "rear-three-quarter": {
-          "pixels": 23983,
-          "medianSrgb": "#403835"
+          "pixels": 897,
+          "medianSrgb": "#2f2f33"
         },
         "top": {
-          "pixels": 33,
-          "medianSrgb": "#423936"
+          "pixels": 64,
+          "medianSrgb": "#323237"
         }
       }
     },
     {
-      "id": "stripe",
-      "material": "trousers #23",
-      "index": 23,
-      "type": "MeshStandardMaterial",
-      "base": "#403531",
-      "footprint": [
-        {
-          "mesh": "sippy-seat-L",
-          "triangle": 2125,
-          "space": "xy",
-          "point": [
-            0.0157,
-            -0.18
-          ]
-        }
-      ],
-      "roughness": 0.79,
-      "metalness": 0,
-      "opacity": 1,
-      "texture": false,
-      "vertexColors": false,
-      "boundMeshes": 5,
-      "source": "sippy-trouser-rise",
-      "tile": [
-        768,
-        384,
-        128,
-        128
-      ],
-      "hex": "#75695d",
-      "modelViews": {
-        "front": {
-          "pixels": 27882,
-          "medianSrgb": "#48403d"
-        },
-        "back": {
-          "pixels": 23172,
-          "medianSrgb": "#403835"
-        },
-        "left": {
-          "pixels": 13444,
-          "medianSrgb": "#403836"
-        },
-        "right": {
-          "pixels": 14272,
-          "medianSrgb": "#473f3c"
-        },
-        "high-front": {
-          "pixels": 24198,
-          "medianSrgb": "#48403d"
-        },
-        "rear-three-quarter": {
-          "pixels": 23983,
-          "medianSrgb": "#403835"
-        },
-        "top": {
-          "pixels": 33,
-          "medianSrgb": "#423936"
-        }
-      }
-    },
-    {
-      "id": "vest",
-      "material": "vest #24",
-      "index": 24,
-      "type": "MeshStandardMaterial",
-      "base": "#664e3c",
-      "footprint": [
-        {
-          "mesh": "sippy-vest",
-          "triangle": 3688,
-          "space": "xy",
-          "point": [
-            0.015854999999999998,
-            0.017
-          ]
-        }
-      ],
-      "roughness": 0.76,
-      "metalness": 0,
-      "opacity": 1,
-      "texture": false,
-      "vertexColors": false,
-      "boundMeshes": 1,
-      "source": "sippy-vest",
-      "tile": [
-        896,
-        384,
-        128,
-        128
-      ],
-      "hex": "#685447",
-      "modelViews": {
-        "front": {
-          "pixels": 4555,
-          "medianSrgb": "#695546"
-        },
-        "high-front": {
-          "pixels": 3441,
-          "medianSrgb": "#695445"
-        }
-      }
-    },
-    {
-      "id": "stripe",
-      "material": "vest #24",
-      "index": 24,
-      "type": "MeshStandardMaterial",
-      "base": "#664e3c",
-      "footprint": [
-        {
-          "mesh": "sippy-vest",
-          "triangle": 3692,
-          "space": "xy",
-          "point": [
-            0.010575,
-            0.017
-          ]
-        }
-      ],
-      "roughness": 0.76,
-      "metalness": 0,
-      "opacity": 1,
-      "texture": false,
-      "vertexColors": false,
-      "boundMeshes": 1,
-      "source": "sippy-vest",
-      "tile": [
-        0,
-        512,
-        128,
-        128
-      ],
-      "hex": "#786b5e",
-      "modelViews": {
-        "front": {
-          "pixels": 4555,
-          "medianSrgb": "#695546"
-        },
-        "high-front": {
-          "pixels": 3441,
-          "medianSrgb": "#695445"
-        }
-      }
-    },
-    {
-      "id": "lapel",
-      "material": "lapel #25",
+      "id": "pad",
+      "material": "pad #25",
       "index": 25,
       "type": "MeshStandardMaterial",
-      "base": "#5e4e3f",
+      "base": "#171721",
       "footprint": [],
-      "roughness": 0.62,
+      "roughness": 0.8,
       "metalness": 0,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
-      "boundMeshes": 2,
-      "source": "sippy-lapels",
-      "tile": [
-        128,
-        512,
-        128,
-        128
-      ],
-      "hex": "#63564b",
-      "modelViews": {
-        "front": {
-          "pixels": 2261,
-          "medianSrgb": "#66584c"
-        },
-        "left": {
-          "pixels": 314,
-          "medianSrgb": "#5e5247"
-        },
-        "right": {
-          "pixels": 315,
-          "medianSrgb": "#67584c"
-        },
-        "high-front": {
-          "pixels": 2028,
-          "medianSrgb": "#66584a"
-        }
-      }
-    },
-    {
-      "id": "stripe",
-      "material": "stripe #26",
-      "index": 26,
-      "type": "MeshStandardMaterial",
-      "base": "#776759",
-      "footprint": [],
-      "roughness": 0.72,
-      "metalness": 0,
-      "opacity": 1,
-      "texture": false,
-      "vertexColors": false,
-      "boundMeshes": 7,
-      "source": "sippy-lapel-topstitch",
-      "tile": [
-        256,
-        512,
-        128,
-        128
-      ],
-      "hex": "#776a5e",
-      "modelViews": {
-        "front": {
-          "pixels": 286,
-          "medianSrgb": "#736559"
-        },
-        "left": {
-          "pixels": 109,
-          "medianSrgb": "#62554b"
-        },
-        "right": {
-          "pixels": 83,
-          "medianSrgb": "#6e6055"
-        },
-        "high-front": {
-          "pixels": 232,
-          "medianSrgb": "#77685c"
-        }
-      }
-    },
-    {
-      "id": "bow",
-      "material": "bow #27",
-      "index": 27,
-      "type": "MeshStandardMaterial",
-      "base": "#7b0012",
-      "footprint": [],
-      "roughness": 0.43,
-      "metalness": 0,
-      "opacity": 1,
-      "texture": false,
-      "vertexColors": false,
-      "boundMeshes": 2,
-      "source": "sippy-bow",
-      "tile": [
-        384,
-        512,
-        128,
-        128
-      ],
-      "hex": "#7d3337",
-      "modelViews": {
-        "front": {
-          "pixels": 504,
-          "medianSrgb": "#802a2f"
-        },
-        "left": {
-          "pixels": 115,
-          "medianSrgb": "#72393c"
-        },
-        "right": {
-          "pixels": 116,
-          "medianSrgb": "#762d33"
-        },
-        "high-front": {
-          "pixels": 437,
-          "medianSrgb": "#85272d"
-        },
-        "rear-three-quarter": {
-          "pixels": 30,
-          "medianSrgb": "#682328"
-        }
-      }
-    },
-    {
-      "id": "bow",
-      "material": "bow #28",
-      "index": 28,
-      "type": "MeshStandardMaterial",
-      "base": "#7b0012",
-      "footprint": [],
-      "roughness": 0.45,
-      "metalness": 0,
-      "opacity": 1,
-      "texture": false,
-      "vertexColors": false,
-      "boundMeshes": 1,
-      "source": "sippy-bow",
-      "tile": [
-        512,
-        512,
-        128,
-        128
-      ],
-      "hex": "#7d3337",
-      "modelViews": {
-        "front": {
-          "pixels": 77,
-          "medianSrgb": "#79252b"
-        },
-        "left": {
-          "pixels": 35,
-          "medianSrgb": "#71262a"
-        },
-        "right": {
-          "pixels": 34,
-          "medianSrgb": "#72262b"
-        },
-        "high-front": {
-          "pixels": 67,
-          "medianSrgb": "#82272e"
-        }
-      }
-    },
-    {
-      "id": "lining",
-      "material": "lining #29",
-      "index": 29,
-      "type": "MeshStandardMaterial",
-      "base": "#f9ddad",
-      "footprint": [],
-      "roughness": 0.66,
-      "metalness": 0,
-      "opacity": 1,
-      "texture": false,
-      "vertexColors": false,
-      "boundMeshes": 1,
-      "source": "chest",
-      "tile": [
-        640,
-        512,
-        128,
-        128
-      ],
-      "hex": "#eed4a8",
-      "modelViews": {
-        "front": {
-          "pixels": 101,
-          "medianSrgb": "#eed4a7"
-        },
-        "high-front": {
-          "pixels": 90,
-          "medianSrgb": "#f8dcae"
-        }
-      }
-    },
-    {
-      "id": "pocketSquare",
-      "material": "pocketSquare #30",
-      "index": 30,
-      "type": "MeshStandardMaterial",
-      "base": "#8c1529",
-      "footprint": [],
-      "roughness": 0.48,
-      "metalness": 0,
-      "opacity": 1,
-      "texture": false,
-      "vertexColors": false,
-      "boundMeshes": 1,
-      "source": "chest",
+      "boundMeshes": 3,
+      "source": "Sippy burgundy studio headphones",
       "tile": [
         768,
-        512,
+        384,
         128,
         128
       ],
-      "hex": "#8b3740",
+      "hex": "#303035",
       "modelViews": {
         "front": {
-          "pixels": 47,
-          "medianSrgb": "#832a34"
-        },
-        "left": {
-          "pixels": 21,
-          "medianSrgb": "#893c44"
-        },
-        "high-front": {
-          "pixels": 27,
-          "medianSrgb": "#85323b"
-        }
-      }
-    },
-    {
-      "id": "sole",
-      "material": "sole #31",
-      "index": 31,
-      "type": "MeshPhysicalMaterial",
-      "base": "#211611",
-      "footprint": [],
-      "roughness": 0.61,
-      "metalness": 0,
-      "opacity": 1,
-      "texture": false,
-      "vertexColors": false,
-      "boundMeshes": 2,
-      "source": "",
-      "tile": [
-        896,
-        512,
-        128,
-        128
-      ],
-      "hex": "#2e2724",
-      "modelViews": {
-        "front": {
-          "pixels": 760,
-          "medianSrgb": "#251e1c"
+          "pixels": 577,
+          "medianSrgb": "#2b2b31"
         },
         "back": {
-          "pixels": 760,
-          "medianSrgb": "#231d1b"
+          "pixels": 425,
+          "medianSrgb": "#222227"
         },
         "left": {
-          "pixels": 678,
-          "medianSrgb": "#221b19"
+          "pixels": 300,
+          "medianSrgb": "#222227"
         },
         "right": {
-          "pixels": 678,
-          "medianSrgb": "#231c1a"
+          "pixels": 300,
+          "medianSrgb": "#232328"
         },
         "high-front": {
-          "pixels": 784,
-          "medianSrgb": "#28211e"
+          "pixels": 658,
+          "medianSrgb": "#2b2b32"
         },
         "rear-three-quarter": {
-          "pixels": 993,
-          "medianSrgb": "#231d1b"
+          "pixels": 354,
+          "medianSrgb": "#222228"
         },
         "top": {
-          "pixels": 15,
-          "medianSrgb": "#322a27"
+          "pixels": 19,
+          "medianSrgb": "#2e2e34"
         }
       }
     },
     {
       "id": "shoe",
-      "material": "shoe #32",
-      "index": 32,
-      "type": "MeshPhysicalMaterial",
-      "base": "#3b2316",
+      "material": "shoe #26",
+      "index": 26,
+      "type": "MeshStandardMaterial",
+      "base": "#79132b",
       "footprint": [],
-      "roughness": 0.35,
+      "roughness": 0.7,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 4,
+      "source": "",
+      "tile": [
+        896,
+        384,
+        128,
+        128
+      ],
+      "hex": "#79313d",
+      "modelViews": {
+        "front": {
+          "pixels": 2490,
+          "medianSrgb": "#853542"
+        },
+        "back": {
+          "pixels": 3087,
+          "medianSrgb": "#6f2935"
+        },
+        "left": {
+          "pixels": 2132,
+          "medianSrgb": "#6e2935"
+        },
+        "right": {
+          "pixels": 2133,
+          "medianSrgb": "#762c38"
+        },
+        "high-front": {
+          "pixels": 4083,
+          "medianSrgb": "#852f3e"
+        },
+        "rear-three-quarter": {
+          "pixels": 3531,
+          "medianSrgb": "#6e2733"
+        },
+        "top": {
+          "pixels": 727,
+          "medianSrgb": "#883140"
+        }
+      }
+    },
+    {
+      "id": "sole",
+      "material": "sole #27",
+      "index": 27,
+      "type": "MeshStandardMaterial",
+      "base": "#e7dac2",
+      "footprint": [],
+      "roughness": 0.69,
       "metalness": 0,
       "opacity": 1,
       "texture": false,
@@ -1944,39 +1622,91 @@
       "source": "",
       "tile": [
         0,
-        640,
+        512,
         128,
         128
       ],
-      "hex": "#44342d",
+      "hex": "#e8dbc4",
       "modelViews": {
         "front": {
-          "pixels": 2635,
-          "medianSrgb": "#4c3830"
+          "pixels": 2499,
+          "medianSrgb": "#e2d5be"
         },
         "back": {
-          "pixels": 2977,
-          "medianSrgb": "#3c2c25"
+          "pixels": 1552,
+          "medianSrgb": "#d0c4af"
         },
         "left": {
-          "pixels": 2330,
-          "medianSrgb": "#3b2b24"
+          "pixels": 1516,
+          "medianSrgb": "#cbc0ab"
         },
         "right": {
-          "pixels": 2335,
-          "medianSrgb": "#3f2d25"
+          "pixels": 1513,
+          "medianSrgb": "#d8ccb6"
         },
         "high-front": {
-          "pixels": 4163,
-          "medianSrgb": "#473229"
+          "pixels": 2768,
+          "medianSrgb": "#efe2ca"
         },
         "rear-three-quarter": {
-          "pixels": 3671,
-          "medianSrgb": "#3b2a23"
+          "pixels": 1897,
+          "medianSrgb": "#cfc3ae"
         },
         "top": {
-          "pixels": 185,
-          "medianSrgb": "#453027"
+          "pixels": 729,
+          "medianSrgb": "#fff6dc"
+        }
+      }
+    },
+    {
+      "id": "cargoSeam",
+      "material": "cargoSeam #28",
+      "index": 28,
+      "type": "MeshStandardMaterial",
+      "base": "#c2b18b",
+      "footprint": [],
+      "roughness": 0.76,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": false,
+      "vertexColors": false,
+      "boundMeshes": 2,
+      "source": "Sippy gusseted cargo pocket L",
+      "tile": [
+        128,
+        512,
+        128,
+        128
+      ],
+      "hex": "#bbab89",
+      "modelViews": {
+        "front": {
+          "pixels": 403,
+          "medianSrgb": "#aa9c7d"
+        },
+        "back": {
+          "pixels": 145,
+          "medianSrgb": "#a99b7b"
+        },
+        "left": {
+          "pixels": 409,
+          "medianSrgb": "#a09374"
+        },
+        "right": {
+          "pixels": 352,
+          "medianSrgb": "#beae8a"
+        },
+        "high-front": {
+          "pixels": 430,
+          "medianSrgb": "#bcac89"
+        },
+        "rear-three-quarter": {
+          "pixels": 243,
+          "medianSrgb": "#a59778"
+        },
+        "top": {
+          "pixels": 19,
+          "medianSrgb": "#c7b792"
         }
       }
     }

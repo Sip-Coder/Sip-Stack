@@ -1,199 +1,249 @@
 {
-  "heightM": 1.846249796981131,
-  "headCount": 5.5137131329711035,
+  "heightM": 1.8466465688940374,
+  "heightIn": 72.7026208225999,
+  "headCount": 4.1651178597471565,
   "landmarks": {
     "eyes": {
-      "designPct": 8.9,
-      "modelPct": 8.595583118225909,
-      "errorPctHeight": 0.30441688177409176
+      "designPct": 12.1,
+      "modelPct": 11.982951625737252,
+      "errorPctHeight": 0.1170483742627475
     },
     "chin": {
-      "designPct": 18.0,
-      "modelPct": 18.099832892381162,
-      "errorPctHeight": 0.099832892381162
+      "designPct": 24,
+      "modelPct": 23.965404297056615,
+      "errorPctHeight": 0.034595702943384765
     },
     "shoulders": {
-      "designPct": 17.5,
-      "modelPct": 17.37977704145303,
-      "errorPctHeight": 0.12022295854697163
+      "designPct": 25.1,
+      "modelPct": 24.68813045040469,
+      "errorPctHeight": 0.41186954959531263
     },
     "waist": {
-      "designPct": 45.6,
-      "modelPct": 45.397286269660185,
-      "errorPctHeight": 0.20271373033981632
+      "designPct": 50.6,
+      "modelPct": 49.32977461420421,
+      "errorPctHeight": 1.27022538579579
     },
     "knee": {
-      "designPct": 73.0,
-      "modelPct": 72.24166558327614,
-      "errorPctHeight": 0.758334416723855
+      "designPct": 73.7,
+      "modelPct": 74.25218926388688,
+      "errorPctHeight": 0.5521892638868735
     },
     "ankleCuff": {
-      "designPct": 94.2,
-      "modelPct": 93.90582465872643,
-      "errorPctHeight": 0.29417534127357214
+      "designPct": 92.2,
+      "modelPct": 93.67216593623246,
+      "errorPctHeight": 1.4721659362324573
     },
     "hairWidth": {
-      "designPct": 24.2,
-      "modelPct": 24.21157672080948,
-      "errorPctHeight": 0.011576720809479468
+      "designPct": 29.0,
+      "modelPct": 29.191075635456194,
+      "errorPctHeight": 0.191075635456194
+    }
+  },
+  "mobile": {
+    "heightM": 1.8466465688940374,
+    "heightIn": 72.7026208225999,
+    "headCount": 4.1651178597471565,
+    "landmarks": {
+      "eyes": {
+        "designPct": 12.1,
+        "modelPct": 11.982951625737252,
+        "errorPctHeight": 0.1170483742627475
+      },
+      "chin": {
+        "designPct": 24,
+        "modelPct": 23.965404297056615,
+        "errorPctHeight": 0.034595702943384765
+      },
+      "shoulders": {
+        "designPct": 25.1,
+        "modelPct": 24.72996378073521,
+        "errorPctHeight": 0.37003621926479013
+      },
+      "waist": {
+        "designPct": 50.6,
+        "modelPct": 49.32977461420421,
+        "errorPctHeight": 1.27022538579579
+      },
+      "knee": {
+        "designPct": 73.7,
+        "modelPct": 74.25218926388688,
+        "errorPctHeight": 0.5521892638868735
+      },
+      "ankleCuff": {
+        "designPct": 92.2,
+        "modelPct": 93.67216593623246,
+        "errorPctHeight": 1.4721659362324573
+      },
+      "hairWidth": {
+        "designPct": 29.0,
+        "modelPct": 29.186621667266678,
+        "errorPctHeight": 0.18662166726667806
+      }
     }
   },
   "silhouettes": {
     "front": {
-      "intersectionPx": 87579,
-      "unionPx": 93873,
-      "iou": 0.9329519670192707
+      "intersectionPx": 88360,
+      "unionPx": 95612,
+      "iou": 0.9241517801112831
     },
     "back": {
-      "intersectionPx": 85475,
-      "unionPx": 93555,
-      "iou": 0.9136336914114692
+      "intersectionPx": 88360,
+      "unionPx": 95615,
+      "iou": 0.9241227840819956
     },
     "left": {
-      "intersectionPx": 47618,
-      "unionPx": 50726,
-      "iou": 0.9387296455466625
+      "intersectionPx": 56799,
+      "unionPx": 61151,
+      "iou": 0.9288319079001162
     },
     "right": {
-      "intersectionPx": 47692,
-      "unionPx": 50736,
-      "iou": 0.9400031535793125
+      "intersectionPx": 56804,
+      "unionPx": 61147,
+      "iou": 0.9289744386478487
     },
     "high-front": {
-      "intersectionPx": 81062,
-      "unionPx": 88682,
-      "iou": 0.9140750095848087
+      "intersectionPx": 85250,
+      "unionPx": 91274,
+      "iou": 0.9340009203058921
     },
     "rear-three-quarter": {
-      "intersectionPx": 81040,
-      "unionPx": 90308,
-      "iou": 0.8973734331399211
+      "intersectionPx": 86658,
+      "unionPx": 92413,
+      "iou": 0.9377252118208477
     },
     "top": {
-      "intersectionPx": 20038,
-      "unionPx": 21880,
-      "iou": 0.9158135283363803
+      "intersectionPx": 23491,
+      "unionPx": 25250,
+      "iou": 0.9303366336633664
     }
   },
   "materials": [
     {
       "material": "darkMetal #1",
       "id": "darkMetal",
-      "designHex": "#454A4C",
-      "modelHex": "#464b4d",
-      "deltaE00": 0.33902961786884034
+      "designHex": "#494B4A",
+      "modelHex": "#484b4b",
+      "deltaE00": 0.7619522334222593
     },
     {
       "material": "steel #2",
       "id": "steel",
-      "designHex": "#9EA8AE",
-      "modelHex": "#9da8ae",
-      "deltaE00": 0.43802585561607305
+      "designHex": "#A2A7A7",
+      "modelHex": "#a3a8a7",
+      "deltaE00": 0.6248524302585535
     },
     {
       "material": "cyan #3",
       "id": "cyan",
-      "designHex": "#55E7FF",
-      "modelHex": "#55e6ff",
-      "deltaE00": 0.4035520359295881
+      "designHex": "#60E6F1",
+      "modelHex": "#60e6f1",
+      "deltaE00": 0.0
     },
     {
       "material": "brass #4",
       "id": "brass",
-      "designHex": "#A78952",
-      "modelHex": "#a78952",
-      "deltaE00": 0.0
+      "designHex": "#B09255",
+      "modelHex": "#b09254",
+      "deltaE00": 0.21504186397785002
     },
     {
       "material": "pearl #5",
       "id": "pearl",
-      "designHex": "#E5DFCD",
-      "modelHex": "#e5e0cd",
-      "deltaE00": 0.7210042037792679
+      "designHex": "#E9E3CF",
+      "modelHex": "#e6e2d0",
+      "deltaE00": 1.0721810519071489
     },
     {
       "material": "rubber #6",
       "id": "rubber",
-      "designHex": "#292B2A",
-      "modelHex": "#2d2e2d",
-      "deltaE00": 1.215388529858051
+      "designHex": "#2E3030",
+      "modelHex": "#2f2f2f",
+      "deltaE00": 1.3237983002272227
     },
     {
       "material": "visor #7",
       "id": "visor",
-      "designHex": "#172B38",
-      "modelHex": "#1c2e3c",
-      "deltaE00": 1.4832123204330643
+      "designHex": "#19252B",
+      "modelHex": "#1c252b",
+      "deltaE00": 1.4123592604264585
     },
     {
       "material": "visor #7",
       "id": "cyan",
-      "designHex": "#55E7FF",
-      "modelHex": "#53e9ff",
-      "deltaE00": 0.8605346268241768
+      "designHex": "#60E6F1",
+      "modelHex": "#65e4ed",
+      "deltaE00": 0.7926416673173489
     },
     {
       "material": "ceramicRim #8",
       "id": "ceramicRim",
-      "designHex": "#B8B4A7",
-      "modelHex": "#b8b4a7",
+      "designHex": "#BEB6A4",
+      "modelHex": "#bcb6a4",
+      "deltaE00": 1.0232211875721589
+    },
+    {
+      "material": "denim #9",
+      "id": "denim",
+      "designHex": "#435975",
+      "modelHex": "#425975",
+      "deltaE00": 0.3438349425795772
+    },
+    {
+      "material": "denimEdge #10",
+      "id": "denimEdge",
+      "designHex": "#5E7190",
+      "modelHex": "#5e728d",
+      "deltaE00": 1.6919211982934297
+    },
+    {
+      "material": "emblem #11",
+      "id": "emblem",
+      "designHex": "#D2AE69",
+      "modelHex": "#d2ae68",
+      "deltaE00": 0.20116969012743072
+    },
+    {
+      "material": "berry #12",
+      "id": "berry",
+      "designHex": "#6B526D",
+      "modelHex": "#6b526d",
       "deltaE00": 0.0
     },
     {
-      "material": "leather #9",
-      "id": "leather",
-      "designHex": "#594336",
-      "modelHex": "#594336",
-      "deltaE00": 0.0
-    },
-    {
-      "material": "pocket #10",
+      "material": "pocket #13",
       "id": "pocket",
-      "designHex": "#49392E",
-      "modelHex": "#49392e",
-      "deltaE00": 0.0
+      "designHex": "#74533E",
+      "modelHex": "#765742",
+      "deltaE00": 1.4947155424198175
     },
     {
-      "material": "leatherEdge #11",
+      "material": "leather #14",
+      "id": "leather",
+      "designHex": "#806048",
+      "modelHex": "#7d5e49",
+      "deltaE00": 1.383609343345086
+    },
+    {
+      "material": "leatherEdge #15",
       "id": "leatherEdge",
-      "designHex": "#755947",
-      "modelHex": "#755947",
-      "deltaE00": 0.0
+      "designHex": "#9B7953",
+      "modelHex": "#9b7853",
+      "deltaE00": 0.6270060825463395
     },
     {
-      "material": "pen #12",
-      "id": "pen",
-      "designHex": "#884C43",
-      "modelHex": "#894d43",
-      "deltaE00": 0.5171680002060438
-    },
-    {
-      "material": "linen #13",
-      "id": "linen",
-      "designHex": "#EDD4A8",
-      "modelHex": "#edd4a8",
-      "deltaE00": 0.0
-    },
-    {
-      "material": "pen #14",
-      "id": "pen",
-      "designHex": "#884C43",
-      "modelHex": "#884c43",
-      "deltaE00": 0.0
-    },
-    {
-      "material": "stitch #15",
+      "material": "stitch #16",
       "id": "stitch",
-      "designHex": "#AD936F",
-      "modelHex": "#ad936f",
+      "designHex": "#B79A72",
+      "modelHex": "#b79a72",
       "deltaE00": 0.0
     },
     {
-      "material": "bow #16",
-      "id": "bow",
-      "designHex": "#24282A",
-      "modelHex": "#24282b",
-      "deltaE00": 0.7144214666287434
+      "material": "scarf #17",
+      "id": "scarf",
+      "designHex": "#C9AE80",
+      "modelHex": "#c9ae80",
+      "deltaE00": 0.0
     }
   ],
   "failures": []

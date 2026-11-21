@@ -568,7 +568,16 @@ export function makeApron(rig, m, parts) {
         const release = type === 'flap' ? outer * outer * smoothstep(y, -0.13, -0.065) * dartOpening : 0;
         const wrappedZ =
           type === 'flap' ? lerp(0.009 - 0.044 * (x / 0.112) ** 2 + 0.19 * y, z, wrapped) : z;
-        forward.set(x, y, wrappedZ + fold + release);
+        // The free corners slide around a tucked knee instead of climbing
+        // straight over its hinge. The reinforced waistband stays on its cut.
+        const hemRelease =
+          type === 'flap' && frame.state === 'roll'
+            ? 0.07 *
+              smoothstep(knee, 0.65, 1.36) *
+              smoothstep(-y, 0.1, 0.16) *
+              smoothstep(Math.abs(x), 0.068, 0.098)
+            : 0;
+        forward.set(x + Math.sign(x) * hemRelease, y, wrappedZ + fold + release);
         for (let body = 0; body < colliders.length; body++) {
           const c = colliders[body];
           point.copy(forward).applyMatrix4(c.toBody);

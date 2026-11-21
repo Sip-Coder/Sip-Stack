@@ -35,58 +35,58 @@
       ]
     }
   ],
-  "materialCount": 16,
-  "sampleCount": 17,
+  "materialCount": 17,
+  "sampleCount": 18,
   "materials": [
     {
       "id": "darkMetal",
       "material": "darkMetal #1",
       "index": 1,
       "type": "MeshPhysicalMaterial",
-      "base": "#3f4548",
+      "base": "#424545",
       "footprint": [],
       "roughness": 0.42,
       "metalness": 0.42,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
-      "boundMeshes": 32,
-      "source": "",
+      "boundMeshes": 33,
+      "source": "Service receiver",
       "tile": [
         0,
         0,
         128,
         128
       ],
-      "hex": "#464b4d",
+      "hex": "#484b4b",
       "modelViews": {
         "front": {
-          "pixels": 6692,
-          "medianSrgb": "#3d4244"
+          "pixels": 3895,
+          "medianSrgb": "#424444"
         },
         "back": {
-          "pixels": 11706,
-          "medianSrgb": "#383c3e"
+          "pixels": 10042,
+          "medianSrgb": "#3a3c3c"
         },
         "left": {
-          "pixels": 4037,
-          "medianSrgb": "#383c3e"
+          "pixels": 3845,
+          "medianSrgb": "#3a3c3c"
         },
         "right": {
-          "pixels": 3999,
-          "medianSrgb": "#3c4042"
+          "pixels": 3785,
+          "medianSrgb": "#3e4040"
         },
         "high-front": {
-          "pixels": 6972,
-          "medianSrgb": "#3f4446"
+          "pixels": 4249,
+          "medianSrgb": "#424545"
         },
         "rear-three-quarter": {
-          "pixels": 11246,
-          "medianSrgb": "#393c3e"
+          "pixels": 9603,
+          "medianSrgb": "#3b3d3d"
         },
         "top": {
-          "pixels": 343,
-          "medianSrgb": "#43474a"
+          "pixels": 669,
+          "medianSrgb": "#484a4a"
         }
       }
     },
@@ -95,50 +95,50 @@
       "material": "steel #2",
       "index": 2,
       "type": "MeshPhysicalMaterial",
-      "base": "#aab6bc",
+      "base": "#b0b5b4",
       "footprint": [],
       "roughness": 0.32,
       "metalness": 0.78,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
-      "boundMeshes": 22,
-      "source": "",
+      "boundMeshes": 20,
+      "source": "Service receiver",
       "tile": [
         128,
         0,
         128,
         128
       ],
-      "hex": "#9da8ae",
+      "hex": "#a3a8a7",
       "modelViews": {
         "front": {
-          "pixels": 3613,
-          "medianSrgb": "#80898e"
+          "pixels": 3221,
+          "medianSrgb": "#878b8a"
         },
         "back": {
-          "pixels": 3542,
-          "medianSrgb": "#788185"
+          "pixels": 3335,
+          "medianSrgb": "#7d8080"
         },
         "left": {
-          "pixels": 2911,
-          "medianSrgb": "#788085"
+          "pixels": 3008,
+          "medianSrgb": "#7c807f"
         },
         "right": {
-          "pixels": 2969,
-          "medianSrgb": "#7e888c"
+          "pixels": 3060,
+          "medianSrgb": "#838786"
         },
         "high-front": {
-          "pixels": 3645,
-          "medianSrgb": "#808a8f"
+          "pixels": 3669,
+          "medianSrgb": "#878a8a"
         },
         "rear-three-quarter": {
-          "pixels": 4082,
-          "medianSrgb": "#778084"
+          "pixels": 3837,
+          "medianSrgb": "#7c807f"
         },
         "top": {
-          "pixels": 759,
-          "medianSrgb": "#848e93"
+          "pixels": 878,
+          "medianSrgb": "#8a8e8d"
         }
       }
     },
@@ -147,50 +147,50 @@
       "material": "cyan #3",
       "index": 3,
       "type": "MeshPhysicalMaterial",
-      "base": "#39adff",
+      "base": "#42a0bf",
       "footprint": [],
       "roughness": 0.26,
       "metalness": 0.21,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
-      "boundMeshes": 6,
-      "source": "",
+      "boundMeshes": 8,
+      "source": "Service receiver",
       "tile": [
         256,
         0,
         128,
         128
       ],
-      "hex": "#55e6ff",
+      "hex": "#60e6f1",
       "modelViews": {
         "front": {
-          "pixels": 120,
-          "medianSrgb": "#4de3ff"
+          "pixels": 458,
+          "medianSrgb": "#60ebf8"
         },
         "back": {
-          "pixels": 97,
-          "medianSrgb": "#4cdbff"
+          "pixels": 118,
+          "medianSrgb": "#54d9df"
         },
         "left": {
-          "pixels": 446,
-          "medianSrgb": "#48d8ff"
+          "pixels": 511,
+          "medianSrgb": "#53d9df"
         },
         "right": {
-          "pixels": 446,
-          "medianSrgb": "#4bdfff"
+          "pixels": 522,
+          "medianSrgb": "#57dfe9"
         },
         "high-front": {
-          "pixels": 253,
-          "medianSrgb": "#4fe1ff"
+          "pixels": 790,
+          "medianSrgb": "#61edfb"
         },
         "rear-three-quarter": {
-          "pixels": 275,
-          "medianSrgb": "#4ad9ff"
+          "pixels": 277,
+          "medianSrgb": "#55d9df"
         },
         "top": {
-          "pixels": 89,
-          "medianSrgb": "#4ee4ff"
+          "pixels": 358,
+          "medianSrgb": "#5fecfa"
         }
       }
     },
@@ -199,14 +199,14 @@
       "material": "brass #4",
       "index": 4,
       "type": "MeshPhysicalMaterial",
-      "base": "#b69657",
+      "base": "#c1a05a",
       "footprint": [],
       "roughness": 0.35,
       "metalness": 0.72,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
-      "boundMeshes": 9,
+      "boundMeshes": 13,
       "source": "",
       "tile": [
         384,
@@ -214,35 +214,35 @@
         128,
         128
       ],
-      "hex": "#a78952",
+      "hex": "#b09254",
       "modelViews": {
         "front": {
-          "pixels": 294,
-          "medianSrgb": "#8c7242"
+          "pixels": 341,
+          "medianSrgb": "#937842"
         },
         "back": {
-          "pixels": 91,
-          "medianSrgb": "#80683c"
+          "pixels": 102,
+          "medianSrgb": "#8f7542"
         },
         "left": {
-          "pixels": 221,
-          "medianSrgb": "#826a3e"
+          "pixels": 182,
+          "medianSrgb": "#88703f"
         },
         "right": {
-          "pixels": 198,
-          "medianSrgb": "#8a7041"
+          "pixels": 165,
+          "medianSrgb": "#907643"
         },
         "high-front": {
-          "pixels": 402,
-          "medianSrgb": "#8b7245"
+          "pixels": 419,
+          "medianSrgb": "#927846"
         },
         "rear-three-quarter": {
-          "pixels": 222,
-          "medianSrgb": "#816b41"
+          "pixels": 195,
+          "medianSrgb": "#897143"
         },
         "top": {
-          "pixels": 26,
-          "medianSrgb": "#947a47"
+          "pixels": 29,
+          "medianSrgb": "#9d8148"
         }
       }
     },
@@ -251,7 +251,7 @@
       "material": "pearl #5",
       "index": 5,
       "type": "MeshPhysicalMaterial",
-      "base": "#fef7e1",
+      "base": "#fffae4",
       "footprint": [],
       "roughness": 0.29,
       "metalness": 0.18,
@@ -266,35 +266,35 @@
         128,
         128
       ],
-      "hex": "#e5e0cd",
+      "hex": "#e6e2d0",
       "modelViews": {
         "front": {
-          "pixels": 38583,
-          "medianSrgb": "#e0dac7"
+          "pixels": 38207,
+          "medianSrgb": "#e0dcc9"
         },
         "back": {
-          "pixels": 60947,
-          "medianSrgb": "#ccc7b6"
+          "pixels": 58989,
+          "medianSrgb": "#cdc9b8"
         },
         "left": {
-          "pixels": 28554,
-          "medianSrgb": "#cbc6b6"
+          "pixels": 33970,
+          "medianSrgb": "#cbc7b7"
         },
         "right": {
-          "pixels": 28954,
-          "medianSrgb": "#d1cbbb"
+          "pixels": 34841,
+          "medianSrgb": "#d4d0bf"
         },
         "high-front": {
-          "pixels": 40355,
-          "medianSrgb": "#e9e3d0"
+          "pixels": 40430,
+          "medianSrgb": "#ebe6d3"
         },
         "rear-three-quarter": {
-          "pixels": 56800,
-          "medianSrgb": "#cec8b7"
+          "pixels": 56048,
+          "medianSrgb": "#cecab9"
         },
         "top": {
-          "pixels": 17615,
-          "medianSrgb": "#fbf4df"
+          "pixels": 18762,
+          "medianSrgb": "#f4efdb"
         }
       }
     },
@@ -303,7 +303,7 @@
       "material": "rubber #6",
       "index": 6,
       "type": "MeshPhysicalMaterial",
-      "base": "#060706",
+      "base": "#0a0d0c",
       "footprint": [],
       "roughness": 0.72,
       "metalness": 0,
@@ -318,35 +318,35 @@
         128,
         128
       ],
-      "hex": "#2d2e2d",
+      "hex": "#2f2f2f",
       "modelViews": {
         "front": {
-          "pixels": 2467,
-          "medianSrgb": "#242424"
+          "pixels": 2011,
+          "medianSrgb": "#232424"
         },
         "back": {
-          "pixels": 2059,
-          "medianSrgb": "#202020"
+          "pixels": 1410,
+          "medianSrgb": "#1f2020"
         },
         "left": {
-          "pixels": 1504,
-          "medianSrgb": "#202020"
+          "pixels": 1657,
+          "medianSrgb": "#212221"
         },
         "right": {
-          "pixels": 1473,
-          "medianSrgb": "#232323"
+          "pixels": 1661,
+          "medianSrgb": "#252525"
         },
         "high-front": {
-          "pixels": 2795,
-          "medianSrgb": "#272827"
+          "pixels": 2328,
+          "medianSrgb": "#292929"
         },
         "rear-three-quarter": {
-          "pixels": 2712,
-          "medianSrgb": "#212121"
+          "pixels": 1986,
+          "medianSrgb": "#202121"
         },
         "top": {
-          "pixels": 244,
-          "medianSrgb": "#2c2d2c"
+          "pixels": 346,
+          "medianSrgb": "#2d2e2e"
         }
       }
     },
@@ -355,7 +355,7 @@
       "material": "visor #7",
       "index": 7,
       "type": "MeshPhysicalMaterial",
-      "base": "#001b2a",
+      "base": "#000b11",
       "footprint": [
         {
           "mesh": "display",
@@ -380,27 +380,27 @@
         128,
         128
       ],
-      "hex": "#1c2e3c",
+      "hex": "#1c252b",
       "modelViews": {
         "front": {
-          "pixels": 8522,
-          "medianSrgb": "#152a39"
+          "pixels": 12499,
+          "medianSrgb": "#141e24"
         },
         "left": {
-          "pixels": 2005,
-          "medianSrgb": "#20323f"
+          "pixels": 3019,
+          "medianSrgb": "#1f272b"
         },
         "right": {
-          "pixels": 1667,
-          "medianSrgb": "#213340"
+          "pixels": 2517,
+          "medianSrgb": "#20282d"
         },
         "high-front": {
-          "pixels": 5958,
-          "medianSrgb": "#182f3d"
+          "pixels": 9455,
+          "medianSrgb": "#152026"
         },
         "top": {
-          "pixels": 602,
-          "medianSrgb": "#303b45"
+          "pixels": 2631,
+          "medianSrgb": "#21282d"
         }
       }
     },
@@ -409,15 +409,15 @@
       "material": "visor #7",
       "index": 7,
       "type": "MeshPhysicalMaterial",
-      "base": "#001b2a",
+      "base": "#000b11",
       "footprint": [
         {
           "mesh": "display",
-          "triangle": 883,
+          "triangle": 881,
           "space": "uv",
           "point": [
             0.719,
-            0.553
+            0.514
           ]
         }
       ],
@@ -434,27 +434,27 @@
         128,
         128
       ],
-      "hex": "#53e9ff",
+      "hex": "#65e4ed",
       "modelViews": {
         "front": {
-          "pixels": 8522,
-          "medianSrgb": "#152a39"
+          "pixels": 12499,
+          "medianSrgb": "#141e24"
         },
         "left": {
-          "pixels": 2005,
-          "medianSrgb": "#20323f"
+          "pixels": 3019,
+          "medianSrgb": "#1f272b"
         },
         "right": {
-          "pixels": 1667,
-          "medianSrgb": "#213340"
+          "pixels": 2517,
+          "medianSrgb": "#20282d"
         },
         "high-front": {
-          "pixels": 5958,
-          "medianSrgb": "#182f3d"
+          "pixels": 9455,
+          "medianSrgb": "#152026"
         },
         "top": {
-          "pixels": 602,
-          "medianSrgb": "#303b45"
+          "pixels": 2631,
+          "medianSrgb": "#21282d"
         }
       }
     },
@@ -463,14 +463,14 @@
       "material": "ceramicRim #8",
       "index": 8,
       "type": "MeshPhysicalMaterial",
-      "base": "#bebaaa",
+      "base": "#c4bca7",
       "footprint": [],
       "roughness": 0.24,
       "metalness": 0.13,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
-      "boundMeshes": 5,
+      "boundMeshes": 4,
       "source": "handL",
       "tile": [
         0,
@@ -478,51 +478,51 @@
         128,
         128
       ],
-      "hex": "#b8b4a7",
+      "hex": "#bcb6a4",
       "modelViews": {
         "front": {
-          "pixels": 3137,
-          "medianSrgb": "#b5b1a3"
+          "pixels": 1692,
+          "medianSrgb": "#b5ae9d"
         },
         "back": {
-          "pixels": 4879,
-          "medianSrgb": "#9e9b8f"
+          "pixels": 3158,
+          "medianSrgb": "#a19c8c"
         },
         "left": {
-          "pixels": 1398,
-          "medianSrgb": "#a19d91"
+          "pixels": 1042,
+          "medianSrgb": "#a49e8e"
         },
         "right": {
-          "pixels": 1400,
-          "medianSrgb": "#a09e92"
+          "pixels": 1039,
+          "medianSrgb": "#a69f90"
         },
         "high-front": {
-          "pixels": 3254,
-          "medianSrgb": "#bbb7a9"
+          "pixels": 1372,
+          "medianSrgb": "#bab3a0"
         },
         "rear-three-quarter": {
-          "pixels": 4538,
-          "medianSrgb": "#9e9b8f"
+          "pixels": 2819,
+          "medianSrgb": "#a29c8d"
         },
         "top": {
-          "pixels": 248,
-          "medianSrgb": "#b0aca0"
+          "pixels": 50,
+          "medianSrgb": "#aaa498"
         }
       }
     },
     {
-      "id": "leather",
-      "material": "leather #9",
+      "id": "denim",
+      "material": "denim #9",
       "index": 9,
       "type": "MeshPhysicalMaterial",
-      "base": "#5a3b23",
+      "base": "#3e5d81",
       "footprint": [],
-      "roughness": 0.72,
-      "metalness": 0.015,
+      "roughness": 0.86,
+      "metalness": 0,
       "opacity": 1,
       "texture": true,
       "vertexColors": false,
-      "boundMeshes": 5,
+      "boundMeshes": 4,
       "source": "bib",
       "tile": [
         128,
@@ -530,355 +530,415 @@
         128,
         128
       ],
-      "hex": "#594336",
+      "hex": "#425975",
       "modelViews": {
         "front": {
-          "pixels": 20835,
-          "medianSrgb": "#5a4233"
+          "pixels": 17738,
+          "medianSrgb": "#3f5673"
         },
         "back": {
-          "pixels": 2291,
-          "medianSrgb": "#503a2d"
+          "pixels": 2889,
+          "medianSrgb": "#394e69"
         },
         "left": {
-          "pixels": 5440,
-          "medianSrgb": "#523e32"
+          "pixels": 3851,
+          "medianSrgb": "#394d67"
         },
         "right": {
-          "pixels": 5286,
-          "medianSrgb": "#604737"
+          "pixels": 4226,
+          "medianSrgb": "#435b79"
         },
         "high-front": {
-          "pixels": 16087,
-          "medianSrgb": "#5c4233"
+          "pixels": 14128,
+          "medianSrgb": "#405875"
         },
         "rear-three-quarter": {
-          "pixels": 2617,
-          "medianSrgb": "#503b2e"
-        },
-        "top": {
-          "pixels": 68,
-          "medianSrgb": "#664c3c"
+          "pixels": 2320,
+          "medianSrgb": "#384d67"
         }
       }
     },
     {
-      "id": "pocket",
-      "material": "pocket #10",
+      "id": "denimEdge",
+      "material": "denimEdge #10",
       "index": 10,
       "type": "MeshPhysicalMaterial",
-      "base": "#432700",
+      "base": "#647d9f",
       "footprint": [],
-      "roughness": 0.6,
-      "metalness": 0.02,
+      "roughness": 0.88,
+      "metalness": 0,
       "opacity": 1,
       "texture": true,
       "vertexColors": false,
-      "boundMeshes": 6,
-      "source": "toolPocket",
+      "boundMeshes": 4,
+      "source": "badgePocket",
       "tile": [
         256,
         128,
         128,
         128
       ],
-      "hex": "#49392e",
+      "hex": "#5e728d",
       "modelViews": {
         "front": {
-          "pixels": 3849,
-          "medianSrgb": "#463426"
-        },
-        "back": {
-          "pixels": 4304,
-          "medianSrgb": "#3f2f23"
+          "pixels": 2005,
+          "medianSrgb": "#5c708d"
         },
         "left": {
-          "pixels": 1417,
-          "medianSrgb": "#423227"
+          "pixels": 245,
+          "medianSrgb": "#536680"
         },
         "right": {
-          "pixels": 1656,
-          "medianSrgb": "#463529"
+          "pixels": 198,
+          "medianSrgb": "#5d728e"
         },
         "high-front": {
-          "pixels": 3696,
-          "medianSrgb": "#453224"
+          "pixels": 1526,
+          "medianSrgb": "#617694"
         },
         "rear-three-quarter": {
-          "pixels": 3828,
-          "medianSrgb": "#3f2e22"
-        },
-        "top": {
-          "pixels": 223,
-          "medianSrgb": "#4e423b"
+          "pixels": 25,
+          "medianSrgb": "#536681"
         }
       }
     },
     {
-      "id": "leatherEdge",
-      "material": "leatherEdge #11",
+      "id": "emblem",
+      "material": "emblem #11",
       "index": 11,
       "type": "MeshPhysicalMaterial",
-      "base": "#75533c",
+      "base": "#e0b969",
       "footprint": [],
       "roughness": 0.74,
-      "metalness": 0,
+      "metalness": 0.07,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
-      "boundMeshes": 6,
-      "source": "toolPocket",
+      "boundMeshes": 2,
+      "source": "Embroidered grape bib / emblem",
       "tile": [
         384,
         128,
         128,
         128
       ],
-      "hex": "#755947",
+      "hex": "#d2ae68",
       "modelViews": {
         "front": {
-          "pixels": 129,
-          "medianSrgb": "#614839"
+          "pixels": 102,
+          "medianSrgb": "#caa862"
         },
         "left": {
-          "pixels": 257,
-          "medianSrgb": "#624838"
+          "pixels": 16,
+          "medianSrgb": "#c4a25e"
         },
         "right": {
-          "pixels": 322,
-          "medianSrgb": "#6e5240"
+          "pixels": 21,
+          "medianSrgb": "#caa761"
         },
         "high-front": {
-          "pixels": 237,
-          "medianSrgb": "#715442"
-        },
-        "top": {
-          "pixels": 4,
-          "medianSrgb": "#644a3a"
+          "pixels": 85,
+          "medianSrgb": "#dab56a"
         }
       }
     },
     {
-      "id": "pen",
-      "material": "pen #12",
+      "id": "berry",
+      "material": "berry #12",
       "index": 12,
       "type": "MeshPhysicalMaterial",
-      "base": "#802a0d",
+      "base": "#6a4c6c",
       "footprint": [],
-      "roughness": 0.35,
-      "metalness": 0.12,
+      "roughness": 0.86,
+      "metalness": 0,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
       "boundMeshes": 1,
-      "source": "",
+      "source": "Embroidered grape bib / berry",
       "tile": [
         512,
         128,
         128,
         128
       ],
-      "hex": "#894d43",
+      "hex": "#6b526d",
       "modelViews": {
         "front": {
-          "pixels": 91,
-          "medianSrgb": "#823e32"
+          "pixels": 441,
+          "medianSrgb": "#684e69"
         },
         "left": {
-          "pixels": 87,
-          "medianSrgb": "#71352a"
+          "pixels": 65,
+          "medianSrgb": "#5b445d"
         },
         "right": {
-          "pixels": 27,
-          "medianSrgb": "#77382d"
+          "pixels": 71,
+          "medianSrgb": "#6d516e"
         },
         "high-front": {
-          "pixels": 105,
-          "medianSrgb": "#833d2f"
+          "pixels": 335,
+          "medianSrgb": "#6c516e"
         }
       }
     },
     {
-      "id": "linen",
-      "material": "linen #13",
+      "id": "pocket",
+      "material": "pocket #13",
       "index": 13,
       "type": "MeshPhysicalMaterial",
-      "base": "#f9deae",
+      "base": "#815939",
       "footprint": [],
-      "roughness": 0.92,
-      "metalness": 0,
+      "roughness": 0.6,
+      "metalness": 0.02,
       "opacity": 1,
-      "texture": false,
+      "texture": true,
       "vertexColors": false,
-      "boundMeshes": 3,
-      "source": "towel",
+      "boundMeshes": 9,
+      "source": "toolPocket",
       "tile": [
         640,
         128,
         128,
         128
       ],
-      "hex": "#edd4a8",
+      "hex": "#765742",
       "modelViews": {
         "front": {
-          "pixels": 829,
-          "medianSrgb": "#e9d0a4"
+          "pixels": 1525,
+          "medianSrgb": "#72513a"
+        },
+        "back": {
+          "pixels": 7164,
+          "medianSrgb": "#6b4d38"
         },
         "left": {
-          "pixels": 340,
-          "medianSrgb": "#d0ba92"
+          "pixels": 3258,
+          "medianSrgb": "#664834"
         },
         "right": {
-          "pixels": 224,
-          "medianSrgb": "#c7b28c"
+          "pixels": 3462,
+          "medianSrgb": "#72523c"
         },
         "high-front": {
-          "pixels": 521,
-          "medianSrgb": "#f8ddae"
+          "pixels": 1518,
+          "medianSrgb": "#76543d"
         },
         "rear-three-quarter": {
-          "pixels": 15,
-          "medianSrgb": "#d9c198"
+          "pixels": 7106,
+          "medianSrgb": "#6a4b37"
         },
         "top": {
-          "pixels": 85,
-          "medianSrgb": "#f4daac"
+          "pixels": 176,
+          "medianSrgb": "#755a4a"
         }
       }
     },
     {
-      "id": "pen",
-      "material": "pen #14",
+      "id": "leather",
+      "material": "leather #14",
       "index": 14,
       "type": "MeshPhysicalMaterial",
-      "base": "#8b4438",
+      "base": "#8a6548",
       "footprint": [],
-      "roughness": 0.84,
-      "metalness": 0,
+      "roughness": 0.72,
+      "metalness": 0.015,
       "opacity": 1,
-      "texture": false,
+      "texture": true,
       "vertexColors": false,
-      "boundMeshes": 2,
-      "source": "towel",
+      "boundMeshes": 8,
+      "source": "toolPocket",
       "tile": [
         768,
         128,
         128,
         128
       ],
-      "hex": "#884c43",
+      "hex": "#7d5e49",
       "modelViews": {
         "front": {
-          "pixels": 78,
-          "medianSrgb": "#82453c"
+          "pixels": 3739,
+          "medianSrgb": "#7d5d47"
+        },
+        "back": {
+          "pixels": 3219,
+          "medianSrgb": "#745641"
         },
         "left": {
-          "pixels": 31,
-          "medianSrgb": "#7b4239"
+          "pixels": 1069,
+          "medianSrgb": "#705441"
         },
         "right": {
-          "pixels": 28,
-          "medianSrgb": "#723c34"
+          "pixels": 1050,
+          "medianSrgb": "#82614a"
         },
         "high-front": {
-          "pixels": 51,
-          "medianSrgb": "#894a40"
+          "pixels": 3300,
+          "medianSrgb": "#7f5e47"
+        },
+        "rear-three-quarter": {
+          "pixels": 3173,
+          "medianSrgb": "#735540"
         },
         "top": {
-          "pixels": 5,
-          "medianSrgb": "#945046"
+          "pixels": 727,
+          "medianSrgb": "#795a45"
         }
       }
     },
     {
-      "id": "stitch",
-      "material": "stitch #15",
+      "id": "leatherEdge",
+      "material": "leatherEdge #15",
       "index": 15,
       "type": "MeshPhysicalMaterial",
-      "base": "#b4976f",
+      "base": "#a0784c",
       "footprint": [],
-      "roughness": 0.91,
+      "roughness": 0.74,
       "metalness": 0,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
-      "boundMeshes": 2,
-      "source": "",
+      "boundMeshes": 9,
+      "source": "toolPocket",
       "tile": [
         896,
         128,
         128,
         128
       ],
-      "hex": "#ad936f",
+      "hex": "#9b7853",
       "modelViews": {
         "front": {
-          "pixels": 318,
-          "medianSrgb": "#ae936e"
+          "pixels": 70,
+          "medianSrgb": "#8c6b48"
         },
         "back": {
-          "pixels": 189,
-          "medianSrgb": "#9d8563"
+          "pixels": 64,
+          "medianSrgb": "#8e6c48"
         },
         "left": {
-          "pixels": 228,
-          "medianSrgb": "#9f8664"
+          "pixels": 48,
+          "medianSrgb": "#7b5d3e"
         },
         "right": {
-          "pixels": 218,
-          "medianSrgb": "#a48a68"
+          "pixels": 101,
+          "medianSrgb": "#93704b"
         },
         "high-front": {
-          "pixels": 277,
-          "medianSrgb": "#b49872"
+          "pixels": 95,
+          "medianSrgb": "#97734e"
         },
         "rear-three-quarter": {
-          "pixels": 201,
-          "medianSrgb": "#9f8664"
+          "pixels": 58,
+          "medianSrgb": "#8e6c48"
         },
         "top": {
-          "pixels": 22,
-          "medianSrgb": "#c5a67d"
+          "pixels": 29,
+          "medianSrgb": "#a77f55"
         }
       }
     },
     {
-      "id": "bow",
-      "material": "bow #16",
+      "id": "stitch",
+      "material": "stitch #16",
       "index": 16,
       "type": "MeshPhysicalMaterial",
-      "base": "#11191d",
+      "base": "#bf9f72",
       "footprint": [],
-      "roughness": 0.57,
-      "metalness": 0.08,
+      "roughness": 0.91,
+      "metalness": 0,
       "opacity": 1,
       "texture": false,
       "vertexColors": false,
-      "boundMeshes": 1,
-      "source": "chest",
+      "boundMeshes": 6,
+      "source": "",
       "tile": [
         0,
         256,
         128,
         128
       ],
-      "hex": "#24282b",
+      "hex": "#b79a72",
       "modelViews": {
         "front": {
-          "pixels": 555,
-          "medianSrgb": "#1f2426"
+          "pixels": 117,
+          "medianSrgb": "#b99b71"
+        },
+        "back": {
+          "pixels": 40,
+          "medianSrgb": "#aa8e68"
         },
         "left": {
-          "pixels": 126,
-          "medianSrgb": "#1a1e21"
+          "pixels": 97,
+          "medianSrgb": "#ab8f68"
         },
         "right": {
-          "pixels": 126,
-          "medianSrgb": "#1e2225"
+          "pixels": 134,
+          "medianSrgb": "#b2966e"
         },
         "high-front": {
-          "pixels": 502,
-          "medianSrgb": "#1f2426"
+          "pixels": 172,
+          "medianSrgb": "#be9f74"
+        },
+        "rear-three-quarter": {
+          "pixels": 57,
+          "medianSrgb": "#ac9069"
+        },
+        "top": {
+          "pixels": 31,
+          "medianSrgb": "#cfad7f"
+        }
+      }
+    },
+    {
+      "id": "scarf",
+      "material": "scarf #17",
+      "index": 17,
+      "type": "MeshPhysicalMaterial",
+      "base": "#edcc93",
+      "footprint": [],
+      "roughness": 0.92,
+      "metalness": 0,
+      "opacity": 1,
+      "texture": true,
+      "vertexColors": false,
+      "boundMeshes": 3,
+      "source": "scarf",
+      "tile": [
+        128,
+        256,
+        128,
+        128
+      ],
+      "hex": "#c9ae80",
+      "modelViews": {
+        "front": {
+          "pixels": 5150,
+          "medianSrgb": "#ccb080"
+        },
+        "back": {
+          "pixels": 2684,
+          "medianSrgb": "#bfa578"
+        },
+        "left": {
+          "pixels": 2796,
+          "medianSrgb": "#baa175"
+        },
+        "right": {
+          "pixels": 1827,
+          "medianSrgb": "#baa075"
+        },
+        "high-front": {
+          "pixels": 4664,
+          "medianSrgb": "#d8ba88"
+        },
+        "rear-three-quarter": {
+          "pixels": 2504,
+          "medianSrgb": "#bfa578"
+        },
+        "top": {
+          "pixels": 33,
+          "medianSrgb": "#c2a77a"
         }
       }
     }
