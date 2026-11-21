@@ -1,0 +1,51 @@
+{
+  "method": "Each vertex and triangle centroid in each direction is compared to the exact nearest surface on the identically named donor muscle. Distances and per-muscle axis-aligned bound differences are in inches in atlas space, before character fitting. Component counts use shared vertices in indexed, non-degenerate triangle faces.",
+  "rows": [
+    {
+      "source": "bp3d-muscles-mobile-meshopt.glb",
+      "asset": "bp3d-muscles-mobile-meshopt.glb",
+      "sourceSha256": "d36ce0b8138d204f4f52896b5f0dd71f1b348ade89e1fe6e52cd58d71c9d925a",
+      "assetSha256": "72302083e48bd80ae21d78622391304b7f4ba3618094e0e12a662efbe84f95ab",
+      "sourceMeshCount": 323,
+      "assetMeshCount": 323,
+      "sourceTriangles": 101144,
+      "assetTriangles": 76558,
+      "bytes": 601264,
+      "samples": 268005,
+      "medianIn": 0,
+      "p99In": 0.01555,
+      "p999In": 0.02581,
+      "maxSourceToAssetIn": 0.08888,
+      "maxAssetToSourceIn": 0.03407,
+      "maxDifferenceInAnatomicalMeshBoundsIn": 0,
+      "sourceConnectedComponents": 401,
+      "assetConnectedComponents": 401,
+      "groupsWithChangedComponentCount": 0,
+      "worstSampleMuscle": "right_transversus_thoracis",
+      "smallestOutputMuscleTriangles": 28
+    },
+    {
+      "source": "bp3d-muscles-high-meshopt.glb",
+      "asset": "bp3d-muscles-high-meshopt.glb",
+      "sourceSha256": "4a2d4840c04053271dd191834986543bd9f3a441630e1b4b1564309049cded8e",
+      "assetSha256": "570f770a4293e1796c3c5f4293597490ec6756bab4399f949fcbe721aaa1ec00",
+      "sourceMeshCount": 323,
+      "assetMeshCount": 323,
+      "sourceTriangles": 272194,
+      "assetTriangles": 155766,
+      "bytes": 888340,
+      "samples": 643136,
+      "medianIn": 0,
+      "p99In": 0.01709,
+      "p999In": 0.02733,
+      "maxSourceToAssetIn": 0.08486,
+      "maxAssetToSourceIn": 0.03805,
+      "maxDifferenceInAnatomicalMeshBoundsIn": 0,
+      "sourceConnectedComponents": 426,
+      "assetConnectedComponents": 426,
+      "groupsWithChangedComponentCount": 0,
+      "worstSampleMuscle": "external_intercostal_muscle",
+      "smallestOutputMuscleTriangles": 46
+    }
+  ]
+}

@@ -6,7 +6,7 @@ BoneHub’s work derives from T. E. Andreassen et al., “Three Dimensional Lowe
 
 ## Adaptations for Sip-Stack
 
-The four GLBs in this directory contain simplified, quantized and meshopt-compressed surfaces from the male and female CT segmentations. A second offline simplification of the supplied GLBs preserves each named node and locks the cortex at extrema in 26 directions per bone. These adaptations retain the source license. Axon View reorients and fits the separate bones to Sippy and Roma in each pose. Procedural elbow repairs and costal cartilage supplement regions absent from the scans. The clothed walking models, muscles and other authored character geometry are separate Sip-Stack work.
+The four skeleton GLBs in this directory contain simplified, quantized and meshopt-compressed surfaces from the male and female CT segmentations. A second offline simplification of the supplied GLBs preserves each named node and locks the cortex at extrema in 26 directions per bone. These adaptations retain the source license. Axon View reorients and fits the separate bones to Sippy and Roma in each pose. Procedural elbow repairs and costal cartilage supplement regions absent from the scans. Sip-Stack authors the skin and clothed character models. The [muscle atlas has separate provenance](MUSCLE-SKIN-LICENSE.md).
 
 | Character | Packaged asset | Bone meshes | Supplied triangles | Shipped triangles |
 |---|---|---:|---:|---:|

@@ -1,0 +1,615 @@
+{
+  "sourceRepository": "https://github.com/slorksmo/Human-Atlas",
+  "sourceCommit": "5bb5713aab18d7fe9380c3339eb09f173491ea06",
+  "sourceConcept": "Visible Human Female lower extremity, Andreassen et al. 2023",
+  "mapping": [
+    {
+      "node": "left_adductor_brevis",
+      "atlasId": "VHF:left-AdductorBrevis",
+      "region": "thigh",
+      "counterpart": "FJ1401M",
+      "fullAtlasFj": "FJ1401M",
+      "anatomicalName": "Left adductor brevis"
+    },
+    {
+      "node": "left_adductor_longus",
+      "atlasId": "VHF:left-AdductorLongus",
+      "region": "thigh",
+      "counterpart": "FJ1402M",
+      "fullAtlasFj": "FJ1402M",
+      "anatomicalName": "Left adductor longus"
+    },
+    {
+      "node": "left_adductor_magnus",
+      "atlasId": "VHF:left-AdductorMagnus",
+      "region": "thigh",
+      "counterpart": "FJ1403M",
+      "fullAtlasFj": "FJ1403M",
+      "anatomicalName": "Left adductor magnus"
+    },
+    {
+      "node": "left_biceps_femoris_long_head",
+      "atlasId": "VHF:left-BicepsFemorisLong",
+      "region": "thigh",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1395M",
+      "anatomicalName": "Long head of left biceps femoris"
+    },
+    {
+      "node": "left_biceps_femoris_short_head",
+      "atlasId": "VHF:left-BicepsFemorisShort",
+      "region": "thigh",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1444M",
+      "anatomicalName": "Short head of left biceps femoris"
+    },
+    {
+      "node": "left_gastrocnemius_medial_head",
+      "atlasId": "VHF:left-GastrocnemiusMedial",
+      "region": "thigh",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1397M",
+      "anatomicalName": "Medial head of left gastrocnemius"
+    },
+    {
+      "node": "left_gracilis",
+      "atlasId": "VHF:left-Gracilis",
+      "region": "thigh",
+      "counterpart": "FJ1421M",
+      "fullAtlasFj": "FJ1421M",
+      "anatomicalName": "Left gracilis"
+    },
+    {
+      "node": "superficial_muscle_of_posterior_compartment_of_leg_FJ1429M",
+      "atlasId": "VHF:left-Plantaris",
+      "region": "thigh",
+      "counterpart": "FJ1429M",
+      "fullAtlasFj": "FJ1429M",
+      "anatomicalName": "Left plantaris"
+    },
+    {
+      "node": "deep_muscle_of_posterior_compartment_of_leg",
+      "atlasId": "VHF:left-Popliteus",
+      "region": "thigh",
+      "counterpart": "FJ1430M",
+      "fullAtlasFj": "FJ1430M",
+      "anatomicalName": "Left popliteus"
+    },
+    {
+      "node": "left_rectus_femoris",
+      "atlasId": "VHF:left-RectusFemoris",
+      "region": "thigh",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1433M",
+      "anatomicalName": "Left rectus femoris"
+    },
+    {
+      "node": "left_sartorius",
+      "atlasId": "VHF:left-Sartorius",
+      "region": "thigh",
+      "counterpart": "FJ1434M",
+      "fullAtlasFj": "FJ1434M",
+      "anatomicalName": "Left sartorius"
+    },
+    {
+      "node": "left_semimembranosus",
+      "atlasId": "VHF:left-Semimembranosus",
+      "region": "thigh",
+      "counterpart": "FJ1435M",
+      "fullAtlasFj": "FJ1435M",
+      "anatomicalName": "Left semimembranosus"
+    },
+    {
+      "node": "left_semitendinosus",
+      "atlasId": "VHF:left-Semitendinosus",
+      "region": "thigh",
+      "counterpart": "FJ1436M",
+      "fullAtlasFj": "FJ1436M",
+      "anatomicalName": "Left semitendinosus"
+    },
+    {
+      "node": "left_vastus_intermedius",
+      "atlasId": "VHF:left-VastusIntermedius",
+      "region": "thigh",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1441M",
+      "anatomicalName": "Left vastus intermedius"
+    },
+    {
+      "node": "left_vastus_lateralis",
+      "atlasId": "VHF:left-VastusLateralis",
+      "region": "thigh",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1442M",
+      "anatomicalName": "Left vastus lateralis"
+    },
+    {
+      "node": "left_vastus_medialis",
+      "atlasId": "VHF:left-VastusMedialis",
+      "region": "thigh",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1443M",
+      "anatomicalName": "Left vastus medialis"
+    },
+    {
+      "node": "left_extensor_digitorum_longus",
+      "atlasId": "VHF:left-ExtensorDigitorumLongus",
+      "region": "shank",
+      "counterpart": "FJ1406M",
+      "fullAtlasFj": "FJ1406M",
+      "anatomicalName": "Left extensor digitorum longus"
+    },
+    {
+      "node": "left_extensor_hallucis_longus",
+      "atlasId": "VHF:left-ExtensorHallucisLongus",
+      "region": "shank",
+      "counterpart": "FJ1408M",
+      "fullAtlasFj": "FJ1408M",
+      "anatomicalName": "Left extensor hallucis longus"
+    },
+    {
+      "node": "left_flexor_digitorum_longus",
+      "atlasId": "VHF:left-FlexorDigitorumLongus",
+      "region": "shank",
+      "counterpart": "FJ1414M",
+      "fullAtlasFj": "FJ1414M",
+      "anatomicalName": "Left flexor digitorum longus"
+    },
+    {
+      "node": "left_flexor_hallucis_longus",
+      "atlasId": "VHF:left-FlexorHallucisLongus",
+      "region": "shank",
+      "counterpart": "FJ1415M",
+      "fullAtlasFj": "FJ1415M",
+      "anatomicalName": "Left flexor hallucis longus"
+    },
+    {
+      "node": "left_gastrocnemius_lateral_head",
+      "atlasId": "VHF:left-GastrocnemiusLateral",
+      "region": "shank",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1394M",
+      "anatomicalName": "Lateral head of left gastrocnemius"
+    },
+    {
+      "node": "left_fibularis_longus",
+      "atlasId": "VHF:left-PeroneusLongus",
+      "region": "shank",
+      "counterpart": "FJ1410M",
+      "fullAtlasFj": "FJ1410M",
+      "anatomicalName": "Left fibularis longus"
+    },
+    {
+      "node": "superficial_muscle_of_posterior_compartment_of_leg_FJ1437M",
+      "atlasId": "VHF:left-Soleus",
+      "region": "shank",
+      "counterpart": "FJ1437M",
+      "fullAtlasFj": "FJ1437M",
+      "anatomicalName": "Left soleus"
+    },
+    {
+      "node": "left_tibialis_anterior",
+      "atlasId": "VHF:left-TibialisAnterior",
+      "region": "shank",
+      "counterpart": "FJ1439M",
+      "fullAtlasFj": "FJ1439M",
+      "anatomicalName": "Left tibialis anterior"
+    },
+    {
+      "node": "left_tibialis_posterior",
+      "atlasId": "VHF:left-TibialisPosterior",
+      "region": "shank",
+      "counterpart": "FJ1440M",
+      "fullAtlasFj": "FJ1440M",
+      "anatomicalName": "Left tibialis posterior"
+    },
+    {
+      "node": "left_gluteus_maximus",
+      "atlasId": "VHF:left-GluteusMaximus",
+      "region": "hip",
+      "counterpart": "FJ1418M",
+      "fullAtlasFj": "FJ1418M",
+      "anatomicalName": "Left gluteus maximus"
+    },
+    {
+      "node": "left_gluteus_medius",
+      "atlasId": "VHF:left-GluteusMedius",
+      "region": "hip",
+      "counterpart": "FJ1419M",
+      "fullAtlasFj": "FJ1419M",
+      "anatomicalName": "Left gluteus medius"
+    },
+    {
+      "node": "left_gluteus_minimus",
+      "atlasId": "VHF:left-GluteusMinimus",
+      "region": "hip",
+      "counterpart": "FJ1420M",
+      "fullAtlasFj": "FJ1420M",
+      "anatomicalName": "Left gluteus minimus"
+    },
+    {
+      "node": "left_iliacus",
+      "atlasId": "VHF:left-Illiacus",
+      "region": "hip",
+      "counterpart": "FJ1422M",
+      "fullAtlasFj": "FJ1422M",
+      "anatomicalName": "Left iliacus"
+    },
+    {
+      "node": "left_gemellus_inferior",
+      "atlasId": "VHF:left-InferiorGemellus",
+      "region": "hip",
+      "counterpart": "FJ1416M",
+      "fullAtlasFj": "FJ1416M",
+      "anatomicalName": "Left gemellus inferior"
+    },
+    {
+      "node": "left_obturator_externus",
+      "atlasId": "VHF:left-ObturatorExternus",
+      "region": "hip",
+      "counterpart": "FJ1425M",
+      "fullAtlasFj": "FJ1425M",
+      "anatomicalName": "Left obturator externus"
+    },
+    {
+      "node": "left_obturator_internus",
+      "atlasId": "VHF:left-ObturatorInternus",
+      "region": "hip",
+      "counterpart": "FJ1426M",
+      "fullAtlasFj": "FJ1426M",
+      "anatomicalName": "Left obturator internus"
+    },
+    {
+      "node": "left_pectineus",
+      "atlasId": "VHF:left-Pectineus",
+      "region": "hip",
+      "counterpart": "FJ1427M",
+      "fullAtlasFj": "FJ1427M",
+      "anatomicalName": "Left pectineus"
+    },
+    {
+      "node": "left_piriformis",
+      "atlasId": "VHF:left-Piriformis",
+      "region": "hip",
+      "counterpart": "FJ1428M",
+      "fullAtlasFj": "FJ1428M",
+      "anatomicalName": "Left piriformis"
+    },
+    {
+      "node": "left_psoas_major",
+      "atlasId": "VHF:left-PsoasMajor",
+      "region": "hip",
+      "counterpart": "FJ1431M",
+      "fullAtlasFj": "FJ1431M",
+      "anatomicalName": "Left psoas major"
+    },
+    {
+      "node": "left_quadratus_femoris",
+      "atlasId": "VHF:left-QuadratusFemoris",
+      "region": "hip",
+      "counterpart": "FJ1432M",
+      "fullAtlasFj": "FJ1432M",
+      "anatomicalName": "Left quadratus femoris"
+    },
+    {
+      "node": "left_gemellus_superior",
+      "atlasId": "VHF:left-SuperiorGemellus",
+      "region": "hip",
+      "counterpart": "FJ1417M",
+      "fullAtlasFj": "FJ1417M",
+      "anatomicalName": "Left gemellus superior"
+    },
+    {
+      "node": "left_tensor_fasciae_latae",
+      "atlasId": "VHF:left-TensorFasciaeLatae",
+      "region": "hip",
+      "counterpart": "FJ1438M",
+      "fullAtlasFj": "FJ1438M",
+      "anatomicalName": "Left tensor fasciae latae"
+    },
+    {
+      "node": "right_adductor_brevis",
+      "atlasId": "VHF:right-AdductorBrevis",
+      "region": "thigh",
+      "counterpart": "FJ1401",
+      "fullAtlasFj": "FJ1401",
+      "anatomicalName": "Right adductor brevis"
+    },
+    {
+      "node": "right_adductor_longus",
+      "atlasId": "VHF:right-AdductorLongus",
+      "region": "thigh",
+      "counterpart": "FJ1402",
+      "fullAtlasFj": "FJ1402",
+      "anatomicalName": "Right adductor longus"
+    },
+    {
+      "node": "right_adductor_magnus",
+      "atlasId": "VHF:right-AdductorMagnus",
+      "region": "thigh",
+      "counterpart": "FJ1403",
+      "fullAtlasFj": "FJ1403",
+      "anatomicalName": "Right adductor magnus"
+    },
+    {
+      "node": "right_biceps_femoris_long_head",
+      "atlasId": "VHF:right-BicepsFemorisLongHead",
+      "region": "thigh",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1395",
+      "anatomicalName": "Long head of right biceps femoris"
+    },
+    {
+      "node": "right_biceps_femoris_short_head",
+      "atlasId": "VHF:right-BicepsFemorisShortHead",
+      "region": "thigh",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1444",
+      "anatomicalName": "Short head of right biceps femoris"
+    },
+    {
+      "node": "right_gastrocnemius_medial_head",
+      "atlasId": "VHF:right-GastrocnemiusMedial",
+      "region": "thigh",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1397",
+      "anatomicalName": "Medial head of right gastrocnemius"
+    },
+    {
+      "node": "right_gracilis",
+      "atlasId": "VHF:right-Gracilis",
+      "region": "thigh",
+      "counterpart": "FJ1421",
+      "fullAtlasFj": "FJ1421",
+      "anatomicalName": "Right gracilis"
+    },
+    {
+      "node": "superficial_muscle_of_posterior_compartment_of_leg",
+      "atlasId": "VHF:right-Plantaris",
+      "region": "thigh",
+      "counterpart": "FJ1429",
+      "fullAtlasFj": "FJ1429",
+      "anatomicalName": "Right plantaris"
+    },
+    {
+      "node": "right_popliteus",
+      "atlasId": "VHF:right-Popliteus",
+      "region": "thigh",
+      "counterpart": "FJ1430",
+      "fullAtlasFj": "FJ1430",
+      "anatomicalName": "Right popliteus"
+    },
+    {
+      "node": "right_rectus_femoris",
+      "atlasId": "VHF:right-RectusFemoris",
+      "region": "thigh",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1433",
+      "anatomicalName": "Right rectus femoris"
+    },
+    {
+      "node": "right_sartorius",
+      "atlasId": "VHF:right-Sartorius",
+      "region": "thigh",
+      "counterpart": "FJ1434",
+      "fullAtlasFj": "FJ1434",
+      "anatomicalName": "Right sartorius"
+    },
+    {
+      "node": "right_semimembranosus",
+      "atlasId": "VHF:right-Semimembranosus",
+      "region": "thigh",
+      "counterpart": "FJ1435",
+      "fullAtlasFj": "FJ1435",
+      "anatomicalName": "Right semimembranosus"
+    },
+    {
+      "node": "right_semitendinosus",
+      "atlasId": "VHF:right-Semitendonosus",
+      "region": "thigh",
+      "counterpart": "FJ1436",
+      "fullAtlasFj": "FJ1436",
+      "anatomicalName": "Right semitendinosus"
+    },
+    {
+      "node": "right_vastus_intermedius",
+      "atlasId": "VHF:right-VastusIntermedius",
+      "region": "thigh",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1441",
+      "anatomicalName": "Right vastus intermedius"
+    },
+    {
+      "node": "right_vastus_lateralis",
+      "atlasId": "VHF:right-VastusLateralis",
+      "region": "thigh",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1442",
+      "anatomicalName": "Right vastus lateralis"
+    },
+    {
+      "node": "right_vastus_medialis",
+      "atlasId": "VHF:right-VastusMedialis",
+      "region": "thigh",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1443",
+      "anatomicalName": "Right vastus medialis"
+    },
+    {
+      "node": "right_extensor_digitorum_longus",
+      "atlasId": "VHF:right-ExtensorDigitorumLongus",
+      "region": "shank",
+      "counterpart": "FJ1406",
+      "fullAtlasFj": "FJ1406",
+      "anatomicalName": "Right extensor digitorum longus"
+    },
+    {
+      "node": "right_extensor_hallucis_longus",
+      "atlasId": "VHF:right-ExtensorHallucisLongus",
+      "region": "shank",
+      "counterpart": "FJ1408",
+      "fullAtlasFj": "FJ1408",
+      "anatomicalName": "Right extensor hallucis longus"
+    },
+    {
+      "node": "right_flexor_digitorum_longus",
+      "atlasId": "VHF:right-FlexorDigitorumLongus",
+      "region": "shank",
+      "counterpart": "FJ1414",
+      "fullAtlasFj": "FJ1414",
+      "anatomicalName": "Right flexor digitorum longus"
+    },
+    {
+      "node": "right_flexor_hallucis_longus",
+      "atlasId": "VHF:right-FlexorHallucisLongus",
+      "region": "shank",
+      "counterpart": "FJ1415",
+      "fullAtlasFj": "FJ1415",
+      "anatomicalName": "Right flexor hallucis longus"
+    },
+    {
+      "node": "right_gastrocnemius_lateral_head",
+      "atlasId": "VHF:right-GastrocnemiusLateral",
+      "region": "shank",
+      "counterpart": null,
+      "fullAtlasFj": "FJ1394",
+      "anatomicalName": "Lateral head of right gastrocnemius"
+    },
+    {
+      "node": "right_fibularis_longus",
+      "atlasId": "VHF:right-PeroneusLongus",
+      "region": "shank",
+      "counterpart": "FJ1410",
+      "fullAtlasFj": "FJ1410",
+      "anatomicalName": "Right fibularis longus"
+    },
+    {
+      "node": "superficial_muscle_of_posterior_compartment_of_leg_FJ1437",
+      "atlasId": "VHF:right-Soleus",
+      "region": "shank",
+      "counterpart": "FJ1437",
+      "fullAtlasFj": "FJ1437",
+      "anatomicalName": "Right soleus"
+    },
+    {
+      "node": "right_tibialis_anterior",
+      "atlasId": "VHF:right-TibialisAnterior",
+      "region": "shank",
+      "counterpart": "FJ1439",
+      "fullAtlasFj": "FJ1439",
+      "anatomicalName": "Right tibialis anterior"
+    },
+    {
+      "node": "right_tibialis_posterior",
+      "atlasId": "VHF:right-TibialisPosterior",
+      "region": "shank",
+      "counterpart": "FJ1440",
+      "fullAtlasFj": "FJ1440",
+      "anatomicalName": "Right tibialis posterior"
+    },
+    {
+      "node": "right_gluteus_maximus",
+      "atlasId": "VHF:right-GluteusMaximus",
+      "region": "hip",
+      "counterpart": "FJ1418",
+      "fullAtlasFj": "FJ1418",
+      "anatomicalName": "Right gluteus maximus"
+    },
+    {
+      "node": "right_gluteus_medius",
+      "atlasId": "VHF:right-GluteusMedius",
+      "region": "hip",
+      "counterpart": "FJ1419",
+      "fullAtlasFj": "FJ1419",
+      "anatomicalName": "Right gluteus medius"
+    },
+    {
+      "node": "right_gluteus_minimus",
+      "atlasId": "VHF:right-GluteusMinimus",
+      "region": "hip",
+      "counterpart": "FJ1420",
+      "fullAtlasFj": "FJ1420",
+      "anatomicalName": "Right gluteus minimus"
+    },
+    {
+      "node": "right_iliacus",
+      "atlasId": "VHF:right-Illiacus",
+      "region": "hip",
+      "counterpart": "FJ1422",
+      "fullAtlasFj": "FJ1422",
+      "anatomicalName": "Right iliacus"
+    },
+    {
+      "node": "right_gemellus_inferior",
+      "atlasId": "VHF:right-InferiorGemellus",
+      "region": "hip",
+      "counterpart": "FJ1416",
+      "fullAtlasFj": "FJ1416",
+      "anatomicalName": "Right gemellus inferior"
+    },
+    {
+      "node": "right_obturator_externus",
+      "atlasId": "VHF:right-ObturatorExternus",
+      "region": "hip",
+      "counterpart": "FJ1425",
+      "fullAtlasFj": "FJ1425",
+      "anatomicalName": "Right obturator externus"
+    },
+    {
+      "node": "right_obturator_internus",
+      "atlasId": "VHF:right-ObturatorInternus",
+      "region": "hip",
+      "counterpart": "FJ1426",
+      "fullAtlasFj": "FJ1426",
+      "anatomicalName": "Right obturator internus"
+    },
+    {
+      "node": "right_pectineus",
+      "atlasId": "VHF:right-Pectineus",
+      "region": "hip",
+      "counterpart": "FJ1427",
+      "fullAtlasFj": "FJ1427",
+      "anatomicalName": "Right pectineus"
+    },
+    {
+      "node": "right_piriformis",
+      "atlasId": "VHF:right-Piriformis",
+      "region": "hip",
+      "counterpart": "FJ1428",
+      "fullAtlasFj": "FJ1428",
+      "anatomicalName": "Right piriformis"
+    },
+    {
+      "node": "right_psoas_major",
+      "atlasId": "VHF:right-PsoasMajor",
+      "region": "hip",
+      "counterpart": "FJ1431",
+      "fullAtlasFj": "FJ1431",
+      "anatomicalName": "Right psoas major"
+    },
+    {
+      "node": "right_quadratus_femoris",
+      "atlasId": "VHF:right-QuadratisFemoris",
+      "region": "hip",
+      "counterpart": "FJ1432",
+      "fullAtlasFj": "FJ1432",
+      "anatomicalName": "Right quadratus femoris"
+    },
+    {
+      "node": "right_gemellus_superior",
+      "atlasId": "VHF:right-SuperiorGemellus",
+      "region": "hip",
+      "counterpart": "FJ1417",
+      "fullAtlasFj": "FJ1417",
+      "anatomicalName": "Right gemellus superior"
+    },
+    {
+      "node": "right_tensor_fasciae_latae",
+      "atlasId": "VHF:right-TensorFasciaeLatae",
+      "region": "hip",
+      "counterpart": "FJ1438",
+      "fullAtlasFj": "FJ1438",
+      "anatomicalName": "Right tensor fasciae latae"
+    }
+  ]
+}
