@@ -70,12 +70,14 @@ function ruler(scene) {
   const group = new T.Group(),
     ink = new T.MeshStandardMaterial({ color: '#224d47' }),
     pale = new T.MeshStandardMaterial({ color: '#d5dbcd' });
-  for (let i = 0; i < 10; i++) {
-    const mark = new T.Mesh(new T.BoxGeometry(0.045, 0.1, 0.045), i % 2 ? pale : ink);
-    mark.position.y = i * 0.1 + 0.05;
+  const foot = 0.3048;
+  const span = 3 * foot;
+  for (let i = 0; i < 6; i++) {
+    const mark = new T.Mesh(new T.BoxGeometry(0.045, foot / 2, 0.045), i % 2 ? pale : ink);
+    mark.position.y = (i + 0.5) * foot / 2;
     group.add(mark);
   }
-  for (const y of [0.01, 1]) {
+  for (const y of [0, foot, 2 * foot, span]) {
     const line = new T.Mesh(new T.BoxGeometry(0.14, 0.012, 0.05), ink);
     line.position.y = y;
     group.add(line);
@@ -89,12 +91,12 @@ function ruler(scene) {
   c.fillStyle = '#fffbed';
   c.textAlign = 'center';
   c.font = '500 50px sans-serif';
-  c.fillText('1 m', 88, 57);
+  c.fillText('3 ft', 88, 57);
   const tex = new T.CanvasTexture(label);
   tex.colorSpace = T.SRGBColorSpace;
   const sprite = new T.Sprite(new T.SpriteMaterial({ map: tex }));
   sprite.scale.set(0.33, 0.15, 1);
-  sprite.position.set(0, 1.11, 0);
+  sprite.position.set(0, span + 0.11, 0);
   group.add(sprite);
   group.position.set(1.68, 0.001, 0);
   group.visible = false;

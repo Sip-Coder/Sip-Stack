@@ -73,8 +73,7 @@ function cutPorts(mesh, sites, highColumns) {
       do {
         ring.push(current);
         current = directed.get(current);
-        if (current == null || ring.length > directed.size)
-          throw Error('Open shoulder cut on ' + mesh.name);
+        if (current == null || ring.length > directed.size) throw Error('Open shoulder cut on ' + mesh.name);
       } while (current !== start);
       if (ring.length !== directed.size) throw Error('Multiple shoulder cuts on ' + mesh.name);
       holes.push({ killed, ring });
@@ -124,9 +123,7 @@ function cutBodyPorts(mesh, sites) {
     for (let i = 0; i < plane; i++) {
       const p = source.position;
       dist[i] =
-        s.side * p.getX(i) <= 0
-          ? 3
-          : ((p.getY(i) - s.cy) / s.ry) ** 2 + ((p.getZ(i) - s.cz) / s.rz) ** 2 - 1;
+        s.side * p.getX(i) <= 0 ? 3 : ((p.getY(i) - s.cy) / s.ry) ** 2 + ((p.getZ(i) - s.cz) / s.rz) ** 2 - 1;
     }
     return dist;
   });
@@ -180,9 +177,7 @@ function cutBodyPorts(mesh, sites) {
           }
         }
         if (crossings) {
-          const begin = poly.findIndex(
-            (v, j) => v >= 2 * plane && poly[(j + 1) % poly.length] >= 2 * plane,
-          );
+          const begin = poly.findIndex((v, j) => v >= 2 * plane && poly[(j + 1) % poly.length] >= 2 * plane);
           const x = poly[begin],
             y = poly[(begin + 1) % poly.length];
           sides[site].edges.set(x, y);
@@ -378,7 +373,7 @@ function makeCrown(jacket, sleeve, bodyIds, sleeveIds, side) {
       f.D.copy(direction).divideScalar(speed || 1);
       // Transport the section normal along the centre of the raised deltoid.
       // Project the rotated fore/aft direction onto its normal plane to keep
-      // one consistent right-handed circumference through a sniff or a roll.
+      // one consistent right-handed circumference through a lifted arm or a roll.
       frame.identity().slerp(endFrame, t);
       f.V.set(0, 0, 1).applyQuaternion(frame);
       f.V.addScaledVector(f.D, -f.V.dot(f.D)).normalize();
@@ -498,7 +493,7 @@ function makeCrown(jacket, sleeve, bodyIds, sleeveIds, side) {
 
 export function setSleeveHeads(suit) {
   const { rig, surfaces } = suit,
-    jacket = surfaces.jacket[0],
+    jacket = surfaces['quilted-vest'][0],
     seams = (rig.garments.seams ??= []),
     inverse = new T.Matrix4(),
     active = [];
@@ -508,7 +503,7 @@ export function setSleeveHeads(suit) {
   // seam allowances while the continuous skin passes through all three cuts.
   for (const [name, cols] of [
     ['shirt', 48],
-    ['vest', 56],
+    ['hoodie', 56],
   ])
     cutPorts(
       surfaces[name][0],
@@ -524,7 +519,7 @@ export function setSleeveHeads(suit) {
     const high = makeCrown(jacket, sleeve, collarHoles[0][i], cuts[0][0], side);
     const mobile = makeCrown(jacket, sleeve, collarHoles[1][i], cuts[1][0], side);
     const name = 'shoulder-' + suffix,
-      mesh = suit.add(name, rig.chest, high.geom, jacket.material);
+      mesh = suit.add(name, rig.chest, high.geom, sleeve.material);
     mesh.userData.mobileGeometry = mobile.geom;
     for (const [end, target, key] of [
       ['body', jacket, 'bodyEdge'],
@@ -535,7 +530,7 @@ export function setSleeveHeads(suit) {
         edge: { mesh, indices: { high: high[key], mobile: mobile[key] }, closed: true },
         target,
       });
-      suit.beneath(name, end === 'body' ? 'jacket' : 'sleeve-' + suffix);
+      suit.beneath(name, end === 'body' ? 'quilted-vest' : 'sleeve-' + suffix);
     }
     active.push({ mesh, high, mobile });
   }

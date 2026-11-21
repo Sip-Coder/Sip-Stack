@@ -62,7 +62,7 @@ export function mountCharacters(host) {
     const f = cast[selected].ctrl.frame;
     const state = view === 'lineup' ? 'Lineup' : f.emote >= 0 ? 'Emote' : f.state;
     if (stateText.textContent !== state) stateText.textContent = state;
-    speedText.textContent = f.speed.toFixed(2) + ' m/s';
+    speedText.textContent = (f.speed * 3600 / 1609.344).toFixed(2) + ' mph';
     rateText.textContent = rate + ' Hz physics';
   }
   function showCast() {

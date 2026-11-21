@@ -38,7 +38,7 @@ function sampleRow(attr, offset, count, u, out) {
 // Each grid cell stores the rear face of every posed triangle touching its
 // x/y rectangle. Applying that support to all four corners of a tail cell
 // protects the entire cloth triangle, including the space between vertices.
-function rearGrid(meshes, chest) {
+export function rearGrid(meshes, chest, sense = 1) {
   const cols = 26,
     bands = 42,
     bin = 0.011,
@@ -69,7 +69,7 @@ function rearGrid(meshes, chest) {
             k = i * 3;
           data[k] = e[0] * x + e[4] * y + e[8] * z + e[12];
           data[k + 1] = e[1] * x + e[5] * y + e[9] * z + e[13];
-          data[k + 2] = e[2] * x + e[6] * y + e[10] * z + e[14];
+          data[k + 2] = sense * (e[2] * x + e[6] * y + e[10] * z + e[14]);
         }
         for (let i = 0; i < idx.count; i += 3) {
           const a = idx.getX(i) * 3,
@@ -104,7 +104,7 @@ export function fitHipSeams(suit) {
   const { rig, surfaces, add } = suit,
     chest = rig.chest,
     rise = surfaces['trouser-rise'][0],
-    jacket = surfaces.jacket[0],
+    jacket = surfaces['quilted-vest'][0],
     parts = [],
     tails = [];
   const seams = (rig.garments.seams ??= []);
@@ -171,11 +171,12 @@ export function fitHipSeams(suit) {
     arcs.push(arc(sign > 0 ? around / 2 : 0));
   }
   seams.push({ name: 'crotch', edge: arcs[0], mate: arcs[1] });
-  seams.push(seam('waist', rise, 14 * 56, 56, true, surfaces.vest));
-  const vest = surfaces.vest[0],
+  seams.push(seam('waist', rise, 14 * 56, 56, true, surfaces['hoodie']));
+  const vest = surfaces['hoodie'][0],
     riseRest = rise.geometry.attributes.position.array.slice();
   const grid = rearGrid([...surfaces['trousers-L'], ...surfaces['trousers-R'], rise], chest);
-  for (const m of surfaces.tails) {
+  suit.lowerBackSupport = grid;
+  for (const m of surfaces['split-back']) {
     const sign = m.parent.name.endsWith('L') ? 1 : -1,
       count = 19,
       total = count * 19 * 2;
@@ -264,8 +265,7 @@ export function fitHipSeams(suit) {
               // The inseam turns from the leg into the centre crease. Keep
               // its facing panels on their own side while the pelvis twists.
               const ease = T.MathUtils.smoothstep(i, 0, 3);
-              tPoint.x =
-                sign * lerp(sign * tPoint.x, Math.max(0.0004 + 0.00065 * h, sign * tPoint.x), ease);
+              tPoint.x = sign * lerp(sign * tPoint.x, Math.max(0.0004 + 0.00065 * h, sign * tPoint.x), ease);
             }
             p.setXYZ(index, tPoint.x, tPoint.y, tPoint.z);
             bounds.expandByPoint(tPoint);
@@ -321,12 +321,12 @@ export function fitHipSeams(suit) {
           start.z += Math.cos(a) * pad;
           for (let i = 0; i < 19; i++) {
             const q = (18 - i) / 18,
-              length = 0.077 + 0.018 * Math.sin((j / 18) * Math.PI),
+              length = 0.033 + 0.008 * Math.sin((j / 18) * Math.PI),
               drop = q * length,
               v = ((h * 19 + i) * 19 + j) * 3;
             data[v] = start.x * (1 + 0.055 * q);
             data[v + 1] = start.y - drop;
-            data[v + 2] = start.z - 0.015 * q - 0.025 * q * q - m.parent.rotation.x * drop * 0.65;
+            data[v + 2] = start.z - 0.0022 * q - 0.0025 * q * q - m.parent.rotation.x * drop * 0.65;
           }
         }
       for (let h = 0; h < 2; h++)

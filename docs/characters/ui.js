@@ -4,11 +4,11 @@ export const heights = [1.78, 1.68, 1.85];
 
 export function createUI(host) {
   host.innerHTML = `
-    <header class="ct-head"><div><p class="ct-kicker">Sip Studios / Movement studies</p>
+    <header class="ct-head"><div><p class="ct-kicker">Sip Studies / Movement studies</p>
       <h2>Heros</h2></div><span>Third-person controller test</span></header>
     <div class="ct-layout">
       <div class="ct-stage">
-        <div class="ct-hud"><strong data-state>Idle</strong><span data-speed>0.00 m/s</span><span data-rate>60 Hz physics</span></div>
+        <div class="ct-hud"><strong data-state>Idle</strong><span data-speed>0.00 mph</span><span data-rate>60 Hz physics</span></div>
     <details class="ct-guide"><summary>Controls</summary>
     <dl><div><dt>Move</dt><dd>WASD · left stick</dd></div><div><dt>Run</dt><dd>Shift · full stick</dd></div>
     <div><dt>Jump / roll</dt><dd>Space / Ctrl · A / B</dd></div><div><dt>Look</dt><dd>Click to capture mouse · drag on touch · right stick</dd></div>
@@ -25,7 +25,7 @@ export function createUI(host) {
           ${names
             .map(
               (name, i) => `<button type="button" data-pick="${name}" aria-pressed="${!i}">
-            <i class="ct-swatch ct-${name}"></i><span><b>${labels[i]}</b><small>${['Sommelier', 'Vineyard guide', 'Cellar robot'][i]}</small></span><kbd>${i + 1}</kbd></button>`,
+            <i class="ct-swatch ct-${name}"></i><span><b>${labels[i]}</b><small>${['Beverage explorer', 'Learning guide', 'Beverage companion'][i]}</small></span><kbd>${i + 1}</kbd></button>`,
             )
             .join('')}
         </div>

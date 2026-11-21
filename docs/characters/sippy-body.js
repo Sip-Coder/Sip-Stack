@@ -50,9 +50,9 @@ const chestShape = [
   [0.158, 0.054, 0.03, -0.001],
   [0.167, 0.029, 0.021, 0],
   [0.177, 0.02, 0.0185, 0.0008],
-  [0.195, 0.019, 0.0185, 0.0015],
-  [0.211, 0.021, 0.02, 0.003],
-  [0.214, 0.016, 0.015, 0.003],
+  [0.195, 0.027, 0.027, 0.012],
+  [0.211, 0.029, 0.029, 0.014],
+  [0.214, 0.02, 0.025, 0.014],
 ];
 const armShape = [
   [-0.315, 0.014, 0.014, 0.001],
@@ -219,7 +219,7 @@ function sculptHand(step) {
             const id = Math.min(ia, ib) * 3 + (ca[0] !== cb[0] ? 0 : ca[1] !== cb[1] ? 1 : 2);
             let q = cache.get(id);
             if (q === undefined) {
-              const t = clamp(field[ia] / (field[ia] - field[ib]), 0.0003, 0.9997);
+              const t = clamp(field[ia] / (field[ia] - field[ib]), 0.003, 0.997);
               q = pos.length;
               pos.push([
                 mix(xs[i + ca[0]], xs[i + cb[0]], t) * 1.14,
@@ -369,7 +369,7 @@ export function makeSippyBody(rig, skin) {
     const trunk = chestShape.map(([y, rx, rz, z], row) =>
       ellipse(
         0,
-        0.64 + y,
+        0.64 + y + 0.027 * T.MathUtils.smoothstep(y, 0.18, 0.207),
         z,
         rx,
         rz,
@@ -386,7 +386,7 @@ export function makeSippyBody(rig, skin) {
         quad(trunk[r][j], trunk[r][(j + 1) % n], trunk[r + 1][j], trunk[r + 1][(j + 1) % n]);
       }
     region = 'neck';
-    const crown = vertex(0, 0.855, 0.003);
+    const crown = vertex(0, 0.882, 0.003);
     for (let j = 0; j < n; j++) tri(trunk.at(-1)[j], trunk.at(-1)[(j + 1) % n], crown);
     // Two lower openings share a sagittal raphe running from the pubis
     // to the sacrum. The legs meet through one continuous perineal fold.
@@ -406,7 +406,9 @@ export function makeSippyBody(rig, skin) {
         legBone = frames['leg' + side],
         handBone = side === 'L' ? 2 : 3;
       region = 'legs';
-      const legs = legShape.map(([y, rx, rz, z], r) => ellipse(legX, 0.52 + y, z, rx, rz, legBone + r));
+      const legs = legShape.map(([y, rx, rz, z], r) =>
+        ellipse(legX, 0.52 + y, z + 0.008 * Math.exp(-(((y + 0.31) / 0.075) ** 2)), rx, rz, legBone + r),
+      );
       knees[side] = legs[9]; // Indexed skin ring through the patella.
       for (let r = 0; r < legs.length - 1; r++) band(legs[r], legs[r + 1]);
       const foot = vertex(legX, 0.051, 0.002, legBone);
@@ -528,8 +530,28 @@ export function makeSippyBody(rig, skin) {
   mesh.castShadow = mesh.receiveShadow = true;
   mesh.frustumCulled = false;
   rig.root.add(mesh);
+  // The anatomical pattern is authored in the ungraded block's coordinates.
+  // Bind to that block, then dress the real Explorer shoulder width and sleeve length.
+  // The same bone transform grades both the sewn garment and its skin at every bend.
+  const chestScale = rig.chest.scale.clone(),
+    chestPos = rig.chest.position.clone();
+  const arms = [rig.upperArmL, rig.upperArmR];
+  const sleeves = arms.map((arm) => [arm.position.y, arm.scale.clone()]);
+  rig.chest.scale.set(1, 1, 1);
+  rig.chest.position.set(0, 0.12, 0);
+  for (const arm of arms) {
+    arm.position.y = 0.145;
+    arm.scale.set(1, 1, 1);
+  }
   rig.root.updateMatrixWorld(true);
   mesh.bind(new T.Skeleton(bones));
+  rig.chest.scale.copy(chestScale);
+  rig.chest.position.copy(chestPos);
+  arms.forEach((arm, i) => {
+    arm.position.y = sleeves[i][0];
+    arm.scale.copy(sleeves[i][1]);
+  });
+  rig.root.updateMatrixWorld(true);
   mesh.userData.mobileGeometry = mobile.g;
   const seats = rig.garments?.surfaces;
   const centers = { L: new Float64Array(45), R: new Float64Array(45) },

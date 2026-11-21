@@ -91,7 +91,7 @@ function orbitalRim(eye, depth, material, side) {
 }
 
 // Follow the cheek surface at rest and at both expression endpoints so the lip
-// and upper teeth stay set into the face throughout a smile or a sniff.
+// and upper teeth stay set into the face throughout a smile or a focus.
 function sculptSmile(parent, surfaceDepth, mouth, enamel, lip) {
   function depth(x, y) {
     const z = surfaceDepth(x, y);
@@ -103,7 +103,7 @@ function sculptSmile(parent, surfaceDepth, mouth, enamel, lip) {
       rows = layer === 'opening' || layer === 'teeth' ? 2 : 6;
     const indices = [],
       g = new T.BufferGeometry();
-    function expression(lift, sniff) {
+    function expression(lift, focus, round = 0) {
       const v = [];
       for (let j = 0; j <= rows; j++)
         for (let i = 0; i <= cols; i++) {
@@ -112,17 +112,17 @@ function sculptSmile(parent, surfaceDepth, mouth, enamel, lip) {
             teeth = layer === 'teeth';
           const s = teeth ? 0.86 * u : u,
             fade = Math.max(0, 1 - s * s);
-          const x = s * (0.022 + 0.0016 * lift - 0.0017 * sniff);
-          const corners = (0.0045 + 0.0021 * lift - 0.0018 * sniff) * s * s;
+          const x = s * (0.022 + 0.0028 * lift - 0.0017 * focus - 0.011 * round);
+          const corners = (0.0045 + 0.003 * lift - 0.0018 * focus - 0.0054 * round) * s * s;
           const line = 0.0325 + corners + 0.00035 * s;
-          const high = line + fade * (0.0016 + 0.0006 * lift - 0.0005 * sniff);
-          const low = line - fade * (0.0053 + 0.0016 * lift - 0.0035 * sniff);
+          const high = line + fade * (0.0016 + 0.0013 * lift - 0.0005 * focus + 0.0036 * round);
+          const low = line - fade * (0.0053 + 0.0038 * lift - 0.0035 * focus + 0.0048 * round);
           let y, z;
           if (layer === 'opening') {
             y = T.MathUtils.lerp(low, high, t);
             z = 0.00038;
           } else if (teeth) {
-            y = high - fade * (0.0019 + 0.0005 * lift - 0.0012 * sniff) * (1 - t);
+            y = high - fade * (0.0019 + 0.0005 * lift - 0.0012 * focus - 0.0014 * round) * (1 - t);
             z = 0.00059;
           } else {
             const top = layer === 'upper';
@@ -130,7 +130,7 @@ function sculptSmile(parent, surfaceDepth, mouth, enamel, lip) {
             const edge = top ? high : low;
             y = top ? edge + t * width * fade : edge - (1 - t) * width * fade;
             const edgeWeight = top ? 1 - t : t;
-            z = -0.00014 + 0.00094 * edgeWeight + (0.00165 - 0.0004 * sniff) * Math.sin(t * Math.PI) * fade;
+            z = -0.00014 + 0.00094 * edgeWeight + (0.00165 - 0.0004 * focus) * Math.sin(t * Math.PI) * fade;
           }
           v.push(x, y, depth(x, y) + z);
         }
@@ -144,7 +144,7 @@ function sculptSmile(parent, surfaceDepth, mouth, enamel, lip) {
       }
     g.setIndex(indices);
     g.computeVertexNormals();
-    g.morphAttributes.position = [expression(1, 0), expression(0, 1)];
+    g.morphAttributes.position = [expression(1, 0), expression(0, 1), expression(0, 0, 1)];
     // Morph the shading normals along with the cheek and lower lip.
     g.morphAttributes.normal = g.morphAttributes.position.map((a) => {
       const posed = new T.BufferGeometry();
@@ -162,10 +162,11 @@ function sculptSmile(parent, surfaceDepth, mouth, enamel, lip) {
   sew('teeth', enamel);
   sew('upper', lip);
   sew('lower', lip);
-  return (smiling, sniffing) => {
+  return (smiling, concentration, surprise = 0) => {
     for (const piece of pieces) {
-      piece.morphTargetInfluences[0] = smiling * (1 - sniffing);
-      piece.morphTargetInfluences[1] = sniffing;
+      piece.morphTargetInfluences[0] = smiling * (1 - concentration) * (1 - surprise);
+      piece.morphTargetInfluences[1] = concentration * (1 - surprise);
+      piece.morphTargetInfluences[2] = surprise;
     }
   };
 }

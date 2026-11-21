@@ -1,10 +1,11 @@
-// The vineyard sommelier. All dimensions here are fractions of standing height.
+// The field educator. All dimensions here are fractions of standing height.
 import * as T from 'three';
+import { outfitExplorer, quiltFinish } from './sippy-explorer.js';
 import { createHair } from './hair.js';
 import { fitExpression } from './sippy-expression.js';
 import { fitHipSeams } from './sippy-hips.js';
 import { makeSippyBody } from './sippy-body.js';
-import { cutSuit, fitLimb, frontZ, anatomyRegions, fitOpenings } from './sippy-tailoring.js';
+import { cutExplorerLayers, fitLimb, anatomyRegions, fitOpenings } from './sippy-tailoring.js';
 import { setSleeveHeads } from './sippy-shoulders.js';
 import { detailMaterial } from './material-detail.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
@@ -286,66 +287,33 @@ function eyelid(parent, skin, lash, upper) {
 }
 
 // Pinstripes follow the cut of each pattern piece. Filter their footprint on
-// the pixel grid to retain the broad wool colour in the distant follow view.
-function pinstripe(material, pitch, strength) {
-  const stripe = new T.Color('#796b5c');
-  material.userData.finishInks = { stripe };
-  const y = material.userData.blueprintId === 'trousers' ? -0.18 : 0.017;
-  const stripeX = pitch * (material.userData.blueprintId === 'jacket' ? 3 : 1) - y * 0.025;
-  material.userData.blueprintSamples = [
-    { id: material.userData.blueprintId, xy: [stripeX + pitch * 0.48, y], width: 0.0018 },
-    { id: 'stripe', xy: [stripeX, y], width: pitch * 0.032 },
-  ];
-  material.onBeforeCompile = (shader) => {
-    shader.uniforms.stripeTint = { value: stripe };
-    shader.vertexShader =
-      'varying vec3 clothPosition; varying vec3 clothNormal;\n' +
-      shader.vertexShader.replace(
-        '#include <begin_vertex>',
-        '#include <begin_vertex>\nclothPosition=position;clothNormal=normal;',
-      );
-    shader.fragmentShader =
-      'varying vec3 clothPosition; varying vec3 clothNormal; uniform vec3 stripeTint;\n' +
-      shader.fragmentShader.replace(
-        '#include <color_fragment>',
-        `#include <color_fragment>
-        vec2 phase=(clothPosition.xz+vec2(clothPosition.y*.025,0.)) * ${(1 / pitch).toFixed(2)};
-        vec2 footprint=max(fwidth(phase),vec2(.0001));
-        vec2 stripe=(1.-smoothstep(vec2(.015)-footprint*.5, vec2(.055)+footprint*.5, abs(fract(phase+.5)-.5)))
-          * (1.-smoothstep(vec2(.35),vec2(1.05),footprint));
-        float blend=smoothstep(.25,.75,abs(clothNormal.z));
-        diffuseColor.rgb=mix(diffuseColor.rgb,stripeTint,mix(stripe.y,stripe.x,blend)*${(0.66 + strength).toFixed(2)});`,
-      );
-  };
-  material.customProgramCacheKey = () => `sippy-cloth-${pitch}-${strength}`;
-}
-
 export function buildSippy(rig) {
-  // Shorter limbs and an enlarged cranium keep the vineyard host's overall stature.
-  rig.root.scale.set(1.1, 0.835, 1.0).multiplyScalar(rig.height);
-  const skin = surface('#d99e6f', 0.54),
+  // Garment patterns are in standing-height units; keep a full-length torso and legs.
+  rig.root.scale.set(0.91, 1.005, 0.88).multiplyScalar(rig.height);
+  const skin = surface('#dfa071', 0.54),
     blush = surface('#c78669', 0.62);
-  const hair = surface('#321805', 0.44, { specularIntensity: 0.38 }),
+  const hair = surface('#2d1605', 0.44, { specularIntensity: 0.38 }),
     black = surface('#1b0904', 0.48, { specularIntensity: 0.24 });
-  const white = surface('#fff1dc', 0.51);
-  const mouth = surface('#5a1d13', 0.52, { specularIntensity: 0.52 }),
+  const white = surface('#f5e5c5', 0.64),
+    mouth = surface('#5a1d13', 0.52, { specularIntensity: 0.52 }),
     lip = surface('#ad684c', 0.57);
-  const suit = surface('#4c3e34', 0.83),
-    trousers = surface('#403531', 0.79);
-  const waistcoat = surface('#664e3c', 0.76),
-    lapel = surface('#5e4e3f', 0.62);
-  const edge = surface('#776759', 0.72);
-  const oxblood = surface('#7b0012', 0.43),
-    silk = surface('#7b0012', 0.45);
-  const gold = surface('#cd9d54', 0.31, { metalness: 0.6 }),
-    button = surface('#352014', 0.43, { specularIntensity: 0.51 });
-  const leather = surface('#3b2316', 0.35, { specularIntensity: 0.54 }),
-    welt = surface('#211611', 0.61, { specularIntensity: 0.44 });
-  const lining = surface('#f9ddad', 0.66),
-    pocketSquare = surface('#8c1529', 0.48);
+  const suit = surface('#39393c', 0.76),
+    trousers = surface('#f1e1c0', 0.79),
+    waistcoat = surface('#841e32', 0.78),
+    lapel = surface('#1d1d24', 0.71),
+    edge = lapel;
+  const gold = surface('#c5a35b', 0.36, { metalness: 0.57 }),
+    button = surface('#54565b', 0.46, { metalness: 0.45 }),
+    leather = surface('#79132b', 0.7),
+    welt = surface('#e7dac2', 0.69),
+    saddle = surface('#884c19', 0.6),
+    saddleEdge = surface('#aa723b', 0.59),
+    cargoSeam = surface('#c2b18b', 0.76),
+    knit = surface('#630b23', 0.83),
+    pad = surface('#171721', 0.8);
   const enamel = surface('#f5e7d6', 0.39);
   const sheen = new T.MeshPhysicalMaterial({
-    color: '#8e4418',
+    color: '#834c23',
     roughness: 0.46,
     anisotropy: 0.58,
     specularIntensity: 0.48,
@@ -358,42 +326,52 @@ export function buildSippy(rig) {
     sclera: enamel,
     hair,
     pupil: black,
-    jacket: suit,
+    quilt: suit,
     trousers,
-    vest: waistcoat,
-    lapel,
-    stripe: edge,
+    hoodie: waistcoat,
+    binding: lapel,
     shirt: white,
-    bow: oxblood,
-    pocketSquare,
     gold,
-    metalButton: button,
+    metal: button,
     shoe: leather,
     sole: welt,
-    lining,
+    leather: saddle,
+    saddleEdge,
+    cargoSeam,
+    cuff: knit,
+    pad,
     chestnut: sheen,
-  })) {
+  }))
     mat.userData.blueprintId = id;
-  }
-  silk.userData.blueprintId = 'bow';
   const head = rig.head,
     chest = rig.chest;
-  pinstripe(suit, 0.0112, 0.3);
-  pinstripe(trousers, 0.0112, 0.245);
-  pinstripe(waistcoat, 0.011, 0.2);
+  chest.scale.set(0.9, 0.935, 0.91);
+  chest.position.y -= 0.0155;
+  chest.position.z = -0.008;
+  head.scale.set(1 / chest.scale.x, 1 / chest.scale.y, 1 / chest.scale.z);
+  head.position.z = -chest.position.z / chest.scale.z;
+  for (const arm of [rig.upperArmL, rig.upperArmR]) {
+    arm.scale.set(0.944, 1.027, 1);
+    arm.position.y = 0.135;
+  }
+  quiltFinish(suit);
   for (const [kind, materials] of [
     ['skin', [skin, blush, lip]],
-    ['cotton', [white]],
-    ['wool', [suit, trousers, waistcoat, lapel, edge]],
-    ['silk', [silk, oxblood, pocketSquare, lining]],
+    ['cotton', [white, waistcoat, trousers, knit, cargoSeam]],
+    ['wool', [suit, lapel]],
     ['gold', [gold]],
-    ['leather', [leather]],
+    ['leather', [leather, saddle, saddleEdge, pad]],
     ['metal', [button]],
   ])
     for (const m of materials) detailMaterial(m, kind);
-  const headSkin = group(head, 0, -0.0165, 0.0075);
+  for (const [side, s] of [
+    ['L', 1],
+    ['R', -1],
+  ])
+    rig['thigh' + side].position.x = s * 0.059;
+  const headSkin = group(head, 0, -0.026, 0.002);
   headSkin.name = 'sippy-head';
-  headSkin.scale.set(1.84, 2.17, 1.8);
+  headSkin.scale.set(1.29, 1.02, 1.34);
   const cheekRows = [
     [0.006, 0.01, 0.016, 0.004],
     [0.012, 0.03, 0.031, 0.004],
@@ -598,7 +576,7 @@ export function buildSippy(rig) {
   // U follows the authored fibre direction. Three derives the anisotropic
   // tangent frame from the deformed positions and these UVs at render time.
   const combed = new T.MeshPhysicalMaterial({
-    color: '#9a7551',
+    color: '#876b51',
     vertexColors: true,
     roughness: 0.44,
     anisotropy: 0.68,
@@ -731,14 +709,15 @@ export function buildSippy(rig) {
       rim = (2 * u - 1) ** 2,
       arch = 1 - rim;
     const back = scalp(Math.PI - Math.asin(x / 0.058), 0.51);
+    const wave = 0.008 * (1 - rim * 0.45);
     return [
       scalp(Math.asin(x / 0.06), 0.018),
-      [x - 0.003, 0.126 + 0.005 * arch - 0.007 * rim, 0.053 - 0.014 * rim],
-      [x - 0.0095, 0.1505 + 0.005 * arch - 0.007 * rim, 0.048 - 0.014 * rim],
-      [x - 0.0055, 0.161 + 0.0033 * arch - 0.007 * rim, 0.028 - 0.006 * rim],
-      [x - 0.001, 0.1635 + 0.0027 * arch - 0.0068 * rim, -0.008 - 0.002 * arch],
-      [x + 0.003, 0.1565 + 0.0032 * arch - 0.006 * rim, -0.029 + 0.003 * rim],
-      [x + 0.005, 0.143 + 0.0035 * arch - 0.006 * rim, -0.043 + 0.006 * rim],
+      [x * 0.94 - wave * 1.1, 0.126 + 0.005 * arch - 0.007 * rim, 0.053 - 0.014 * rim],
+      [x * 0.92 - wave * 2.4, 0.1505 + 0.005 * arch - 0.007 * rim, 0.048 - 0.014 * rim],
+      [x * 0.97 - wave * 1.7, 0.161 + 0.0033 * arch - 0.007 * rim, 0.028 - 0.006 * rim],
+      [x + wave * 0.1, 0.1635 + 0.0027 * arch - 0.0068 * rim, -0.008 - 0.002 * arch],
+      [x * 0.96 + wave, 0.1565 + 0.0032 * arch - 0.006 * rim, -0.029 + 0.003 * rim],
+      [x * 0.96 + wave * 1.4, 0.143 + 0.0035 * arch - 0.006 * rim, -0.043 + 0.006 * rim],
       back,
     ];
   }
@@ -778,7 +757,7 @@ export function buildSippy(rig) {
   coiffure.setAttribute('color', new T.Float32BufferAttribute(crestC, 3));
   coiffure.setIndex(crestI);
   coiffure.computeVertexNormals();
-  const baseGroom = surface('#edc77b', 0.41, {
+  const baseGroom = surface('#e2c47b', 0.41, {
     vertexColors: true,
     side: T.DoubleSide,
     specularIntensity: 0.35,
@@ -793,7 +772,7 @@ export function buildSippy(rig) {
       [0.126, 0.0505, 0.038, -0.001],
       [0.142, 0.053, 0.037, 0.002],
       [0.153, 0.052, 0.033, 0.004],
-      [0.158, 0.040, 0.024, 0.004],
+      [0.158, 0.04, 0.024, 0.004],
       [0.161, 0.023, 0.013, 0.004],
     ],
     56,
@@ -806,8 +785,8 @@ export function buildSippy(rig) {
   innerCrest.userData.patternPiece = true;
   haircut.at(-1).userData.patternPiece = true;
   haircut.push(innerCrest);
-  const partBreath = [0.033, 0.027],
-    outerCrestGait = [0.8875, 0.5183];
+  const partBreath = [0.033, 0.0319, 0.03];
+  const crestGait = [0.568, 0.71, 0.71, 0.71, 0.71, 0.8875, 0.058];
   for (let j = 0; j < 7; j++) {
     const u = j / 6,
       arch = Math.sin(Math.PI * u);
@@ -827,14 +806,14 @@ export function buildSippy(rig) {
       browns[j % browns.length],
       {
         role: 'mass',
-        stiffness: 105 + j * 3,
-        damping: 10 + j * 0.3,
+        stiffness: j === 6 ? 138 : 105 + j * 3,
+        damping: j === 6 ? 12.4 : 10 + j * 0.3,
         maxOffset: 0.017,
         radius: 0.0026,
         // The short side part and the two broad outer crests carry different
         // amounts of breathing and footfall through their actual hair fibres.
         breathingBend: partBreath[j] ?? 0.02,
-        gaitCoupling: outerCrestGait[j - 5] ?? 0.71,
+        gaitCoupling: crestGait[j],
       },
     );
   }
@@ -849,7 +828,19 @@ export function buildSippy(rig) {
       [sign * 0.052, 0.104 - long * 0.002, 0.032],
       [sign * (0.051 - long * 0.001), 0.099 - long * 0.005, 0.034 + long * 0.002],
     ];
-    lock('sippy-face-' + (long ? 'L' : 'R'), temples, 0.0065 + long * 0.0015, 0.0034, browns[long ? 1 : 3], {
+    // One loose S-shaped forelock reverses the crown sweep, curling inward over the brow.
+    const curl = long
+      ? [
+          [0.016, 0.145, 0.034],
+          [0.04, 0.147, 0.042],
+          [0.049, 0.13, 0.046],
+          [0.042, 0.117, 0.054],
+          [0.029, 0.111, 0.059],
+          [0.024, 0.101, 0.061],
+          [0.028, 0.096, 0.06],
+        ]
+      : temples;
+    lock('sippy-face-' + (long ? 'L' : 'R'), curl, 0.0065 + long * 0.0015, 0.0034, browns[long ? 1 : 3], {
       role: 'face',
       stiffness: long ? 91 : 102,
       damping: long ? 9.3 : 10.9,
@@ -875,7 +866,7 @@ export function buildSippy(rig) {
         i % 2 === 0
           ? { role: 'mass', stiffness: 135 + i * 3, damping: 13, maxOffset: 0.01, radius: 0.0017 }
           : null;
-      if (flex && sign < 0 && i === 0) flex.gaitCoupling = 0.9798;
+      if (flex && i === 0) flex.gaitCoupling = sign < 0 ? 0.9798 : 0.5538;
       lock('sippy-taper-' + sign + '-' + i, pts, 0.0078, 0.0028, browns[(i + 3) % browns.length], flex);
     }
     const burn = group(headSkin);
@@ -895,85 +886,34 @@ export function buildSippy(rig) {
     );
   }
 
-  const materials = { skin, white, suit, waistcoat, lapel, trousers, oxblood, silk, edge, gold };
-  const tailoring = cutSuit(rig, materials),
+  const materials = { skin, white, suit, waistcoat, lapel, trousers, edge, gold };
+  const tailoring = cutExplorerLayers(rig, materials),
     tails = tailoring.tails;
-  const onCloth = (x, y, lift = 0.0018) => [x, y, frontZ(x, y, lift)];
-  for (let j = 0; j < 5; j++) {
-    const y = 0.043 - j * 0.025,
-      z = frontZ(0.002, y, -0.0027);
-    ellipsoid(chest, button, 0.002, y, z, 0.0042, 0.0042, 0.0018);
-    for (const a of [-1, 1])
-      ellipsoid(chest, gold, 0.002 + a * 0.0011, y, z + 0.00162, 0.00042, 0.00049, 0.00032);
-  }
-  // The turned edge inside the central waistcoat opening catches warm light.
-  stroke(
-    chest,
-    lining,
-    [
-      onCloth(-0.032, 0.095, -0.0004),
-      onCloth(-0.017, 0.063, -0.0004),
-      onCloth(0, 0.037, -0.0004),
-      onCloth(0.017, 0.063, -0.0004),
-      onCloth(0.032, 0.095, -0.0004),
-    ],
-    0.00105,
-  );
-  panel(chest, pocketSquare, [
-    onCloth(0.063, 0.086, 0.005),
-    onCloth(0.066, 0.1, 0.005),
-    onCloth(0.071, 0.096, 0.005),
-    onCloth(0.077, 0.101, 0.005),
-    onCloth(0.079, 0.088, 0.005),
-  ]);
-  stroke(
-    chest,
-    edge,
-    [onCloth(0.058, 0.084, 0.006), onCloth(0.069, 0.086, 0.006), onCloth(0.082, 0.088, 0.006)],
-    0.0014,
-  );
-  const chain = group(chest);
-  chain.name = 'sippy-watch-chain';
-  const chainPoints = Array.from({ length: 13 }, (_, i) => {
-    const u = i / 12;
-    return onCloth(0.004 + 0.081 * u, -0.015 - 0.04 * 4 * u * (1 - u) + 0.007 * u, 0.006);
-  });
-  stroke(chain, gold, chainPoints, 0.00112, 6);
-  for (let n = 0; n < 12; n++) ellipsoid(chain, gold, ...chainPoints[n], 0.0017, 0.0015, 0.0013);
-  // The hinged watch-case rests in the waistcoat pocket, on the same loop as its chain.
-  const fob = group(chest, ...onCloth(0.077, -0.018, 0.0047));
-  fob.rotation.y = 0.6;
-  ellipsoid(fob, gold, 0, 0, 0, 0.0094, 0.0101, 0.0028);
-  ellipsoid(fob, button, 0, 0, 0.00245, 0.0076, 0.0081, 0.00065);
-  const bezel = mesh(fob, new T.TorusGeometry(0.008, 0.0006, 6, 28), gold, 0, 0, 0.00255);
-  bezel.scale.y = 1.06;
-  stroke(
-    fob,
+  const exploreMats = {
+    suit,
+    trousers,
+    waistcoat,
+    lapel,
+    white,
     gold,
-    [
-      [0.0034, 0.0033, 0.0031],
-      [0, 0, 0.0033],
-      [-0.0009, 0.0053, 0.0031],
-    ],
-    0.00038,
-  );
-  ellipsoid(fob, gold, 0, 0.0106, 0, 0.0026, 0.0018, 0.0019);
-
+    leather,
+    welt,
+    saddle,
+    saddleEdge,
+    cargoSeam,
+    knit,
+    pad,
+    button,
+  };
   for (const [side, s] of [
     ['L', 1],
     ['R', -1],
   ]) {
     const upper = rig['upperArm' + side],
-      lower = rig['forearm' + side],
       hand = rig['hand' + side];
-    const foot = rig['foot' + side];
     upper.position.x = s * 0.149;
     fitLimb(tailoring, side, false, materials);
     fitLimb(tailoring, side, true, materials);
-    for (const y of [-0.119, -0.108, -0.097]) {
-      ellipsoid(lower, button, s * 0.0295, y, 0.001, 0.0018, 0.0033, 0.0033);
-      ellipsoid(lower, gold, s * 0.0312, y, 0.001, 0.0005, 0.0006, 0.0006);
-    }
     // The thumb opposes the fingers; the shorter index and pinkie curve
     // separately toward the stem. A flat nail plate follows each distal joint.
     const palm = group(hand);
@@ -1013,142 +953,30 @@ export function buildSippy(rig) {
     }
     const thumbNail = ellipsoid(palm, nail, -s * 0.0083, -0.03, 0.03, 0.0039, 0.0025, 0.0012);
     thumbNail.rotation.z = s * 0.25;
-    const oxford = group(foot);
-    oxford.scale.set(1.16, 1.33, 1.2);
-    oxford.position.y = 0.047 * (oxford.scale.y - 1);
-    oxford.position.z = -0.0065;
-    mesh(
-      oxford,
-      rings(
-        [
-          [-0.047, 0.031, 0.06, 0.028],
-          [-0.041, 0.034, 0.064, 0.028],
-          [-0.037, 0.034, 0.065, 0.028],
-        ],
-        32,
-      ),
-      welt,
-    );
-    mesh(
-      oxford,
-      rings(
-        [
-          [-0.039, 0.033, 0.063, 0.028],
-          [-0.029, 0.034, 0.064, 0.028],
-          [-0.019, 0.031, 0.056, 0.025],
-          [-0.006, 0.026, 0.043, 0.015],
-          [0.012, 0.025, 0.034, 0.002],
-          [0.024, 0.023, 0.028, 0.001],
-        ],
-        32,
-      ),
-      leather,
-    );
-    for (let j = 0; j < 3; j++)
-      stroke(
-        oxford,
-        edge,
-        [
-          [-0.013, -0.008 - j * 0.003, 0.048 + j * 0.004],
-          [0, -0.005 - j * 0.003, 0.048 + j * 0.004],
-          [0.013, -0.008 - j * 0.003, 0.048 + j * 0.004],
-        ],
-        0.001,
-        5,
-      );
   }
-  const goblet = group(rig.handR, 0.002, -0.028, 0.011);
-  // The tulip bowl sits above the grip. The longer stem clears the little
-  // finger without changing the height of the rim during the tasting gesture.
-  const stemware = group(goblet, 0, -0.061 * 0.43, 0);
-  stemware.scale.set(1.06, 1.43, 1.06);
-  const glass = surface('#e5fffc', 0.12, {
-    transparent: true,
-    opacity: 0.622,
-    depthWrite: false,
-    side: T.FrontSide,
-    metalness: 0.12,
+  const explorer = outfitExplorer(rig, tailoring, exploreMats, {
+    group,
+    mesh,
+    ellipsoid,
+    rings,
+    stroke,
+    sweep,
+    panel,
+    vec,
   });
-  const glassEdge = surface('#c8ddda', 0.24, { metalness: 0.24 });
-  const wine = surface('#6e0929', 0.22, { metalness: 0.1, specularIntensity: 0.44 });
-  glass.userData.blueprintId = glassEdge.userData.blueprintId = 'glass';
-  wine.userData.blueprintId = 'wine';
-  mesh(
-    stemware,
-    rings(
-      [
-        [-0.036, 0.003, 0.003, 0],
-        [-0.035, 0.016, 0.016, 0],
-        [-0.033, 0.017, 0.017, 0],
-        [-0.031, 0.005, 0.005, 0],
-        [-0.028, 0.0018, 0.0018, 0],
-        [0.018, 0.0018, 0.0018, 0],
-        [0.02, 0.004, 0.004, 0],
-      ],
-      24,
-    ),
-    glassEdge,
-  );
-  // At the wine/glass boundary the two media have similar refractive indices.
-  // Track the real moving meniscus in bowl-local coordinates. The dry upper
-  // wall reflects the studio, while the wetted lower wall reveals the wine.
-  const meniscus = new T.Vector4(0, 1, 0, -0.041);
-  const meniscusNormal = vec(0, 1, 0);
-  glass.userData.blueprintSamples = [{ id: 'glass', xy: [0.003, 0.052], width: 0.002 }];
-  glass.onBeforeCompile = (shader) => {
-    shader.uniforms.wineSurface = { value: meniscus };
-    shader.vertexShader =
-      'varying vec3 bowlPosition;\n' +
-      shader.vertexShader.replace(
-        '#include <begin_vertex>',
-        '#include <begin_vertex>\nbowlPosition=position;',
-      );
-    shader.fragmentShader =
-      'varying vec3 bowlPosition; uniform vec4 wineSurface;\n' +
-      shader.fragmentShader.replace(
-        '#include <color_fragment>',
-        `#include <color_fragment>
-      float aboveWine=dot(wineSurface.xyz,bowlPosition)+wineSurface.w;
-      diffuseColor.a*=mix(.13,1.,smoothstep(-.0003,.0003,aboveWine));`,
-      );
-  };
-  glass.customProgramCacheKey = () => 'sippy-wine-contact';
-  const bowlProfile = [
-    [0.002, 0.018],
-    [0.009, 0.02],
-    [0.018, 0.026],
-    [0.022, 0.037],
-    [0.0215, 0.05],
-    [0.018, 0.061],
-  ];
-  mesh(
-    stemware,
-    new T.LatheGeometry(
-      bowlProfile.map(([r, h]) => new T.Vector2(r, h)),
-      36,
-    ),
-    glass,
-  );
-  const rim = mesh(stemware, new T.TorusGeometry(0.018, 0.00085, 7, 40), glassEdge, 0, 0.061, 0);
-  rim.rotation.x = Math.PI / 2;
-  const liquid = group(stemware, 0, 0.029, 0);
-  mesh(
-    liquid,
-    rings(
-      [
-        [-0.009, 0.003, 0.003, 0],
-        [-0.007, 0.009, 0.009, 0],
-        [-0.002, 0.0168, 0.0168, 0],
-        [0.006, 0.0204, 0.0204, 0],
-        [0.012, 0.0209, 0.0209, 0],
-      ],
-      32,
-    ),
-    wine,
-  );
-  const ripple = surface('#6c0327', 0.23, { specularIntensity: 0.44 });
-  ripple.userData.blueprintId = 'wine';
-  ellipsoid(liquid, ripple, 0.003, 0.0115, 0.001, 0.016, 0.0008, 0.015);
+  const { pack, drawcord } = explorer;
+  // A small irregular constellation over each malar prominence.
+  for (const s of [-1, 1]) {
+    for (const [x, y, z, r] of [
+      [0.029, 0.061, 0.047, 0.001],
+      [0.033, 0.063, 0.045, 0.00076],
+      [0.038, 0.061, 0.041, 0.00095],
+      [0.036, 0.057, 0.043, 0.00066],
+      [0.027, 0.058, 0.048, 0.00067],
+    ]) {
+      ellipsoid(headSkin, blush, x * s, y, z, r, r * 0.69, r * 0.4);
+    }
+  }
   // Preserve bone and accessory group origins while collapsing seams and trim.
   for (const key of [
     'head',
@@ -1197,18 +1025,19 @@ export function buildSippy(rig) {
   tailoring.beneath('collar', 'body');
   const collarSkin = [
     ...tailoring.surfaces.collar,
-    ...tailoring.surfaces.jacket,
-    ...tailoring.surfaces.lapels,
+    ...tailoring.surfaces['quilted-vest'],
+    ...tailoring.surfaces['zipper-plackets'],
   ];
   rig.secondary.sippy = {
     tail: tails[0],
-    chain,
+    pack,
+    drawcord,
     faceSkin,
     collarSkin,
     neckSkin: [],
     body: body.mesh,
     bodyRegions: body.regions,
-    upperBack: tailoring.surfaces.jacket,
+    upperBack: tailoring.surfaces['quilted-vest'],
     bodyParts: anatomyRegions(tailoring, neck),
   };
   const feature = (label, ...parts) => ({ label, parts });
@@ -1231,104 +1060,60 @@ export function buildSippy(rig) {
       feature('Lower trouser cuff ' + s, edgeBinding(g['trousers-' + s][0], 0, 56)),
     ),
   };
-  const q = new T.Quaternion(),
-    worldUp = new T.Quaternion(),
-    tilt = new T.Euler();
-  const down = vec(0, -1, 0),
-    toGrip = vec(0, 0, 0),
-    elbow = vec(0, 0, 0),
-    plane = vec(0, 0, 0),
-    fore = vec(0, 0, 0);
-  const aimShoulder = new T.Quaternion(),
-    aimElbow = new T.Quaternion();
-
-  let tiltSpring = 0,
-    tiltV = 0,
-    lag = 0,
+  let lag = 0,
     lagV = 0,
     lastTime = -Infinity;
   return function animate(f) {
     const t = f.time,
       dt = f.dt;
     if (t <= lastTime) {
-      tiltSpring = tiltV = lag = lagV = 0;
+      lag = lagV = 0;
     }
     lastTime = t;
     const blinkTime = (t + 0.13) % 4.2,
       blink = blinkTime < 0.16 ? Math.sin((Math.PI * blinkTime) / 0.16) : 0;
     const focus = f.emote >= 0 ? Math.sin(Math.PI * f.emote) ** 0.8 : 0;
-    const sniff = f.emote < 0 ? 0 : Math.exp(-((f.emote - 0.56) ** 2) / 0.01);
-    expression.smile(focus, sniff);
+    const thinking = f.emote < 0 ? 0 : Math.exp(-((f.emote - 0.56) ** 2) / 0.01);
+    const wink = f.emote < 0 ? 0 : Math.exp(-(((f.emote - 0.86) / 0.042) ** 2));
+    const curious = f.emote < 0 ? 0 : Math.exp(-(((f.emote - 0.22) / 0.13) ** 2));
+    const rise = f.state === 'jump' ? Math.min(1, 0.36 + Math.abs(f.vy) * 0.15) : 0;
+    const laugh = f.state === 'run' ? 0.74 + 0.14 * Math.sin(f.phase * 2) : 0;
+    expression.smile(Math.max(laugh, focus, 0.22 * Number(f.state === 'walk')), thinking, rise);
+
     for (let i = 0; i < 2; i++) {
-      const close = Math.max(blink, sniff * (i === 0 ? 0.93 : 0.86), f.state === 'roll' ? 0.33 : 0);
+      const close = Math.max(
+        blink,
+        thinking * (i === 0 ? 0.33 : 0.18),
+        i === 1 ? wink : 0,
+        laugh * 0.17,
+        f.state === 'roll' ? 0.36 : 0,
+      );
       lids[i * 2](close);
       lids[i * 2 + 1](close);
       const side = i === 0 ? -1 : 1;
-      brows[i].position.y = 0.1012 + 0.005 * focus + 0.0013 * Math.sin(t * 1.1 + i) + side * 0.003 * sniff;
-      brows[i].rotation.z = side * (0.11 * sniff - 0.14 * focus + 0.04 * Math.sin(t * 0.7));
+      brows[i].position.y =
+        0.1012 +
+        0.005 * focus +
+        0.0013 * Math.sin(t * 1.1 + i) +
+        side * 0.003 * thinking +
+        rise * 0.004 +
+        curious * (i === 0 ? 0.005 : 0.001);
+      brows[i].rotation.z = side * (0.11 * thinking - 0.14 * focus + 0.04 * Math.sin(t * 0.7));
 
       gazes[i].y = -0.0018 * focus + 0.0009 * Math.sin(t * 0.85);
       gazes[i].x = 0.0016 * Math.sin(t * 0.67);
     }
-    // The carrying elbow stays flexed to steady the stem; the upper arm draws in for the sniff.
+    // Sippy raises his left wrist to check the time and glances toward the dial.
     const resting = 1 / (1 + f.speed * f.speed * 0.4);
-    rig.upperArmL.rotation.z -= 0.064 * resting;
-    rig.upperArmR.rotation.z += 0.064 * resting;
-    rig.forearmL.rotation.x += 0.115 * resting;
-    rig.forearmR.rotation.x -= 0.43 + 0.25 * resting;
-    rig.upperArmR.rotation.x += 0.174 * resting - 0.01;
-
-    if (focus > 0) {
-      // Solve toward a sniffing position with the elbow out. The wine moves
-      // in a small circle at the top of the gesture, in front of the nose.
-      toGrip.set(0.116 + Math.sin(f.emote * 22) * 0.008, 0.053, 0.08 + Math.cos(f.emote * 22) * 0.007);
-      const dist = toGrip.length(),
-        arm = 0.176,
-        lower = 0.143;
-      const along = (arm * arm - lower * lower + dist * dist) / (2 * dist);
-      fore.copy(toGrip);
-      toGrip.multiplyScalar(1 / dist);
-      plane.set(-1.72, -0.71, 0.48);
-      plane.addScaledVector(toGrip, -plane.dot(toGrip)).normalize();
-      elbow
-        .copy(toGrip)
-        .multiplyScalar(along)
-        .addScaledVector(plane, Math.sqrt(Math.max(0, arm * arm - along * along)));
-      fore.sub(elbow).normalize();
-      aimShoulder.setFromUnitVectors(down, elbow.normalize());
-      aimElbow.setFromUnitVectors(down, fore).premultiply(q.copy(aimShoulder).invert());
-      rig.upperArmR.quaternion.slerp(aimShoulder, focus);
-      rig.forearmR.quaternion.slerp(aimElbow, focus);
-    }
-    rig.head.rotation.x += focus * 0.22;
-    // Pitch about the upper cervical pivot underneath the jaw. This keeps
-    // the front of the turned collar below the chin during a roll or sniff.
-    rig.head.position.y = 0.203 + 0.04 * Math.max(0, Math.sin(rig.head.rotation.x));
-    rig.head.rotation.y -= focus * 0.24;
-    rig.handR.rotation.z += focus * 0.13 * Math.sin(f.emote * 18);
-    tiltV +=
-      dt *
-      (48 *
-        (0.012 * f.turn +
-          0.01 * f.speed * Math.sin(f.phase) +
-          focus * 0.14 * Math.sin(f.emote * 18) -
-          tiltSpring) -
-        9 * tiltV);
-    tiltSpring += tiltV * dt;
-    rig.handR.getWorldQuaternion(q);
-    goblet.quaternion
-      .copy(q)
-      .invert()
-      .multiply(worldUp.setFromEuler(tilt.set(tiltSpring, 0, -tiltSpring * 0.42)));
-    liquid.rotation.z = tiltSpring * 0.72;
-    liquid.rotation.x = -tiltSpring * 0.62;
-    meniscusNormal.set(0, 1, 0).applyQuaternion(liquid.quaternion);
-    meniscus.set(
-      meniscusNormal.x,
-      meniscusNormal.y,
-      meniscusNormal.z,
-      -meniscusNormal.dot(liquid.position) - 0.012,
-    );
+    rig.upperArmL.rotation.z += 0.003 * resting;
+    rig.upperArmR.rotation.z -= 0.003 * resting;
+    rig.forearmL.rotation.x += 0.042 * resting - 1.3 * focus;
+    rig.forearmR.rotation.x += 0.043 * resting;
+    rig.upperArmL.rotation.x -= 0.47 * focus;
+    rig.upperArmL.rotation.z += 0.092 * focus;
+    rig.head.rotation.y += 0.32 * focus;
+    rig.head.rotation.x += 0.18 * focus;
+    rig.head.position.y = 0.24 + 0.04 * Math.max(0, Math.sin(rig.head.rotation.x));
     const target =
       Math.min(0.35, f.speed * 0.035 + Math.abs(f.vy) * 0.026) +
       0.025 * Math.sin(f.phase * 2) * Math.min(1, f.speed);
@@ -1336,13 +1121,13 @@ export function buildSippy(rig) {
     lag += lagV * dt;
     tails[0].rotation.x = lag + 0.02 * Math.sin(f.phase);
     tails[1].rotation.x = lag - 0.02 * Math.sin(f.phase);
-    chain.rotation.z = 0.43 * lag + (0.03 * f.turn) / (1 + Math.abs(f.turn));
-    chain.rotation.x = -lag * 0.46;
+    explorer.step(f, lag);
     for (let i = 0; i < tailoring.updates.length; i++) tailoring.updates[i]();
     finishSuit();
     hipSeams();
     sleeveHeads();
     body.update();
+    explorer.fitPockets();
     hairMotion.step(f);
   };
 }
