@@ -1,0 +1,1013 @@
+// Calfskin shoulder strap and turned lower garment edges, in the same pose as the cloth.
+import * as T from 'three';
+import { detailMaterial } from './material-detail.js';
+
+const section = [
+  [-1, -0.38],
+  [-0.92, -0.9],
+  [0.92, -0.9],
+  [1, -0.38],
+  [1, 0.38],
+  [0.92, 0.9],
+  [-0.92, 0.9],
+  [-1, 0.38],
+];
+
+// The strap's cross section maps its two broad faces to 1/8 and 5/8 of
+// the UV strip. Two waxed saddle-stitch rows run just inside their edges.
+function saddleStitch(leather) {
+  const width = 256,
+    height = 32,
+    rgba = new Uint8Array(width * height * 4);
+  for (let y = 0; y < height; y++)
+    for (let x = 0; x < width; x++) {
+      const u = (x + 0.5) / width,
+        v = (y + 0.5) / height;
+      const face = u >= 0.625 && u <= 0.75 ? 0.625 : 0.125;
+      const seam = Math.min(Math.abs(u - face - 0.013), Math.abs(u - face - 0.112));
+      const thread = Math.max(0, 1 - (seam / 0.0045) ** 2 - ((v - 0.45) / 0.32) ** 2);
+      const at = 4 * (y * width + x);
+      rgba[at] = 101 + 86 * thread;
+      rgba[at + 1] = 67 + 64 * thread;
+      rgba[at + 2] = 53 + 49 * thread;
+      rgba[at + 3] = 255;
+    }
+  const tile = new T.DataTexture(rgba, width, height);
+  tile.colorSpace = T.SRGBColorSpace;
+  tile.wrapT = T.RepeatWrapping;
+  tile.repeat.y = 152;
+  tile.magFilter = T.LinearFilter;
+  tile.minFilter = T.LinearMipmapLinearFilter;
+  tile.generateMipmaps = true;
+  tile.needsUpdate = true;
+  const result = new T.MeshStandardMaterial({ color: '#ffe38e', roughness: leather.roughness, map: tile });
+  result.userData.blueprintId = 'strap';
+  return detailMaterial(result, 'leather');
+}
+
+function stripGeometry(rows, columns, wrap, closeCrossSection = true) {
+  const index = [],
+    uv = [];
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < columns; col++) {
+      uv.push(col / (wrap ? columns : columns - 1), row / (rows - 1));
+      if (row === rows - 1 || (!wrap && col === columns - 1)) continue;
+      const a = row * columns + col,
+        b = row * columns + ((col + 1) % columns);
+      index.push(a, b, a + columns, a + columns, b, b + columns);
+    }
+  }
+  if (closeCrossSection && wrap) {
+    for (let col = 1; col < columns - 1; col++) {
+      index.push(0, col + 1, col);
+      const last = (rows - 1) * columns;
+      index.push(last, last + col, last + col + 1);
+    }
+  }
+  const g = new T.BufferGeometry();
+  g.setAttribute(
+    'position',
+    new T.BufferAttribute(new Float32Array(rows * columns * 3), 3).setUsage(T.DynamicDrawUsage),
+  );
+  g.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+  g.setIndex(index);
+  return g;
+}
+
+// Keep the normal accumulator on the mesh; these narrow pieces deform at
+// fixed-step rate even when two rendering frames share the same simulation.
+function refreshNormals(geometry) {
+  const p = geometry.attributes.position.array,
+    indices = geometry.index.array;
+  if (!geometry.attributes.normal)
+    geometry.setAttribute(
+      'normal',
+      new T.BufferAttribute(new Float32Array(p.length), 3).setUsage(T.DynamicDrawUsage),
+    );
+  const n = geometry.attributes.normal.array;
+  n.fill(0);
+  for (let i = 0; i < indices.length; i += 3) {
+    const a = indices[i] * 3,
+      b = indices[i + 1] * 3,
+      c = indices[i + 2] * 3;
+    const ux = p[b] - p[a],
+      uy = p[b + 1] - p[a + 1],
+      uz = p[b + 2] - p[a + 2];
+    const vx = p[c] - p[a],
+      vy = p[c + 1] - p[a + 1],
+      vz = p[c + 2] - p[a + 2];
+    const nx = uy * vz - uz * vy,
+      ny = uz * vx - ux * vz,
+      nz = ux * vy - uy * vx;
+    for (let j = i; j < i + 3; j++) {
+      const k = indices[j] * 3;
+      n[k] += nx;
+      n[k + 1] += ny;
+      n[k + 2] += nz;
+    }
+  }
+  for (let k = 0; k < n.length; k += 3) {
+    const x = n[k],
+      y = n[k + 1],
+      z = n[k + 2],
+      inverse = 1 / (Math.sqrt(x * x + y * y + z * z) || 1);
+    n[k] *= inverse;
+    n[k + 1] *= inverse;
+    n[k + 2] *= inverse;
+  }
+  geometry.attributes.normal.needsUpdate = true;
+}
+
+function mesh(parent, geometry, material, name) {
+  const result = new T.Mesh(geometry, material);
+  result.name = name;
+  result.castShadow = result.receiveShadow = true;
+  result.frustumCulled = false;
+  parent.add(result);
+  return result;
+}
+
+function turnedHem(cloth, count, closed, material, name) {
+  const geometry = stripGeometry(4, count, closed, false);
+  const edge = mesh(cloth, geometry, material, name);
+  const p = geometry.attributes.position,
+    source = cloth.geometry.attributes.position;
+  const a = new T.Vector3(),
+    along = new T.Vector3(),
+    inward = new T.Vector3();
+  const radial = new T.Vector3(),
+    direction = new T.Vector3();
+  // The folded edge shares the outer sewing line and turns under the cloth.
+  const fold = [
+    [0, 0],
+    [-0.0011, -0.00025],
+    [-0.0018, -0.0011],
+    [0.0017, -0.0017],
+  ];
+  function update() {
+    for (let col = 0; col < count; col++) {
+      a.fromBufferAttribute(source, col);
+      along
+        .fromBufferAttribute(source, count + col)
+        .sub(a)
+        .normalize();
+      direction.fromBufferAttribute(source, (col + 1) % count).sub(a);
+      if (!closed && col === count - 1)
+        direction
+          .fromBufferAttribute(source, col - 1)
+          .sub(a)
+          .negate();
+      inward.crossVectors(direction, along).normalize();
+      radial.set(a.x, 0, a.z);
+      if (inward.dot(radial) < 0) inward.negate();
+      for (let row = 0; row < fold.length; row++) {
+        const [d, n] = fold[row];
+        p.setXYZ(
+          row * count + col,
+          a.x + d * along.x + n * inward.x,
+          a.y + d * along.y + n * inward.y,
+          a.z + d * along.z + n * inward.z,
+        );
+      }
+    }
+    p.needsUpdate = true;
+    refreshNormals(geometry);
+  }
+  update();
+  return { edge, update };
+}
+
+// Cross-sections of the knitted waistband in hip space. For each jacket vertex,
+// intersect its radial plane with the actual waistband triangles and take the
+// outermost piece of fabric at that height. A small interval also protects
+// the span between adjacent jacket vertices when the wearer crouches.
+function radialEnvelope(garment) {
+  const positions = garment.geometry.attributes.position,
+    index = garment.geometry.index?.array ?? Uint32Array.from({ length: positions.count }, (_, i) => i);
+  // Retain the slice storage across poses, including deep folds where one
+  // azimuth can cut the same cloth ring more than once.
+  // Each triangle can contribute at most one segment to any given radial slice.
+  const capacity = 4 * (index.length / 3);
+  const bins = Array.from({ length: 64 }, () => new Float32Array(capacity));
+  const used = new Uint32Array(bins.length);
+  const vec = new T.Vector3();
+  const angles = new Float32Array(positions.count);
+  const heights = new Float32Array(positions.count);
+  const tau = Math.PI * 2;
+  const angleScale = bins.length / tau;
+  const tanX = Array.from({ length: 64 }, (_, i) => Math.sin(i / angleScale));
+  const tanZ = Array.from({ length: 64 }, (_, i) => Math.cos(i / angleScale));
+  function refresh() {
+    used.fill(0);
+    for (let i = 0; i < positions.count; i++) {
+      vec.fromBufferAttribute(positions, i);
+      angles[i] = (Math.atan2(vec.x, vec.z) + tau) % tau;
+      heights[i] = vec.y;
+    }
+    for (let tri = 0; tri < index.length; tri += 3) {
+      const a = index[tri],
+        b = index[tri + 1],
+        c = index[tri + 2];
+      const base = angles[a];
+      // Unwrap the two neighbouring angles with respect to this vertex.
+      let second = angles[b],
+        third = angles[c];
+      if (second - base > Math.PI) second -= tau;
+      else if (second - base < -Math.PI) second += tau;
+      if (third - base > Math.PI) third -= tau;
+      else if (third - base < -Math.PI) third += tau;
+      const lo = Math.min(base, second, third),
+        hi = Math.max(base, second, third);
+      for (let k = Math.ceil(lo * angleScale); k <= Math.floor(hi * angleScale); k++) {
+        const slot = (k + bins.length) % bins.length;
+        let r0 = 0,
+          h0 = 0,
+          r1 = 0,
+          h1 = 0,
+          n = 0;
+        for (let edge = 0; edge < 3; edge++) {
+          const i = index[tri + edge],
+            j = index[tri + ((edge + 1) % 3)];
+          const ix = positions.getX(i),
+            iz = positions.getZ(i),
+            jx = positions.getX(j),
+            jz = positions.getZ(j);
+          const left = ix * tanZ[slot] - iz * tanX[slot],
+            right = jx * tanZ[slot] - jz * tanX[slot];
+          if (left < 0 === right < 0 || left === right) continue;
+          const t = left / (left - right),
+            r = (ix + (jx - ix) * t) * tanX[slot] + (iz + (jz - iz) * t) * tanZ[slot];
+          if (r < 0) continue;
+          const h = heights[i] + (heights[j] - heights[i]) * t;
+          if (n++ === 0) {
+            r0 = r;
+            h0 = h;
+          } else {
+            r1 = r;
+            h1 = h;
+          }
+        }
+        if (n === 2) {
+          const head = used[slot];
+          const bin = bins[slot];
+          bin[head] = h0;
+          bin[head + 1] = r0;
+          bin[head + 2] = h1;
+          bin[head + 3] = r1;
+          used[slot] = head + 4;
+        }
+      }
+    }
+  }
+  function radius(y, angle, margin) {
+    let result = 0;
+    const slot = Math.round(((angle + tau) % tau) * angleScale) % bins.length;
+    for (let neighbour = -1; neighbour <= 1; neighbour++) {
+      const neighbourSlot = (slot + neighbour + bins.length) % bins.length;
+      const bin = bins[neighbourSlot];
+      for (let i = 0; i < used[neighbourSlot]; i += 4) {
+        const y0 = bin[i],
+          y1 = bin[i + 2],
+          a = bin[i + 1],
+          b = bin[i + 3];
+        if (y + margin < Math.min(y0, y1) || y - margin > Math.max(y0, y1)) continue;
+        const edgeY = (b - a) * (y1 - y0) > 0 ? y + margin : y - margin;
+        const mix = T.MathUtils.clamp((edgeY - y0) / (y1 - y0 || 0.00001), 0, 1);
+        result = Math.max(result, a + mix * (b - a));
+      }
+    }
+    return result;
+  }
+  return { refresh, radius };
+}
+
+// Seat the upper strap on the actual neckline, back and turning shoulder.
+// Bind the rail to cloth triangles once per detail level. Each fixed step then
+// follows only three posed vertices per guide, including during a high reach.
+function bindShoulderRail(cache, chest, layers, guides, outward, standOff = 0.0043) {
+  const chestInverse = chest.matrixWorld.clone().invert();
+  const bindShapes = layers.map((mesh) => mesh.geometry);
+  const sample = new T.Vector3(),
+    a = new T.Vector3(),
+    b = new T.Vector3(),
+    c = new T.Vector3();
+  const hit = new T.Vector3(),
+    direction = new T.Vector3(),
+    normal = new T.Vector3(),
+    ray = new T.Ray();
+  const xform = new T.Matrix4();
+  const tables = [];
+  for (const mobile of [false, true]) {
+    const prepared = layers.map((mesh, i) => {
+      mesh.geometry = mobile ? (mesh.userData.mobileGeometry ?? bindShapes[i]) : bindShapes[i];
+      mesh.updateWorldMatrix(true, false);
+      xform.multiplyMatrices(chestInverse, mesh.matrixWorld);
+      const g = mesh.geometry;
+      let shapes = cache.get(mesh);
+      if (!shapes) {
+        shapes = new Map();
+        cache.set(mesh, shapes);
+      }
+      const existing = shapes.get(g);
+      if (existing) {
+        existing.visited.fill(0);
+        return existing;
+      }
+      const xyz = new T.BufferAttribute(new Float32Array(g.attributes.position.count * 3), 3);
+      const limb = new Uint8Array(xyz.count);
+      const joint = g.attributes.skinIndex,
+        weight = g.attributes.skinWeight;
+      if (mesh.isSkinnedMesh && joint && weight) {
+        const arm = mesh.skeleton.bones.map((b) => /Arm|forearm|hand/i.test(b.name));
+        for (let n = 0; n < xyz.count; n++) {
+          let sum = 0;
+          for (let c = 0; c < 4; c++) if (arm[joint.getComponent(n, c)]) sum += weight.getComponent(n, c);
+          limb[n] = sum > 0.52 ? 1 : 0;
+        }
+      }
+      for (let n = 0; n < xyz.count; n++) {
+        mesh.getVertexPosition(n, sample).applyMatrix4(xform);
+        xyz.setXYZ(n, sample.x, sample.y, sample.z);
+      }
+      // Bucket the bind triangles by height and reject disjoint X/Z bounds
+      // before casting to the physical surface. Both qualifiers are only broad
+      // phase: the final correspondence still uses the exact triangle hit.
+      const idx = g.index,
+        start = g.drawRange.start;
+      const end = Math.min(start + g.drawRange.count, idx?.count ?? xyz.count);
+      const slabs = new Map(),
+        bounds = new Float32Array(4 * Math.ceil(end / 3));
+      const visited = new Uint32Array(Math.ceil(end / 3)),
+        resolution = 32;
+      for (let j = start; j + 2 < end; j += 3) {
+        const k = Math.floor(j / 3),
+          ai = idx ? idx.getX(j) : j,
+          bi = idx ? idx.getX(j + 1) : j + 1,
+          ci = idx ? idx.getX(j + 2) : j + 2;
+        a.fromBufferAttribute(xyz, ai);
+        b.fromBufferAttribute(xyz, bi);
+        c.fromBufferAttribute(xyz, ci);
+        bounds[4 * k] = Math.min(a.x, b.x, c.x);
+        bounds[4 * k + 1] = Math.max(a.x, b.x, c.x);
+        bounds[4 * k + 2] = Math.min(a.z, b.z, c.z);
+        bounds[4 * k + 3] = Math.max(a.z, b.z, c.z);
+        const last = Math.floor(Math.max(a.y, b.y, c.y) * resolution);
+        for (let band = Math.floor(Math.min(a.y, b.y, c.y) * resolution); band <= last; band++) {
+          if (!slabs.has(band)) slabs.set(band, []);
+          slabs.get(band).push(j);
+        }
+      }
+      const surface = { mesh, xyz, index: idx, limb, slabs, bounds, visited, resolution };
+      shapes.set(g, surface);
+      return surface;
+    });
+    const contacts = guides.map((point, guideId) => {
+      if (outward) outward(point, direction);
+      else {
+        if (point.y < -0.012) return null;
+        const over =
+          T.MathUtils.smoothstep(point.y, 0.09, 0.132) * T.MathUtils.smoothstep(point.x, 0.053, 0.087);
+        direction.set(0.22 * over, over, Math.sign(point.z) * (1 - over)).normalize();
+      }
+      ray.origin.copy(point).addScaledVector(direction, 0.12);
+      ray.direction.copy(direction).negate();
+      let distance = 0.19,
+        contact = null;
+      const finish = ray.at(0.19, new T.Vector3());
+      const xmin = Math.min(ray.origin.x, finish.x),
+        xmax = Math.max(ray.origin.x, finish.x);
+      const zmin = Math.min(ray.origin.z, finish.z),
+        zmax = Math.max(ray.origin.z, finish.z);
+      const ymin = Math.min(ray.origin.y, finish.y),
+        ymax = Math.max(ray.origin.y, finish.y);
+      for (const { mesh, xyz, index, limb, slabs, bounds, visited, resolution } of prepared) {
+        const endBand = Math.floor(ymax * resolution);
+        for (let band = Math.floor(ymin * resolution); band <= endBand; band++) {
+          const list = slabs.get(band);
+          if (!list) continue;
+          for (const j of list) {
+            const k = Math.floor(j / 3);
+            if (visited[k] === guideId + 1) continue;
+            visited[k] = guideId + 1;
+            if (
+              bounds[4 * k] > xmax ||
+              bounds[4 * k + 1] < xmin ||
+              bounds[4 * k + 2] > zmax ||
+              bounds[4 * k + 3] < zmin
+            )
+              continue;
+            const ai = index ? index.getX(j) : j,
+              bi = index ? index.getX(j + 1) : j + 1,
+              ci = index ? index.getX(j + 2) : j + 2;
+            // The rucksack straps pass under the arm: bind the torso-side pattern,
+            // rather than catching a swinging sleeve beyond the facing.
+            if (outward && point.y < 0.106 && limb[ai] + limb[bi] + limb[ci] > 1) continue;
+            a.fromBufferAttribute(xyz, ai);
+            b.fromBufferAttribute(xyz, bi);
+            c.fromBufferAttribute(xyz, ci);
+            if (!ray.intersectTriangle(a, b, c, false, hit)) continue;
+            const depth = ray.origin.distanceTo(hit);
+            if (depth >= distance) continue;
+            distance = depth;
+            T.Triangle.getBarycoord(hit, a, b, c, sample);
+            T.Triangle.getNormal(a, b, c, normal);
+            contact = {
+              mesh,
+              ai,
+              bi,
+              ci,
+              weights: sample.clone(),
+              standOff: typeof standOff === 'function' ? standOff(point) : standOff,
+              orientation: normal.dot(direction) < 0 ? -1 : 1,
+            };
+          }
+        }
+      }
+      return contact;
+    });
+    tables.push(contacts);
+  }
+  for (let i = 0; i < layers.length; i++) layers[i].geometry = bindShapes[i];
+  const matrices = layers.map(() => new T.Matrix4());
+  const byMesh = new Map(layers.map((mesh, i) => [mesh, matrices[i]]));
+  let active = tables[0];
+  return {
+    refresh() {
+      chestInverse.copy(chest.matrixWorld).invert();
+      active = tables[Number(layers[0].geometry === layers[0].userData.mobileGeometry)];
+      for (let i = 0; i < layers.length; i++)
+        matrices[i].multiplyMatrices(chestInverse, layers[i].matrixWorld);
+    },
+    seat(row, out) {
+      const contact = active[row];
+      if (!contact) return false;
+      const { mesh, ai, bi, ci, weights, orientation } = contact;
+      const m = byMesh.get(mesh);
+      mesh.getVertexPosition(ai, a).applyMatrix4(m);
+      mesh.getVertexPosition(bi, b).applyMatrix4(m);
+      mesh.getVertexPosition(ci, c).applyMatrix4(m);
+      T.Triangle.getNormal(a, b, c, normal);
+      out
+        .copy(a)
+        .multiplyScalar(weights.x)
+        .addScaledVector(b, weights.y)
+        .addScaledVector(c, weights.z)
+        .addScaledVector(normal, contact.standOff * orientation);
+      return true;
+    },
+  };
+}
+
+// The inside face of the right sleeve passes the bag hardware as the arm
+// starts swinging. Track its actual jacket surface in each visible pattern and
+// give the nearby width of the leather room to turn over the brass ring.
+function bindCuffFacing(mesh, chest) {
+  const rest = new T.Vector3(-0.127, 0.435, -0.005);
+  const triangle = new T.Triangle(),
+    point = new T.Vector3(),
+    normal = new T.Vector3(),
+    nearest = new T.Vector3();
+  const matrix = new T.Matrix4();
+  const patterns = [mesh.geometry, mesh.userData.mobileGeometry].map((g) => {
+    let best = Infinity,
+      face;
+    const pos = g.attributes.position,
+      idx = g.index;
+    for (let i = 0; i < 3 * g.userData.outerTriangles; i += 3) {
+      const ai = idx.getX(i),
+        bi = idx.getX(i + 1),
+        ci = idx.getX(i + 2);
+      triangle.a.fromBufferAttribute(pos, ai);
+      triangle.b.fromBufferAttribute(pos, bi);
+      triangle.c.fromBufferAttribute(pos, ci);
+      if (triangle.getNormal(normal).x < 0.65) continue;
+      const distance = triangle.getMidpoint(point).distanceToSquared(rest);
+      if (distance < best) {
+        best = distance;
+        face = [ai, bi, ci];
+      }
+    }
+    return face;
+  });
+  return (centers, takeup) => {
+    const face = patterns[Number(mesh.geometry === mesh.userData.mobileGeometry)];
+    matrix.copy(chest.matrixWorld).invert().multiply(mesh.matrixWorld);
+    mesh.getVertexPosition(face[0], triangle.a).applyMatrix4(matrix);
+    mesh.getVertexPosition(face[1], triangle.b).applyMatrix4(matrix);
+    mesh.getVertexPosition(face[2], triangle.c).applyMatrix4(matrix);
+    triangle.getNormal(normal);
+    triangle.getMidpoint(point);
+    for (let i = 1; i < 8; i++) {
+      const p = centers[i];
+      const x = p.x - point.x,
+        y = p.y - point.y,
+        z = p.z - point.z;
+      const gap = x * normal.x + y * normal.y + z * normal.z;
+      if (gap < -0.008 || gap >= 0.0075) continue;
+      const distance = triangle.closestPointToPoint(p, nearest).distanceTo(p);
+      const contact = 1 - T.MathUtils.smoothstep(distance, 0.0056, 0.0083);
+      p.addScaledVector(normal, (0.0075 - gap) * contact * takeup);
+    }
+  };
+}
+
+// Sample the actual outside of the right cargo leg, grouped by ring at bind.
+// During a tuck these same cloth vertices follow the thigh up into the sling.
+// Narrow polar and height windows keep the opposite, unoccupied hip free.
+function bindCargoHip(hips, cargo) {
+  const point = new T.Vector3(),
+    toHips = new T.Matrix4();
+  const high = cargo.geometry;
+  hips.updateWorldMatrix(true, false);
+  cargo.updateWorldMatrix(true, false);
+  toHips.copy(hips.matrixWorld).invert().multiply(cargo.matrixWorld);
+  const tiers = [high, cargo.userData.mobileGeometry ?? high].map((geometry) => {
+    cargo.geometry = geometry;
+    const cells = new Map();
+    for (let i = 0; i < geometry.attributes.position.count; i++) {
+      cargo.getVertexPosition(i, point).applyMatrix4(toHips);
+      if (point.x > 0.035 || point.y < -0.22 || point.y > 0.125) continue;
+      const a = Math.atan2(point.x + 0.057, point.z);
+      const cell =
+        Math.floor((point.y + 0.22) / 0.012) * 24 +
+        Math.min(23, Math.floor(((a + Math.PI) * 24) / (2 * Math.PI)));
+      const r = Math.hypot(point.x + 0.057, point.z);
+      if (!cells.has(cell) || cells.get(cell).radius < r) cells.set(cell, { id: i, radius: r });
+    }
+    const ids = Int32Array.from(cells.values(), (v) => v.id);
+    return { ids, samples: new Float32Array(ids.length * 3) };
+  });
+  cargo.geometry = high;
+  let active = tiers[0];
+  return {
+    update() {
+      active = tiers[Number(cargo.geometry !== high)];
+      toHips.copy(hips.matrixWorld).invert().multiply(cargo.matrixWorld);
+      for (let i = 0; i < active.ids.length; i++) {
+        cargo.getVertexPosition(active.ids[i], point).applyMatrix4(toHips);
+        point.toArray(active.samples, i * 3);
+      }
+    },
+    radius(y, a) {
+      const sin = Math.sin(a),
+        cos = Math.cos(a),
+        p = active.samples;
+      let best = 0;
+      for (let i = 0; i < p.length; i += 3) {
+        const dy = Math.abs(y - p[i + 1]);
+        if (dy > 0.018) continue;
+        const lateral = Math.abs(p[i] * cos - p[i + 2] * sin);
+        if (lateral > 0.022) continue;
+        const projection = p[i] * sin + p[i + 2] * cos;
+        best = Math.max(best, projection + 0.009 * (1 - Math.max(dy / 0.018, lateral / 0.022)));
+      }
+      return best;
+    },
+  };
+}
+
+export function fitRomaAccessories(
+  rig,
+  bag,
+  hoodieHem,
+  jacket,
+  leather,
+  lining,
+  knit,
+  torsoLayers,
+  cargo,
+  kit,
+) {
+  const fitCuff = bindCuffFacing(torsoLayers[0], rig.chest);
+  const envelope = radialEnvelope(hoodieHem);
+  const cargoHip = bindCargoHip(rig.hips, cargo);
+  const jacketEnvelope = radialEnvelope(jacket);
+  const chestToJacket = new T.Matrix4(),
+    jacketToChest = new T.Matrix4();
+  const jacketToHips = new T.Matrix4(),
+    hipsToJacket = new T.Matrix4();
+  const shellPoint = new T.Vector3();
+  const jacketPosition = jacket.geometry.attributes.position;
+  const rowCount = Math.min(4, Math.floor(jacketPosition.count / 41));
+  const freePosition = new Float32Array(rowCount * 41 * 3);
+  const lowerPositions = jacketPosition.array.subarray(0, freePosition.length);
+  const bagSupportHeights = [-0.08, -0.048, -0.016];
+  const bagSupportAngles = [-0.22, 0, 0.27];
+  const belt = rig.hips.children.find((child) => child.isMesh && child.material === leather);
+  const harnessSupport = [...torsoLayers, jacket, hoodieHem, belt];
+  const padSupport = [...harnessSupport, cargo];
+  belt.updateMatrix();
+  const beltGeometry = belt.geometry.clone().applyMatrix4(belt.matrix);
+  const beltSections = radialEnvelope({ geometry: beltGeometry });
+  beltSections.refresh();
+  bag.scale.set(0.54, 1.1, 0.64);
+  function release() {
+    jacketPosition.array.set(freePosition);
+  }
+  const frontClasp = new T.Vector3(),
+    backClasp = new T.Vector3();
+  const waypoints = Array.from({ length: 15 }, () => new T.Vector3());
+  const path = new T.CatmullRomCurve3(waypoints);
+  const samples = 49;
+  const geometry = stripGeometry(samples, section.length, true);
+  const strap = mesh(rig.chest, geometry, saddleStitch(leather), 'Roma stitched saddle strap');
+  const hem = turnedHem(hoodieHem, 64, true, knit, 'Roma rib-knit hem facing');
+  const jacketHem = turnedHem(jacket, 41, false, lining, 'Roma jacket hem facing');
+  const positions = geometry.attributes.position;
+  const chestToBag = new T.Matrix4(),
+    bagToChest = new T.Matrix4();
+  const chestToHips = new T.Matrix4(),
+    hipsToChest = new T.Matrix4();
+  const centers = Array.from({ length: samples }, () => new T.Vector3());
+  const relaxed = Array.from({ length: samples }, () => new T.Vector3());
+  const minimumDistance = new Float32Array(samples);
+  const bearing = centers.map(() => new T.Vector3());
+  const bearingNormal = centers.map(() => new T.Vector3());
+  // All five rails bind in the same pose. Share their temporary triangle grids,
+  // then release the grids once each rail owns its exact triangle witnesses.
+  const bindGrid = new Map();
+  const bindRail = bindShoulderRail.bind(null, bindGrid);
+  const frontSeat = new T.Vector3();
+  let shoulderRail, frontRail;
+  const targetPoint = new T.Vector3();
+  const tangent = new T.Vector3(),
+    side = new T.Vector3(),
+    normal = new T.Vector3(),
+    v = new T.Vector3();
+  const inv = new T.Matrix4(),
+    axis = new T.Vector3();
+  const arm = Array.from({ length: 4 }, () => new T.Vector3());
+  const sleeveRadius = [0.049, 0.045, 0.038];
+  const nearest = new T.Vector3(),
+    limb = new T.Vector3(),
+    away = new T.Vector3();
+  function avoidSleeve(center) {
+    for (let i = 0; i < sleeveRadius.length; i++) {
+      limb.subVectors(arm[i + 1], arm[i]);
+      const t = T.MathUtils.clamp(
+        away.subVectors(center, arm[i]).dot(limb) / Math.max(0.0001, limb.lengthSq()),
+        0,
+        1,
+      );
+      nearest.copy(arm[i]).addScaledVector(limb, t);
+      away.subVectors(center, nearest);
+      const d = away.length();
+      if (d < sleeveRadius[i] && d > 0.0001) center.addScaledVector(away, (sleeveRadius[i] - d) / d);
+    }
+  }
+  function supportHarness(point) {
+    if (point.y > 0.045) return;
+    v.copy(point).applyMatrix4(chestToJacket);
+    let a = Math.atan2(v.x, v.z),
+      r = Math.hypot(v.x, v.z);
+    let min = jacketEnvelope.radius(v.y, a, 0.014) + 0.009;
+    if (r > 1e-4 && r < min) {
+      v.x *= min / r;
+      v.z *= min / r;
+      point.copy(v).applyMatrix4(jacketToChest);
+    }
+    v.copy(point).applyMatrix4(chestToHips);
+    a = Math.atan2(v.x, v.z);
+    r = Math.hypot(v.x, v.z);
+    min = Math.max(envelope.radius(v.y, a, 0.012), beltSections.radius(v.y, a, 0.012)) + 0.006;
+    if (r > 1e-4 && r < min) {
+      v.x *= min / r;
+      v.z *= min / r;
+      point.copy(v).applyMatrix4(hipsToChest);
+    }
+  }
+  // A pad seam stays at its stitched X/Y position. Move only along the back
+  // normal to pass the fitted circumference of the waist and leather belt.
+  function clearPadSection(point, matrix, shell, margin) {
+    v.copy(point).applyMatrix4(matrix);
+    const angle = Math.atan2(v.x, v.z);
+    const radius = shell.radius(v.y, angle, margin);
+    if (radius <= 0) return;
+    const outside = radius + 0.004;
+    const squared = v.x * v.x + v.z * v.z - outside * outside;
+    if (squared >= 0) return;
+    const dx = -matrix.elements[8],
+      dz = -matrix.elements[10];
+    const along = dx * dx + dz * dz;
+    const dot = v.x * dx + v.z * dz;
+    if (along > 0.001) point.z -= (Math.sqrt(dot * dot - along * squared) - dot) / along;
+  }
+  function supportPad(point) {
+    if (point.y > 0.045) return;
+    for (let i = 0; i < 3; i++) {
+      clearPadSection(point, chestToJacket, jacketEnvelope, 0.011);
+      clearPadSection(point, chestToHips, beltSections, 0.014);
+      clearPadSection(point, chestToHips, envelope, 0.01);
+    }
+  }
+  function update(tailLift = 0, takeup = 0, bagTrail = 0) {
+    jacket.updateWorldMatrix(true, false);
+    rig.hips.updateWorldMatrix(true, false);
+    jacketToHips.copy(rig.hips.matrixWorld).invert().multiply(jacket.matrixWorld);
+    hipsToJacket.copy(jacketToHips).invert();
+    envelope.refresh();
+    cargoHip.update();
+    // The waist belt and the hoodie hem move with the pelvis. Fit the lower jacket
+    // to their posed cross-sections, so its weighted hem can pass over either.
+    freePosition.set(lowerPositions);
+    let coatMoved = false;
+    for (let i = 0; i < rowCount * 41; i++) {
+      shellPoint.fromBufferAttribute(jacketPosition, i).applyMatrix4(jacketToHips);
+      const a = Math.atan2(shellPoint.x, shellPoint.z),
+        r = Math.hypot(shellPoint.x, shellPoint.z);
+      const beltRadius = beltSections.radius(shellPoint.y, a, 0.024);
+      const knitRadius = envelope.radius(shellPoint.y, a, 0.012);
+      // The accelerating hoodie hem lifts a shallow pocket of air under the loose
+      // back quarters. The sewn waist receives no extra ease.
+      const free = 1 - Math.floor(i / 41) / 3;
+      const tail = T.MathUtils.smoothstep(-shellPoint.z, 0.012, 0.065);
+      const placket = T.MathUtils.smoothstep(shellPoint.z, 0.012, 0.048);
+      const outside =
+        Math.max(r, knitRadius + 0.007, beltRadius + 0.0065) +
+        Math.max(tail, 0.64 * placket) * free * tailLift;
+      if (r < outside && r > 0.001) {
+        shellPoint.x *= outside / r;
+        shellPoint.z *= outside / r;
+        shellPoint.applyMatrix4(hipsToJacket);
+        jacketPosition.setXYZ(i, shellPoint.x, shellPoint.y, shellPoint.z);
+        coatMoved = true;
+      }
+    }
+    jacketPosition.needsUpdate = true;
+    if (coatMoved) refreshNormals(jacket.geometry);
+    jacketEnvelope.refresh();
+    chestToJacket.copy(jacket.matrixWorld).invert().multiply(rig.chest.matrixWorld);
+    jacketToChest.copy(chestToJacket).invert();
+    // The pouch rests against the back of the hip. Lift it away only when the
+    // moving waist layers actually fill that space, keeping the load under its strap.
+    inv.copy(rig.hips.matrixWorld).invert();
+    rig.handR.getWorldPosition(v).applyMatrix4(inv);
+    const bagAngle = -1.53;
+    let bagRadius = 0.116;
+    for (const dy of bagSupportHeights) {
+      for (const da of bagSupportAngles) {
+        const y = bag.position.y + dy,
+          angle = bagAngle + da;
+        bagRadius = Math.max(
+          bagRadius,
+          Math.max(envelope.radius(y, angle, 0.012), cargoHip.radius(y, angle)) + 0.011,
+        );
+      }
+    }
+    bag.position.x = bagRadius * Math.sin(bagAngle);
+    bag.position.z = bagRadius * Math.cos(bagAngle) - bagTrail;
+    // Let the hip pouch rotate aft only where the real wrist/forearm passes
+    // its outline. Sample the forearm and knuckle segment at the pouch's
+    // height: shoulder clearance elsewhere must not displace its resting load.
+    rig.forearmR.getWorldPosition(arm[0]).applyMatrix4(inv);
+    rig.handR.getWorldPosition(arm[1]).applyMatrix4(inv);
+    arm[2].set(0, -0.05, 0.007).applyMatrix4(rig.handR.matrixWorld).applyMatrix4(inv);
+    let safeZ = bag.position.z;
+    for (let i = 0; i < 2; i++) {
+      const from = arm[i],
+        to = arm[i + 1];
+      const rx = i === 0 ? 0.046 : 0.044,
+        rz = i === 0 ? 0.0605 : 0.058;
+      for (let j = 0; j < 5; j++) {
+        const y = bag.position.y + 0.004 - j * 0.019;
+        const dy = to.y - from.y;
+        const t = Math.abs(dy) > 0.0001 ? T.MathUtils.clamp((y - from.y) / dy, 0, 1) : 0.5;
+        nearest.lerpVectors(from, to, t);
+        const q = ((nearest.x - bag.position.x) / rx) ** 2 + ((nearest.y - y) / 0.035) ** 2;
+        if (q >= 1) continue;
+        const reach = rz * Math.sqrt(1 - q);
+        if (nearest.z + reach > safeZ) safeZ = Math.min(safeZ, nearest.z - reach);
+      }
+    }
+    bag.position.z = Math.max(-0.085 - 0.16 * bagTrail, safeZ);
+    // The satchel tucks toward the waist only after the swinging forearm has
+    // carried it behind the fuller front of the hip.
+    bag.position.x += 0.002 * T.MathUtils.smoothstep(-bag.position.z, 0.015, 0.039);
+    bag.updateWorldMatrix(true, false);
+    inv.copy(rig.chest.matrixWorld).invert();
+    // Both strap ends stay in the real brass rings as the bag swings.
+    frontClasp.set(0, 0.004, 0.041).applyMatrix4(bag.matrixWorld).applyMatrix4(inv);
+    backClasp.set(0, 0.004, -0.041).applyMatrix4(bag.matrixWorld).applyMatrix4(inv);
+    waypoints[0].copy(frontClasp);
+    waypoints[2].set(-0.104, -0.08, 0.06);
+    waypoints[3].set(-0.055, -0.035, 0.077);
+    waypoints[4].set(0.01, 0.025, 0.085);
+    waypoints[5].set(0.043, 0.071, 0.081);
+    waypoints[6].set(0.06, 0.108, 0.066);
+    waypoints[7].set(0.075, 0.145, 0.031);
+    waypoints[8].set(0.075, 0.145, -0.022);
+    waypoints[9].set(0.058, 0.105, -0.059);
+    waypoints[10].set(0.025, 0.043, -0.074);
+    waypoints[11].set(-0.028, -0.012, -0.078);
+    waypoints[12].set(-0.097, -0.067, -0.059);
+    waypoints[1].lerpVectors(frontClasp, waypoints[2], 0.48);
+    waypoints[1].x -= 0.004;
+    waypoints[13].lerpVectors(backClasp, waypoints[12], 0.46);
+    waypoints[14].copy(backClasp);
+    chestToHips.copy(rig.hips.matrixWorld).invert().multiply(rig.chest.matrixWorld);
+    hipsToChest.copy(chestToHips).invert();
+    rig.upperArmR.getWorldPosition(arm[0]).applyMatrix4(inv);
+    rig.forearmR.getWorldPosition(arm[1]).applyMatrix4(inv);
+    rig.handR.getWorldPosition(arm[2]).applyMatrix4(inv);
+    arm[3].set(0, -0.067, 0.004).applyMatrix4(rig.handR.matrixWorld).applyMatrix4(inv);
+    for (let row = 0; row < samples; row++) {
+      const center = path.getPoint(row / (samples - 1), centers[row]);
+      if (center.y > 0.032 || row === 0 || row === samples - 1) continue;
+      v.copy(center).applyMatrix4(chestToHips);
+      const a = Math.atan2(v.x, v.z),
+        r = Math.hypot(v.x, v.z);
+      const outside = Math.max(envelope.radius(v.y, a, 0.015), cargoHip.radius(v.y, a)) + 0.012;
+      if (r < outside && r > 0.001) {
+        v.x *= outside / r;
+        v.z *= outside / r;
+        center.copy(v).applyMatrix4(hipsToChest);
+      }
+      v.copy(center).applyMatrix4(chestToJacket);
+      const jacketAngle = Math.atan2(v.x, v.z),
+        jacketRadius = Math.hypot(v.x, v.z);
+      const coatClearance = jacketEnvelope.radius(v.y, jacketAngle, 0.012) + 0.0048;
+      if (jacketRadius < coatClearance && jacketRadius > 0.001) {
+        v.x *= coatClearance / jacketRadius;
+        v.z *= coatClearance / jacketRadius;
+        center.copy(v).applyMatrix4(jacketToChest);
+      }
+      avoidSleeve(center);
+    }
+    // The contact reads the skinned triangles before the renderer's own
+    // traversal. Refresh both bones and attached bind-matrix inverses here.
+    rig.root.updateMatrixWorld(true);
+    kit?.fit(harnessSupport, bindRail, supportHarness, padSupport, supportPad);
+    if (!shoulderRail) {
+      shoulderRail = bindRail(rig.chest, torsoLayers, centers);
+      frontRail = bindRail(
+        rig.chest,
+        harnessSupport,
+        centers,
+        (_, direction) => direction.set(0, 0, 1),
+        0.008,
+      );
+      bindGrid.clear();
+    }
+    shoulderRail.refresh();
+    frontRail.refresh();
+    // Leather has enough bending stiffness to bridge a fold in the shell. Relax
+    // both ends of the shoulder strap as continuous curves, preserving the two
+    // brass attachment points and the radial support from the moving layers.
+    for (let i = 0; i < samples; i++) minimumDistance[i] = Math.hypot(centers[i].x, centers[i].z) - 0.0015;
+    // A stiff ribbon spans a projecting hem over several guide intervals.
+    // Bound the rate at which its radial support falls away from a folded
+    // panel, so a segment between two outside guides cannot cut across it.
+    const allowance = 0.024;
+    for (let i = 2; i < samples - 1; i++)
+      if (centers[i].y < 0.047)
+        minimumDistance[i] = Math.max(minimumDistance[i], minimumDistance[i - 1] - allowance);
+    for (let i = samples - 3; i >= 1; i--)
+      if (centers[i].y < 0.047)
+        minimumDistance[i] = Math.max(minimumDistance[i], minimumDistance[i + 1] - allowance);
+    for (let pass = 0; pass < 12; pass++) {
+      for (let i = 1; i < samples - 1; i++) {
+        const point = centers[i],
+          out = relaxed[i].copy(point);
+        if (point.y > 0.045) continue;
+        const left = centers[i - 1],
+          right = centers[i + 1];
+        targetPoint.lerpVectors(left, right, 0.5);
+        out.lerp(targetPoint, 0.63);
+        const radius = Math.hypot(out.x, out.z);
+        if (radius < minimumDistance[i] && radius > 0.001) {
+          out.x *= minimumDistance[i] / radius;
+          out.z *= minimumDistance[i] / radius;
+        }
+      }
+      for (let i = 1; i < samples - 1; i++) centers[i].copy(relaxed[i]);
+    }
+    // Seat the upper length against the moving shoulder. Under the waist it
+    // rests on the knit waistband and slung pouch as the forearm swings beside it.
+    for (let row = 1; row < samples - 1; row++) {
+      const center = centers[row];
+      if (!shoulderRail.seat(row, center) || center.z < 0) continue;
+      // At the front of the jacket the leather bridges the placket and hood. The bearing
+      // surface turns sharply along this line, so ease that span forward.
+      const collarEase =
+        T.MathUtils.smoothstep(center.y, 0.034, 0.057) * (1 - T.MathUtils.smoothstep(center.y, 0.089, 0.113));
+      center.z += 0.004 * collarEase;
+    }
+    for (let pass = 0; pass < 3; pass++) {
+      for (let i = 1; i < samples - 1; i++) {
+        const center = centers[i];
+        if (center.y > 0.047) continue;
+        v.copy(center).applyMatrix4(chestToHips);
+        let angle = Math.atan2(v.x, v.z),
+          r = Math.hypot(v.x, v.z);
+        const waistClearance =
+          Math.max(envelope.radius(v.y, angle, 0.02), beltSections.radius(v.y, angle, 0.012)) + 0.009;
+        if (r < waistClearance && r > 0.001) {
+          v.x *= waistClearance / r;
+          v.z *= waistClearance / r;
+          center.copy(v).applyMatrix4(hipsToChest);
+        }
+        v.copy(center).applyMatrix4(chestToJacket);
+        angle = Math.atan2(v.x, v.z);
+        r = Math.hypot(v.x, v.z);
+        const support = jacketEnvelope.radius(v.y, angle, 0.014) + 0.0048;
+        if (r < support && r > 0.001) {
+          v.x *= support / r;
+          v.z *= support / r;
+          center.copy(v).applyMatrix4(jacketToChest);
+        }
+        avoidSleeve(center);
+      }
+    }
+    // Leather under tension bridges the valleys between the collar, bust and
+    // hem. A one-sided bearing constraint lets the band lift off the cloth
+    // while it keeps contact at the high points and follows both brass rings.
+    for (let i = 1; i < samples - 1; i++) {
+      const p = centers[i];
+      bearing[i].copy(p);
+      const crown = T.MathUtils.smoothstep(p.y, 0.087, 0.138);
+      const waist = 1 - T.MathUtils.smoothstep(p.y, -0.045, 0.015);
+      bearingNormal[i].set(p.x * (0.34 + 0.65 * waist), 0.082 * crown, p.z).normalize();
+    }
+    for (let pass = 0; pass < 16; pass++) {
+      for (let i = 1; i < samples - 1; i++) {
+        const out = relaxed[i].lerpVectors(centers[i - 1], centers[i + 1], 0.5).lerp(centers[i], 0.22);
+        const axis = bearingNormal[i];
+        const inset = v.subVectors(out, bearing[i]).dot(axis);
+        if (inset < 0) out.addScaledVector(axis, -inset);
+        if (out.y < 0.046) avoidSleeve(out);
+      }
+      for (let i = 1; i < samples - 1; i++) centers[i].copy(relaxed[i]);
+    }
+    // A strongly tucked knee can lift the cargo leg through the chord between
+    // two bearings; re-seat that local span on the trouser crease.
+    for (let i = 1; i < samples - 1; i++) {
+      const center = centers[i];
+      if (center.y > 0.042) continue;
+      v.copy(center).applyMatrix4(chestToHips);
+      const angle = Math.atan2(v.x, v.z),
+        radius = Math.hypot(v.x, v.z);
+      const support = Math.max(envelope.radius(v.y, angle, 0.02), cargoHip.radius(v.y, angle)) + 0.011;
+      if (radius > 0.001 && radius < support) {
+        v.x *= support / radius;
+        v.z *= support / radius;
+        center.copy(v).applyMatrix4(hipsToChest);
+      }
+    }
+    // The strap turns upward out of the brass rings before crossing the lip
+    // of the field pouch; cargo compression can otherwise pull its first
+    // span straight along the leather flap.
+    chestToBag.copy(bag.matrixWorld).invert().multiply(rig.chest.matrixWorld);
+    bagToChest.copy(chestToBag).invert();
+    for (let row = 1; row < samples - 1; row++) {
+      if (row > 5 && row < samples - 6) continue;
+      const center = centers[row];
+      v.copy(center).applyMatrix4(chestToBag);
+      const wx = 1 - T.MathUtils.smoothstep(Math.abs(v.x), 0.028, 0.043);
+      const wz = 1 - T.MathUtils.smoothstep(Math.abs(v.z), 0.048, 0.065);
+      const height = 0.016 * wx * wz;
+      if (height > 0 && v.y < height) {
+        v.y = height;
+        center.copy(v).applyMatrix4(bagToChest);
+      }
+    }
+    // The sling rests on the actual outer placket. It bridges the crossing
+    // rucksack harness below, while its flanks stay seated on the shell.
+    for (let row = 1; row < samples - 1; row++) {
+      const p = centers[row];
+      if (p.z < 0.043 || p.y < -0.065 || p.y > 0.096 || !frontRail.seat(row, frontSeat)) continue;
+      const delta = Math.hypot(p.x - frontSeat.x, p.y - frontSeat.y);
+      const weight = 1 - T.MathUtils.smoothstep(delta, 0.006, 0.027);
+      const lower = T.MathUtils.smoothstep(p.y, -0.065, -0.039);
+      const upper = 1 - T.MathUtils.smoothstep(p.y, -0.027, -0.006);
+      if (p.z > frontSeat.z) p.z -= Math.min(0.013, p.z - frontSeat.z) * weight * lower * upper;
+    }
+    if (takeup > 0) fitCuff(centers, takeup);
+    for (let row = 1; row < samples - 1; row++) kit?.liftCrossbody(centers[row]);
+    for (let row = 0; row < samples; row++) {
+      const center = centers[row];
+      tangent
+        .copy(centers[Math.min(row + 1, samples - 1)])
+        .sub(centers[Math.max(0, row - 1)])
+        .normalize();
+      // Gradually rotate the flat strap over the crown of the shoulder.
+      normal.set(center.x * 0.35, Math.max(0, (center.y - 0.118) * 2.1), center.z).normalize();
+      side.crossVectors(tangent, normal).normalize();
+      normal.crossVectors(side, tangent).normalize();
+      for (let col = 0; col < section.length; col++) {
+        const [w, d] = section[col];
+        axis
+          .copy(center)
+          .addScaledVector(side, w * 0.0053)
+          .addScaledVector(normal, d * 0.00125);
+        positions.setXYZ(row * section.length + col, axis.x, axis.y, axis.z);
+      }
+    }
+    positions.needsUpdate = true;
+    refreshNormals(geometry);
+    kit?.settlePads(centers, refreshNormals);
+    hem.update();
+    jacketHem.update();
+  }
+  update();
+  return { strap, hem: hem.edge, jacketHem: jacketHem.edge, release, update };
+}

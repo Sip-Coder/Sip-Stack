@@ -1,3 +1,15 @@
+# Heros
+
+Sippy, Roma and Hummin stand beside a three-foot ruler in their explorer outfits. The films below use the same Three.js models as the Heros tab. [Lineup](lineup.jpg)
+
+| Hero | Movement film | Garment turnaround |
+| --- | --- | --- |
+| Sippy | [Watch](sippy.mp4) | [Nine poses and views](sippy-garment-turnaround.jpg) |
+| Roma | [Watch](roma.mp4) | [Nine poses and views](roma-garment-turnaround.jpg) |
+| Hummin | [Watch](hummin.mp4) | [Nine poses and views](hummin-garment-turnaround.jpg) |
+
+Each hero has an original seven-view blueprint, an identically framed model sheet and measured silhouette overlays. [Blueprint gallery and measurements](blueprints/)
+
 # Living characters
 
 The 14-second portrait reel follows a porter, a harvester, the Village rower, a gull, a trout, a kingfisher and the Creek cooper. [Watch the MP4](living-characters-portrait.mp4)
