@@ -1,6 +1,8 @@
 // The apron is cut in metres of rig-local space. Outer and inner grain, cut edges,
 // folded rims and pocket gussets are modelled surfaces around the cast chassis.
 import * as T from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { addVineEmbroidery } from './embroidery.js';
 
 const { lerp, clamp, smoothstep } = T.MathUtils;
 const chestProfile = [
@@ -28,12 +30,19 @@ function chestSection(y) {
 }
 const formedChest = chestProfile.map(([h, r]) => {
   const b = 1 - smoothstep(h, -0.067, 0.142);
-  return [h, r * (0.913 + 0.33 * b), r * 0.69 * (0.91 + 0.26 * b), 0.0025 * b];
+  const breadth = 0.29 * smoothstep(h, -0.057, 0.018) * (1 - smoothstep(h, 0.093, 0.151));
+  const bolster = 0.014 * smoothstep(h, -0.078, 0.005) * (1 - smoothstep(h, 0.089, 0.144));
+  return [
+    h,
+    r * (0.913 + 0.33 * b + breadth),
+    r * 0.69 * (0.91 + 0.26 * b + 0.35 * breadth),
+    0.0025 * b + bolster,
+  ];
 });
 
 export function makeApron(rig, m, parts) {
   const { group, rod, oval, line } = parts;
-  const { leather, darkLeather, leatherEdge, thread, agedBrass, linen, wovenStripe } = m;
+  const { leather, darkLeather, leatherEdge, thread, agedBrass, denim, denimEdge, emblem, berry } = m;
   const surfaces = {},
     pairs = [];
   const register = (name, mesh) => (surfaces[name] ??= []).push(mesh);
@@ -109,10 +118,14 @@ export function makeApron(rig, m, parts) {
   const bibAt = (u, v) => {
     const t = 2 * u - 1,
       edge = lerp(0.082, 0.102, smoothstep(v, 0.08, 0.83));
-    const y = 0.073 - 0.148 * v - 0.006 * (1 - t * t) * v * v;
+    const y =
+      0.073 -
+      0.148 * v -
+      0.006 * (1 - t * t) * v * v +
+      0.032 * (1 - v) ** 3 * Math.max(0, 1 - (t / 0.7) ** 4);
     return v3(t * edge, y, bibZ(t * edge, y));
   };
-  patch(bibNode, 'bib', leather, 28, 22, bibAt, 0.0019);
+  patch(bibNode, 'bib', denim, 28, 22, bibAt, 0.0019);
 
   layer('bib', 'chassis', 'pelvis');
   const seam = (parent, fn, count, radius, mat = thread) => {
@@ -124,6 +137,50 @@ export function makeApron(rig, m, parts) {
     p.z += dz;
     return p;
   };
+  // Patch pocket at the center of the indigo bib. Its top and rounded lower
+  // corners are lined with two runs of ochre workwear thread.
+  const pocketFace = (u, v) => {
+    const t = u * 2 - 1,
+      y = 0.099 - 0.077 * v + 0.005 * t * t * v * v * v;
+    const x = t * (0.044 - 0.005 * v * v);
+    return v3(x, y, bibZ(x, y) + 0.0032 + 0.008 * (1 - t ** 4) * Math.sin(Math.PI * v) ** 2);
+  };
+  patch(bibNode, 'badgePocket', denimEdge, 18, 12, pocketFace, 0.0012);
+  layer('badgePocket', 'bib');
+  for (const side of [0.045, 0.955])
+    seam(
+      bibNode,
+      (t) => {
+        const q = pocketFace(side, t);
+        q.z += 0.0007;
+        return q;
+      },
+      15,
+      0.00048,
+      emblem,
+    );
+  for (const edge of [0.055, 0.944])
+    seam(
+      bibNode,
+      (t) => {
+        const q = pocketFace(t, edge);
+        q.z += 0.0007;
+        return q;
+      },
+      20,
+      0.00048,
+      emblem,
+    );
+  addVineEmbroidery(bibNode, {
+    x: 0,
+    y: 0.061,
+    z: bibZ(0, 0.061) + 0.0135,
+    width: 0.079,
+    height: 0.058,
+    radius: 0.115,
+    style: 'apron',
+    materials: { leaf: emblem, berry, thread: emblem },
+  });
   seam(bibNode, (t) => onBib(t, 0.025, 0.0006), 31, 0.00054);
   seam(bibNode, (t) => onBib(0.022, t, 0.0007), 35, 0.00055);
   seam(bibNode, (t) => onBib(0.978, t, 0.0007), 35, 0.00055);
@@ -139,9 +196,13 @@ export function makeApron(rig, m, parts) {
     84,
     6,
     (u, v) => {
-      const theta = lerp(1.36, 2 * Math.PI - 1.36, u);
+      const theta = lerp(1.98, 2 * Math.PI - 1.98, u);
       const y = lerp(0.035, 0.017, v);
-      return v3(0.1115 * Math.sin(theta), y, 0.075 * Math.cos(theta));
+      return v3(
+        0.1115 * Math.sin(theta),
+        y,
+        (0.077 + 0.005 * smoothstep(y, 0.025, 0.035)) * Math.cos(theta),
+      );
     },
     0.0016,
   );
@@ -166,7 +227,7 @@ export function makeApron(rig, m, parts) {
     const standOff = (front ? 0.01 : 0.008) + (s === -1 && !front ? 0.003 : 0);
     let z =
       z0 + Math.sign(Math.cos(a)) * rz * Math.sqrt(Math.max(0, 1 - (x / rx) ** 2)) + standOff * Math.cos(a);
-    if (front && y < 0.096) z = Math.max(z, bibZ(x, y) + 0.0055 * (1 - smoothstep(y, 0.076, 0.096)));
+    if (front && y < 0.118) z = Math.max(z, bibZ(x, y) + 0.0058 * (1 - smoothstep(y, 0.105, 0.118)));
     return v3(x, y + 0.0035 * h ** 5, z);
   };
   for (const [s, id] of [
@@ -208,6 +269,8 @@ export function makeApron(rig, m, parts) {
 
   // An open pocket has a back wall, a gusset down each side and under the base,
   // plus a separate convex face. The space between the two walls houses tools.
+  const tray = group(bibNode, -0.045, -0.022, 0.053);
+  tray.scale.setScalar(0.55);
   function pocket(name, x0, x1, top, bottom, depth) {
     function section(u, v) {
       const t = clamp((v - 0.73) / 0.27, 0, 1),
@@ -221,11 +284,11 @@ export function makeApron(rig, m, parts) {
       const [x, y, z, Z] = section(u, v);
       return v3(x, y, front ? Z : z);
     };
-    patch(bibNode, name, darkLeather, 14, 12, (u, v) => wall(u, v, true), 0.0012);
-    patch(bibNode, name, leather, 14, 10, (u, v) => wall(u, v, false), 0.001);
+    patch(tray, name, darkLeather, 14, 12, (u, v) => wall(u, v, true), 0.0012);
+    patch(tray, name, leather, 14, 10, (u, v) => wall(u, v, false), 0.001);
     for (const s of [0, 1])
       patch(
-        bibNode,
+        tray,
         name,
         leatherEdge,
         4,
@@ -237,7 +300,7 @@ export function makeApron(rig, m, parts) {
         0.0009,
       );
     patch(
-      bibNode,
+      tray,
       name,
       leatherEdge,
       14,
@@ -249,7 +312,7 @@ export function makeApron(rig, m, parts) {
       0.0009,
     );
     seam(
-      bibNode,
+      tray,
       (t) => {
         const q = wall(t, 0.06, true);
         q.z += 0.00065;
@@ -260,7 +323,7 @@ export function makeApron(rig, m, parts) {
     );
     for (const side of [0.06, 0.94])
       seam(
-        bibNode,
+        tray,
         (t) => {
           const q = wall(side, t, true);
           q.z += 0.00065;
@@ -273,43 +336,36 @@ export function makeApron(rig, m, parts) {
   }
   pocket('toolPocket', -0.073, 0.021, 0.006, -0.05, 0.02);
   pocket('penPocket', 0.028, 0.065, 0.002, -0.045, 0.014);
-  const tools = group(bibNode, -0.042, 0.005, bibZ(-0.042, 0.005) + 0.0115);
-  const pen = group(bibNode, 0.047, 0.001, bibZ(0.047, 0.001) + 0.01);
-  // Two overlapping walking panels hang from their own hinges below the bib.
-  // A folded double layer at the hem and shallow compression folds are cut
-  // into the pattern. The thighs provide the collision supports during motion.
-  for (const [s, id, leg] of [
-    [1, 'flapL', 'thighL'],
-    [-1, 'flapR', 'thighR'],
-  ]) {
-    const node = group(rig.hips, s * 0.052, 0.043, 0.087);
-    flaps.push(node);
-    const pattern = (u, v) => {
-      const inner = 0.05,
-        outer = 0.048 + 0.009 * Math.sin(v * Math.PI);
-      const x = s > 0 ? lerp(-inner, outer, u) : lerp(-outer, inner, u);
-      const corner = s > 0 ? u : 1 - u;
-      const y = -0.0045 - v * 0.157 - 0.006 * (1 - (u * 2 - 1) ** 2) * v + 0.007 * corner ** 4 * v ** 6;
-      const hem = 0.0021 * smoothstep(v, 0.927, 0.97);
-      return v3(
-        x,
-        y,
-        -0.059 * ((x + s * 0.052) / 0.105) ** 2 +
-          0.001 +
-          0.007 * (1 - (u * 2 - 1) ** 2) +
-          0.0075 * (1 - ((x + s * 0.052) / 0.106) ** 2) +
-          -0.021 * v +
-          0.0018 * Math.sin(x * 95 + v * 4.5) * v +
-          hem,
-      );
-    };
-    const panel = patch(node, id, leather, 20, 19, pattern, 0.0024);
-    moving.push({ mesh: panel, sign: s, type: 'flap' });
-    layer(id, 'pelvis', leg, 'chassis');
-    // Geometry and embroidery share the same local hinge.
-
+  const tools = group(tray, -0.042, 0.005, bibZ(-0.042, 0.005) + 0.0115);
+  const pen = group(tray, 0.047, 0.001, bibZ(0.047, 0.001) + 0.01);
+  // The skirt is cut in one continuous piece. A rounded hem sweeps up at
+  // both side seams; the central panel spans both thighs through a stride.
+  const skirt = group(rig.hips, 0, 0.043, 0.087);
+  flaps.push(skirt);
+  const pattern = (u, v) => {
+    const across = 2 * u - 1;
+    const a = across * (1.68 - 0.63 * v * v);
+    const x = Math.sin(a) * (0.113 - 0.006 * v + 0.002 * Math.sin(v * Math.PI));
+    const y =
+      -0.0045 -
+      0.174 * v +
+      0.03 * across ** 4 * v ** 4 +
+      0.022 * Math.exp(-((across / 0.078) ** 2)) * v ** 9;
+    const curl = 0.0023 * smoothstep(v, 0.927, 0.97);
+    return v3(
+      x,
+      y,
+      (0.094 - 0.029 * v) * Math.cos(a) - 0.092 + 0.0031 * Math.cos(9 * across + v * 2.4) * v + curl,
+    );
+  };
+  const panel = patch(skirt, 'apronSkirt', denim, 42, 23, pattern, 0.0024);
+  moving.push({ mesh: panel, sign: 0, type: 'flap' });
+  layer('apronSkirt', 'pelvis', 'thighL', 'thighR', 'chassis');
+  {
+    const s = 1;
     if (s === 1) {
-      const cloth = group(bibNode, 0.055, -0.024, 0);
+      const cloth = group(bibNode, 0.061, -0.004, 0.037);
+      cloth.scale.setScalar(0.67);
       const towel = (u, v) => {
         const x = (u - 0.5) * 0.036 + 0.002 * Math.sin(v * 2),
           y = -0.059 * v + 0.002 * Math.sin(u * 7) * v;
@@ -320,16 +376,16 @@ export function makeApron(rig, m, parts) {
         );
       };
       for (const [v0, v1, mat] of [
-        [0, 0.72, linen],
-        [0.72, 0.745, wovenStripe],
-        [0.745, 0.8, linen],
-        [0.8, 0.86, wovenStripe],
-        [0.86, 1, linen],
+        [0, 0.72, denimEdge],
+        [0.72, 0.745, denim],
+        [0.745, 0.8, denimEdge],
+        [0.8, 0.86, denim],
+        [0.86, 1, denimEdge],
       ]) {
         const strip = patch(cloth, 'towel', mat, 20, 5, (u, v) => towel(u, lerp(v0, v1, v)), 0.0014);
         moving.push({ mesh: strip, sign: s, type: 'towel' });
       }
-      layer('towel', 'flapL');
+      layer('towel', 'apronSkirt');
     }
   }
   const hipProfile = [
@@ -338,7 +394,7 @@ export function makeApron(rig, m, parts) {
     [0.015, 0.084],
     [0.045, 0.072],
     [0.061, 0.063],
-  ].map(([h, r]) => [h, r * 1.28, r * 0.68 * 1.23, 0]);
+  ].map(([h, r]) => [h, r * 1.28, r * 0.68 * 1.23 * (1 + 0.21 * smoothstep(h, 0.025, 0.051)), 0]);
   const legProfile = [
     [-0.216, 0.039],
     [-0.206, 0.049],
@@ -346,7 +402,7 @@ export function makeApron(rig, m, parts) {
     [-0.092, 0.064],
     [-0.052, 0.062],
     [-0.036, 0.049],
-  ].map(([h, r]) => [h, r * 0.73, r * 0.72, -0.01]);
+  ].map(([h, r]) => [h, r * 0.88, r * 0.88, -0.01]);
   const bodies = [
     [rig.chest, formedChest, 0],
     [rig.hips, hipProfile, 0],
@@ -373,6 +429,23 @@ export function makeApron(rig, m, parts) {
     const target = origin + Math.sqrt(1 - u * u) * rz + pad;
     if (p.z >= target) return false;
     p.z = target;
+    return true;
+  }
+  // At the two side gores the warp wraps around the thigh. Slide outward
+  // along the local transverse axis there, preserving the turned-back edge.
+  function pushSide(p, profile, cx, pad, sign) {
+    const y = p.y;
+    if (y < profile[0][0] - pad || y > profile.at(-1)[0] + pad) return false;
+    let i = 1;
+    while (i < profile.length - 1 && y > profile[i][0]) i++;
+    const a = profile[i - 1],
+      b = profile[i],
+      t = clamp((y - a[0]) / (b[0] - a[0]), 0, 1);
+    const u = (p.z - lerp(a[3], b[3], t)) / (lerp(a[2], b[2], t) + pad);
+    if (Math.abs(u) >= 1) return false;
+    const mark = cx + sign * (lerp(a[1], b[1], t) + pad) * Math.sqrt(1 - u * u);
+    if (sign * (p.x - mark) >= 0) return false;
+    p.x = mark;
     return true;
   }
   function prepareWrinkles() {
@@ -443,12 +516,23 @@ export function makeApron(rig, m, parts) {
     const bow = smoothstep(rig.chest.rotation.x, 0.12, 0.38);
     const bowRelease = frame.emote >= 0 ? bow : 0;
     const bank = smoothstep(Math.abs(frame.turn), 0.55, 2.0);
+    const poseFlex = Math.max(
+      knee,
+      Math.abs(rig.chest.rotation.y) * 2.4,
+      Math.abs(rig.chest.rotation.x) * 2,
+      Math.abs(frame.turn),
+      Math.max(0, frame.emote) * 4,
+      Math.min(1, frame.speed / 2),
+    );
+    const wrapped = 1 - smoothstep(poseFlex, 0.12, 0.48);
     const dartOpening = 0.032 * bowRelease + 0.045 * bank + 0.018 * smoothstep(knee, 0.84, 1.4);
     const gather = Math.min(0.72, 0.64 * compression + 0.2 * bow);
     bibNode.scale.y = 1 - gather;
     bibNode.position.y = 0.067 * gather;
-    bibNode.position.z = 0.008 * gather + 0.019 * bowRelease;
-    strapNode.scale.z = 1 + 0.14 * gather;
+    const greeting = frame.emote >= 0 ? 0.0075 * Math.sin(Math.PI * frame.emote) ** 2 : 0;
+    bibNode.position.z = 0.029 * gather + 0.024 * bowRelease + greeting;
+    strapNode.scale.z = 1 + 0.27 * gather + 12 * greeting;
+    strapNode.position.z = 0.0091 * gather + 0.29 * greeting;
     // The split skirt swings from the waist. Its roots track the shaped bib
     // hem as it gathers; the free leather resists some of the torso twist.
     rig.chest.updateMatrix();
@@ -456,7 +540,7 @@ export function makeApron(rig, m, parts) {
     for (let i = 0; i < flaps.length; i++) {
       const flap = flaps[i];
       flap.position
-        .set(i === 0 ? 0.052 : -0.052, -0.077 + 0.065 * gather, 0.095 + 0.023 * bowRelease)
+        .set(0, -0.077 + 0.065 * gather, 0.088 + 0.007 * (1 - wrapped) + 0.023 * bowRelease)
         .applyMatrix4(rig.chest.matrix);
       flap.quaternion.premultiply(beltTurn);
     }
@@ -480,13 +564,26 @@ export function makeApron(rig, m, parts) {
         // The side darts open over a twisting pelvis and a bow. Their
         // leverage grows towards the free outer selvage, leaving the center
         // of the bib and the neutral cut fixed.
-        const outer = clamp((x * fabric.sign + 0.03) / 0.085, 0, 1);
+        const outer = clamp((Math.abs(x) - 0.017) / 0.087, 0, 1);
         const release = type === 'flap' ? outer * outer * smoothstep(y, -0.13, -0.065) * dartOpening : 0;
-        forward.set(x, y, z + fold + release);
+        const wrappedZ =
+          type === 'flap' ? lerp(0.009 - 0.044 * (x / 0.112) ** 2 + 0.19 * y, z, wrapped) : z;
+        forward.set(x, y, wrappedZ + fold + release);
         for (let body = 0; body < colliders.length; body++) {
           const c = colliders[body];
           point.copy(forward).applyMatrix4(c.toBody);
-          if (pushOut(point, c.profile, c.cx, pad)) forward.copy(point).applyMatrix4(c.toMesh);
+          const side = type === 'flap' && wrapped > 0.93 && Math.abs((i % 43) - 21) > 15;
+          if (side && body > 1 && i % 43 > 21 !== (body === 2)) continue;
+          const moved = side
+            ? pushSide(
+                point,
+                c.profile,
+                c.cx,
+                0.0048 + 0.009 * smoothstep(point.y, -0.079, -0.035),
+                Math.sign(x),
+              )
+            : pushOut(point, c.profile, c.cx, pad);
+          if (moved) forward.copy(point).applyMatrix4(c.toMesh);
         }
         // Move both grains together. The cut edge retains its physical gauge.
         const j = (i + half) * 3;
@@ -499,5 +596,19 @@ export function makeApron(rig, m, parts) {
       mesh.geometry.computeBoundingSphere();
     }
   }
-  return { surfaces, pairs, flaps, tools, pen, prepareWrinkles, crease };
+  return {
+    surfaces,
+    pairs,
+    flaps,
+    tools,
+    pen,
+    skirt,
+    panel,
+    pattern,
+    patch,
+    merge: mergeGeometries,
+    updateNormals,
+    prepareWrinkles,
+    crease,
+  };
 }
