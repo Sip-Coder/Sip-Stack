@@ -1,11 +1,14 @@
-import { fabricator, local, v, romaSkin, sippySkin } from './diagram-fabricator.js';
-import { shoulderLandmarks, buildUpper } from './diagram-shoulder.js';
-import { pelvisLandmarks, buildLower } from './diagram-pelvis.js';
-import { thoraxLandmarks, buildThorax } from './diagram-thorax.js';
-import { headLandmarks, buildHead } from './diagram-skull.js';
+import { fabricator, local, romaSkin, sippySkin } from './diagram-fabricator.js';
+import { shoulderLandmarks } from './diagram-shoulder.js';
+import { pelvisLandmarks } from './diagram-pelvis.js';
+import { thoraxLandmarks } from './diagram-thorax.js';
+import { headLandmarks } from './diagram-skull.js';
 import { seatHairRoots } from './diagram-hair-roots.js';
-import { fitMuscleFolds, muscleEnvelope } from './diagram-fascia.js';
-import { buildMuscles } from './diagram-muscles.js';
+import { addScanMuscles } from './diagram-scan-muscles.js';
+import { coverArticularProcesses } from './diagram-scan-envelope.js';
+import { addScanSkeleton } from './diagram-scan-fit.js';
+import { footSkinRings } from './diagram-scan-extremities.js';
+import { restoreThighVolume, supportShoulders } from './diagram-thigh-skin.js';
 
 // Roma's shipped costume covers her trunk and limbs, which have no underlying
 // skin triangles there. These inspection-only sections meet her real neck and
@@ -165,16 +168,7 @@ function coveredSkin(rig, roma, part) {
     part((side === 'L' ? 'Left' : 'Right') + ' foot inside trainer', 'skin', ({ bands }) => {
       bands(
         place,
-        [
-          [-0.037, 0.019, 0.041, 0.021],
-          [-0.033, 0.024, 0.05, 0.022],
-          [-0.026, 0.027, 0.052, 0.021],
-          [-0.02, 0.026, 0.049, 0.02],
-          [-0.014, 0.023, 0.035, 0.01],
-          [0, 0.017, 0.021, -0.001],
-          [0.015, 0.016, 0.019, -0.002],
-          [0.023, 0.012, 0.015, -0.002],
-        ],
+        footSkinRings,
         roma ? romaSkin : sippySkin,
       );
     });
@@ -182,34 +176,20 @@ function coveredSkin(rig, roma, part) {
 }
 
 // Each origin, insertion and joint surface is reconstructed from this pose.
-export function addHumanInterior(rig, name, tier, parts) {
+export function addHumanInterior(rig, name, tier, parts, scan, atlas) {
   const roma = name === 'roma';
   const part = fabricator(tier, rig.height, parts);
   coveredSkin(rig, roma, part);
+  supportShoulders(parts, rig);
   const pelvis = pelvisLandmarks(rig, roma);
   const head = headLandmarks(rig, roma);
   seatHairRoots(parts, head, roma);
   const thorax = thoraxLandmarks(rig, roma, pelvis, parts, head);
   const shoulders = shoulderLandmarks(rig, roma, thorax, parts);
-  buildThorax(rig, roma, part, thorax);
-  buildHead(rig, roma, part, head);
-  buildUpper(rig, roma, part, shoulders);
-  buildLower(rig, roma, part, pelvis);
-  const fit = muscleEnvelope(parts, rig.height);
-  const musclePart = (name, layer, assemble) =>
-    part(name, layer, (tools) =>
-      assemble({
-        ...tools,
-        belly(points, width, depth, options) {
-          tools.belly(points, width, depth, { ...options, fit });
-        },
-        sweep(points, radii, color, options) {
-          tools.sweep(points, radii, color, { ...options, fit });
-        },
-      }),
-    );
-  const muscleStart = parts.length;
-  buildMuscles(rig, roma, musclePart, { head, thorax, pelvis, shoulders }, fit);
-  for (const p of parts.slice(muscleStart)) fitMuscleFolds(p.mesh.geometry, fit);
-  return { head, thorax, pelvis, shoulders };
+  const landmarks = { head, thorax, pelvis, shoulders };
+  addScanSkeleton(rig, roma, parts, scan, landmarks, part, tier);
+  restoreThighVolume(parts, rig, pelvis);
+  coverArticularProcesses(parts, landmarks, rig);
+  addScanMuscles(rig, roma, parts, atlas, landmarks);
+  return landmarks;
 }

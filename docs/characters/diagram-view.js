@@ -1,6 +1,7 @@
 // An orthographic study of the selected actor. Each draw uses the simulator’s
 // existing WebGL context; the 2D canvas retains its last finished photograph.
 import * as T from 'three';
+import { axialOffsets, displaceBatch } from './diagram-explode.js';
 import { warmShaders } from '../assets/sip-warm.js';
 
 const axis = new T.Vector3(0.84, 0.13, -0.53).normalize();
@@ -79,21 +80,27 @@ function bake(spans) {
   return geometry;
 }
 
-function studyMaterial(source, chosen) {
+function studyMaterial(source, chosen, hovered, tissue) {
   const material = source.clone(),
     compile = source.onBeforeCompile;
   const key = source.customProgramCacheKey();
+  if (tissue?.layer === 'skeleton') {
+    material.roughness = 0.82;
+    material.metalness = 0;
+  }
   // Offscreen targets normally skip display tone mapping in Three. Apply its
   // ACES curve once, before the target's native sRGB conversion and readback.
   material.onBeforeCompile = (shader, renderer) => {
     compile.call(source, shader, renderer);
+    if (tissue) tissue.shade(shader, tissue.layer, tissue.ghost);
     shader.uniforms.axonSelected = chosen;
+    shader.uniforms.axonHovered = hovered;
     shader.uniforms.toneMappingExposure = { value: 1.06 };
     shader.vertexShader =
       'attribute float axonPart; varying float partId;\n' +
       shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\npartId = axonPart;');
     shader.fragmentShader =
-      'uniform float axonSelected; varying float partId;\n' +
+      'uniform float axonSelected; uniform float axonHovered; varying float partId;\n' +
       '#ifndef TONE_MAPPING\n#include <tonemapping_pars_fragment>\n#endif\n' +
       shader.fragmentShader.replace(
         '#include <tonemapping_fragment>',
@@ -104,29 +111,41 @@ function studyMaterial(source, chosen) {
             gl_FragColor.rgb = ACESFilmicToneMapping(gl_FragColor.rgb);
           #endif
           if (abs(partId - axonSelected) < 0.25)
-            gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1.0, 0.46, 0.055), 0.59);`,
+            gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1.0, 0.46, 0.055), 0.59);
+          else if (abs(partId - axonHovered) < 0.25)
+            gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1.0, 0.65, 0.22), 0.46);`,
       );
   };
-  material.customProgramCacheKey = () => key + '|axon-study';
+  material.customProgramCacheKey = () => key + '|axon-study|' + (tissue?.layer || 'actor');
   return material;
 }
 
-export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, onPaint, onError } = {}) {
+export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, onHover, onPaint, onError } = {}) {
   const renderer = stage.renderer,
     ctx = canvas.getContext('2d', { alpha: false });
   const scene = new T.Scene();
   scene.name = 'Axon View';
-  scene.background = new T.Color('#a2aea8');
+  const originalBackground = new T.Color('#a2aea8');
+  scene.background = originalBackground;
   const key = new T.DirectionalLight(0xfff9ee, 2.25);
   key.position.set(-3, 5, 4);
   const fill = new T.DirectionalLight(0xe6eff5, 1.15);
   fill.position.set(4, 3, -2);
-  scene.add(new T.HemisphereLight(0xfffbf2, 0xb1b9bc, 1.15), key, fill);
+  const originalLights = new T.Group();
+  originalLights.add(new T.HemisphereLight(0xfffbf2, 0xb1b9bc, 1.15), key, fill);
+  scene.add(originalLights);
+  const previousClear = new T.Color();
+  let studio, studioModule, studioRequest = 0;
   const camera = new T.OrthographicCamera(-1, 1, 1, -1, 0.01, 100);
   const target = new T.WebGLRenderTarget(1, 1, { colorSpace: T.SRGBColorSpace });
   const stats = {
     renders: 0,
     draws: 0,
+    postDraws: 0,
+    totalDraws: 0,
+    studio: false,
+    ambientOcclusion: 'none',
+    ghost: false,
     peakDraws: 0,
     triangles: 0,
     warms: 0,
@@ -139,7 +158,9 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
   };
   const layers = new Map(),
     layersState = new Map(),
-    chosen = { value: -1 };
+    chosen = { value: -1 },
+    hovered = { value: -1 },
+    ghost = { value: 0 };
   const direction = new T.Vector3(),
     centre = new T.Vector3(),
     right = new T.Vector3(),
@@ -154,10 +175,14 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     meshes = [],
     spacing = 1,
     explode = 0,
+    layout = 'axial',
+    offsets = null,
+    lastDisplacement = 0,
     yaw = isoYaw,
     pitch = isoPitch,
     mag = 1;
   let sequence = 0,
+    lastPainted = -1,
     warmed = -1,
     compiling = -1,
     raf = 0,
@@ -185,12 +210,13 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
       const source = mesh.userData.finish,
         m = mesh.material;
       m.opacity = source.opacity * opacity;
-      const translucent = source.transparent || opacity < 1;
+      const shell = stats.studio && ghost.value && id === 'skin';
+      const translucent = !!(shell || source.transparent || opacity < 1);
       if (m.transparent !== translucent) {
         m.transparent = translucent;
         m.needsUpdate = true;
       }
-      m.depthWrite = source.depthWrite && opacity === 1;
+      m.depthWrite = source.depthWrite && opacity === 1 && !shell;
       if (!source.transparent) m.forceSinglePass = true;
     }
   }
@@ -217,12 +243,38 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
   }
   function setModel(next, tier = 'mobile') {
     if (stats.disposed) return;
+    const request = ++studioRequest;
     if (next === model && tier === stats.tier) return;
+    const human = next?.name === 'sippy' || next?.name === 'roma';
+    if (human && !studio) {
+      import('./diagram-studio.js').then((module) => {
+        if (request !== studioRequest || stats.disposed) return;
+        studioModule = module;
+        studio = module.createHumanStudio();
+        scene.add(studio.lights);
+        setModel(next, tier);
+      }).catch((error) => { if (request === studioRequest) onError?.(error); });
+      return;
+    }
+    stats.studio = human;
+    stats.ambientOcclusion = human ? (tier === 'high' ? 'screen-space' : 'baked vertices') : 'none';
+    stats.ghost = human && !!ghost.value;
+    originalLights.visible = !human;
+    scene.background = human ? null : originalBackground;
+    if (studio) studio.lights.visible = human;
+    if (human) {
+      studio.configure(tier);
+      studio.setSubject(next.parts);
+    } else {
+      studio?.releaseTarget();
+    }
     sequence++;
     stats.ready = false;
-    chosen.value = -1;
+    chosen.value = hovered.value = -1;
     clearMeshes();
     model = next;
+    offsets = null;
+    lastDisplacement = 0;
     stats.tier = tier;
     stats.parts = next?.parts.length ?? 0;
     stats.batches = 0;
@@ -237,15 +289,18 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
       const all = new T.Box3();
       for (const b of ranges(model.parts)) {
         const geometry = bake(b.spans);
-        const mesh = new T.Mesh(geometry, studyMaterial(b.finish, chosen));
+        const tissue = human ? { shade: studioModule.shadeTissue, layer: b.layer, ghost } : null;
+        const mesh = new T.Mesh(geometry, studyMaterial(b.finish, chosen, hovered, tissue));
         mesh.renderOrder = b.renderOrder;
         mesh.userData.finish = b.finish;
+        if (b.layer !== 'skeleton') mesh.userData.sourceSpans = b.spans;
         meshes.push(mesh);
         const layer = layers.get(b.layer);
         layer.group.add(mesh);
         layer.box.union(geometry.boundingBox);
         all.union(geometry.boundingBox);
       }
+      if (model.name !== 'hummin') offsets = axialOffsets(model.parts, all);
       spacing = 0.58 * (all.max.y - all.min.y || 1.8);
       for (const id of layers.keys()) syncLayer(id);
       stats.batches = meshes.length;
@@ -254,6 +309,19 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
   }
 
   function fitCamera(aspect) {
+    const axial = offsets && layout === 'axial';
+    const amount = axial ? explode : 0;
+    if (amount !== lastDisplacement) {
+      for (const [id, layer] of layers) {
+        if (id === 'skeleton') continue;
+        layer.box.makeEmpty();
+        for (const mesh of layer.group.children) {
+          displaceBatch(mesh, offsets, amount);
+          layer.box.union(mesh.geometry.boundingBox);
+        }
+      }
+      lastDisplacement = amount;
+    }
     direction.set(Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch), Math.cos(yaw) * Math.cos(pitch));
     right.set(Math.cos(yaw), 0, -Math.sin(yaw));
     up.crossVectors(direction, right);
@@ -264,7 +332,8 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
       minD = Infinity,
       maxD = -Infinity;
     for (const layer of layers.values()) {
-      shift.copy(axis).multiplyScalar((layer.index - (layers.size - 1) / 2) * spacing * explode);
+      if (axial) shift.set(0, 0, 0);
+      else shift.copy(axis).multiplyScalar((layer.index - (layers.size - 1) / 2) * spacing * explode);
       layer.group.position.copy(shift);
       if (!layer.group.visible || layer.box.isEmpty()) continue;
       const { min, max } = layer.box;
@@ -317,6 +386,7 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
       buffer = new Uint8Array(width * height * 4);
       picture = ctx.createImageData(width, height);
     }
+    if (stats.studio) studio.resize(width, height);
     fitCamera(w / h);
     return true;
   }
@@ -347,12 +417,15 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     raf = 0;
     if (!dirty || !drawable() || !size()) return;
     scene.environment = stage.scene.environment;
-    scene.environmentIntensity = stage.scene.environmentIntensity;
+    scene.environmentIntensity = stats.studio ? 0.48 : stage.scene.environmentIntensity;
     if (warmed !== sequence) {
       const seq = sequence;
       compiling = seq;
       stats.warms++;
-      warmShaders(warmer, [[scene, camera, target]]).then(() => {
+      const jobs = stats.studio
+        ? [[scene, camera, studio.target], [studio.stage, studio.camera, target]]
+        : [[scene, camera, target]];
+      warmShaders(warmer, jobs).then(() => {
         if (seq !== sequence) return;
         warmed = seq;
         compiling = -1;
@@ -371,6 +444,8 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     const seq = sequence,
       gl = renderer.getContext();
     const packBuffer = gl.getParameter(gl.PIXEL_PACK_BUFFER_BINDING);
+    renderer.getClearColor(previousClear);
+    const clearAlpha = renderer.getClearAlpha();
     let readback;
     dirty = false;
     reading = true;
@@ -379,13 +454,21 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
       // pixel-pack binding immediately. Only the in-flight image is allocated.
       try {
         info.autoReset = false;
-        renderer.setRenderTarget(target);
+        if (stats.studio) renderer.setClearColor(0, 0);
+        renderer.setRenderTarget(stats.studio ? studio.target : target);
+        // The simulator may composite with autoClear disabled. Both color and
+        // sampled depth belong exclusively to this photograph and camera.
+        if (stats.studio) renderer.clear(true, true, false);
         renderer.render(scene, camera);
-        readback = renderer.readRenderTargetPixelsAsync(target, 0, 0, width, height, buffer);
         stats.draws = render.calls - calls;
         stats.triangles = render.triangles - triangles;
+        if (stats.studio) studio.composite(renderer, camera, layers, target, offsets, lastDisplacement);
+        stats.totalDraws = render.calls - calls;
+        stats.postDraws = stats.totalDraws - stats.draws;
+        readback = renderer.readRenderTargetPixelsAsync(target, 0, 0, width, height, buffer);
         stats.peakDraws = Math.max(stats.peakDraws, stats.draws);
       } finally {
+        if (stats.studio) renderer.setClearColor(previousClear, clearAlpha);
         gl.bindBuffer(gl.PIXEL_PACK_BUFFER, packBuffer);
         renderer.setRenderTarget(previous, face, mip);
         renderer.shadowMap.needsUpdate = shadow;
@@ -405,9 +488,11 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
       if (canvas.width !== width) canvas.width = width;
       if (canvas.height !== height) canvas.height = height;
       ctx.putImageData(picture, 0, 0);
+      lastPainted = seq;
       stats.ready = !dirty;
       stats.renders++;
       onPaint?.(stats);
+      if (hoverPending && stats.ready && !hoverFrame) hoverFrame = requestAnimationFrame(sampleHover);
     } catch (error) {
       if (seq === sequence && !gl.isContextLost()) {
         if (onError) onError(error);
@@ -435,6 +520,12 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
       changed();
     }
   }
+  function setLayout(value) {
+    if (value !== layout) {
+      layout = value;
+      changed();
+    }
+  }
   function setLayer(id, { visible, opacity }) {
     const state = layerState(id);
     if (visible !== undefined) state.visible = !!visible;
@@ -442,7 +533,15 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     syncLayer(id);
     changed();
   }
+  function setGhost(enabled) {
+    if (!!ghost.value === !!enabled) return;
+    ghost.value = Number(!!enabled);
+    stats.ghost = stats.studio && !!enabled;
+    syncLayer('skin');
+    changed();
+  }
   function select(part) {
+    if (hovered.value !== -1) clearHover();
     const number = part ? (model?.parts.indexOf(part) ?? -1) : -1;
     if (number !== chosen.value) {
       chosen.value = number;
@@ -450,8 +549,8 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
       onSelect?.(model?.parts[number] ?? null);
     }
   }
-  function pick(clientX, clientY) {
-    if (!stats.ready || !drawable()) return null;
+  function underPointer(clientX, clientY) {
+    if (lastPainted !== sequence || !drawable()) return null;
     const rect = canvas.getBoundingClientRect();
     pointer.set(((clientX - rect.left) * 2) / rect.width - 1, 1 - ((clientY - rect.top) * 2) / rect.height);
     raycaster.setFromCamera(pointer, camera);
@@ -459,17 +558,51 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     // Raycaster does not honor ancestor visibility.
     for (const layer of layers.values())
       if (layer.group.visible) raycaster.intersectObjects(layer.group.children, false, hits);
-    const hit = hits[0];
-    const part = hit ? model.parts[hit.object.geometry.attributes.axonPart.getX(hit.face.a)] : null;
+    // The translucent shell lets a pointer reach the visible anatomy underneath.
+    // Its own parts remain selectable in isolation and through the part list.
+    const nearest = hits[0];
+    const hit = ghost.value && stats.studio && nearest?.object.parent.name === 'skin'
+      ? hits.find((item) => item.object.parent.name !== 'skin') ?? nearest
+      : nearest;
+    return hit ? model.parts[hit.object.geometry.attributes.axonPart.getX(hit.face.a)] : null;
+  }
+  function pick(clientX, clientY) {
+    // A pointer-down may queue removal of its hover tint. The visible geometry
+    // is still valid while that color-only photograph is in flight.
+    if (lastPainted !== sequence || !drawable()) return null;
+    const part = underPointer(clientX, clientY);
     select(part);
     return part;
+  }
+  function hover(part) {
+    const number = part ? model.parts.indexOf(part) : -1;
+    if (hovered.value === number) return;
+    hovered.value = number;
+    changed();
+    onHover?.(part);
+  }
+  let hoverFrame = 0, hoverX = 0, hoverY = 0, hoverPending = false;
+  function sampleHover() {
+    hoverFrame = 0;
+    if (stats.studio && stats.ready && drawable() && !pointers.size) {
+      hoverPending = false;
+      hover(underPointer(hoverX, hoverY));
+    }
+  }
+  function clearHover() {
+    cancelAnimationFrame(hoverFrame);
+    hoverFrame = 0;
+    hoverPending = false;
+    hover(null);
   }
   function project(part) {
     const layer = layers.get(part?.layer);
     if (!layer || !layer.group.visible) return null;
     const g = part.mesh.geometry;
     if (!g.boundingBox) g.computeBoundingBox();
-    g.boundingBox.getCenter(projected).add(layer.group.position).project(camera);
+    g.boundingBox.getCenter(projected).add(layer.group.position);
+    if (lastDisplacement) projected.addScaledVector(offsets[model.parts.indexOf(part)], lastDisplacement);
+    projected.project(camera);
     return {
       x: ((projected.x + 1) * canvas.clientWidth) / 2,
       y: ((1 - projected.y) * canvas.clientHeight) / 2,
@@ -502,6 +635,7 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     'pointerdown',
     (e) => {
       if (e.button !== 0) return;
+      clearHover();
       pointers.set(e.pointerId, { x: e.clientX, y: e.clientY, startX: e.clientX, startY: e.clientY });
       canvas.setPointerCapture(e.pointerId);
       if (pointers.size === 1) drag = false;
@@ -516,7 +650,14 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     'pointermove',
     (e) => {
       const p = pointers.get(e.pointerId);
-      if (!p) return;
+      if (!p) {
+        if (!stats.studio || e.pointerType !== 'mouse' || !drawable()) return;
+        hoverPending = true;
+        hoverX = e.clientX;
+        hoverY = e.clientY;
+        if (!hoverFrame) hoverFrame = requestAnimationFrame(sampleHover);
+        return;
+      }
       const dx = e.clientX - p.x,
         dy = e.clientY - p.y;
       p.x = e.clientX;
@@ -540,6 +681,7 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     { signal },
   );
   canvas.addEventListener('lostpointercapture', (e) => pointers.delete(e.pointerId), { signal });
+  canvas.addEventListener('pointerleave', clearHover, { signal });
   canvas.addEventListener('pointercancel', (e) => pointers.delete(e.pointerId), { signal });
   canvas.addEventListener(
     'wheel',
@@ -566,6 +708,7 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
       sequence++;
       stats.ready = false;
       target.dispose();
+      studio?.releaseTarget();
       dirty = true;
     },
     { signal },
@@ -574,6 +717,7 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     'webglcontextrestored',
     () => {
       lost = false;
+      if (stats.studio) studio.configure(stats.tier);
       changed();
     },
     { signal },
@@ -585,11 +729,13 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     sequence++;
     stats.disposed = true;
     stats.ready = false;
+    cancelAnimationFrame(hoverFrame);
     listeners.abort();
     resize.disconnect();
     intersect.disconnect();
     clearMeshes();
     target.dispose();
+    studio?.dispose();
     model = null;
     buffer = picture = null;
   }
@@ -598,7 +744,9 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     setModel,
     setVisible,
     setExplode,
+    setLayout,
     setLayer,
+    setGhost,
     select,
     pick,
     project,

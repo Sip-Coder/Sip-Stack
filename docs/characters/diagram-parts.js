@@ -11,23 +11,33 @@ const builders = {
   hummin: () => import('./hummin.js').then((m) => m.buildHummin),
 };
 
-export async function buildDiagramModel(name, tier) {
+async function prepareInterior(name, tier, signal) {
+  const { prepareInnerLayers } = await import('./diagram-anatomy.js');
+  signal?.throwIfAborted();
+  return prepareInnerLayers(name, tier, signal);
+}
+
+export async function buildDiagramModel(name, tier, signal) {
   if (!names.includes(name) || !['mobile', 'high'].includes(tier))
     throw new Error('Unknown character or geometry tier');
-  const build = await builders[name](),
-    rig = createActor(name, heights[names.indexOf(name)]);
+  const rig = createActor(name, heights[names.indexOf(name)]);
   try {
-    const pose = build(rig),
-      ctrl = createController(rig);
-    setModelDetail(rig.root, tier);
-    const neutral = { x: 0, z: 0, run: false, roll: false, jump: false, emote: false };
-    // A fixed neutral frame puts the soles down and leaves the eyes open. Stay
-    // ahead of the final render batcher to keep the original pattern pieces.
-    for (let i = 0; i < 12; i++) {
-      pose(ctrl.step(FIXED_DT, neutral));
-      ctrl.finishPose();
-    }
-    return await snapshotDiagramModel(rig, tier);
+    // Load only the selected interior while building its clothed figure.
+    const [interior] = await Promise.all([
+      prepareInterior(name, tier, signal),
+      builders[name]().then((build) => {
+        signal?.throwIfAborted();
+        const pose = build(rig), ctrl = createController(rig);
+        setModelDetail(rig.root, tier);
+        const neutral = { x: 0, z: 0, run: false, roll: false, jump: false, emote: false };
+        for (let i = 0; i < 12; i++) {
+          pose(ctrl.step(FIXED_DT, neutral));
+          ctrl.finishPose();
+        }
+      }),
+    ]);
+    signal?.throwIfAborted();
+    return await snapshotDiagramModel(rig, tier, undefined, interior);
   } finally {
     // This construction rig is never drawn: it owns no GPU allocations. Some
     // unrendered geometries/textures are cached by the live builders (Roma in
@@ -37,7 +47,7 @@ export async function buildDiagramModel(name, tier) {
 }
 
 // Inspection and pose verification freeze exactly the same deformed triangles.
-export async function snapshotDiagramModel(rig, tier, inspect) {
+export async function snapshotDiagramModel(rig, tier, inspect, interior) {
   const name = rig.name, resources = snapshotResources(), parts = [];
   try {
     rig.root.updateMatrixWorld(true);
@@ -63,12 +73,13 @@ export async function snapshotDiagramModel(rig, tier, inspect) {
       mesh.name = name;
       parts.push({ name, layer, mesh, source: 'Live character geometry' });
     }
-    const { addInnerLayers } = await import('./diagram-anatomy.js');
-    const landmarks = await addInnerLayers(rig, name, tier, parts);
+    const addInnerLayers = interior ?? await prepareInterior(name, tier);
+    const landmarks = addInnerLayers(rig, parts);
     inspect?.(landmarks);
     for (const part of parts) part.id = part.layer + '/' + part.name;
     let disposed = false;
     return {
+      name,
       parts,
       dispose() {
         if (disposed) return;

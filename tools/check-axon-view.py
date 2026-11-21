@@ -168,6 +168,97 @@ def check_pick(page, section, *, touch=False):
     assert stage["frame_digest"](canvas) == unselected
 
 
+def check_human_studio(page, section, hero, tier):
+    canvas = section.locator("[data-axon-canvas]")
+    view = section.locator("[data-axon-layout]")
+    ghost = section.locator("[data-ghost]")
+    clothes = section.locator('[data-layer="clothes"] [data-show]')
+    page.mouse.move(0, 0)
+    canvas.scroll_into_view_if_needed()
+    canvas.press("Home")
+    set_spread(page, 0)
+    assert view.input_value() == "axial"
+    pristine = stage["frame_digest"](canvas)
+    canvas.press("ArrowRight")
+    settle(page)
+    rotated = stage["frame_digest"](canvas)
+    assert rotated != pristine
+    canvas.press("Home")
+    settle(page)
+    assert stage["frame_digest"](canvas) == pristine, (hero, tier, "orbit left stale pixels")
+    canvas.press("ArrowRight")
+    settle(page)
+    assert stage["frame_digest"](canvas) == rotated, (hero, tier, "second orbit differs")
+    canvas.press("Home")
+    set_spread(page, 1)
+    axial = stage["frame_digest"](canvas)
+    view.select_option("side")
+    settle(page)
+    assert stage["frame_digest"](canvas) not in (axial, pristine)
+    view.select_option("axial")
+    settle(page)
+    assert stage["frame_digest"](canvas) == axial
+    set_spread(page, 0)
+    assert stage["frame_digest"](canvas) == pristine, (hero, tier, "reassembly retained stale pixels")
+
+    clothes.uncheck()
+    settle(page)
+    covered = stage["frame_digest"](canvas)
+    ghost.check()
+    settle(page)
+    assert stage["frame_digest"](canvas) != covered
+    ghost.uncheck()
+    settle(page)
+    assert stage["frame_digest"](canvas) == covered
+    clothes.check()
+    settle(page)
+    assert stage["frame_digest"](canvas) == pristine
+    resolved = []
+    for layer in ("skeleton", "muscles"):
+        resolved.append(hover_and_pin(page, section, canvas, layer))
+        assert stage["frame_digest"](canvas) == pristine
+    print(tier, hero, "restored orbit, both layouts and ghost skin exactly; hovered and pinned",
+          " and ".join(resolved), flush=True)
+
+
+def hover_and_pin(page, section, canvas, layer):
+    isolate = section.locator(f'[data-layer="{layer}"] [data-isolate]')
+    isolate.click()
+    canvas.scroll_into_view_if_needed()
+    settle(page)
+    resting = stage["frame_digest"](canvas)
+    box = canvas.bounding_box()
+    found = False
+    for y in (.18, .3, .42, .55, .68, .82):
+        for x in (.50, .48, .52, .46, .54):
+            page.mouse.move(box["x"]+x*box["width"], box["y"]+y*box["height"])
+            animation_frames(page)
+            settle(page)
+            label = section.locator("[data-measure] strong")
+            if label.count() and stage["frame_digest"](canvas) != resting:
+                found = True
+                name = label.inner_text()
+                break
+        if found:
+            break
+    assert found, (layer, "hover never identified a visible anatomical surface")
+    assert section.locator("[data-part]").input_value() == ""
+    page.mouse.down()
+    page.mouse.up()
+    page.mouse.move(0, 0)
+    settle(page)
+    assert section.locator("[data-measure] strong").inner_text() == name
+    assert section.locator("[data-part]").input_value()
+    part = section.locator("[data-measure]").inner_text()
+    if layer == "muscles":
+        assert "BodyParts3D" in part or "Andreassen" in part, part
+    section.locator("[data-part]").select_option("")
+    isolate.click()
+    canvas.scroll_into_view_if_needed()
+    settle(page)
+    return name
+
+
 def check_camera(page, section):
     canvas = section.locator("[data-axon-canvas]")
     canvas.press("Home")
@@ -318,6 +409,8 @@ def main():
                     rows.extend(values)
                     for setting in (0, .5, 1):
                         set_spread(page, setting)
+                    if hero != "hummin":
+                        check_human_studio(page, section, hero, tier)
                     print(tier, hero, len(values), "selectable parts", flush=True)
             check_layer_controls(page, section)
             check_pick(page, section)

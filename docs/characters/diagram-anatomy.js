@@ -1,10 +1,14 @@
-// Anatomy is inspection-only. Each family loads its own interior on demand.
-export async function addInnerLayers(rig, name, tier, parts) {
-  rig.root.updateWorldMatrix(true, true);
+// Only the open inspector requests a selected character's interior.
+export async function prepareInnerLayers(name, tier, signal) {
   if (name === 'hummin') {
     const { addRobotInterior } = await import('./diagram-robot.js');
-    return addRobotInterior(rig, tier, parts);
+    return (rig, parts) => addRobotInterior(rig, tier, parts);
   }
-  const { addHumanInterior } = await import('./diagram-human.js');
-  return addHumanInterior(rig, name, tier, parts);
+  const [{ addHumanInterior }, [scan, atlas]] = await Promise.all([
+    import('./diagram-human.js'),
+    import('./diagram-scan-source.js').then(({ loadSkeletonScan, loadCharacterMuscles }) =>
+      Promise.all([loadSkeletonScan(name, tier, signal), loadCharacterMuscles(name, tier, signal)]),
+    ),
+  ]);
+  return (rig, parts) => addHumanInterior(rig, name, tier, parts, scan, atlas);
 }

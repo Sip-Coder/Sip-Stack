@@ -23,11 +23,18 @@ if (process.env.THREE_ROOT) {
 }
 const T = await import('three');
 if (T.REVISION !== '170') throw Error('Expected three@0.170.0');
-const { createActor } = await import('../docs/characters/rig.js');
-const { createController, FIXED_DT } = await import('../docs/characters/motion.js');
-const { snapshotDiagramModel } = await import('../docs/characters/diagram-parts.js');
-const { setModelDetail } = await import('../docs/characters/model-tier.js');
-const { names, heights } = await import('../docs/characters/ui.js');
+// A clean baseline worktree can be sampled with the same camera, controller,
+// pose frames and rasterizer even when it predates the CT audit interface.
+const baseline = process.env.AXON_BASELINE_ROOT;
+const modules = baseline
+  ? pathToFileURL(resolve(baseline, 'docs/characters') + '/')
+  : new URL('../docs/characters/', import.meta.url);
+const characterModule = (file) => import(new URL(file + '.js', modules));
+const { createActor } = await characterModule('rig');
+const { createController, FIXED_DT } = await characterModule('motion');
+const { snapshotDiagramModel } = await characterModule('diagram-parts');
+const { setModelDetail } = await characterModule('model-tier');
+const { names, heights } = await characterModule('ui');
 const inch = 0.0254,
   angle = (a, b) => T.MathUtils.radToDeg(a.angleTo(b));
 const origin = (a, b) => a.clone().sub(b);
@@ -36,10 +43,12 @@ const neutral = { x: 0, z: 0, run: false, roll: false, emote: false, jump: false
 
 // Rasterize the actual deformed triangle buffers with barycentric depth.
 // Compare at each pixel with skin only, never with the boot or garment exterior.
-function coverage(parts, H) {
+function coverage(parts, H, pelvis) {
+  const bonesOnly = process.env.AXON_BONES_ONLY === '1';
+  const layers = bonesOnly ? ['skeleton', 'skin'] : ['skeleton', 'muscles', 'skin'];
   const visible = parts.filter(
     (p) =>
-      ['skeleton', 'muscles', 'skin'].includes(p.layer) &&
+      layers.includes(p.layer) &&
       !/hair|curl|brow|lash|sideburn|quiff|wave|crest and|scalp and|forelock|tapered lock|fringe/i.test(
         p.name,
       ),
@@ -50,7 +59,8 @@ function coverage(parts, H) {
   const fixture = 448,
     scale = fixture / (H * 1.09);
   const counts = new Map(),
-    witnesses = {};
+    witnesses = {},
+    femurRegions = {};
   let sampled = 0,
     exposed = 0,
     worst = 0;
@@ -124,18 +134,34 @@ function coverage(parts, H) {
       if (Number.isFinite(skin[k])) worst = Math.max(worst, inner[k] - skin[k]);
       const name = visible[winners[k]].name;
       counts.set(name, (counts.get(name) || 0) + 1);
-      if (process.env.SKELETON_WITNESSES && !witnesses[name]) {
+      if (/ femur$/.test(name) || (process.env.SKELETON_WITNESSES && !witnesses[name])) {
         const u = ((k % fixture) + 0.5 - fixture / 2) / scale,
           v = (Math.floor(k / fixture) + 0.5 - fixture / 2) / scale;
         const dy = v * ct + inner[k] * st,
           dz = inner[k] * ct - v * st;
-        witnesses[name] = [centre.x + cs * u + ss * dz, centre.y + dy, centre.z - ss * u + cs * dz];
+        const world = [centre.x + cs * u + ss * dz, centre.y + dy, centre.z - ss * u + cs * dz];
+        if (!witnesses[name]) witnesses[name] = world;
+        if (/ femur$/.test(name)) {
+          const hip = pelvis[name.startsWith('Left') ? 'L' : 'R'];
+          const axis = hip.knee.clone().sub(hip.femoralHead);
+          const t = new T.Vector3(...world).sub(hip.femoralHead).dot(axis) / axis.lengthSq();
+          const region = t < 0.33 ? 'proximal' : t < 0.72 ? 'shaft' : 'distal';
+          femurRegions[region] = (femurRegions[region] || 0) + 1;
+        }
       }
     }
   }
   return {
+    ...(bonesOnly ? { layers: 'skeleton against skin' } : {}),
     sampled,
-    ...(process.env.SKELETON_WITNESSES ? { worldWitnessesInches: Object.fromEntries(Object.entries(witnesses).map(([name, xyz])=>[name,xyz.map(n=>describe(n/inch))])) } : {}),
+    exposedFemurByRegion: femurRegions,
+    ...(process.env.SKELETON_WITNESSES
+      ? {
+          worldWitnessesInches: Object.fromEntries(
+            Object.entries(witnesses).map(([name, xyz]) => [name, xyz.map((n) => describe(n / inch))]),
+          ),
+        }
+      : {}),
     exposed,
     maximumRayDepthInches: describe(worst / inch),
     parts: Object.fromEntries([...counts].sort((a, b) => b[1] - a[1])),
@@ -160,124 +186,200 @@ function nearestSurface(mesh, rayOrigin, direction) {
     c.fromBufferAttribute(p, index[i + 2]);
     if (ray.intersectTriangle(a, b, c, false, q)) nearest = Math.min(nearest, rayOrigin.distanceTo(q));
   }
-  if (!Number.isFinite(nearest)) throw Error('Missing articular surface on ' + mesh.name);
   return nearest;
 }
-// Sum the area vectors around the actual authored endplate. The outward
-// direction only chooses which of the two equivalent normal signs to report.
-function endplateNormal(mesh, rim, superior) {
-  const position = mesh.geometry.getAttribute('position');
-  const point = (i) => new T.Vector3().fromBufferAttribute(position, rim[i]);
-  const start = point(0),
-    normal = new T.Vector3();
-  for (let i = 1; i < rim.length - 1; i++)
-    normal.add(
-      point(i)
-        .sub(start)
-        .cross(point(i + 1).sub(start)),
-    );
-  if (normal.lengthSq() < 1e-14) throw Error('Degenerate endplate on ' + mesh.name);
-  normal.normalize();
-  return normal.dot(superior) < 0 ? normal.negate() : normal;
-}
-function landmarks(model, lm) {
-  const byName = new Map(model.parts.map((p) => [p.name, p.mesh]));
-  const { thorax: t, pelvis: p, shoulders, head } = lm;
-  const spinal = t.spineLevels;
-  const results = {};
-  const across = p
-    .place(1, 0, 0)
-    .sub(p.place(0, 0, 0))
-    .normalize();
-  const anterior = p
-    .place(0, 0, 1)
-    .sub(p.place(0, 0, 0))
-    .normalize();
-  const superior = p
-    .place(0, 1, 0)
-    .sub(p.place(0, 0, 0))
-    .normalize();
-  function coordinateExtreme(mesh, direction) {
-    const a = mesh.geometry.getAttribute('position'),
-      point = new T.Vector3();
-    let maximum = -Infinity;
-    for (let i = 0; i < a.count; i++)
-      maximum = Math.max(maximum, point.fromBufferAttribute(a, i).dot(direction));
-    return maximum;
-  }
-  const breadth =
-    coordinateExtreme(byName.get('Left hip bone'), across) +
-    coordinateExtreme(byName.get('Right hip bone'), across.clone().negate());
-  for (const [side, label] of [
-    ['L', 'Left'],
-    ['R', 'Right'],
+// Sample the actual cortex, including at a truncated open notch. The median
+// of a small directional fan is less sensitive to CT facets than a single ray.
+function jointSeat(ball, socket, center, direction) {
+  const axis = direction.clone().normalize();
+  const transverse = new T.Vector3(0, 1, 0).projectOnPlane(axis).normalize();
+  const sagittal = new T.Vector3().crossVectors(axis, transverse);
+  const distances = [];
+  for (const [u, v] of [
+    [0, 0],
+    [0.1, 0],
+    [-0.1, 0],
+    [0, 0.1],
+    [0, -0.1],
   ]) {
-    const s = shoulders[side],
-      h = p[side];
-    // Ray from the middle of the ball through the centre of its socket.
-    const medial = s.shoulderNormal.clone().negate();
-    const spine = spinal.get('T3');
-    const fromSpine = origin(s.spineRoot, spine.spinous).dot(s.axes.x);
-    results[side] = {
-      shoulderGap: describe(
-        (nearestSurface(byName.get(label + ' scapula'), s.headCenter, medial) -
-          nearestSurface(byName.get(label + ' humerus'), s.headCenter, medial)) /
-          inch,
-      ),
-      hipGap: describe(
-        (nearestSurface(byName.get(label + ' hip bone'), h.femoralHead, h.socketAxis.clone().negate()) -
-          nearestSurface(byName.get(label + ' femur'), h.femoralHead, h.socketAxis.clone().negate())) /
-          inch,
-      ),
-      clavicle: describe(s.clavicle.slice(1).reduce((n, v, i) => n + v.distanceTo(s.clavicle[i]), 0) / inch),
-      scapulaMedialOffset: describe(fromSpine / inch),
-      headToAnimationPivot: describe(s.headCenter.distanceTo(s.armPivot) / inch),
-      qAngle: describe(
-        angle(
-          origin(h.asis, h.patella).projectOnPlane(anterior),
-          origin(h.patella, h.tibialTuberosity).projectOnPlane(anterior),
-        ),
-      ),
-      sciaticNotch: describe(
-        angle(
-          origin(h.sciaticUpper, h.sciaticApex).projectOnPlane(across),
-          origin(h.sciaticSpine, h.sciaticApex).projectOnPlane(across),
-        ),
-      ),
-      crestAboveHead: describe(origin(h.crest, h.femoralHead).dot(superior) / inch),
-      femoralInclination: describe(angle(origin(h.femoralHead, h.junction), origin(h.knee, h.junction))),
-      mastoidToOcciput: describe(head.sides[side].mastoid.distanceTo(head.occiput) / inch),
-    };
+    const ray = axis.clone().addScaledVector(transverse, u).addScaledVector(sagittal, v).normalize();
+    const a = nearestSurface(ball, center, ray);
+    const b = nearestSurface(socket, center, ray);
+    if (Number.isFinite(a) && Number.isFinite(b)) distances.push((b - a) / inch);
   }
-  const ribDrop = Array.from(
-    { length: 12 },
-    (_, i) => origin(t.rib('L', i + 1, 0), t.rib('L', i + 1, 1)).dot(t.chest.direction(0, 1, 0)) / inch,
-  );
-  const t2 = spinal.get('T2'),
-    t12 = spinal.get('T12');
-  const top = endplateNormal(byName.get('Thoracic vertebra T2'), t2.topPlaneVertices, t2.superiorNormal);
-  const bottom = endplateNormal(
-    byName.get('Thoracic vertebra T12'),
-    t12.bottomPlaneVertices,
-    t12.inferiorNormal,
-  );
-  const sacral = endplateNormal(byName.get('Sacrum'), p.s1PlaneVertices, p.s1Normal);
+  distances.sort((a, b) => a - b);
   return {
-    ...results,
-    crestWidth: describe(breadth / inch),
-    pubicArch: describe(
-      angle(
-        origin(p.L.ramus, p.L.inferiorPubis).projectOnPlane(anterior),
-        origin(p.R.ramus, p.R.inferiorPubis).projectOnPlane(anterior),
-      ),
-    ),
-    thoracicCobb: describe(angle(top, bottom)),
-    lumbarCobb: describe(angle(bottom, sacral)),
-    ribDrop: ribDrop.map(describe),
-    ribs: [...byName.keys()].filter((n) => /^(Left|Right) rib \d+$/.test(n)).length,
-    vertebrae: spinal.size,
+    hits: distances.length,
+    medianIn: describe(distances[Math.floor(distances.length / 2)] ?? NaN),
+    worstIn: describe(distances.reduce((max, v) => Math.max(max, Math.abs(v)), 0)),
   };
 }
+
+function boundsAlong(geometry, axis) {
+  const p = geometry.attributes.position,
+    v = new T.Vector3();
+  let min = Infinity,
+    max = -Infinity;
+  for (let i = 0; i < p.count; i++) {
+    const c = v.fromBufferAttribute(p, i).dot(axis);
+    min = Math.min(min, c);
+    max = Math.max(max, c);
+  }
+  return { min, max };
+}
+
+// Area-weighted orientation of the actual cortical faces on the anterior
+// central vertebral body. Exclude the posterior arch, sacral alae, vertical
+// walls and sides; each included face contributes its outward area vector.
+function plateSlope(geometry, frame, top) {
+  const p = geometry.attributes.position,
+    ix = geometry.index.array;
+  const x = boundsAlong(geometry, frame.x),
+    y = boundsAlong(geometry, frame.y),
+    z = boundsAlong(geometry, frame.z);
+  const a = new T.Vector3(),
+    b = a.clone(),
+    c = a.clone(),
+    center = a.clone();
+  const sum = new T.Vector3();
+  const direction = top ? 1 : -1;
+  for (let i = 0; i < ix.length; i += 3) {
+    a.fromBufferAttribute(p, ix[i]);
+    b.fromBufferAttribute(p, ix[i + 1]);
+    c.fromBufferAttribute(p, ix[i + 2]);
+    center.copy(a).add(b).add(c).divideScalar(3);
+    const u = (center.dot(frame.x) - x.min) / (x.max - x.min);
+    const v = (center.dot(frame.y) - y.min) / (y.max - y.min);
+    const w = (center.dot(frame.z) - z.min) / (z.max - z.min);
+    if (u < 0.28 || u > 0.72 || w < 0.55 || w > 0.95 || (top ? v < 0.48 : v > 0.52)) continue;
+    const normal = b.sub(a).cross(c.sub(a)).multiplyScalar(direction);
+    if (normal.dot(frame.y) > 0.45 * normal.length()) sum.add(normal);
+  }
+  return sum.lengthSq() ? T.MathUtils.radToDeg(Math.atan2(sum.dot(frame.z), sum.dot(frame.y))) : null;
+}
+
+// Re-read posed cortical triangles and the final muscle vertices after skin
+// fitting, independently of the attachment coordinates stored by registration.
+function nearestCortex(geom, point, closest) {
+  const positions = geom.attributes.position,
+    indices = geom.index.array,
+    triangle = new T.Triangle(),
+    q = new T.Vector3();
+  let best = Infinity;
+  for (let i = 0; i < indices.length; i += 3) {
+    triangle.a.fromBufferAttribute(positions, indices[i]);
+    triangle.b.fromBufferAttribute(positions, indices[i + 1]);
+    triangle.c.fromBufferAttribute(positions, indices[i + 2]);
+    triangle.closestPointToPoint(point, q);
+    const d = q.distanceToSquared(point);
+    if (d < best) {
+      best = d;
+      closest?.copy(q);
+    }
+  }
+  return Math.sqrt(best);
+}
+function atlasRegistration(model, bones) {
+  const tissues = model.parts.filter((p) => p.muscleNode),
+    distances = [],
+    byFamily = {};
+  const pose = new T.Vector3();
+  for (const part of tissues) {
+    for (const a of part.attachments) {
+      const distance =
+        nearestCortex(
+          bones.get(a.bone),
+          pose.fromBufferAttribute(part.mesh.geometry.attributes.position, a.index),
+        ) / inch;
+      distances.push(distance);
+      byFamily[part.region] = Math.max(byFamily[part.region] ?? 0, distance);
+    }
+  }
+  distances.sort((a, b) => a - b);
+  return {
+    individualMeshes: tissues.length,
+    dbcls: tissues.filter((p) => !p.source.includes('Andreassen')).length,
+    visibleHumanFemale: tissues.filter((p) => p.source.includes('Andreassen')).length,
+    corticalVertices: distances.length,
+    musclesWithCorticalVertices: tissues.filter((p) => p.attachments.length).length,
+    p95GapInches: describe(distances[Math.floor(0.95 * (distances.length - 1))]),
+    maxGapInches: describe(distances.at(-1)),
+    maxGapByRegion: Object.fromEntries(Object.entries(byFamily).map(([k, d]) => [k, describe(d)])),
+  };
+}
+function landmarks(model, lm) {
+  const bones = lm.scan.bones;
+  const { pelvis, shoulders } = lm;
+  const axis = (x, y, z) =>
+    pelvis
+      .place(x, y, z)
+      .sub(pelvis.place(0, 0, 0))
+      .normalize();
+  const frame = { x: axis(1, 0, 0), y: axis(0, 1, 0), z: axis(0, 0, 1) };
+  const width = (first, second) =>
+    (boundsAlong(bones.get(first), frame.x).max - boundsAlong(bones.get(second), frame.x).min) / inch;
+  const invalidNormals = [];
+  for (const [name, geometry] of bones) {
+    const normal = geometry.attributes.normal;
+    if (
+      !normal ||
+      normal.count !== geometry.attributes.position.count ||
+      !normal.array.every(Number.isFinite)
+    )
+      invalidNormals.push(name);
+  }
+  const report = {
+    bones: bones.size,
+    invalidBoneNormals: invalidNormals,
+    ribs: [...bones.keys()].filter((n) => /^RIB_/.test(n)).length,
+    vertebrae: [...bones.keys()].filter((n) => /^VERTEBRA_/.test(n)).length,
+    crestWidth: describe(width('HIP_LEFT', 'HIP_RIGHT')),
+    clavicularSpan: describe(width('CLAVICLE_LEFT', 'CLAVICLE_RIGHT')),
+    corticalAttachmentSamples: lm.scan.attachments.length,
+    muscleAtlas: atlasRegistration(model, bones),
+  };
+  for (const [side, full] of [
+    ['L', 'LEFT'],
+    ['R', 'RIGHT'],
+  ]) {
+    const socket = pelvis[side],
+      arm = shoulders[side];
+    const structure = (id) => ({ name: id, geometry: bones.get(id + '_' + full) });
+    report[side] = {
+      coronalQAngleDeg: (() => {
+        const asis = new T.Vector3(),
+          tuberosity = new T.Vector3(),
+          patella = bones.get('PATELLA_' + full).boundingBox.getCenter(new T.Vector3());
+        nearestCortex(bones.get('HIP_' + full), socket.asis, asis);
+        nearestCortex(bones.get('TIBIA_' + full), socket.tibialTuberosity, tuberosity);
+        return describe(
+          angle(asis.sub(patella).projectOnPlane(frame.z), patella.sub(tuberosity).projectOnPlane(frame.z)),
+        );
+      })(),
+      shoulder: jointSeat(
+        structure('HUMERUS'),
+        structure('SCAPULA'),
+        arm.headCenter,
+        arm.shoulderNormal.clone().negate(),
+      ),
+      hip: jointSeat(
+        structure('FEMUR'),
+        structure('HIP'),
+        socket.femoralHead,
+        socket.socketAxis.clone().negate(),
+      ),
+    };
+  }
+  const upper = plateSlope(bones.get('VERTEBRA_T2'), frame, true);
+  const lower = plateSlope(bones.get('VERTEBRA_T12'), frame, false);
+  const sacrum = plateSlope(bones.get('SACRUM'), frame, true);
+  report.corticalEndplateAngle = {
+    thoracicDeg: upper === null || lower === null ? null : describe(Math.abs(upper - lower)),
+    lumbarDeg: lower === null || sacrum === null ? null : describe(Math.abs(lower - sacrum)),
+  };
+  return report;
+}
+
 // A left leg raise for the three-layer registration photograph. The existing
 // controller supplies balance, facial animation and all surface updates.
 function raiseLeftLeg(rig, fraction) {
@@ -316,7 +418,7 @@ if (
   throw Error(
     'Use THREE_ROOT=/path/to/three node tools/check-axon-skeleton.mjs sippy|roma mobile|high [rest|walk|run|roll|leg-raise]',
   );
-const build = (await import(`../docs/characters/${name}.js`))[name === 'roma' ? 'buildRoma' : 'buildSippy'];
+const build = (await characterModule(name))[name === 'roma' ? 'buildRoma' : 'buildSippy'];
 let failures = 0;
 for (const state of args.slice(2).length ? args.slice(2) : defaultPoses) {
   const rig = createActor(name, heights[names.indexOf(name)]),
@@ -350,9 +452,15 @@ for (const state of args.slice(2).length ? args.slice(2) : defaultPoses) {
       record = l;
     });
     try {
-      const report = landmarks(snapshot, record),
-        skin = coverage(snapshot.parts, rig.height);
-      if (state === 'leg-raise') report.legRaise = raisedLegMeasures(rig, record.pelvis);
+      const report = baseline ? {} : landmarks(snapshot, record),
+        skin = coverage(snapshot.parts, rig.height, record.pelvis);
+      if (!baseline && process.env.AXON_BONES_ONLY === '1') {
+        const extremity = /^(METACARPAL|METATARSAL|PHALANGE|LUNATE|SCAPHOID|PISIFORM|CAPITATE|HAMATE|TRIQUETRUM|TRAPEZOID|TRAPEZIUM|TALUS|CUBOID|[A-Z]+_CUNEIFORM|NAVICULAR|CALCANEUS)/;
+        const parts = snapshot.parts.filter(p => p.layer === 'skin' || extremity.test(p.scanNode));
+        const extremitySkin = coverage(parts, rig.height, record.pelvis);
+        skin.handAndFoot = { sampled: extremitySkin.sampled, exposed: extremitySkin.exposed };
+      }
+      if (!baseline && state === 'leg-raise') report.legRaise = raisedLegMeasures(rig, record.pelvis);
       console.log(
         JSON.stringify({
           name,
@@ -364,11 +472,21 @@ for (const state of args.slice(2).length ? args.slice(2) : defaultPoses) {
           skin,
         }),
       );
+      if (baseline) continue;
       if (
+        report.bones !== (name === 'roma' ? 143 : 142) ||
+        report.invalidBoneNormals.length ||
         report.ribs !== 24 ||
-        report.vertebrae !== 24 ||
+        report.vertebrae !== (name === 'roma' ? 25 : 24) ||
+        !report.corticalAttachmentSamples ||
+        report.muscleAtlas.dbcls !== (name === 'roma' ? 263 : 323) ||
+        report.muscleAtlas.visibleHumanFemale !== (name === 'roma' ? 76 : 0) ||
+        report.muscleAtlas.maxGapInches > 0.02 ||
         skin.exposed ||
-        [report.L, report.R].some((r) => Math.abs(r.shoulderGap) > 0.25 || Math.abs(r.hipGap) > 0.25)
+        skin.handAndFoot?.exposed ||
+        [report.L.shoulder, report.R.shoulder, report.L.hip, report.R.hip].some(
+          (r) => r.hits < 3 || r.worstIn > 0.25,
+        )
       )
         failures++;
     } finally {

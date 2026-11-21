@@ -23,8 +23,8 @@ spec.loader.exec_module(benchmark)
 NATIVE = r"""
 (() => {
   const contexts = new Set(), frames = new Map();
-  let stamp, task, diagramDepth = 0;
-  const qa = window.axPerf = {draws: 0, diagramDraws: 0, passes: 0, blits: 0, minColors: 4096};
+  let stamp, task, diagramDepth = 0, compositeDepth = 0;
+  const qa = window.axPerf = {draws: 0, diagramDraws: 0, compositeDraws: 0, passes: 0, blits: 0, minColors: 4096};
   const copyPixels=CanvasRenderingContext2D.prototype.putImageData;
   CanvasRenderingContext2D.prototype.putImageData=function(image,...args) {
     if(this.canvas.matches('[data-axon-canvas]')){
@@ -57,7 +57,7 @@ NATIVE = r"""
       queueMicrotask(() => { task = undefined; });
     }
     const key = stamp ?? task;
-    if (!frames.has(key)) frames.set(key, {draws: 0, diagram: 0, passes: 0});
+    if (!frames.has(key)) frames.set(key, {draws: 0, diagram: 0, composite: 0, passes: 0});
     return frames.get(key);
   }
   for (const method of ['drawElements','drawArrays','drawElementsInstanced','drawArraysInstanced']) {
@@ -66,6 +66,7 @@ NATIVE = r"""
       const current = frame();
       ++current.draws; ++qa.draws;
       if (diagramDepth > 0) { ++current.diagram; ++qa.diagramDraws; }
+      if (compositeDepth > 0) { ++current.composite; ++qa.compositeDraws; }
       return original.apply(this,args);
     };
   }
@@ -77,12 +78,17 @@ NATIVE = r"""
       if (this.name === 'Axon View') {
         if (!args[2].isOrthographicCamera) throw Error('Axon View must use its orthographic camera');
         ++diagramDepth; ++qa.passes; ++frame().passes;
+      } else if (this.name === 'Axon Studio Composite') {
+        ++compositeDepth;
       }
       return before.apply(this,args);
     };
     proto.onAfterRender = function (...args) {
       try { return after.apply(this,args); }
-      finally { if (this.name === 'Axon View') --diagramDepth; }
+      finally {
+        if (this.name === 'Axon View') --diagramDepth;
+        if (this.name === 'Axon Studio Composite') --compositeDepth;
+      }
     };
   };
   qa.reset = () => { frames.clear(); };
@@ -92,6 +98,8 @@ NATIVE = r"""
       submissionCounts:[...new Set(rows.map(r=>r.diagram))],
       maxPasses: Math.max(0,...rows.map(r=>r.passes)),
       maxDiagramDraws: Math.max(0,...rows.map(r=>r.diagram)),
+      maxCompositeDraws: Math.max(0,...rows.map(r=>r.composite)),
+      maxInspectorDraws: Math.max(0,...rows.map(r=>r.diagram+r.composite)),
       maxAllDraws: Math.max(0,...rows.map(r=>r.draws))};
   };
   qa.contexts = () => [...contexts].map(gl=>({live: !gl.isContextLost(), canvasClass:gl.canvas.className}));
@@ -129,7 +137,8 @@ def native_rows(page):
         page.locator("[data-setting=tier]").evaluate(
             "(e,t)=>{e.value=t;e.dispatchEvent(new Event('change',{bubbles:true}))}", tier
         )
-        for name in ("sippy", "roma", "hummin"):
+        # End on a human so the stall and offscreen checks include the studio pass.
+        for name in ("hummin", "roma", "sippy"):
             page.locator("[data-axon-hero]").select_option(name)
             canvas = page.locator("[data-axon-canvas]")
             canvas.evaluate("e=>e.scrollIntoView({block:'center',behavior:'instant'})")
@@ -150,7 +159,11 @@ def native_rows(page):
                     observed,
                 )
                 assert observed["maxPasses"] == 1, (name, tier, value, observed)
-                reported = page.locator("[data-axon]").evaluate("e=>e.axonInspector.stats().draws")
+                stats = page.locator("[data-axon]").evaluate("e=>e.axonInspector.stats()")
+                reported = stats["draws"]
+                expected_finish = stats.get("postDraws", 0)
+                assert observed["maxCompositeDraws"] == expected_finish <= 1
+                assert reported + expected_finish <= observed["maxAllDraws"]
                 assert reported in observed["submissionCounts"], (name, tier, value, reported, observed)
                 draws[str(value)] = observed
             # Translucent materials and selection outlines can add submissions.
@@ -258,7 +271,7 @@ def main():
                 slider(page, 0.75)
                 presented(page, begin)
                 gap = page.evaluate("axPerf.measure()")
-                assert gap["maxPasses"] == 1 and gap["maxAllDraws"] < 300, gap
+                assert gap["maxPasses"] == gap["maxCompositeDraws"] == 1 and gap["maxAllDraws"] < 300, gap
                 floor = page.locator(".ct-stage canvas")
                 floor.evaluate("e=>e.scrollIntoView({block:'center',behavior:'instant'})")
                 page.wait_for_function(
@@ -267,7 +280,7 @@ def main():
                 )
                 page.evaluate("new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))")
                 initial = page.evaluate(
-                    "({draws:axPerf.draws, passes:axPerf.passes, diagram:axPerf.diagramDraws, blits:axPerf.blits})"
+                    "({draws:axPerf.draws, passes:axPerf.passes, diagram:axPerf.diagramDraws, composite:axPerf.compositeDraws, blits:axPerf.blits})"
                 )
                 floor.focus()
                 page.keyboard.down("w")
@@ -275,10 +288,10 @@ def main():
                 page.wait_for_timeout(500)
                 page.keyboard.up("w")
                 end = page.evaluate(
-                    "({draws:axPerf.draws, passes:axPerf.passes, diagram:axPerf.diagramDraws, blits:axPerf.blits})"
+                    "({draws:axPerf.draws, passes:axPerf.passes, diagram:axPerf.diagramDraws, composite:axPerf.compositeDraws, blits:axPerf.blits})"
                 )
                 off = {k: end[k] - v for k, v in initial.items()}
-                assert off["passes"] == off["diagram"] == off["blits"] == 0 and off["draws"] > 0, off
+                assert off["passes"] == off["diagram"] == off["composite"] == off["blits"] == 0 and off["draws"] > 0, off
                 # Static previews may reuse their last image on re-entry. A fresh
                 # control change must produce another real orthographic draw.
                 canvas.evaluate("e=>e.scrollIntoView({block:'center',behavior:'instant'})")
@@ -309,6 +322,7 @@ def main():
                     "renderer": "ANGLE Vulkan SwiftShader",
                     "rows": rows,
                     "stallMs": 250,
+                    "stallActor": "sippy-high",
                     "afterStall": gap,
                     "offscreen": off,
                     "contexts": contexts,

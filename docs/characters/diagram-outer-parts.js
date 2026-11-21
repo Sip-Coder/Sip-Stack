@@ -21,7 +21,8 @@ export function describeRoma(rig, mesh, c) {
   const side = sideName(anatomicalX(rig, c.worldCenter));
   if (id.startsWith('eye ')) {
     const labels = ['sclera', 'iris rim', 'iris', 'pupil', 'catchlights', 'catchlights', 'upper eyelash'];
-    return skin(side + ' ' + labels[i]);
+    const eyeSide = sideName(Number(id.split(' ')[1]));
+    return skin(eyeSide + ' ' + labels[i]);
   }
   if (id.startsWith('brow ')) return skin(side + ' eyebrow');
   if (id === 'smile') return skin(['Mouth opening', 'Teeth', 'Lower lip', 'Upper lip'][i]);
@@ -93,6 +94,9 @@ export function sippyCatalog(rig) {
     if (id === 'body') return skin('Continuous body, limbs and hands');
     if (id === 'body-head') return skin('Face');
     if (path.includes('sippy-head/')) {
+      // The head can turn across the actor's midline during a tucked roll.
+      // Its local lateral coordinate identifies the eye independently of pose.
+      const side = sideName(rig.head.worldToLocal(p.clone()).x);
       if (path.includes('sippy-brow')) return skin(side + ' eyebrow');
       if (path.includes('sippy-quiff-')) {
         const no = Number(/sippy-quiff-(\d+)/.exec(path)[1]);

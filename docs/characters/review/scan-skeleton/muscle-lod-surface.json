@@ -1,0 +1,276 @@
+{
+  "method": "Each vertex and triangle centroid in each direction is compared to the exact nearest surface on the identically named donor muscle. Distances and per-muscle axis-aligned bound differences are in inches in atlas space, before character fitting. Component counts use shared vertices in indexed, non-degenerate triangle faces.",
+  "rows": [
+    {
+      "source": "bp3d-muscles-mobile-meshopt.glb",
+      "asset": "bp3d-muscles-mobile-meshopt.glb",
+      "sourceSha256": "d36ce0b8138d204f4f52896b5f0dd71f1b348ade89e1fe6e52cd58d71c9d925a",
+      "assetSha256": "72302083e48bd80ae21d78622391304b7f4ba3618094e0e12a662efbe84f95ab",
+      "sourceMeshCount": 323,
+      "assetMeshCount": 323,
+      "sourceTriangles": 101144,
+      "assetTriangles": 76558,
+      "bytes": 601264,
+      "samples": 268005,
+      "medianIn": 0,
+      "p99In": 0.01555,
+      "p999In": 0.02581,
+      "maxSourceToAssetIn": 0.08888,
+      "maxAssetToSourceIn": 0.03407,
+      "maxDifferenceInAnatomicalMeshBoundsIn": 0,
+      "sourceConnectedComponents": 401,
+      "assetConnectedComponents": 401,
+      "groupsWithChangedComponentCount": 0,
+      "worstSampleMuscle": "right_transversus_thoracis",
+      "smallestOutputMuscleTriangles": 28
+    },
+    {
+      "source": "bp3d-muscles-high-meshopt.glb",
+      "asset": "bp3d-muscles-high-meshopt.glb",
+      "sourceSha256": "4a2d4840c04053271dd191834986543bd9f3a441630e1b4b1564309049cded8e",
+      "assetSha256": "570f770a4293e1796c3c5f4293597490ec6756bab4399f949fcbe721aaa1ec00",
+      "sourceMeshCount": 323,
+      "assetMeshCount": 323,
+      "sourceTriangles": 272194,
+      "assetTriangles": 155766,
+      "bytes": 888340,
+      "samples": 643136,
+      "medianIn": 0,
+      "p99In": 0.01709,
+      "p999In": 0.02733,
+      "maxSourceToAssetIn": 0.08486,
+      "maxAssetToSourceIn": 0.03805,
+      "maxDifferenceInAnatomicalMeshBoundsIn": 0,
+      "sourceConnectedComponents": 426,
+      "assetConnectedComponents": 426,
+      "groupsWithChangedComponentCount": 0,
+      "worstSampleMuscle": "external_intercostal_muscle",
+      "smallestOutputMuscleTriangles": 46
+    }
+  ],
+  "silhouetteReview": {
+    "resolution": [
+      590,
+      680
+    ],
+    "method": "Matched orthographic WebGL donor vs shipped, before rig registration, for front, rear, oblique and side views of whole model, shoulder and hip.",
+    "rows": [
+      {
+        "sex": "atlas",
+        "tier": "mobile",
+        "region": "full",
+        "yawRad": 0.0,
+        "maskIoU": 0.99952,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 1.663
+      },
+      {
+        "sex": "atlas",
+        "tier": "mobile",
+        "region": "full",
+        "yawRad": 0.58,
+        "maskIoU": 0.99974,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 1.489
+      },
+      {
+        "sex": "atlas",
+        "tier": "mobile",
+        "region": "full",
+        "yawRad": 1.57,
+        "maskIoU": 0.99939,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 1.045
+      },
+      {
+        "sex": "atlas",
+        "tier": "mobile",
+        "region": "full",
+        "yawRad": 3.14159,
+        "maskIoU": 0.99965,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 0.855
+      },
+      {
+        "sex": "atlas",
+        "tier": "mobile",
+        "region": "shoulder",
+        "yawRad": 0.0,
+        "maskIoU": 0.99949,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 0.78
+      },
+      {
+        "sex": "atlas",
+        "tier": "mobile",
+        "region": "shoulder",
+        "yawRad": 0.58,
+        "maskIoU": 0.99957,
+        "maxBoundaryShiftPx": 2.0,
+        "meanDeltaRGB": 0.721
+      },
+      {
+        "sex": "atlas",
+        "tier": "mobile",
+        "region": "shoulder",
+        "yawRad": 1.57,
+        "maskIoU": 0.99936,
+        "maxBoundaryShiftPx": 1.41,
+        "meanDeltaRGB": 0.673
+      },
+      {
+        "sex": "atlas",
+        "tier": "mobile",
+        "region": "shoulder",
+        "yawRad": 3.14159,
+        "maskIoU": 0.99952,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 0.437
+      },
+      {
+        "sex": "atlas",
+        "tier": "mobile",
+        "region": "hip",
+        "yawRad": 0.0,
+        "maskIoU": 0.99938,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 0.467
+      },
+      {
+        "sex": "atlas",
+        "tier": "mobile",
+        "region": "hip",
+        "yawRad": 0.58,
+        "maskIoU": 0.99958,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 0.405
+      },
+      {
+        "sex": "atlas",
+        "tier": "mobile",
+        "region": "hip",
+        "yawRad": 1.57,
+        "maskIoU": 1.0,
+        "maxBoundaryShiftPx": 0,
+        "meanDeltaRGB": 0.249
+      },
+      {
+        "sex": "atlas",
+        "tier": "mobile",
+        "region": "hip",
+        "yawRad": 3.14159,
+        "maskIoU": 0.99937,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 0.461
+      },
+      {
+        "sex": "atlas",
+        "tier": "high",
+        "region": "full",
+        "yawRad": 0.0,
+        "maskIoU": 0.99862,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 2.642
+      },
+      {
+        "sex": "atlas",
+        "tier": "high",
+        "region": "full",
+        "yawRad": 0.58,
+        "maskIoU": 0.99903,
+        "maxBoundaryShiftPx": 1.41,
+        "meanDeltaRGB": 2.527
+      },
+      {
+        "sex": "atlas",
+        "tier": "high",
+        "region": "full",
+        "yawRad": 1.57,
+        "maskIoU": 0.99899,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 1.825
+      },
+      {
+        "sex": "atlas",
+        "tier": "high",
+        "region": "full",
+        "yawRad": 3.14159,
+        "maskIoU": 0.99875,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 1.563
+      },
+      {
+        "sex": "atlas",
+        "tier": "high",
+        "region": "shoulder",
+        "yawRad": 0.0,
+        "maskIoU": 0.99888,
+        "maxBoundaryShiftPx": 1.41,
+        "meanDeltaRGB": 2.918
+      },
+      {
+        "sex": "atlas",
+        "tier": "high",
+        "region": "shoulder",
+        "yawRad": 0.58,
+        "maskIoU": 0.99817,
+        "maxBoundaryShiftPx": 2.0,
+        "meanDeltaRGB": 2.831
+      },
+      {
+        "sex": "atlas",
+        "tier": "high",
+        "region": "shoulder",
+        "yawRad": 1.57,
+        "maskIoU": 0.99777,
+        "maxBoundaryShiftPx": 1.41,
+        "meanDeltaRGB": 2.306
+      },
+      {
+        "sex": "atlas",
+        "tier": "high",
+        "region": "shoulder",
+        "yawRad": 3.14159,
+        "maskIoU": 0.99885,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 1.521
+      },
+      {
+        "sex": "atlas",
+        "tier": "high",
+        "region": "hip",
+        "yawRad": 0.0,
+        "maskIoU": 0.99933,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 0.902
+      },
+      {
+        "sex": "atlas",
+        "tier": "high",
+        "region": "hip",
+        "yawRad": 0.58,
+        "maskIoU": 0.99925,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 0.96
+      },
+      {
+        "sex": "atlas",
+        "tier": "high",
+        "region": "hip",
+        "yawRad": 1.57,
+        "maskIoU": 0.99893,
+        "maxBoundaryShiftPx": 1.41,
+        "meanDeltaRGB": 0.652
+      },
+      {
+        "sex": "atlas",
+        "tier": "high",
+        "region": "hip",
+        "yawRad": 3.14159,
+        "maskIoU": 0.99931,
+        "maxBoundaryShiftPx": 1.0,
+        "meanDeltaRGB": 0.57
+      }
+    ]
+  }
+}

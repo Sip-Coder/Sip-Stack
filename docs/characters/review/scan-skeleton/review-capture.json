@@ -1,0 +1,399 @@
+{
+  "runtimeCommit": "8e89ab65e299e3b33d8f83f80b6047d77eb9bcfe",
+  "comparisonCommit": "85d3ad1cf334ed4a2dece44d35173479e8df7967",
+  "method": "Live browser, real tier-selected model and actual studio display canvas. Still-photo instrumentation sets fixed orthographic cameras. The touch fixture locates a projected target and submits native touchscreen events. The film drives the unmodified slider and pointer. Per-capture local input digests were checked against the commit.",
+  "stagesChecked": {
+    "after": 60,
+    "raise": 56,
+    "film": 67,
+    "touch": 67
+  },
+  "comparedRuntimeResourceSHA256": {
+    "/": "689e4197b2971133767ff929c17bd3339fbcf1a5c66be0c522b21e060367fa1e",
+    "/assets/sip-app.js": "c80d5bcfad97e9dfba3d0ebc4d80309b5937998fa6f8a28ff2e95b13eeba2193",
+    "/assets/sip-stack.css": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
+    "/assets/sip-warm.js": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
+    "/characters/assets/bp3d-muscles-high-meshopt.glb": "570f770a4293e1796c3c5f4293597490ec6756bab4399f949fcbe721aaa1ec00",
+    "/characters/assets/bp3d-muscles-mobile-meshopt.glb": "72302083e48bd80ae21d78622391304b7f4ba3618094e0e12a662efbe84f95ab",
+    "/characters/assets/skeleton-female-high.glb": "c7b9075053e6c89513359bbdcc569d0c38e807b8ad093ef0b76d47be9f1788b0",
+    "/characters/assets/skeleton-female-mobile.glb": "b67070cc447765b6243dd5d9e2f7ad3bf14cb4e462418b3532db4d5008ef0d70",
+    "/characters/assets/skeleton-male-high.glb": "eb65d0720d94fc1586af7d9b559f087f55749eb52c88dbc0f480bf73b210a9bc",
+    "/characters/assets/skeleton-male-mobile.glb": "941073b12b6f1ce289f73b65778587b7433d343ba6fb811f6ba8807ced10038d",
+    "/characters/assets/vhf-muscles-high-meshopt.glb": "66ff431372f882d87bbc67f87839e5fcea069e022a5d830654ba792a9b24b254",
+    "/characters/assets/vhf-muscles-mobile-meshopt.glb": "8900dc7de1c03eaa806074a11b28deacb214d9d36d955887ec054f36f6b96220",
+    "/characters/axon-view.css": "a1462c79925355218a1ce3c04de4f0e46f782902ebf416ced013d80a310bf66b",
+    "/characters/axon-view.js": "ccdaa791c30e9e627b38a73bd434a1bb5d94d189983b52712333d1ae6bdf8d0f",
+    "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
+    "/characters/diagram-anatomy.js": "be4f12060416cfeee9d7138088849d984d047ff1455247f85954ea0791a3f226",
+    "/characters/diagram-explode.js": "5662635e668012a00e04b7e341fe8347be37cbb27064000ce8fd34a5fe4b33d1",
+    "/characters/diagram-fabricator.js": "fead460ff6e0de27e0892249e5c99b8bd286fd433654f19a95188c987e811aba",
+    "/characters/diagram-fascia.js": "dae9ec180cc99fc592f9bdb76cc3b04d28f81dc3ecef5a86c22fa4bc71119748",
+    "/characters/diagram-hair-roots.js": "b1d193201eebe13336167160187a6921a7d84ed21943e6eff590edeba9e6405e",
+    "/characters/diagram-human.js": "9b48c1984ee3ef2dd0f0e51eae06e6bccdd6590b478675a58d880cc25c70662a",
+    "/characters/diagram-leg-fit.js": "b17df683d935eeb534861053e348fe83b4d0b8349b064617ecdaaec79674bac9",
+    "/characters/diagram-muscle-charts.js": "ca0319ff124f3d33fb550929b16ef578e90c20bdffd3e29ab5bfe36351f1b0f5",
+    "/characters/diagram-muscle-insertions.js": "ec26eaf5e94be1f1602bb946c940375d346ffd8a37619ee92860090a9573413f",
+    "/characters/diagram-muscle-names.js": "9f85c9b6894bc702cdd6ad3b104405f251d13411c7cadba4928b580286925836",
+    "/characters/diagram-muscle-orbits.js": "42154dfea6d5b5d635a689e6260a1d2f21daa8f1594aff2435dd602020cb7cc0",
+    "/characters/diagram-muscle-surface.js": "17efa26b306ec24e6a90782207b1ccf93376e5034ea7a5cfd48783ff1a3cac0b",
+    "/characters/diagram-muscle-throat.js": "ca16367ac40a920f9d3463242d26ae2e037b6579d47651b61a5b4bfdeab15747",
+    "/characters/diagram-outer-parts.js": "2b13338c395ee6d9392ac39516a8400835718f41f221d3f7b199e96a4456f8a8",
+    "/characters/diagram-parts.js": "bff8a6db7241f0c8e7fea8e20b6b2da7dc09b30d004a6e6eba5dbd8c32bb8db4",
+    "/characters/diagram-pelvis.js": "e42837f081b8114a3d65d57a2c647402095e4edffacdd30adac8d9cf475eeed4",
+    "/characters/diagram-scan-ao.js": "affaf4cc845f9da0081ee3b92554f8cecf2f94e25195f1a449c03e109da8c8af",
+    "/characters/diagram-scan-column.js": "91c817f1db48634e633303fd79bd3059742f195ebd227fc210814006fe804b69",
+    "/characters/diagram-scan-cranium.js": "bd060f558e6bbb361f8e305a4d2c993ab1f8977ca1e6179f14a6e16a666b2129",
+    "/characters/diagram-scan-curved-fit.js": "3211902637ea0a137e6e0e79c25269c8bf76ced8716c274c1eaa113aa12d746b",
+    "/characters/diagram-scan-envelope.js": "d1ac29650160cf3893788c3de911047ca3565bc82ff79faccdf59ebf914c5058",
+    "/characters/diagram-scan-extremities.js": "9154665912a440a9b1eb782d96de11487c1e81ae1e0f59ae3fe96f0e0d8c1ad6",
+    "/characters/diagram-scan-fit.js": "ac2e27486759455f96f12b3916db71fad5adf661e0e41628dcc18f64097ff2b4",
+    "/characters/diagram-scan-muscles.js": "ff55e2f84aaa58c535a020487ba15e7cb38850825fe53413fafa20d5bad7144a",
+    "/characters/diagram-scan-repairs.js": "089d84c269dda123851c1f20285a789e863f44b117cc09933d9adbf3eebebe82",
+    "/characters/diagram-scan-seats.js": "eb47e68b77f0ba39d573e6b3e2e8687cedccb9ffa5e1b376578f22c5ed25e851",
+    "/characters/diagram-scan-source.js": "2fb44ff249eac4008c511838fab30b3f885e484586cff8e1f3a6d559f7f76c37",
+    "/characters/diagram-shoulder.js": "62d85172825e86b742ed020e56df24a3fe9a276c1df55c1ba861c8c6a6066a20",
+    "/characters/diagram-skull.js": "b9aa1a8b0aafcfe27de3eeba4924ec6ec51dfbcae6f438c9356effac62643926",
+    "/characters/diagram-snapshot.js": "072370c7c1fe88c4f871ed2d64892af9bf9453c8c860025c49070f4a872b86bf",
+    "/characters/diagram-studio.js": "44302125b47c6ad3028a4136762ba1d0e4930dd355d743c59ecb4ae125cad388",
+    "/characters/diagram-thigh-skin.js": "5cf18a295cae02dc06839f06e98c5d537ffd5b83902a27e9b2f73784f4607f58",
+    "/characters/diagram-thorax.js": "21bedc801b9a37845b7b928266cd871a8d8aa3e91f47c048cb23bde245e6b8c2",
+    "/characters/diagram-view.js": "868da10710f218c82a13a5f80e191a533860dc7d22cde8f65af02bb74cdc83f0",
+    "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
+    "/characters/main.js": "3fea4f0da88e7330c1512861213aac9e3bcdfd82a57c134ce7aef2e03ef7fb3d",
+    "/characters/model-tier.js": "f1c83eb8d91b243948aea6d45c04fcb19e4340a52fc63bb40c960885aa1e11a9",
+    "/characters/motion.js": "88132184dde77d7b3ccb2d9b370a212a6da4811cee6072fd865dc2a55eaf98b2",
+    "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
+    "/characters/review-controls.js": "dfdca6623c28089521b54872645e0783033bd7f7c892c2b143dc443e9a3c000d",
+    "/characters/rig.js": "fc0c1d81f2695004894aa0dd4e12f9886d5ea6f5d375bce4dadc71026537bb5c",
+    "/characters/roma-forms.js": "b7c27e14d407728c661dbd79c75a001941ae1d14aaaf1992907be868dad581ec",
+    "/characters/roma-light-groom.js": "b76a5f82ecd48cab4dccdab3d4da5c78197e765603eda0a35411f008be87dccd",
+    "/characters/roma.js": "db55e1e5155eefa3a4e8a1e286473b0a93cc630bf6c47dfd9c84284e9ebebe34",
+    "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+    "/characters/secondary.js": "80ed341ab1b5bdc86164c46e3585f724c919c6fcb5a90a3b59f2a681bf47e24d",
+    "/characters/sippy-body.js": "2d5690035f0fbd2bd648d908db99524e3878357e1973d673655623ef6fc2ee8b",
+    "/characters/sippy-explorer.js": "99a3d325033ddb551220398462bb28f92317ecea5b35dc02262906e70f38f172",
+    "/characters/sippy-expression.js": "5ad54467f42692d2bbd42a3abbdba2038e9dc9cae67a1c35bcd675eb88591e46",
+    "/characters/sippy-hips.js": "dde1e1080e348fdf994266e99515ef4af91c110333905746925f59d1ec894eb9",
+    "/characters/sippy-shoulders.js": "178d942fab123c16eabcd0ef8a3d948e9a121e68fe568364d0eaacbb14423b6e",
+    "/characters/sippy-skin.js": "a40f2bf5b900c4be94e6b9ced5a0c7a640ce27c2c2bddf96e0cac95cebe90a0f",
+    "/characters/sippy-tailoring.js": "a3e917d000cc04c0f78f5e0956617669cba914067a6ba5ff084861c02b1ed1dc",
+    "/characters/sippy.js": "ab4fc809a7b73b6ec5d100dfaf8436b5db4a7d752ab208f5c4d1203dee4c4305",
+    "/characters/stage.js": "d206cbd7a4cfb063c1f86c41cbe345e133023021ef9a940650dc05a80fc4d112",
+    "/characters/ui.js": "145b3db0740fcfd83535c2250edc0e52dcda7843c41ed62b2a394d5df934a7cd"
+  },
+  "frontViewsPixelIdenticalAfterOrbitSHA256": {
+    "sippy/mobile": "ffd6e8239027a75183d5880c5e8347781d91f4c4ae2f85efc321c5fcd8736939",
+    "sippy/high": "c5e8731755b4b66cbeba6a4dcd44ae67365a754addc2d338cc94474f889b25c3",
+    "roma/mobile": "32a92c9a9819a6b6348cdcfee887c9cca10bf7c7e2adb3af65ab83d4b50dc7a3",
+    "roma/high": "24d88fae1d2cedb9bf879671c181eabdc20da5d95843582854e8b540785ee18e"
+  },
+  "film": {
+    "sippy": {
+      "captures": 128,
+      "distinct": 125,
+      "encodedFrames": 288
+    },
+    "roma": {
+      "captures": 128,
+      "distinct": 124,
+      "encodedFrames": 288
+    }
+  },
+  "mediaSHA256": {
+    "axial-orbit.mp4": "d576f84f925b8280ed40e25a8ace2fb73f674e79a161faa79040433f1b40e6ee",
+    "female-donor.jpg": "74dc6418e5ae85ea3f95cceb4496f7acecbfe748d4fc26846357e76bec7ef073",
+    "girdles.jpg": "3b0703894c728d8122808586c066343be6fee01b7366bb29d9aac6bb2775ed46",
+    "hip-envelope.jpg": "22f1b069e8755f8df9db22cd3348c8125881ad3f3b2212495bd51d9701c0f672",
+    "muscle-atlas.jpg": "7a69c596e299a1056ba7a18e64b0b773cca4501731dcd3e5c2f9bfa5580379ea",
+    "muscle-before-after.jpg": "5b9e9af64ac304e12bc8832c0d60ed5f08e2af5e63e7fa2d05dff674ca6a0359",
+    "raised-leg-reference.jpg": "93b917ac50a3d4390f9a3e1e1ae333bb1f87fa4093142b76b69ed8b98131d320",
+    "roma-high.jpg": "deb9efac27797b26f2429cc4423bca7f24289edeca1ac9ffe145b9aaffcfc261",
+    "roma-mobile.jpg": "fbe860ecd3020379fd6a7381e33f403db84f5d5e1567733988ba80031fde8bce",
+    "sippy-high.jpg": "0325410e76f19ce74b9e96204fa524ce8b3604df9d82f4377f74779d1f778043",
+    "sippy-mobile.jpg": "abbdf395e848af9808d4f7ef8b131f6f27bec8cc9e6f3dfea5222bb11d568f00",
+    "skin-proportions.jpg": "2c493e39fb649079b6bbdc54bfa71a039ca46f505c79afe24658e2f0aa402927",
+    "source-to-rig.jpg": "3c9103da710437566e416d61f43f38adba129fa5262e98f35f69ea5ff4d44ff0",
+    "tap-measurements.jpg": "2bf0dfd70f8edb611d44d1efef23bc1074d4c022eb3f5cf310aecf20f14510d8",
+    "tissue-and-ghost.jpg": "18b438841f68a4ca9ba62bad92fd9b67f7ea1b28761e5e97b0c4fa2f10337b9c"
+  },
+  "finalPoseVerification": {
+    "finalRuntimeCommit": "bbd734dbae33d25434884aa158d71e2f8364baa3",
+    "changedCaptureInputs": {
+      "/characters/diagram-scan-envelope.js": {
+        "captureSHA256": "d1ac29650160cf3893788c3de911047ca3565bc82ff79faccdf59ebf914c5058",
+        "finalSHA256": "463410ad22b09c6ba90fb40eaab05b53625b0129be17bf6cec1eef12e05afd4c"
+      }
+    },
+    "scope": "Ordered geometry, per-vertex attributes/colours, indices, source labels, physical materials, visible state and local transforms match byte-for-byte in every neutral inspection model and both raised poses used in the sheets. Native ortho camera controls, renders, tested high-level layer combinations and ghost skin were rephotographed in Chromium.",
+    "testedModels": [
+      {
+        "hero": "sippy",
+        "tier": "mobile",
+        "pose": "neutral",
+        "parts": 598,
+        "sha256": "ea26494634e72fe7027b58ef923d3c79e5ffdeec56b2da9a61c4ac566fcb2dbf"
+      },
+      {
+        "hero": "sippy",
+        "tier": "high",
+        "pose": "neutral",
+        "parts": 598,
+        "sha256": "c25e10437939607fdb980f7c2681f086b8a7bf3ffabd393387bc3c78a6f2d3e8"
+      },
+      {
+        "hero": "sippy",
+        "tier": "high",
+        "pose": "raise",
+        "parts": 598,
+        "sha256": "aacb2c53b7463bde60e79add56316a11aeffddf1e1bff7bbfecae8f1e795bb83"
+      },
+      {
+        "hero": "roma",
+        "tier": "mobile",
+        "pose": "neutral",
+        "parts": 595,
+        "sha256": "325f25f54355cf6b3879e494ab23032f8e29b857fdbdcaca4131002a0bbd4558"
+      },
+      {
+        "hero": "roma",
+        "tier": "high",
+        "pose": "neutral",
+        "parts": 595,
+        "sha256": "e7388fb8cecd41a322cccbf1a336edcd3139975aff06ebd118696e387f1835bf"
+      },
+      {
+        "hero": "roma",
+        "tier": "high",
+        "pose": "raise",
+        "parts": 595,
+        "sha256": "506a316947f2a27c5c59c33ce577743b06eb58f516f4eb7865bb020b33c10326"
+      }
+    ],
+    "identicalNativePhotos": [
+      {
+        "hero": "sippy",
+        "tier": "mobile",
+        "pose": "neutral",
+        "view": "front",
+        "sha256": "ffd6e8239027a75183d5880c5e8347781d91f4c4ae2f85efc321c5fcd8736939"
+      },
+      {
+        "hero": "sippy",
+        "tier": "mobile",
+        "pose": "neutral",
+        "view": "three-quarter",
+        "sha256": "7f3c66b1bc65fc2d1d90a598621f6c04f2eb90775e6313e8b6a2a9ea17a4bb13"
+      },
+      {
+        "hero": "sippy",
+        "tier": "mobile",
+        "pose": "neutral",
+        "view": "repeat-front",
+        "sha256": "ffd6e8239027a75183d5880c5e8347781d91f4c4ae2f85efc321c5fcd8736939"
+      },
+      {
+        "hero": "sippy",
+        "tier": "high",
+        "pose": "neutral",
+        "view": "front",
+        "sha256": "c5e8731755b4b66cbeba6a4dcd44ae67365a754addc2d338cc94474f889b25c3"
+      },
+      {
+        "hero": "sippy",
+        "tier": "high",
+        "pose": "neutral",
+        "view": "three-quarter",
+        "sha256": "209a4e138661a726756b1f47fb89478c6c7b23932512b47052c0031cc34c8dae"
+      },
+      {
+        "hero": "sippy",
+        "tier": "high",
+        "pose": "neutral",
+        "view": "repeat-front",
+        "sha256": "c5e8731755b4b66cbeba6a4dcd44ae67365a754addc2d338cc94474f889b25c3"
+      },
+      {
+        "hero": "sippy",
+        "tier": "high",
+        "pose": "neutral",
+        "view": "muscles",
+        "sha256": "1273e5ed29dea26879ef536628a1b5298b1067cafc6a02f42e05ebce9fd4e844"
+      },
+      {
+        "hero": "sippy",
+        "tier": "high",
+        "pose": "neutral",
+        "view": "ghost-front",
+        "sha256": "a7551d211c0e438a23cd5c4d275852b15c0b25e8595a466b13c7957f7750c3b9"
+      },
+      {
+        "hero": "sippy",
+        "tier": "high",
+        "pose": "neutral",
+        "view": "skin-front",
+        "sha256": "3079ca969fb1832a725e309826ae0927a79b52a4fab6e6c751b68cee3a202d03"
+      },
+      {
+        "hero": "sippy",
+        "tier": "high",
+        "pose": "neutral",
+        "view": "groin-solid",
+        "sha256": "01a4afcb338361405b2e65a77381b1756bf7a20561b61123210fda41e6a2421a"
+      },
+      {
+        "hero": "sippy",
+        "tier": "high",
+        "pose": "raise",
+        "view": "skeleton",
+        "sha256": "141106184b4ede94ff6987369ecbaad55c5a2e40a8142a3e814d05fdfb732179"
+      },
+      {
+        "hero": "sippy",
+        "tier": "high",
+        "pose": "raise",
+        "view": "tissue",
+        "sha256": "86728ddde3cc05b07ead83190fecb14567b49fb6894ac0ff295786572aee9a5e"
+      },
+      {
+        "hero": "sippy",
+        "tier": "high",
+        "pose": "raise",
+        "view": "skin",
+        "sha256": "b948391e6614782a3218402e2e815f9ff16342491809697f11c939aae253952a"
+      },
+      {
+        "hero": "sippy",
+        "tier": "high",
+        "pose": "raise",
+        "view": "groin-solid",
+        "sha256": "fe936bb3004cc37e039f9e0ddfae400aa8fc30766c515b52e294e977e662c472"
+      },
+      {
+        "hero": "sippy",
+        "tier": "high",
+        "pose": "raise",
+        "view": "groin-ghost",
+        "sha256": "31682d95b2eec97aca3bc2801cc5b90c60efb3f4d161ccf4dd05b040b8e27c00"
+      },
+      {
+        "hero": "sippy",
+        "tier": "high",
+        "pose": "raise",
+        "view": "groin-skin",
+        "sha256": "fe936bb3004cc37e039f9e0ddfae400aa8fc30766c515b52e294e977e662c472"
+      },
+      {
+        "hero": "roma",
+        "tier": "mobile",
+        "pose": "neutral",
+        "view": "front",
+        "sha256": "32a92c9a9819a6b6348cdcfee887c9cca10bf7c7e2adb3af65ab83d4b50dc7a3"
+      },
+      {
+        "hero": "roma",
+        "tier": "mobile",
+        "pose": "neutral",
+        "view": "three-quarter",
+        "sha256": "f7e299259d0d348963c426691df90d32341dd88614c551009c1004ed0aa5cd78"
+      },
+      {
+        "hero": "roma",
+        "tier": "mobile",
+        "pose": "neutral",
+        "view": "repeat-front",
+        "sha256": "32a92c9a9819a6b6348cdcfee887c9cca10bf7c7e2adb3af65ab83d4b50dc7a3"
+      },
+      {
+        "hero": "roma",
+        "tier": "high",
+        "pose": "neutral",
+        "view": "front",
+        "sha256": "24d88fae1d2cedb9bf879671c181eabdc20da5d95843582854e8b540785ee18e"
+      },
+      {
+        "hero": "roma",
+        "tier": "high",
+        "pose": "neutral",
+        "view": "three-quarter",
+        "sha256": "5b36fc2851daf5227cb67b785509e5c2e0372fd5486a7bf52af23fd195d5d1e5"
+      },
+      {
+        "hero": "roma",
+        "tier": "high",
+        "pose": "neutral",
+        "view": "repeat-front",
+        "sha256": "24d88fae1d2cedb9bf879671c181eabdc20da5d95843582854e8b540785ee18e"
+      },
+      {
+        "hero": "roma",
+        "tier": "high",
+        "pose": "neutral",
+        "view": "muscles",
+        "sha256": "08c603c0f3aaa7c1e8ac144058a224af810457253da338bcb05ee723b2bb9a73"
+      },
+      {
+        "hero": "roma",
+        "tier": "high",
+        "pose": "neutral",
+        "view": "ghost-front",
+        "sha256": "0ec5ebdd02034017e8d812e6c4f3de7fb4c0ca79145202ec83ee4ea55917522e"
+      },
+      {
+        "hero": "roma",
+        "tier": "high",
+        "pose": "neutral",
+        "view": "skin-front",
+        "sha256": "f000b1f4a7ccc6efb34873dcc5d718a42decfd0a79c2b8948776aa0e38141086"
+      },
+      {
+        "hero": "roma",
+        "tier": "high",
+        "pose": "neutral",
+        "view": "groin-solid",
+        "sha256": "8b7bb479910171e325d6e69281ac5e51e7dbcde17690aaad2ba7938accd6fae9"
+      },
+      {
+        "hero": "roma",
+        "tier": "high",
+        "pose": "raise",
+        "view": "skeleton",
+        "sha256": "3b644956905e4f2190602e94b5c580cefa35141012b6272f4611e0fd717887e9"
+      },
+      {
+        "hero": "roma",
+        "tier": "high",
+        "pose": "raise",
+        "view": "tissue",
+        "sha256": "23e513a0f9e28e07ce59d7537958de9576c4ae1925b62ebbd15380a63c4dd1b0"
+      },
+      {
+        "hero": "roma",
+        "tier": "high",
+        "pose": "raise",
+        "view": "skin",
+        "sha256": "9cede2f8efcba568f41d1ae43bedc2191b993d55add5baf7bb967083791a96a7"
+      },
+      {
+        "hero": "roma",
+        "tier": "high",
+        "pose": "raise",
+        "view": "groin-solid",
+        "sha256": "9856e0e0ce268a5ba124807f5383fa85f31462ca981f0a45abcdde6f4a66848e"
+      },
+      {
+        "hero": "roma",
+        "tier": "high",
+        "pose": "raise",
+        "view": "groin-ghost",
+        "sha256": "2064db4d023d80de693e20f36f1e82b509dcbfd44bfd05c12de3cf677dbb904e"
+      },
+      {
+        "hero": "roma",
+        "tier": "high",
+        "pose": "raise",
+        "view": "groin-skin",
+        "sha256": "9856e0e0ce268a5ba124807f5383fa85f31462ca981f0a45abcdde6f4a66848e"
+      }
+    ]
+  }
+}

@@ -24,6 +24,7 @@ export function mountStudy(section, stage, chooseHero) {
   open.hidden = true;
   body.innerHTML = `
     <div class="ax-toolbar"><label>Character <select data-axon-hero>${names.map((n, i) => `<option value="${n}">${labels[i]}</option>`).join('')}</select></label>
+      <label data-human-setting>Layout <select data-axon-layout><option value="axial">Axial</option><option value="side">Side by side</option></select></label>
       <label class="ax-spread"><span>Explode <output data-spread-value>0%</output></span>
         <input data-explode type="range" min="0" max="1" step="0.01" value="0"></label></div>
     <div class="ax-layout"><div class="ax-figure">
@@ -38,12 +39,19 @@ export function mountStudy(section, stage, chooseHero) {
         <label class="ax-opacity">Opacity <input data-opacity type="range" min="0" max="100" value="100"></label></div>`,
         )
         .join('')}</div>
+      <label data-human-setting class="ax-ghost"><input data-ghost type="checkbox"> Ghost skin</label>
       <label class="ax-part-label">Inspect part <select data-part><option value="">Select a part</option></select></label>
       <div data-measure aria-live="polite"></div>
     </aside></div>
-    <details class="ax-help"><summary>Diagram controls</summary><p>Click or tap a part to measure it. Drag to orbit. Pinch or scroll to zoom. On the diagram, use the arrow keys to orbit, + or − to zoom and Home to reset.</p>
+    <details class="ax-help" data-human-setting data-scan-credit><summary>Skeleton and muscle credits · BoneHub, BodyParts3D and Visible Human Female</summary></details>
+    <details class="ax-help"><summary>Diagram controls</summary><p>Click or tap a part to measure it. Ghost skin opens an assembled cutaway by hiding the clothes. Drag to orbit. Pinch or scroll to zoom. On the diagram, use the arrow keys to orbit, + or − to zoom and Home to reset.</p>
     <p>Gamepad: use the D-pad to move between controls and adjust values, A to activate, bumpers to change character, the right stick to orbit and triggers to zoom.</p></details>`;
   const get = (selector) => body.querySelector(selector);
+  for (const id of ['human-skeleton-credit', 'human-muscle-credit']) {
+    const credit = document.getElementById(id).cloneNode(true);
+    credit.removeAttribute('id');
+    get('[data-scan-credit]').append(credit);
+  }
   const canvas = get('canvas'),
     heroPicker = get('[data-axon-hero]'),
     partPicker = get('[data-part]');
@@ -58,12 +66,32 @@ export function mountStudy(section, stage, chooseHero) {
     model,
     records = [],
     isolated,
+    loading,
     generation = 0;
+  let ghostOpen = false, restoreClothes = false;
+  function applyGhost(enabled) {
+    const clothes = get('[data-layer="clothes"] [data-show]');
+    if (enabled && !ghostOpen) {
+      restoreClothes = clothes.checked;
+      clothes.checked = false;
+      get('[data-layer="skin"] [data-show]').checked = true;
+      isolated = null;
+    } else if (!enabled && ghostOpen && restoreClothes) {
+      clothes.checked = true;
+    }
+    ghostOpen = enabled;
+    view.setGhost(enabled);
+    updateLayers();
+  }
   let padFrame = 0,
     pressed = [];
   const view = createDiagramView(stage, canvas, {
     layerOrder: layers.map((layer) => layer.key),
     onSelect: inspect,
+    onHover(part) {
+      const selected = partPicker.value === '' ? null : model?.parts[Number(partPicker.value)];
+      describePart(part ?? selected);
+    },
     onPaint(stats) {
       if (!stats.ready) return;
       status.textContent = '';
@@ -89,6 +117,10 @@ export function mountStudy(section, stage, chooseHero) {
   function inspect(part) {
     const i = model?.parts.indexOf(part) ?? -1;
     partPicker.value = i < 0 ? '' : String(i);
+    describePart(part);
+  }
+  function describePart(part) {
+    const i = model?.parts.indexOf(part) ?? -1;
     measure.replaceChildren();
     if (i < 0) return;
     const info = records[i],
@@ -100,6 +132,11 @@ export function mountStudy(section, stage, chooseHero) {
     const dimensions = document.createElement('p');
     dimensions.textContent = size + ' in (W × H × D)';
     measure.append(heading, details, dimensions);
+    if (hero !== 'hummin' && (info.layer === 'skeleton' || info.layer === 'muscles')) {
+      const source = document.createElement('p');
+      source.textContent = part.source;
+      measure.append(source);
+    }
   }
   function updateLayers() {
     for (let i = 0; i < rows.length; i++) {
@@ -132,8 +169,11 @@ export function mountStudy(section, stage, chooseHero) {
     updateLayers();
   }
   async function load(id, name, quality) {
+    loading?.abort();
+    const request = new AbortController();
+    loading = request;
     try {
-      const next = await buildDiagramModel(name, quality);
+      const next = await buildDiagramModel(name, quality, request.signal);
       if (id !== generation || !active) {
         next.dispose();
         return;
@@ -155,7 +195,9 @@ export function mountStudy(section, stage, chooseHero) {
       view.setModel(model, quality);
       updateLayers();
     } catch (error) {
-      if (id === generation) showError(error);
+      if (!request.signal.aborted && id === generation) showError(error);
+    } finally {
+      if (loading === request) loading = undefined;
     }
   }
   function sync(name, quality, visible) {
@@ -173,6 +215,10 @@ export function mountStudy(section, stage, chooseHero) {
       records = [];
       delete section.dataset.ready;
       heroPicker.value = name;
+      const human = name !== 'hummin';
+      for (const setting of body.querySelectorAll('[data-human-setting]')) setting.hidden = !human;
+      view.setLayout(human ? get('[data-axon-layout]').value : 'side');
+      applyGhost(human && get('[data-ghost]').checked);
       rows.forEach((row, i) => {
         const label = layerName(layers[i].key);
         row.querySelector('[data-layer-name]').textContent = label;
@@ -185,6 +231,7 @@ export function mountStudy(section, stage, chooseHero) {
     key = nextKey;
     view.setVisible(active);
     if (!active) {
+      loading?.abort();
       generation++;
       cancelAnimationFrame(padFrame);
       padFrame = 0;
@@ -207,6 +254,8 @@ export function mountStudy(section, stage, chooseHero) {
     }
   });
   heroPicker.addEventListener('change', () => chooseHero(heroPicker.value));
+  get('[data-axon-layout]').onchange = (e) => view.setLayout(e.target.value);
+  get('[data-ghost]').onchange = (e) => applyGhost(e.target.checked);
   spread.addEventListener('input', () => {
     const percent = Math.round(100 * Number(spread.value)) + '%';
     get('[data-spread-value]').textContent = percent;
@@ -216,11 +265,13 @@ export function mountStudy(section, stage, chooseHero) {
   for (const row of rows) {
     row.querySelector('[data-isolate]').onclick = () => {
       const name = row.dataset.layer;
+      if (ghostOpen && name === 'clothes') restoreClothes = false;
       isolated = isolated === name ? null : name;
       if (isolated) row.querySelector('[data-show]').checked = true;
       updateLayers();
     };
     row.querySelector('[data-show]').onchange = () => {
+      if (ghostOpen && row.dataset.layer === 'clothes') restoreClothes = false;
       if (!row.querySelector('[data-show]').checked && isolated === row.dataset.layer) isolated = null;
       updateLayers();
     };
@@ -281,7 +332,9 @@ export function mountStudy(section, stage, chooseHero) {
     // When the floor and diagram overlap in the viewport, focus chooses the recipient.
     const floor = stage.canvas.getBoundingClientRect();
     if (section.contains(focused) || (focused === document.body && floor.bottom <= 0)) {
-      const controls = Array.from(body.querySelectorAll('select,input,button,canvas,summary'));
+      const controls = Array.from(body.querySelectorAll('select,input,button,canvas,summary')).filter(
+        (control) => control.getClientRects().length,
+      );
       const at = controls.indexOf(focused);
       if (hit(12) || hit(13))
         controls[(at + (hit(12) ? -1 : 1) + controls.length) % controls.length].focus();
