@@ -320,11 +320,11 @@ function calibrateBooth(renderer, booth, camera, meter) {
   return readings;
 }
 
-export async function setup(hero, spec, strict, withLandmarks) {
+function posedHero(hero, tier) {
   const height = heights[names.indexOf(hero)];
   const rig = createActor(hero, height);
   const animate = builders[hero](rig);
-  setModelDetail(rig.root, 'high');
+  setModelDetail(rig.root, tier);
   const ctrl = createController(rig);
   ctrl.reset(0, 0);
   for (let i = 0; i < 42; i++) {
@@ -332,6 +332,17 @@ export async function setup(hero, spec, strict, withLandmarks) {
     ctrl.finishPose();
   }
   rig.root.updateMatrixWorld(true);
+  return rig;
+}
+
+export async function measurePose(hero, tier) {
+  const { measureRigLandmarks } = await import('/tools/blueprints/measure-landmarks.mjs');
+  return measureRigLandmarks(posedHero(hero, tier), tier);
+}
+
+export async function setup(hero, spec, strict, withLandmarks) {
+  const height = heights[names.indexOf(hero)];
+  const rig = posedHero(hero, 'high');
   const landmarks = withLandmarks
     ? (await import('/tools/blueprints/measure-landmarks.mjs')).measureRigLandmarks(rig, 'high')
     : null;

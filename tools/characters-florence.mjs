@@ -523,9 +523,14 @@ export function checkFlorence({ rig, controller, input, animate, name, result, c
     (report.cloth[panel.type] ??= {})[panel.name] = stats;
   }
   if (name === 'roma') {
-    check(panels.length >= 4, 'Roma garment upper and lower material markers');
+    for (const type of ['hoodieHem', 'jacket'])
+      for (const side of ['front', 'back'])
+        check(!!report.cloth[type]?.[side], 'Roma ' + type + ' ' + side + ' rendered cloth marker');
     for (const part of Object.values(report.cloth.jacket ?? {})) {
-      check(part.walkDeg < all.walkDeg.median && part.walkDeg > 0.2, 'Roma tailored panel stiffer than hair');
+      check(
+        part.walkDeg < all.walkDeg.median && part.walkDeg > 0.2,
+        'Roma tailored panel stiffer than hair',
+      );
       check(part.lagFrames > 0.1 && part.lagFrames < 4, 'Roma tailored panel has bounded inertial lag');
       check(
         part.bobFlareMm > 0.2 &&

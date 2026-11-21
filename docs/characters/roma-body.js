@@ -189,7 +189,7 @@ const edgeEnds = [
   [3, 7],
 ];
 
-function sculpt(detail, coat = false) {
+function sculpt(detail, coat = false, trousers = false) {
   // Retain extra samples across the armhole's curved panel even on Mobile:
   // a long triangle otherwise bridges its folded contour when the arm lifts.
   const xs = axis(-0.232, 0.232, (x) => {
@@ -198,13 +198,13 @@ function sculpt(detail, coat = false) {
     if (detail > 1.5 && side > 0.084 && side <= 0.143) return 0.0054;
     return 0.0062 * detail;
   });
-  const ys = axis(0.031, 0.854, (y) => {
+  const ys = axis(0.031, trousers ? 0.625 : 0.854, (y) => {
     if (y > 0.382 && y < 0.475) return 0.0024 * Math.min(detail, 1.17);
     if (y > 0.738 && y < 0.817) return 0.0034 * Math.min(detail, 1.35);
     if (detail > 1.5 && y > 0.686 && y <= 0.738) return 0.0055;
     return 0.006 * detail;
   });
-  const zs = axis(-0.074, 0.091, (z) => {
+  const zs = axis(trousers ? -0.11 : -0.074, trousers ? 0.11 : 0.091, (z) => {
     if (z > -0.018 && z < 0.029) return 0.0027 * Math.min(detail, 1.5);
     if (detail > 1.5 && z >= 0.029 && z < 0.048) return 0.0043;
     return 0.0055 * detail;
@@ -258,7 +258,27 @@ function sculpt(detail, coat = false) {
           torso -= 0.012;
           limb -= 0.0086;
         }
-        const trunkAndLeg = join(torso, lowerDist, 0.01);
+        if (trousers) {
+          // Each trouser leg has its own inseam and side seam. At the seat
+          // the two legs and waistband are cut as one continuous volume.
+          limb = 1;
+          const wide = smooth(y, 0.096, 0.168) * (1 - smooth(y, 0.476, 0.553));
+          const legAngle = Math.atan2(x - 0.065, z + 0.002);
+          const knee = Math.exp(-(((y - 0.255) / 0.056) ** 2));
+          const ankle = Math.exp(-(((y - 0.115) / 0.025) ** 2));
+          const folds = (0.0019 * knee + 0.0025 * ankle) *
+            Math.sin(130 * y + 1.35 * Math.sin(legAngle - 0.35));
+          const side = smooth(Math.sin(legAngle), 0.44, 0.78);
+          const pocket = smooth(y, 0.324, 0.331) * (1 - smooth(y, 0.407, 0.412));
+          const flap = smooth(y, 0.385, 0.39) * (1 - smooth(y, 0.406, 0.412));
+          // The joggers taper towards a close ribbed cuff. Retain more
+          // room above the crotch, where the material converges at the hips.
+          const seatEase = smooth(y, .401, .485);
+          const ease = .0052 + .0028 * wide + .010 * seatEase;
+          lowerDist -= ease + folds + side * (0.005 * pocket + 0.0045 * flap);
+          torso -= 0.008;
+        }
+        const trunkAndLeg = join(torso, lowerDist, trousers ? 0.020 : 0.01);
         const branch = limb < trunkAndLeg ? 1 : lowerDist < torso ? 2 : 0;
         owner[offset + i] = branch;
         field[offset + i] = join(trunkAndLeg, limb, axilla);
@@ -416,6 +436,10 @@ export function makeRomaBody(rig, skin, nailMaterial) {
   return { mesh, regions };
 }
 
+export function makeCargoPattern() {
+  return { high: sculpt(1.1, false, true).g, mobile: sculpt(1.9, false, true).g };
+}
+
 export function makeJacketPattern() {
   return { high: sculpt(1.15, true).g, mobile: sculpt(1.9, true).g };
 }
@@ -448,6 +472,10 @@ export function bindJointFans(rig, meshes, fitRestPose) {
     nodes.push(child);
     lookup.set(parent * 100 + child, nodes);
   }
+  const legSkins = new Set([meshes[0], meshes[3]]);
+  const fanFor = (parent, child) => lookup.get(original.indexOf(parent) * 100 + original.indexOf(child));
+  const hipFans = [fanFor(rig.hips, rig.thighL), fanFor(rig.hips, rig.thighR)];
+  const kneeFans = [fanFor(rig.thighL, rig.shinL), fanFor(rig.thighR, rig.shinR)];
   for (const mesh of meshes)
     for (const g of [mesh.geometry, mesh.userData.mobileGeometry]) {
       const indices = g.attributes.skinIndex,
@@ -490,6 +518,25 @@ export function bindJointFans(rig, meshes, fitRestPose) {
           bend[3 * i] = -Math.sign(px) * dx * inset;
           bend[3 * i + 1] = -dy * inset;
         }
+        // The trouser fork and the skin share a smooth bilateral hip field.
+        // At the inseam vertices from the two legs approach the same four
+        // influences, so a high knee cannot pull neighboring points apart.
+        if (legSkins.has(mesh) && y > .395 && y < .564 && ax < .118 &&
+            (mesh === meshes[3] || g.userData.anatomicalRegions[i] === 0 ||
+             g.userData.anatomicalRegions[i] === 3)) {
+          const dz = pos.getZ(i), dy = y - .52;
+          // Reserve the upper sector for the pelvis. A linear map on
+          // the remaining arc preserves the layer order when the thigh lifts.
+          const pole = 1.03;
+          const polar = Math.max(0, Math.abs(Math.atan2(dz, dy)) - pole) / (Math.PI - pole);
+          const turn = T.MathUtils.lerp(polar, dy < 0 ? 1 : 0, smooth(Math.hypot(dy, dz), .070, .116));
+          const sideBlend = smooth(px, -.035, .035);
+          const h = turn * steps, k = Math.min(steps - 1, Math.floor(h)), f = h-k;
+          const [left, right] = hipFans;
+          indices.setXYZW(i, left[k], left[k+1], right[k], right[k+1]);
+          weights.setXYZW(i, sideBlend*(1-f),sideBlend*f,(1-sideBlend)*(1-f),(1-sideBlend)*f);
+          continue;
+        }
         const a = indices.array[off],
           b = indices.array[off + 1];
         let nodes = lookup.get(a * 100 + b),
@@ -515,6 +562,53 @@ export function bindJointFans(rig, meshes, fitRestPose) {
     }
   for (const mesh of meshes) mesh.updateMorphTargets();
   fitRestPose();
+  // Work in final graded coordinates. A posterior calf or a raised pocket has
+  // a different radius from the skin below it. Both must share the same
+  // angular warp around the actual hinge, including on the lower detail tier.
+  rig.root.updateMatrixWorld(true);
+  const inverseRoot = rig.root.matrixWorld.clone().invert();
+  const kneePoints = [rig.shinL, rig.shinR].map(
+    bone => bone.getWorldPosition(new T.Vector3()).applyMatrix4(inverseRoot),
+  );
+  for (const mesh of legSkins) {
+    for (const geometry of [mesh.geometry, mesh.userData.mobileGeometry]) {
+      const {position, skinIndex, skinWeight} = geometry.attributes;
+      for (let i=0; i<position.count; i++) {
+        if (mesh === meshes[0] && geometry.userData.anatomicalRegions[i] !== 3) continue;
+        const side = position.getX(i)>=0 ? 0 : 1;
+        const hinge = kneePoints[side];
+        const y = position.getY(i)-hinge.y;
+        if (Math.abs(y)>.169) continue;
+        const z = position.getZ(i)-hinge.z;
+        const arc = Math.abs(Math.atan2(z,y))/Math.PI;
+        const transition = smooth(Math.hypot(y,z), .123, .169);
+        if (transition >= 1) continue;
+        const h = arc*steps, k = Math.min(steps-1,Math.floor(h)), f = h-k;
+        const nodes = kneeFans[side];
+        if (transition === 0) {
+          skinIndex.setXYZW(i,nodes[k],nodes[k+1],0,0);
+          skinWeight.setXYZW(i,1-f,f,0,0);
+        } else {
+          // The upper transition overlaps the hip fan. Keep both local
+          // frames so the fabric continues smoothly from knee to pelvis.
+          const mix = new Map();
+          for (let j=0; j<4; j++) {
+            const bone=skinIndex.array[4*i+j], value=skinWeight.array[4*i+j]*transition;
+            if(value>0) mix.set(bone,(mix.get(bone) || 0)+value);
+          }
+          mix.set(nodes[k], (mix.get(nodes[k]) || 0)+(1-transition)*(1-f));
+          mix.set(nodes[k+1], (mix.get(nodes[k+1]) || 0)+(1-transition)*f);
+          const weights=[...mix].sort((a,b)=>b[1]-a[1]).slice(0,4);
+          const total=weights.reduce((sum,pair)=>sum+pair[1],0);
+          for(let j=0;j<4;j++) {
+            skinIndex.array[4*i+j]=weights[j]?.[0] ?? 0;
+            skinWeight.array[4*i+j]=(weights[j]?.[1] ?? 0)/total;
+          }
+        }
+      }
+    }
+  }
+
   for (const { mid, node, rest } of fans) {
     rest.copy(node.position);
     mid.position.copy(rest);

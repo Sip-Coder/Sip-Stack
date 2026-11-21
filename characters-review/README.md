@@ -1,6 +1,6 @@
 # Heros
 
-The lineup shows Sippy, Roma and Hummin at their playable heights beside a one-metre ruler. [Lineup](lineup.jpg) · [Before the revision](lineup-before.jpg) · [Before, after and Florence reference](ours-before-after-florence.jpg)
+Sippy, Roma and Hummin stand beside a three-foot ruler in their explorer outfits. The films below use the same Three.js models as the Heros tab. [Lineup](lineup.jpg)
 
 | Hero | Movement film | Garment turnaround |
 | --- | --- | --- |

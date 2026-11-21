@@ -142,6 +142,11 @@ def main():
             write_materials(page, folder, hero, observed, opts.pilot)
             if not opts.pilot:
                 save_json(folder / 'landmarks.json', page.evaluate('window.capture.landmarks'))
+                mobile = page.evaluate("""async hero => {
+                  const {measurePose} = await import('/tools/blueprints/render-models.mjs');
+                  return measurePose(hero, 'mobile');
+                }""", hero)
+                save_json(folder / 'landmarks-mobile.json', mobile)
             if errors:
                 raise RuntimeError('; '.join(errors))
             page.close()

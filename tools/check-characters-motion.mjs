@@ -2,11 +2,12 @@
 // THREE_ROOT=/path/to/three CHROME=/usr/bin/chromium node tools/check-characters-motion.mjs
 // Pass sippy, roma or hummin as an optional argument to isolate a single model.
 // Set CHARACTERS_HAIR_MOBILE=1 to repeat hair contact checks on the Mobile geometry.
+import { readFile } from 'node:fs/promises';
 import { runCharacterProbe } from './characters-browser.mjs';
 
 // Executed as an ES module inside Chromium so procedural CanvasTextures and
 // BufferGeometry are identical to the production models. WebGL is unnecessary.
-async function measure(onlyHero, { mobileHair }) {
+async function measure(onlyHero, { mobileHair, designs }) {
   const T = await import('three');
   const { measureRigLandmarks } = await import('/tools/blueprints/measure-landmarks.mjs');
   const { checkFlorence, captureIdleMotion } = await import('/tools/characters-florence.mjs');
@@ -102,7 +103,7 @@ async function measure(onlyHero, { mobileHair }) {
       bodyParts.push({ mesh: anatomy.body, regions: anatomy.bodyRegions });
     // Select garment regions from actual bind weights when a continuous coat
     // wraps the chest, shoulders and both arms in one skinned draw call.
-    for (const mesh of [anatomy?.yoke, anatomy?.bodice].filter((m) => m?.isSkinnedMesh)) {
+    for (const mesh of [anatomy?.yoke, anatomy?.hoodie].filter((m) => m?.isSkinnedMesh)) {
       const g = mesh.geometry,
         idx = g.index,
         weights = g.attributes.skinWeight,
@@ -402,8 +403,22 @@ async function measure(onlyHero, { mobileHair }) {
       result.proportions.chinToCrownM = observed.headHeightM;
       result.proportions.crownToSolesM = observed.standingHeightM;
       result.proportions.blueprintLandmarks = observed.landmarks;
-      if (name !== 'hummin')
-        check(observed.headCount >= 3 && observed.headCount <= 3.5, 'hero is 3–3.5 measured heads tall');
+      const expected = designs[name].chin;
+      result.proportions.designChinPercent = expected;
+      const measured = (observed.headHeightM * 100) / designs[name].heightM;
+      result.proportions.measuredChinPercent = measured;
+      check(
+        Math.abs(measured - expected) <= 1.5,
+        'measured head height matches the Explorer drawing within 1.5% H',
+      );
+      if (name === 'hummin') {
+        const domeFraction = observed.headHeightM / observed.standingHeightM;
+        result.proportions.domeHeightFraction = domeFraction;
+        check(
+          domeFraction >= 0.22 && domeFraction <= 0.26,
+          'helmet height is about 24% of standing height',
+        );
+      }
     } else check(false, 'actual mesh blueprint bindings missing');
 
     for (const action of ['walk', 'run', 'turn', 'jump', 'roll', 'emote']) {
@@ -599,7 +614,9 @@ async function measure(onlyHero, { mobileHair }) {
           heading = Math.atan2(dx, dz);
         if (f > 65) {
           up.setFromMatrixColumn(rig.chest.matrixWorld, 1).normalize();
-          bank += T.MathUtils.radToDeg(Math.atan2(up.x * Math.cos(heading) - up.z * Math.sin(heading), up.y));
+          bank += T.MathUtils.radToDeg(
+            Math.atan2(up.x * Math.cos(heading) - up.z * Math.sin(heading), up.y),
+          );
           pitch += T.MathUtils.radToDeg(
             Math.atan2(up.x * Math.sin(heading) + up.z * Math.cos(heading), up.y),
           );
@@ -640,19 +657,21 @@ async function measure(onlyHero, { mobileHair }) {
     );
     // Record an authored accessory vertex relative to its parent joint. This
     // removes all whole-character travel and gait bob from the bounce signal.
-    function freeEdge(group) {
+    function freeEdge(group, key, pattern) {
+      if (!group?.isObject3D) throw Error(name + ' is missing the animated ' + key + ' mesh group');
       const inverse = group.matrixWorld.clone().invert(),
         q = new T.Vector3();
       const parentScale = group.parent.getWorldScale(new T.Vector3());
       let far = -1,
         anchor = null,
         index = 0;
+      const fabric = pattern && new Set([pattern].flat());
       group.traverseVisible((m) => {
-        if (!m.isMesh) return;
+        if (!m.isMesh || (fabric && !fabric.has(m))) return;
         const local = new T.Matrix4().multiplyMatrices(inverse, m.matrixWorld),
           p = m.geometry.attributes.position;
         for (let i = 0; i < p.count; i++) {
-          q.fromBufferAttribute(p, i).applyMatrix4(local);
+          m.getVertexPosition(i, q).applyMatrix4(local);
           if (q.lengthSq() > far) {
             far = q.lengthSq();
             anchor = m;
@@ -661,13 +680,17 @@ async function measure(onlyHero, { mobileHair }) {
         }
       });
       if (!anchor) throw Error('Missing accessory geometry');
-      return () =>
-        q
-          .fromBufferAttribute(anchor.geometry.attributes.position, index)
-          .applyMatrix4(anchor.matrixWorld)
-          .applyMatrix4(inverse.copy(group.parent.matrixWorld).invert())
-          .multiply(parentScale)
-          .clone();
+      return {
+        mesh: anchor.name || anchor.parent.name,
+        vertex: index,
+        sample: () =>
+          anchor
+            .getVertexPosition(index, q)
+            .applyMatrix4(anchor.matrixWorld)
+            .applyMatrix4(inverse.copy(group.parent.matrixWorld).invert())
+            .multiply(parentScale)
+            .clone(),
+      };
     }
 
     function response(frames, firstStop) {
@@ -689,7 +712,7 @@ async function measure(onlyHero, { mobileHair }) {
       };
     }
 
-    // Build a local-space BVH once for each rigid skin, bodice or sleeve mesh.
+    // Build a local-space BVH once per skin, garment, or accessory surface.
     // Query posed cloth triangles in that mesh's space. Test both sets of
     // triangle edges so a small body triangle piercing a wide cloth panel is found.
     let surfaceCache = new WeakMap();
@@ -773,8 +796,17 @@ async function measure(onlyHero, { mobileHair }) {
       const total = idx?.count ?? p.count;
       for (const { mesh, tree } of targets) {
         transform.copy(mesh.matrixWorld).invert().multiply(source.matrixWorld);
+        // Quickly discard physically separate hair and outfit targets before
+        // transforming thousands of vertices. Dynamic sources refresh their
+        // full bounds on each sampled pose.
+        if (
+          !source.isSkinnedMesh &&
+          source.geometry.boundingBox &&
+          !source.geometry.boundingBox.clone().applyMatrix4(transform).intersectsBox(tree.box)
+        )
+          continue;
         const positions = Array.from({ length: count }, (_, i) =>
-          new T.Vector3().fromBufferAttribute(p, i).applyMatrix4(transform),
+          vertex(source, i, new T.Vector3()).applyMatrix4(transform),
         );
         if (!new T.Box3().setFromPoints(positions).intersectsBox(tree.box)) continue;
         function crossing(node, tri) {
@@ -800,7 +832,8 @@ async function measure(onlyHero, { mobileHair }) {
           queryBox.setFromPoints(tri);
           if (crossing(tree, tri))
             return {
-              target: mesh.parent.name,
+              target: mesh.name || mesh.parent.name,
+              targetParent: mesh.parent.name,
               material: mesh.material.color?.getHexString() ?? mesh.name,
               triangle: i / 3,
               rows: [a, b, c],
@@ -929,31 +962,6 @@ async function measure(onlyHero, { mobileHair }) {
         segmentGap(a, b, tri.c, tri.a),
       );
     }
-    function tipSphereGap(chain, collider) {
-      const center = chain.nodes.at(-1).clone().applyMatrix4(chain.group.matrixWorld);
-      const span = chain.radius * Math.max(...chain.group.getWorldScale(new T.Vector3()).toArray());
-      const scale = collider.node.getWorldScale(new T.Vector3());
-      if (collider.radii) {
-        center
-          .applyMatrix4(collider.node.matrixWorld.clone().invert())
-          .sub(new T.Vector3(...collider.center))
-          .multiply(scale);
-        return (
-          ellipsoidGap(
-            center,
-            collider.radii.map((r, i) => r * scale.getComponent(i)),
-          ) - span
-        );
-      }
-      const line = new T.Line3(
-        ...[collider.a, collider.b].map((v) => new T.Vector3(...v).applyMatrix4(collider.node.matrixWorld)),
-      );
-      return (
-        center.distanceTo(line.closestPointToPoint(center, true, new T.Vector3())) -
-        collider.radius * Math.max(...scale.toArray()) -
-        span
-      );
-    }
     function sphereMeshGap(center, radius, target, accepts, witness) {
       const { mesh, tree } = target,
         local = center.clone().applyMatrix4(mesh.matrixWorld.clone().invert());
@@ -1003,18 +1011,33 @@ async function measure(onlyHero, { mobileHair }) {
         tipPeakM: 0,
       };
       report.shoulderCapCoverage = sleeveCaps(system);
-      const secondary = rig.secondary[name],
-        registered = [
-          secondary.collarSkin,
-          secondary.collar,
-          secondary.neckSkin,
-          secondary.neckMesh,
-          secondary.neck,
-          secondary.upperBack,
-          secondary.jacket,
-        ]
-          .flat(Infinity)
-          .filter((m) => m?.isMesh && !(m === secondary.body && secondary.bodyRegions?.neck?.length));
+      const secondary = rig.secondary[name];
+      const kitIds =
+        name === 'sippy'
+          ? ['hood', 'collar', 'headphones', 'backpack', 'backpack-straps']
+          : ['hoodie', 'backpack', 'packStraps', 'hoops', 'headband'];
+      const outfit = rig.garments.surfaces;
+      const kitLayers = new Map();
+      report.kitTargets = {};
+      for (const id of kitIds) {
+        const meshes = [outfit[id]].flat().filter((m) => m?.isMesh && m.visible);
+        check(meshes.length, 'missing rendered hair target ' + id);
+        report.kitTargets[id] = meshes.length;
+        for (const mesh of meshes) kitLayers.set(mesh, id);
+      }
+      report.kitTipClearancesM = {};
+      const registered = [
+        secondary.collarSkin,
+        secondary.collar,
+        secondary.neckSkin,
+        secondary.neckMesh,
+        secondary.neck,
+        secondary.upperBack,
+        secondary.jacket,
+        ...kitLayers.keys(),
+      ]
+        .flat(Infinity)
+        .filter((m) => m?.isMesh && !(m === secondary.body && secondary.bodyRegions?.neck?.length));
       const layers = [...new Set(registered)],
         fixedLayers = layers
           .filter((m) => !m.isSkinnedMesh && m.geometry.attributes.position.usage !== T.DynamicDrawUsage)
@@ -1080,6 +1103,9 @@ async function measure(onlyHero, { mobileHair }) {
             new T.Vector3().fromBufferAttribute(mesh.geometry.attributes.position, index).multiply(scale),
         };
       });
+      const sphereTips = system.chains.map((chain) => ({ chain, center: new T.Vector3(), radius: 0 }));
+      const colliderScale = new T.Vector3(), local = new T.Vector3(), inverse = new T.Matrix4();
+      const originLocal = new T.Vector3(), line = new T.Line3();
       const idleMotion = captureIdleMotion(rig, system);
       const surfaces = system.chains.flatMap((c) => c.surfaces.map((s) => s.mesh));
       return {
@@ -1087,12 +1113,39 @@ async function measure(onlyHero, { mobileHair }) {
         rememberIdle: idleMotion.remember,
         sampleTips(recordMotion = true) {
           if (recordMotion) for (const p of tipPaths) p.frames.push(p.read());
-          for (const c of system.colliders) {
-            const key = c.role ?? c.node.name;
-            for (const chain of system.chains) {
-              const gap = tipSphereGap(chain, c);
-              report.tipColliders[key] = Math.min(report.tipColliders[key] ?? Infinity, gap);
+          for (const tip of sphereTips) {
+            const { chain } = tip;
+            tip.center.copy(chain.nodes.at(-1)).applyMatrix4(chain.group.matrixWorld);
+            chain.group.getWorldScale(colliderScale);
+            tip.radius = chain.radius * Math.max(colliderScale.x, colliderScale.y, colliderScale.z);
+          }
+          for (const collider of system.colliders) {
+            const key = collider.role ?? collider.node.name;
+            let minimum = report.tipColliders[key] ?? Infinity;
+            const world = collider.node.matrixWorld;
+            collider.node.getWorldScale(colliderScale);
+            if (collider.radii) {
+              inverse.copy(world).invert();
+              originLocal.fromArray(collider.center);
+              const radii = collider.radii.map((r, i) => r * colliderScale.getComponent(i));
+              const bound = Math.max(...radii);
+              for (const tip of sphereTips) {
+                local.copy(tip.center).applyMatrix4(inverse).sub(originLocal).multiply(colliderScale);
+                // The enclosing sphere gives a lower bound on the distance to
+                // the ellipsoid. Only an improving pair needs exact bisection.
+                if (local.length() - bound - tip.radius >= minimum) continue;
+                minimum = Math.min(minimum, ellipsoidGap(local, radii) - tip.radius);
+              }
+            } else {
+              line.start.fromArray(collider.a).applyMatrix4(world);
+              line.end.fromArray(collider.b).applyMatrix4(world);
+              const radius = collider.radius * Math.max(colliderScale.x, colliderScale.y, colliderScale.z);
+              for (const tip of sphereTips) {
+                line.closestPointToPoint(tip.center, true, local);
+                minimum = Math.min(minimum, local.distanceTo(tip.center) - radius - tip.radius);
+              }
             }
+            report.tipColliders[key] = minimum;
           }
         },
         finish(stop) {
@@ -1148,13 +1201,18 @@ async function measure(onlyHero, { mobileHair }) {
                 faceTargets.includes(target) ? visibleFace : null,
                 witness,
               );
+              const garment = kitLayers.get(target.mesh);
+              if (garment) {
+                const previous = report.kitTipClearancesM[garment] ?? Infinity;
+                report.kitTipClearancesM[garment] = Math.min(previous, gap);
+              }
               poseTipGap = Math.min(poseTipGap, gap);
               if (gap < (report.realTipMinGapM ?? Infinity)) {
                 report.realTipMinGapM = gap;
                 report.nearestRealTip = {
                   pose: label,
                   lock: chain.group.name,
-                  target: target.mesh.name || target.mesh.parent.name,
+                  target: garment ?? (target.mesh.name || target.mesh.parent.name),
                   radiusM: radius,
                   tipInChestSpace: rig.chest.worldToLocal(center.clone()).toArray(),
                   surfaceInChestSpace: rig.chest.worldToLocal(witness).toArray(),
@@ -1203,11 +1261,13 @@ async function measure(onlyHero, { mobileHair }) {
                 const idx = g.index,
                   count = idx?.count ?? vertices.count;
                 const box = new T.Box3();
+                c.node.getWorldScale(colliderScale);
+                const minScale = Math.min(colliderScale.x, colliderScale.y, colliderScale.z);
                 for (let j = 0; j < count; j += 3) {
                   const points = [0, 1, 2].map((d) => p[idx ? idx.getX(j + d) : j + d]);
                   if (!box.setFromPoints(points).intersectsBox(collar)) continue;
                   const dist = segmentTriangleGap(a, b, new T.Triangle(...points));
-                  const gap = (dist - rad) * Math.min(...c.node.getWorldScale(new T.Vector3()).toArray());
+                  const gap = (dist - rad) * minScale;
                   report.minCapsuleSurfaceGapM = Math.min(report.minCapsuleSurfaceGapM ?? Infinity, gap);
                 }
                 continue;
@@ -1255,37 +1315,44 @@ async function measure(onlyHero, { mobileHair }) {
       const legs = ['thighL', 'thighR', 'shinL', 'shinR'].flatMap((j) =>
         rig[j].children.filter((m) => m.isMesh),
       );
-      const bodyMaterials = new Set([legs[0]?.material, api.skirt.material]);
-      const bodice = [
-        ...new Set([
-          ...rig.chest.children.filter((m) => m.isMesh && bodyMaterials.has(m.material)),
-          ...(api.bodice ? [api.bodice] : []),
-        ]),
-      ];
+      check(api.hoodie?.isMesh && api.cargo?.isMesh, 'missing rendered hoodie or cargo');
       check(
-        bodice.length + partsFor('torso').length >= 2 && legs.length + partsFor('legs').length > 0,
-        'missing rendered skin and bodice surfaces',
+        partsFor('torso').length && partsFor('legs').length,
+        'missing anatomical torso or leg surfaces',
       );
-      const legTargets = legs.map(rigidSurface),
-        bodyTargets = bodice.filter((m) => !m.isSkinnedMesh).map(rigidSurface);
-      for (const [key, n] of [
-        ['skirt', 64],
-        ['jacket', 41],
-      ]) {
-        const mesh = api[key],
-          rest = mesh.geometry.userData.rest;
+      for (const key of ['hoodieHem', 'jacket']) {
+        const mesh = api[key];
+        const { rest, columns: n, freeRows } = mesh.geometry.userData;
+        if (
+          !Number.isInteger(n) ||
+          n < 3 ||
+          !Number.isInteger(freeRows) ||
+          freeRows < 1 ||
+          n * freeRows >= mesh.geometry.attributes.position.count
+        )
+          throw Error('Missing physical free rows and pinned edge on ' + key);
         const garmentScale = mesh.getWorldScale(new T.Vector3()),
           minScale = Math.min(...garmentScale.toArray());
-        const count = key === 'skirt' ? 6 * n : 3 * n;
+        const count = freeRows * n;
         const frames = [],
           shell = { minCapsuleGapM: Infinity, minBodyGapM: null, positionsTested: 0 };
         const traces = [];
-        const targets = key === 'skirt' ? legTargets : [...bodyTargets, ...legTargets];
-        const regionNames = key === 'skirt' ? ['legs'] : ['legs', 'torso'];
-        const regions = regionNames.flatMap((region) =>
-          partsFor(region).map((p) => [p.mesh, p.regions[region]]),
+        // The free hem moves outside the pants. The open lower coat also
+        // sweeps the hoodie and its rib-knit hem, over the same body regions.
+        const supportMeshes = [...legs, api.cargo];
+        if (key === 'jacket') supportMeshes.push(api.hoodie, api.hoodieHem);
+        const regions = ['legs', 'torso'].flatMap((region) =>
+          partsFor(region)
+            .filter((part) => part.mesh === api.body)
+            .map((p) => [p.mesh, p.regions[region]]),
         );
-        shell.actualSurfaces = targets.length + regions.length;
+        shell.actualSurfaces = regions.length + supportMeshes.length;
+        shell.freeVerticesPerPose = count;
+        shell.supports = supportMeshes.map((m) => m.name || m.parent.name);
+        check(
+          api[key + 'Capsules']?.length && api[key + 'Body']?.length >= 2,
+          key + ' posed collision supports',
+        );
         shell.intersections = {};
         const panelRows = [];
         for (const [name, front] of [
@@ -1350,7 +1417,11 @@ async function measure(onlyHero, { mobileHair }) {
               }
               for (const cap of api[key + 'Capsules']) {
                 axis.subVectors(cap.b, cap.a);
-                const t = T.MathUtils.clamp(closest.subVectors(vec, cap.a).dot(axis) / axis.lengthSq(), 0, 1);
+                const t = T.MathUtils.clamp(
+                  closest.subVectors(vec, cap.a).dot(axis) / axis.lengthSq(),
+                  0,
+                  1,
+                );
                 closest.copy(cap.a).addScaledVector(axis, t);
                 const gap =
                   (vec.distanceTo(closest) - T.MathUtils.lerp(cap.radiusA, cap.radiusB, t)) * minScale;
@@ -1363,13 +1434,13 @@ async function measure(onlyHero, { mobileHair }) {
                   };
                 }
               }
-              if (key === 'jacket')
-                shell.minBodyGapM = Math.min(shell.minBodyGapM ?? Infinity, radial(vec, api.jacketBody));
+              shell.minBodyGapM = Math.min(shell.minBodyGapM ?? Infinity, radial(vec, api[key + 'Body']));
               shell.positionsTested++;
             }
             if (exact) {
+              mesh.geometry.computeBoundingBox();
               const crossing = surfaceCrossing(mesh, count, [
-                ...targets,
+                ...supportMeshes.map(rigidSurface),
                 ...regions.map(([m, ids]) => rigidSurface(m, ids)),
               ]);
               if (crossing) shell.intersections[label] = crossing;
@@ -1413,19 +1484,14 @@ async function measure(onlyHero, { mobileHair }) {
       verify(report.triangles > 0 && report.chains > 1, 'hair surface coverage');
       verify(report.worstDepthM < 0.0002, 'hair ellipsoid clearance');
       verify(
-        ['head', 'neck', 'shoulder', 'back', 'collar'].every((role) =>
-          report.colliderRoles.includes(role),
-        ),
+        ['head', 'neck', 'shoulder', 'back', 'collar'].every((role) => report.colliderRoles.includes(role)),
         'complete scalp-to-upper-back collider coverage',
       );
       verify(
         Object.values(report.tipColliders).every((gap) => gap >= -0.0001),
         'physical tip sphere overlaps body collider',
       );
-      verify(
-        (report.minCapsuleSurfaceGapM ?? 0) >= -0.0002,
-        'hair triangles penetrate collision capsule',
-      );
+      verify((report.minCapsuleSurfaceGapM ?? 0) >= -0.0002, 'hair triangles penetrate collision capsule');
       verify(
         !report.layerContactPoses,
         'rendered strands intersect the anatomical body or layered outerwear',
@@ -1452,8 +1518,16 @@ async function measure(onlyHero, { mobileHair }) {
         check(false, 'missing rendered accessory registration');
         return;
       }
-      const keys = { sippy: ['tail', 'chain'], roma: ['bag'], hummin: ['apron', 'antenna', 'tools'] }[name];
-      const markers = keys.map((k) => freeEdge(api[k])),
+      const keys = {
+        sippy: ['pack', 'drawcord'],
+        roma: ['bag'],
+        hummin: ['apron', 'antenna', 'tools', 'scarf'],
+      }[name];
+      // Pouches and hardware also attach to Hummin's skirt hinge. Sample the
+      // denim pattern itself to measure the apron, and the knit mesh for the scarf.
+      const surfaces = rig.garments.surfaces;
+      const patterns = name === 'hummin' ? { apron: surfaces.apronSkirt, scarf: surfaces.scarfTail } : {};
+      const markers = keys.map((k) => freeEdge(api[k], k, patterns[k])),
         histories = markers.map(() => []);
       const hair = rig.hair ? hairInspector(rig.hair) : null;
       if (name !== 'hummin') check(!!hair, 'missing hair guides');
@@ -1489,7 +1563,7 @@ async function measure(onlyHero, { mobileHair }) {
         if (i % 8 === 0 || i === 472) {
           phases[frame.state] = (phases[frame.state] ?? 0) + 1;
         }
-        markers.forEach((m, j) => histories[j].push(m()));
+        markers.forEach((m, j) => histories[j].push(m.sample()));
         if (cloth) for (const item of Object.values(cloth)) item.sample(i, i % 8 === 0 || i === 472);
         if (hair) {
           hair.sampleTips();
@@ -1501,6 +1575,7 @@ async function measure(onlyHero, { mobileHair }) {
       for (let k = 0; k < keys.length; k++) {
         const key = keys[k],
           metrics = response(histories[k], stop);
+        metrics.witness = { mesh: markers[k].mesh, vertex: markers[k].vertex };
         report.accessories[key] = metrics;
         // Engineering visibility/damping checks; the reference has no measured
         // accessory amplitude. Quantify these bounds separately from its gait speeds.
@@ -1529,12 +1604,13 @@ async function measure(onlyHero, { mobileHair }) {
       }
       if (cloth) {
         report.cloth = {};
-        const error = { skirt: [], jacket: [] };
+        const error = Object.fromEntries(Object.keys(cloth).map((id) => [id, []]));
         let clock = 0;
         for (let j = idleBones.length - 1; j >= 0; j--) clothReplay(idleBones[j], (clock += FIXED_DT));
         idleBones.forEach((item, i) => {
           clothReplay(item, (clock += FIXED_DT));
-          for (const [key, garment] of Object.entries(cloth)) error[key].push(garment.replayError(stop + i));
+          for (const [key, garment] of Object.entries(cloth))
+            error[key].push(garment.replayError(stop + i));
         });
         for (const [key, { traces, shell, panelRows }] of Object.entries(cloth)) {
           const range = (col) => {
@@ -1557,7 +1633,7 @@ async function measure(onlyHero, { mobileHair }) {
           }
           check(
             !Object.keys(metrics.intersections).length,
-            key + ' cloth penetrates rendered skin or bodice',
+            key + ' cloth penetrates the rendered anatomy or an inner garment',
           );
           check(
             metrics.minCapsuleGapM >= -0.0002 && (metrics.minBodyGapM ?? 0) >= -0.0002,
@@ -1589,7 +1665,10 @@ async function measure(onlyHero, { mobileHair }) {
         const faceZ = prop.z - prop.depth / 2 - controller.capsuleRadius;
         check(Math.abs(endZ - faceZ) < 0.01 && top < 0.01, 'blocked by crate');
       } else {
-        check(endZ > prop.z + prop.depth / 2 && Math.abs(top - prop.height) < 0.01, 'traversed ' + prop.kind);
+        check(
+          endZ > prop.z + prop.depth / 2 && Math.abs(top - prop.height) < 0.01,
+          'traversed ' + prop.kind,
+        );
       }
     }
     if (mobileHair && rig.hair) {
@@ -1643,4 +1722,11 @@ const mobileHair = process.env.CHARACTERS_HAIR_MOBILE === '1';
 // trees at every sampled pose. Give a full cast and two-tier pass time to
 // finish on the same software-rendered hosts as the visual acceptance tests.
 const minutes = (process.argv[2] ? 1 : 3) * (mobileHair ? 20 : 10);
-await runCharacterProbe(measure, { mobileHair, timeoutMs: minutes * 60000 });
+const designs = {};
+for (const name of ['sippy', 'roma', 'hummin']) {
+  const spec = JSON.parse(
+    await readFile(new URL('./blueprints/' + name + '.json', import.meta.url), 'utf8'),
+  );
+  designs[name] = { heightM: spec.heightM, chin: spec.landmarks.chin };
+}
+await runCharacterProbe(measure, { mobileHair, designs, timeoutMs: minutes * 60000 });

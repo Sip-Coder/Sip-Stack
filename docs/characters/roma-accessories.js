@@ -284,7 +284,7 @@ function radialEnvelope(garment) {
 // Seat the upper strap on the actual neckline, back and turning shoulder.
 // Bind the rail to cloth triangles once per detail level. Each fixed step then
 // follows only three posed vertices per guide, including during a high reach.
-function bindShoulderRail(chest, layers, guides) {
+function bindShoulderRail(chest, layers, guides, outward, standOff = 0.0115) {
   const chestInverse = chest.matrixWorld.clone().invert();
   const bindShapes = layers.map((mesh) => mesh.geometry);
   const sample = new T.Vector3(),
@@ -304,44 +304,110 @@ function bindShoulderRail(chest, layers, guides) {
       xform.multiplyMatrices(chestInverse, mesh.matrixWorld);
       const g = mesh.geometry;
       const xyz = new T.BufferAttribute(new Float32Array(g.attributes.position.count * 3), 3);
+      const limb = new Uint8Array(xyz.count);
+      const joint = g.attributes.skinIndex,
+        weight = g.attributes.skinWeight;
+      if (mesh.isSkinnedMesh && joint && weight) {
+        const arm = mesh.skeleton.bones.map((b) => /Arm|forearm|hand/i.test(b.name));
+        for (let n = 0; n < xyz.count; n++) {
+          let sum = 0;
+          for (let c = 0; c < 4; c++) if (arm[joint.getComponent(n, c)]) sum += weight.getComponent(n, c);
+          limb[n] = sum > 0.52 ? 1 : 0;
+        }
+      }
       for (let n = 0; n < xyz.count; n++) {
         mesh.getVertexPosition(n, sample).applyMatrix4(xform);
         xyz.setXYZ(n, sample.x, sample.y, sample.z);
       }
-      return { mesh, xyz, index: g.index, draw: g.drawRange };
+      // Bucket the bind triangles by height and reject disjoint X/Z bounds
+      // before casting to the physical surface. Both qualifiers are only broad
+      // phase: the final correspondence still uses the exact triangle hit.
+      const idx = g.index,
+        start = g.drawRange.start;
+      const end = Math.min(start + g.drawRange.count, idx?.count ?? xyz.count);
+      const slabs = new Map(),
+        bounds = new Float32Array(4 * Math.ceil(end / 3));
+      const visited = new Uint32Array(Math.ceil(end / 3)),
+        resolution = 32;
+      for (let j = start; j + 2 < end; j += 3) {
+        const k = Math.floor(j / 3),
+          ai = idx ? idx.getX(j) : j,
+          bi = idx ? idx.getX(j + 1) : j + 1,
+          ci = idx ? idx.getX(j + 2) : j + 2;
+        a.fromBufferAttribute(xyz, ai);
+        b.fromBufferAttribute(xyz, bi);
+        c.fromBufferAttribute(xyz, ci);
+        bounds[4 * k] = Math.min(a.x, b.x, c.x);
+        bounds[4 * k + 1] = Math.max(a.x, b.x, c.x);
+        bounds[4 * k + 2] = Math.min(a.z, b.z, c.z);
+        bounds[4 * k + 3] = Math.max(a.z, b.z, c.z);
+        const last = Math.floor(Math.max(a.y, b.y, c.y) * resolution);
+        for (let band = Math.floor(Math.min(a.y, b.y, c.y) * resolution); band <= last; band++) {
+          if (!slabs.has(band)) slabs.set(band, []);
+          slabs.get(band).push(j);
+        }
+      }
+      return { mesh, xyz, index: idx, limb, slabs, bounds, visited, resolution };
     });
-    const contacts = guides.map((point) => {
-      if (point.y < -0.012) return null;
-      const over =
-        T.MathUtils.smoothstep(point.y, 0.09, 0.132) * T.MathUtils.smoothstep(point.x, 0.053, 0.087);
-      direction.set(0.22 * over, over, Math.sign(point.z) * (1 - over)).normalize();
+    const contacts = guides.map((point, guideId) => {
+      if (outward) outward(point, direction);
+      else {
+        if (point.y < -0.012) return null;
+        const over =
+          T.MathUtils.smoothstep(point.y, 0.09, 0.132) * T.MathUtils.smoothstep(point.x, 0.053, 0.087);
+        direction.set(0.22 * over, over, Math.sign(point.z) * (1 - over)).normalize();
+      }
       ray.origin.copy(point).addScaledVector(direction, 0.12);
       ray.direction.copy(direction).negate();
       let distance = 0.19,
         contact = null;
-      for (const { mesh, xyz, index, draw } of prepared) {
-        const end = Math.min(draw.start + draw.count, index?.count ?? xyz.count);
-        for (let j = draw.start; j + 2 < end; j += 3) {
-          const ai = index ? index.getX(j) : j,
-            bi = index ? index.getX(j + 1) : j + 1,
-            ci = index ? index.getX(j + 2) : j + 2;
-          a.fromBufferAttribute(xyz, ai);
-          b.fromBufferAttribute(xyz, bi);
-          c.fromBufferAttribute(xyz, ci);
-          if (!ray.intersectTriangle(a, b, c, false, hit)) continue;
-          const depth = ray.origin.distanceTo(hit);
-          if (depth >= distance) continue;
-          distance = depth;
-          T.Triangle.getBarycoord(hit, a, b, c, sample);
-          T.Triangle.getNormal(a, b, c, normal);
-          contact = {
-            mesh,
-            ai,
-            bi,
-            ci,
-            weights: sample.clone(),
-            orientation: normal.dot(direction) < 0 ? -1 : 1,
-          };
+      const finish = ray.at(0.19, new T.Vector3());
+      const xmin = Math.min(ray.origin.x, finish.x),
+        xmax = Math.max(ray.origin.x, finish.x);
+      const zmin = Math.min(ray.origin.z, finish.z),
+        zmax = Math.max(ray.origin.z, finish.z);
+      const ymin = Math.min(ray.origin.y, finish.y),
+        ymax = Math.max(ray.origin.y, finish.y);
+      for (const { mesh, xyz, index, limb, slabs, bounds, visited, resolution } of prepared) {
+        const endBand = Math.floor(ymax * resolution);
+        for (let band = Math.floor(ymin * resolution); band <= endBand; band++) {
+          const list = slabs.get(band);
+          if (!list) continue;
+          for (const j of list) {
+            const k = Math.floor(j / 3);
+            if (visited[k] === guideId + 1) continue;
+            visited[k] = guideId + 1;
+            if (
+              bounds[4 * k] > xmax ||
+              bounds[4 * k + 1] < xmin ||
+              bounds[4 * k + 2] > zmax ||
+              bounds[4 * k + 3] < zmin
+            )
+              continue;
+            const ai = index ? index.getX(j) : j,
+              bi = index ? index.getX(j + 1) : j + 1,
+              ci = index ? index.getX(j + 2) : j + 2;
+            // The rucksack straps pass under the arm: bind the torso-side pattern,
+            // rather than catching a swinging sleeve beyond the facing.
+            if (outward && point.y < 0.106 && limb[ai] + limb[bi] + limb[ci] > 1) continue;
+            a.fromBufferAttribute(xyz, ai);
+            b.fromBufferAttribute(xyz, bi);
+            c.fromBufferAttribute(xyz, ci);
+            if (!ray.intersectTriangle(a, b, c, false, hit)) continue;
+            const depth = ray.origin.distanceTo(hit);
+            if (depth >= distance) continue;
+            distance = depth;
+            T.Triangle.getBarycoord(hit, a, b, c, sample);
+            T.Triangle.getNormal(a, b, c, normal);
+            contact = {
+              mesh,
+              ai,
+              bi,
+              ci,
+              weights: sample.clone(),
+              orientation: normal.dot(direction) < 0 ? -1 : 1,
+            };
+          }
         }
       }
       return contact;
@@ -373,7 +439,7 @@ function bindShoulderRail(chest, layers, guides) {
         .multiplyScalar(weights.x)
         .addScaledVector(b, weights.y)
         .addScaledVector(c, weights.z)
-        .addScaledVector(normal, 0.0115 * orientation);
+        .addScaledVector(normal, standOff * orientation);
       return true;
     },
   };
@@ -432,9 +498,65 @@ function bindCuffFacing(mesh, chest) {
   };
 }
 
-export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, silk, torsoLayers) {
+// Sample the actual outside of the right cargo leg, grouped by ring at bind.
+// During a tuck these same cloth vertices follow the thigh up into the sling.
+// Narrow polar and height windows keep the opposite, unoccupied hip free.
+function bindCargoHip(hips, cargo) {
+  const point = new T.Vector3(),
+    toHips = new T.Matrix4();
+  const high = cargo.geometry;
+  hips.updateWorldMatrix(true, false);
+  cargo.updateWorldMatrix(true, false);
+  toHips.copy(hips.matrixWorld).invert().multiply(cargo.matrixWorld);
+  const tiers = [high, cargo.userData.mobileGeometry ?? high].map((geometry) => {
+    cargo.geometry = geometry;
+    const cells = new Map();
+    for (let i = 0; i < geometry.attributes.position.count; i++) {
+      cargo.getVertexPosition(i, point).applyMatrix4(toHips);
+      if (point.x > 0.035 || point.y < -0.22 || point.y > 0.125) continue;
+      const a = Math.atan2(point.x + 0.057, point.z);
+      const cell =
+        Math.floor((point.y + 0.22) / 0.012) * 24 +
+        Math.min(23, Math.floor(((a + Math.PI) * 24) / (2 * Math.PI)));
+      const r = Math.hypot(point.x + 0.057, point.z);
+      if (!cells.has(cell) || cells.get(cell).radius < r) cells.set(cell, { id: i, radius: r });
+    }
+    const ids = Int32Array.from(cells.values(), (v) => v.id);
+    return { ids, samples: new Float32Array(ids.length * 3) };
+  });
+  cargo.geometry = high;
+  let active = tiers[0];
+  return {
+    update() {
+      active = tiers[Number(cargo.geometry !== high)];
+      toHips.copy(hips.matrixWorld).invert().multiply(cargo.matrixWorld);
+      for (let i = 0; i < active.ids.length; i++) {
+        cargo.getVertexPosition(active.ids[i], point).applyMatrix4(toHips);
+        point.toArray(active.samples, i * 3);
+      }
+    },
+    radius(y, a) {
+      const sin = Math.sin(a),
+        cos = Math.cos(a),
+        p = active.samples;
+      let best = 0;
+      for (let i = 0; i < p.length; i += 3) {
+        const dy = Math.abs(y - p[i + 1]);
+        if (dy > 0.018) continue;
+        const lateral = Math.abs(p[i] * cos - p[i + 2] * sin);
+        if (lateral > 0.022) continue;
+        const projection = p[i] * sin + p[i + 2] * cos;
+        best = Math.max(best, projection + 0.009 * (1 - Math.max(dy / 0.018, lateral / 0.022)));
+      }
+      return best;
+    },
+  };
+}
+
+export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, silk, torsoLayers, cargo, kit) {
   const fitCuff = bindCuffFacing(torsoLayers[0], rig.chest);
   const envelope = radialEnvelope(skirt);
+  const cargoHip = bindCargoHip(rig.hips, cargo);
   const jacketEnvelope = radialEnvelope(jacket);
   const chestToJacket = new T.Matrix4(),
     jacketToChest = new T.Matrix4();
@@ -448,11 +570,13 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
   const bagSupportHeights = [-0.08, -0.048, -0.016];
   const bagSupportAngles = [-0.22, 0, 0.27];
   const belt = rig.hips.children.find((child) => child.isMesh && child.material === leather);
+  const harnessSupport = [...torsoLayers, jacket, skirt, belt];
+  const padSupport = [...harnessSupport, cargo];
   belt.updateMatrix();
   const beltGeometry = belt.geometry.clone().applyMatrix4(belt.matrix);
   const beltSections = radialEnvelope({ geometry: beltGeometry });
   beltSections.refresh();
-  bag.scale.set(0.82, 1.1, 0.64);
+  bag.scale.set(0.54, 1.1, 0.64);
   function release() {
     jacketPosition.array.set(freePosition);
   }
@@ -466,6 +590,8 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
   const hem = turnedHem(skirt, 64, true, silk, 'Roma turned dress hem');
   const jacketHem = turnedHem(jacket, 41, false, lining, 'Roma jacket hem facing');
   const positions = geometry.attributes.position;
+  const chestToBag = new T.Matrix4(),
+    bagToChest = new T.Matrix4();
   const chestToHips = new T.Matrix4(),
     hipsToChest = new T.Matrix4();
   const centers = Array.from({ length: samples }, () => new T.Vector3());
@@ -500,12 +626,34 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
       if (d < sleeveRadius[i] && d > 0.0001) center.addScaledVector(away, (sleeveRadius[i] - d) / d);
     }
   }
+  function supportHarness(point) {
+    if (point.y > 0.045) return;
+    v.copy(point).applyMatrix4(chestToJacket);
+    let a = Math.atan2(v.x, v.z),
+      r = Math.hypot(v.x, v.z);
+    let min = jacketEnvelope.radius(v.y, a, 0.014) + 0.009;
+    if (r > 1e-4 && r < min) {
+      v.x *= min / r;
+      v.z *= min / r;
+      point.copy(v).applyMatrix4(jacketToChest);
+    }
+    v.copy(point).applyMatrix4(chestToHips);
+    a = Math.atan2(v.x, v.z);
+    r = Math.hypot(v.x, v.z);
+    min = Math.max(envelope.radius(v.y, a, 0.012), beltSections.radius(v.y, a, 0.012)) + 0.006;
+    if (r > 1e-4 && r < min) {
+      v.x *= min / r;
+      v.z *= min / r;
+      point.copy(v).applyMatrix4(hipsToChest);
+    }
+  }
   function update(tailLift, takeup = 0) {
     jacket.updateWorldMatrix(true, false);
     rig.hips.updateWorldMatrix(true, false);
     jacketToHips.copy(rig.hips.matrixWorld).invert().multiply(jacket.matrixWorld);
     hipsToJacket.copy(jacketToHips).invert();
     envelope.refresh();
+    cargoHip.update();
     // The waist belt and the skirt move with the pelvis. Fit the lower jacket
     // to their posed cross-sections, so its weighted hem can pass over either.
     freePosition.set(lowerPositions);
@@ -537,18 +685,44 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
     // moving skirt actually fills that space, keeping the load under its strap.
     inv.copy(rig.hips.matrixWorld).invert();
     rig.handR.getWorldPosition(v).applyMatrix4(inv);
-    const backSwing =
-      T.MathUtils.smoothstep(-v.z, 0.009, 0.06) *
-      (1 - T.MathUtils.smoothstep(Math.abs(v.y - bag.position.y), 0.076, 0.15));
-    const bagAngle = -1.9 - 0.58 * backSwing;
-    let bagRadius = 0.153;
+    const bagAngle = -1.53;
+    let bagRadius = 0.116;
     for (const dy of bagSupportHeights) {
       for (const da of bagSupportAngles) {
-        bagRadius = Math.max(bagRadius, envelope.radius(bag.position.y + dy, bagAngle + da, 0.012) + 0.034);
+        const y = bag.position.y + dy,
+          angle = bagAngle + da;
+        bagRadius = Math.max(
+          bagRadius,
+          Math.max(envelope.radius(y, angle, 0.012), cargoHip.radius(y, angle)) + 0.011,
+        );
       }
     }
     bag.position.x = bagRadius * Math.sin(bagAngle);
     bag.position.z = bagRadius * Math.cos(bagAngle);
+    // Let the hip pouch rotate aft only where the real wrist/forearm passes
+    // its outline. Sample the forearm and knuckle segment at the pouch's
+    // height: shoulder clearance elsewhere must not displace its resting load.
+    rig.forearmR.getWorldPosition(arm[0]).applyMatrix4(inv);
+    rig.handR.getWorldPosition(arm[1]).applyMatrix4(inv);
+    arm[2].set(0, -0.05, 0.007).applyMatrix4(rig.handR.matrixWorld).applyMatrix4(inv);
+    let safeZ = bag.position.z;
+    for (let i = 0; i < 2; i++) {
+      const from = arm[i],
+        to = arm[i + 1];
+      const rx = i === 0 ? 0.047 : 0.045,
+        rz = i === 0 ? 0.062 : 0.059;
+      for (let j = 0; j < 5; j++) {
+        const y = bag.position.y + 0.004 - j * 0.019;
+        const dy = to.y - from.y;
+        const t = Math.abs(dy) > 0.0001 ? T.MathUtils.clamp((y - from.y) / dy, 0, 1) : 0.5;
+        nearest.lerpVectors(from, to, t);
+        const q = ((nearest.x - bag.position.x) / rx) ** 2 + ((nearest.y - y) / 0.035) ** 2;
+        if (q >= 1) continue;
+        const reach = rz * Math.sqrt(1 - q);
+        if (nearest.z + reach > safeZ) safeZ = Math.min(safeZ, nearest.z - reach);
+      }
+    }
+    bag.position.z = Math.max(-0.085, safeZ);
     bag.updateWorldMatrix(true, false);
     inv.copy(rig.chest.matrixWorld).invert();
     // Both strap ends stay in the real brass rings as the bag swings.
@@ -558,12 +732,12 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
     waypoints[2].set(-0.104, -0.08, 0.06);
     waypoints[3].set(-0.055, -0.035, 0.077);
     waypoints[4].set(0.01, 0.025, 0.085);
-    waypoints[5].set(0.054, 0.071, 0.091);
-    waypoints[6].set(0.085, 0.108, 0.076);
-    waypoints[7].set(0.101, 0.133, 0.035);
-    waypoints[8].set(0.101, 0.133, -0.022);
-    waypoints[9].set(0.078, 0.102, -0.066);
-    waypoints[10].set(0.031, 0.043, -0.083);
+    waypoints[5].set(0.043, 0.071, 0.081);
+    waypoints[6].set(0.06, 0.108, 0.066);
+    waypoints[7].set(0.075, 0.145, 0.031);
+    waypoints[8].set(0.075, 0.145, -0.022);
+    waypoints[9].set(0.058, 0.105, -0.059);
+    waypoints[10].set(0.025, 0.043, -0.074);
     waypoints[11].set(-0.028, -0.012, -0.078);
     waypoints[12].set(-0.097, -0.067, -0.059);
     waypoints[1].lerpVectors(frontClasp, waypoints[2], 0.48);
@@ -582,7 +756,7 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
       v.copy(center).applyMatrix4(chestToHips);
       const a = Math.atan2(v.x, v.z),
         r = Math.hypot(v.x, v.z);
-      const outside = envelope.radius(v.y, a, 0.015) + 0.012;
+      const outside = Math.max(envelope.radius(v.y, a, 0.015), cargoHip.radius(v.y, a)) + 0.012;
       if (r < outside && r > 0.001) {
         v.x *= outside / r;
         v.z *= outside / r;
@@ -602,6 +776,7 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
     // The contact reads the skinned triangles before the renderer's own
     // traversal. Refresh both bones and attached bind-matrix inverses here.
     rig.root.updateMatrixWorld(true);
+    kit?.fit(harnessSupport, bindShoulderRail, supportHarness, padSupport);
     if (!shoulderRail) shoulderRail = bindShoulderRail(rig.chest, torsoLayers, centers);
     shoulderRail.refresh();
     // Leather has enough bending stiffness to bridge a fold in the shell. Relax
@@ -643,8 +818,7 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
       // At the folded lapel the leather bridges both silk plies. The bearing
       // surface turns sharply along this line, so ease that span forward.
       const lapel =
-        T.MathUtils.smoothstep(center.y, 0.034, 0.057) *
-        (1 - T.MathUtils.smoothstep(center.y, 0.089, 0.113));
+        T.MathUtils.smoothstep(center.y, 0.034, 0.057) * (1 - T.MathUtils.smoothstep(center.y, 0.089, 0.113));
       center.z += 0.015 * lapel;
     }
     for (let pass = 0; pass < 3; pass++) {
@@ -701,14 +875,32 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
       v.copy(center).applyMatrix4(chestToHips);
       const angle = Math.atan2(v.x, v.z),
         radius = Math.hypot(v.x, v.z);
-      const support = envelope.radius(v.y, angle, 0.02) + 0.009;
+      const support = Math.max(envelope.radius(v.y, angle, 0.02), cargoHip.radius(v.y, angle)) + 0.011;
       if (radius > 0.001 && radius < support) {
         v.x *= support / radius;
         v.z *= support / radius;
         center.copy(v).applyMatrix4(hipsToChest);
       }
     }
+    // The strap turns upward out of the brass rings before crossing the lip
+    // of the field pouch; cargo compression can otherwise pull its first
+    // span straight along the leather flap.
+    chestToBag.copy(bag.matrixWorld).invert().multiply(rig.chest.matrixWorld);
+    bagToChest.copy(chestToBag).invert();
+    for (let row = 1; row < samples - 1; row++) {
+      if (row > 5 && row < samples - 6) continue;
+      const center = centers[row];
+      v.copy(center).applyMatrix4(chestToBag);
+      const wx = 1 - T.MathUtils.smoothstep(Math.abs(v.x), 0.028, 0.043);
+      const wz = 1 - T.MathUtils.smoothstep(Math.abs(v.z), 0.048, 0.065);
+      const height = 0.016 * wx * wz;
+      if (height > 0 && v.y < height) {
+        v.y = height;
+        center.copy(v).applyMatrix4(bagToChest);
+      }
+    }
     if (takeup > 0) fitCuff(centers, takeup);
+    for (let row = 1; row < samples - 1; row++) kit?.liftCrossbody(centers[row]);
     for (let row = 0; row < samples; row++) {
       const center = centers[row];
       tangent
@@ -730,6 +922,7 @@ export function fitRomaAccessories(rig, bag, skirt, jacket, leather, lining, sil
     }
     positions.needsUpdate = true;
     refreshNormals(geometry);
+    kit?.settlePads(centers, refreshNormals);
     hem.update();
     jacketHem.update();
   }

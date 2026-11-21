@@ -72,9 +72,15 @@ async function measure(onlyHero, { tier }) {
       }
     }
     const requiredLayers = {
-      sippy: ['shirt', 'vest', 'jacket', 'lapels', 'tails', 'bow', 'trousers-L', 'trousers-R'],
-      roma: ['bodice', 'skirt', 'jacket', 'belt', 'strap', 'bag'],
-      hummin: ['bib', 'flapL', 'flapR', 'strapL', 'strapR'],
+      sippy: [
+        'shirt', 'hoodie', 'hood', 'quilted-vest', 'zipper-plackets', 'collar', 'split-back',
+        'trousers-L', 'trousers-R', 'cargo-pockets', 'backpack', 'backpack-straps', 'headphones', 'watch',
+      ],
+      roma: [
+        'hoodie', 'hoodieHem', 'cargo', 'jacket', 'belt', 'strap', 'bag',
+        'backpack', 'packStraps', 'compass', 'bracelets', 'headband', 'hoops',
+      ],
+      hummin: ['bib', 'apronSkirt', 'badgePocket', 'strapL', 'strapR', 'scarf', 'scarfTail', 'pouchL', 'pouchR', 'belt', 'rearPack'],
     };
     if (name !== 'hummin' && !surfaces.body?.length) failures.push(name + ': missing continuous body skin');
     for (const layer of requiredLayers[name])
@@ -100,6 +106,26 @@ async function measure(onlyHero, { tier }) {
       enclosed: 0,
       testedVertices: 0,
     });
+    if (name === 'hummin') {
+      result.bootLights = {};
+      for (const [index, side] of ['L', 'R'].entries()) {
+        const light = rig.explorer?.bootLights?.[index];
+        const foot = rig['foot' + side];
+        const attached = light?.isMesh && foot.getObjectById(light.id) === light;
+        const material = light?.material;
+        const emission = material?.emissive;
+        const triangles = light?.geometry
+          ? (light.geometry.index?.count ?? light.geometry.attributes.position.count) / 3
+          : 0;
+        result.bootLights[side] = {
+          mesh: light?.name, attached, triangles, visible: light?.visible,
+          emissive: emission?.getHexString(), intensity: material?.emissiveIntensity,
+        };
+        if (!(attached && light.visible && triangles && emission?.g > emission.r &&
+            emission?.b > emission.r && material.emissiveIntensity > 0))
+          failures.push('hummin: boot ' + side + ' lacks a visible cyan emissive lamp attached to the foot');
+      }
+    }
     for (const { outer, inner } of declared) {
       if (!surfaces[outer] || !surfaces[inner] || inner === outer)
         throw Error(name + ': invalid surface pair ' + outer + '/' + inner);
@@ -109,7 +135,7 @@ async function measure(onlyHero, { tier }) {
       pairs.push({ outer, inner });
     }
     // Explicit stack order determines containment direction. A glove, cuff or
-    // skirt can move far from its own body region, so the crossing test also
+    // jacket hem can move far from its own body region, so the crossing test also
     // checks every other combination of registered surfaces in the final pose.
     for (const [i, a] of Object.keys(surfaces).entries()) {
       for (const b of Object.keys(surfaces).slice(i + 1)) {

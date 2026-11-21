@@ -4,8 +4,50 @@
 import * as T from 'three';
 
 const smooth = T.MathUtils.smoothstep;
+// The pocket bellows and flap are raised in the trouser pattern itself. Ink
+// follows their local cutting lines, so the thread stays attached through FK.
+function stitchCargo(fabric, trim) {
+  const weave = fabric.onBeforeCompile;
+  const cacheKey = fabric.customProgramCacheKey.bind(fabric);
+  fabric.onBeforeCompile = function (shader, renderer) {
+    weave.call(this, shader, renderer);
+    shader.uniforms.pocketThread = { value: trim.color };
+    shader.vertexShader =
+      'attribute vec3 cargoPaper; varying vec3 vCargoPaper;\n' +
+      shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        '#include <begin_vertex>\nvCargoPaper=cargoPaper;',
+      );
+    shader.fragmentShader =
+      'uniform vec3 pocketThread; varying vec3 vCargoPaper;\n' +
+      shader.fragmentShader.replace(
+        '#include <color_fragment>',
+        `#include <color_fragment>
+        if (vCargoPaper.z > .5) {
+          float across = vCargoPaper.x, up = vCargoPaper.y;
+          float folded = .384 + min(.008, abs(across)*.20);
+          vec2 q = abs(vec2(across, up-.369))-vec2(.038,.041);
+          float border = length(max(q,0.))+min(max(q.x,q.y),0.)-.003;
+          float flap = max(abs(up-folded), abs(across)-.039);
+          float line = min(abs(border+.0016), flap);
+          float aa = max(.00028, .65*fwidth(line));
+          float edge = 1.-smoothstep(.00045, .00045+aa,line);
+          float course = abs(q.x) < abs(q.y) ? up : across;
+          if (flap < abs(border+.0016)) course = across;
+          float thread = smoothstep(.05,.27,fract(course/.0045));
+          diffuseColor.rgb = mix(diffuseColor.rgb,pocketThread,edge*thread*.90);
+          float welt = (1.-smoothstep(.0002,.0017,abs(up-folded+.0017)))
+                       *(1.-smoothstep(.036,.040,abs(across)));
+          diffuseColor.rgb *= 1.-.23*welt;
+        }`,
+      );
+  };
+  fabric.customProgramCacheKey = () => cacheKey() + '|field-cargo-topstitch';
+}
+
 export function fitRomaGarment(body, kind, fabric, trim, pattern, waist) {
-  const coat = kind === 'jacket';
+  const coat = kind === 'jacket',
+    trousers = kind === 'cargo';
   function cutGeometry(g) {
     const p = g.attributes.position,
       norm = g.attributes.normal;
@@ -35,10 +77,12 @@ export function fitRomaGarment(body, kind, fabric, trim, pattern, waist) {
         // the shoulder across a curved armscye, with no ball cap over the joint.
         const lower = anatomicalArm ? y - 0.475 : y - 0.666;
         cut = Math.min(lower, 0.793 - y + 0.03 * smooth(ax, 0.04, 0.087), edge);
+      } else if (trousers) {
+        cut = Math.min(y - 0.092, 0.585 - y);
       } else {
-        const front = Math.max(0, z / Math.hypot(x * 0.65, z || 1e-9)),
-          neckline = 0.764 - 0.062 * front ** 4 - 0.055 * smooth(ax, 0.061, 0.099);
-        cut = anatomicalArm ? -1 : Math.min(y - 0.591, neckline - y);
+        const front = Math.max(0, z / Math.hypot(x * 0.75, z || 1e-9));
+        const neck = 0.808 - 0.027 * front * front - 0.036 * smooth(ax, 0.041, 0.092);
+        cut = anatomicalArm ? -1 : Math.min(y - 0.655, neck - y);
       }
       // Under the belt the bodice uses its own folded edge; above the bust
       // the lapels return across the collar and turn up subtly at the edge.
@@ -46,9 +90,15 @@ export function fitRomaGarment(body, kind, fabric, trim, pattern, waist) {
       const cuff = coat && anatomicalArm ? 1 - smooth(y, 0.481, 0.489) : 0;
       const hem = coat ? 0.00165 : 0.00105;
       const sleeveEase = anatomicalArm
-        ? 0.0038 * Math.exp(-(((y - 0.608) / 0.045) ** 2)) + 0.002 * Math.exp(-(((y - 0.762) / 0.032) ** 2))
+        ? 0.0029 * Math.exp(-(((y - 0.6) / 0.061) ** 2)) +
+          0.0023 * Math.exp(-(((y - 0.497) / 0.005) ** 2)) +
+          0.00078 *
+            Math.sin((y - 0.482) * 135 + z * 36) *
+            smooth(y, 0.481, 0.529) *
+            (1 - smooth(y, 0.633, 0.697)) +
+          0.002 * Math.exp(-(((y - 0.762) / 0.032) ** 2))
         : 0;
-      const ease = coat ? 0.001 + 0.0017 * edgeRoll + 0.002 * cuff + sleeveEase : 0.0036;
+      const ease = trousers ? 0.0014 : coat ? 0.001 + 0.0017 * edgeRoll + 0.002 * cuff + sleeveEase : 0.0036;
       const direction = new T.Vector3().fromBufferAttribute(norm, i);
       const folds = [];
       for (const side of [1, -1]) {
@@ -57,7 +107,7 @@ export function fitRomaGarment(body, kind, fabric, trim, pattern, waist) {
         const shoulderBend = mask * (1 - smooth(Math.abs(y - 0.759), 0.012, 0.055));
         const wave = Math.sin((y - 0.609) * 375 + (x - 0.13 * side) * 36 + (0.95 * z) / 0.03);
         const shoulderWave = Math.sin((y - 0.759) * 265 + (x - 0.12 * side) * 63 + z * 49);
-        folds.push(elbow * wave * 0.0034, shoulderBend * shoulderWave * 0.0023);
+        folds.push(elbow * wave * 0.0019, shoulderBend * shoulderWave * 0.0023);
       }
       const weights = new Map();
       for (let j = 0; j < 4; j++)
@@ -69,6 +119,7 @@ export function fitRomaGarment(body, kind, fabric, trim, pattern, waist) {
         n: direction,
         ease,
         cut,
+        region,
         hem,
         folds,
         weights,
@@ -97,6 +148,7 @@ export function fitRomaGarment(body, kind, fabric, trim, pattern, waist) {
         hem: mix(v.hem, w.hem),
         folds: v.folds.map((f, k) => mix(f, w.folds[k])),
         weights,
+        region: t < 0.5 ? v.region : w.region,
         trim: mix(v.trim, w.trim),
         surface: -1,
       };
@@ -275,6 +327,7 @@ export function fitRomaGarment(body, kind, fabric, trim, pattern, waist) {
         }
       }
     }
+    const pocketPaper = [];
     const xyz = [],
       joints = [],
       weights = [],
@@ -288,6 +341,10 @@ export function fitRomaGarment(body, kind, fabric, trim, pattern, waist) {
         xyz.push(v.x + d * v.n.x, v.y + d * v.n.y, v.z + d * v.n.z);
         colors.push(1 + 0.055 * v.trim, 1 + 0.09 * v.trim, 1 + 0.14 * v.trim);
         uv.push(Math.atan2(v.x, v.z) / (2 * Math.PI) + 0.5, v.y);
+        if (trousers) {
+          const direction = Math.atan2(Math.abs(v.x) - 0.065, v.z + 0.002);
+          pocketPaper.push((direction - 1.42) * 0.055, v.y, shell === 0 ? 1 : 0);
+        }
         const influence = [...v.weights].sort((a, b) => b[1] - a[1]).slice(0, 4);
         const sum = influence.reduce((s, j) => s + j[1], 0);
         for (let k = 0; k < 4; k++) {
@@ -313,6 +370,13 @@ export function fitRomaGarment(body, kind, fabric, trim, pattern, waist) {
       lining.push(top[i] + count, top[i + 2] + count, top[i + 1] + count);
     for (const [a, b] of edges.values()) facing.push(b, a, a + count, b, a + count, b + count);
     const geometry = new T.BufferGeometry();
+    geometry.userData.anatomicalRegions = Uint8Array.from([...vertices, ...vertices], (v) => v.region ?? 0);
+    if (kind === 'hoodie') {
+      // The rib-knit band is sewn to this lower edge after the pattern is graded.
+      geometry.userData.hemEdge = [...edges.values()]
+        .flat()
+        .filter((v, i, a) => Math.abs(vertices[v].y - 0.655) < 0.00015 && a.indexOf(v) === i);
+    }
     geometry.userData.waistEdge = waistIndices;
     // These two structured rows follow the sewn chest frame up to the
     // underarm. Let the fitted sleeve above articulate through the shoulder.
@@ -324,6 +388,7 @@ export function fitRomaGarment(body, kind, fabric, trim, pattern, waist) {
     if (coat) geometry.setAttribute('color', new T.Float32BufferAttribute(colors, 3));
     geometry.setAttribute('position', new T.Float32BufferAttribute(xyz, 3));
     geometry.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+    if (trousers) geometry.setAttribute('cargoPaper', new T.Float32BufferAttribute(pocketPaper, 3));
     geometry.setAttribute('skinIndex', new T.Uint16BufferAttribute(joints, 4));
     geometry.setAttribute('skinWeight', new T.Float32BufferAttribute(weights, 4));
     geometry.setIndex([...top, ...lining, ...facing]);
@@ -344,9 +409,14 @@ export function fitRomaGarment(body, kind, fabric, trim, pattern, waist) {
     geometry.computeBoundingSphere();
     return geometry;
   }
+  if (trousers) stitchCargo(fabric, trim);
   const mesh = new T.SkinnedMesh(cutGeometry(pattern?.high ?? body.geometry), [fabric, trim]);
   mesh.userData.mobileGeometry = cutGeometry(pattern?.mobile ?? body.userData.mobileGeometry);
-  mesh.name = coat ? 'Roma shaped jacket yoke and sleeves' : 'Roma fitted dress bodice';
+  mesh.name = coat
+    ? 'Roma shaped jacket yoke and sleeves'
+    : trousers
+      ? 'Roma continuous emerald cargo joggers'
+      : 'Roma cream hoodie body';
   body.parent.add(mesh);
   mesh.bind(body.skeleton, body.bindMatrix);
   mesh.castShadow = mesh.receiveShadow = true;

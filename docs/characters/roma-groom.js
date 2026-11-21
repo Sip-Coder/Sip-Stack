@@ -96,7 +96,7 @@ function addCurlMesh(group, geometry, material, rings, sides) {
 
 function crownPoint(a, t) {
   const front = Math.max(0, Math.cos(a));
-  const hairline = 0.072 + 0.047 * front ** 1.65 + 0.005 * Math.sin(2 * a + 0.48) * front;
+  const hairline = 0.072 + 0.054 * front ** 1.65 + 0.005 * Math.sin(2 * a + 0.48) * front;
   const elevation = t * Math.PI * 0.5;
   const breadth = Math.cos(elevation) ** 0.84;
   return point(
@@ -115,6 +115,8 @@ function crown(head, hair) {
   for (let i = 0; i < 47; i++) {
     const a = (turn * i) / 47;
     const end = a > Math.PI ? a - turn : a;
+    // Leave a soft hairline under the side-swept forelock.
+    if (Math.abs(end) < 0.68) continue;
     const bank = end < 0.46 ? -1 : 1;
     const path = [];
     for (let j = 0; j <= 16; j++) {
@@ -133,47 +135,56 @@ function crown(head, hair) {
       curlRibbon(shape, radius, point(Math.sin(end), 0.38, Math.cos(end)).normalize(), 20, 8),
     );
   }
-  for (let i = 0; i < 5; i++) {
-    const d = i * 0.0019;
-    const path = [
-      [0.034, 0.142 + d * 0.54, 0.025],
-      [0.021, 0.14 + d * 0.54, 0.041],
-      [-0.002, 0.135 + d * 0.8, 0.053],
-      [-0.036, 0.125 + d, 0.052],
-      [-0.058, 0.107 + d, 0.037],
-      [-0.066, 0.093 + d, 0.028],
-    ].map((p) => point(...p));
-    piles[i % 3 === 0 ? 2 : 1].push(
-      curlRibbon(
-        new T.CatmullRomCurve3(path),
-        (t) => 0.0041 * (0.08 + 0.92 * Math.sin(Math.PI * t) ** 0.54),
-        point(-0.3, 0.5, 1).normalize(),
-        26,
-        10,
-      ),
-    );
+  // Broad overlapping sections leave the side part along the length of the
+  // head. Each strip rolls out, then down into the independently sprung
+  // curls. The part runs front to back instead of converging at a single pole.
+  for (const side of [-1, 1]) {
+    for (let row = 0; row < 13; row++) {
+      const rowAngle = -1.35 + row * 0.19;
+      const back = Math.max(0, -Math.sin(rowAngle));
+      const depth = Math.sin(rowAngle);
+      const arch = Math.cos(rowAngle);
+      const line = [];
+      for (let j = 0; j <= 16; j++) {
+        const t = j / 16;
+        const angle = 0.17 + side * (1.72 + 0.35 * back) * t;
+        const bouffant = Math.sin(Math.PI * t);
+        line.push(
+          point(
+            (0.0765 * arch + bouffant * 0.003) * Math.sin(angle),
+            0.089 + 0.074 * arch * Math.cos(angle) + (0.0025 + 0.003 * back) * bouffant,
+            -0.012 + 0.067 * depth - 0.01 * bouffant + 0.005 * Math.sin(t * turn + row * 0.24) * bouffant,
+          ),
+        );
+      }
+      const lift = (t) => 0.0072 * (0.14 + 0.86 * Math.sin(t * Math.PI) ** 0.57);
+      const normal = point(side * 0.48, 0.52 * arch, depth).normalize();
+      const shape = new T.CatmullRomCurve3(line);
+      piles[row % 3 === 1 ? 2 : 1].push(curlRibbon(shape, lift, normal, 28, 10));
+      const ridge = line.map((p, j) => p.clone().addScaledVector(normal, lift(j / 16) * 0.58));
+      piles[2].push(curlRibbon(new T.CatmullRomCurve3(ridge), (t) => lift(t) * 0.22, normal, 22, 6));
+    }
   }
-  // Two short lifted locks above the far temple break the smooth crown
-  // asymmetrically, before feeding their ends into the long curtain.
-  for (let i = 0; i < 2; i++) {
-    const d = i * 0.003;
-    const line = [
-      point(-0.04, 0.144 - d, 0.015),
-      point(-0.055, 0.142 - d, 0.023),
-      point(-0.066, 0.139 - d, 0.025),
-      point(-0.069, 0.133 - d, 0.026),
-      point(-0.071, 0.123 - d, 0.026),
-      point(-0.067, 0.11 - d, 0.029),
-    ];
-    piles[1 + i].push(
-      curlRibbon(
-        new T.CatmullRomCurve3(line),
-        (t) => 0.0033 * (0.14 + 0.86 * Math.sin(Math.PI * t) ** 0.56),
-        point(-0.9, 0.1, 0.4).normalize(),
-        24,
-        10,
-      ),
-    );
+  // A lifted, side-parted forelock in front of the band. Individual ribbons
+  // overlap, open away from the eyes, then turn under at the temples.
+  for (const side of [-1, 1]) {
+    for (let row = 0; row < 5; row++) {
+      const d = row * 0.0018;
+      const sweep = side < 0 ? 1 : 0.74;
+      const shape = [
+        [0.021 + d, 0.145 + d * 0.5, 0.038],
+        [0.019 + side * 0.022 * sweep, 0.157 + d * 0.35, 0.045 + d * 0.4],
+        [side * 0.021, 0.149 + d, 0.056 + d * 0.52],
+        [side * 0.047, 0.13 + d * 0.77, 0.052 + d * 0.65],
+        [side * 0.069, 0.124 + d * 0.55, 0.042 + d * 0.36],
+        [side * 0.076, 0.112 + d * 0.6, 0.031],
+        [side * 0.069, 0.102 + d * 0.58, 0.036],
+      ].map((p) => point(...p));
+      const radius = (t) => (row === 0 ? 0.007 : 0.0042) * (0.085 + 0.915 * Math.sin(Math.PI * t) ** 0.53);
+      piles[row % 3 === 1 ? 2 : 1].push(
+        curlRibbon(new T.CatmullRomCurve3(shape), radius, point(side * 0.28, 0.4, 1).normalize(), 32, 10),
+      );
+    }
   }
   for (let i = 0; i < 4; i++)
     if (piles[i].length) {
@@ -203,7 +214,7 @@ function shapeCurl(head, hair, side, i, inner = false) {
   if (inner && i >= 34 && i <= 38) endY -= 0.015;
   if (face && (i === 1 || i === 3)) endY -= 0.019;
   const crossShoulder = angle < 1.4;
-  const width = (inner ? 0.0132 : 0.00365) + 0.0007 * Math.cos(i * 2.63 + side);
+  const width = (inner ? 0.0118 : face ? 0.0054 : 0.0041) + 0.0007 * Math.cos(i * 2.63 + side);
   const loops = 2.08 + 0.61 * (0.5 + 0.5 * Math.sin(i * 2.19 + side));
   const spin = (i % 5 === 1 ? -1 : 1) * side;
   function axis(t) {
@@ -228,6 +239,15 @@ function shapeCurl(head, hair, side, i, inner = false) {
       // Cross the leading shoulder cup on its anterior face. A little room
       // here lets the tip swing freely instead of sticking on every stride.
       p.z += 0.005 * ease(t, 0.36, 0.76);
+    }
+    if (inner && i < 34) {
+      // Tuck the two deep temple sections behind the earlobe. The front
+      // curtain falls separately in front of the hoops and shoulder straps.
+      p.z = T.MathUtils.lerp(p.z, -0.053 - 0.01 * t, ease(t, 0.07, 0.47));
+    }
+    if (!inner && i <= 8) {
+      const atTemple = ease(t, 0.06, 0.33);
+      p.z += atTemple * Math.max(0, 0.054 + 0.003 * Math.cos(i) - p.z);
     }
     if (inner && i >= 34 && i <= 38) {
       // The underside of the bob follows the slope of the shoulder from the
@@ -254,6 +274,20 @@ function shapeCurl(head, hair, side, i, inner = false) {
     const p = axis(t)
       .addScaledVector(radial, amp * Math.cos(phase))
       .addScaledVector(tangential, amp * Math.sin(phase));
+    // Neighbouring locks leave the crown in small families. They share
+    // the broad S sweep but rotate around separate axes and fan as the
+    // hanging ends turn in. Ease to the physical guide at either endpoint.
+    const family = Math.floor(i / 4);
+    const wave = 1.38 * turn * t + family * 0.9 + 0.13 * (i % 4) + side * 0.38;
+    const envelope = Math.sin(Math.PI * t);
+    const relief = inner ? 0.0085 : 0.014;
+    p.addScaledVector(tangential, side * relief * Math.sin(wave) * envelope);
+    p.addScaledVector(radial, relief * 0.67 * Math.cos(wave) * envelope);
+    const hem = Math.max(0, (t - 0.7) / 0.3);
+    // Curl under and back up into the point, to give overlapping scallops
+    // around the shoulder instead of parallel, straight pointed ends.
+    p.y -= (face ? 0.0045 : 0.006) * Math.sin(hem * Math.PI) ** 2;
+    p.addScaledVector(tangential, side * 0.006 * Math.sin(hem * turn));
     p.y += amp * 0.27 * Math.sin(phase + 0.3) * ease(t, 0.02, 0.3);
     path.push(p);
   }
@@ -267,7 +301,7 @@ function shapeCurl(head, hair, side, i, inner = false) {
   head.add(g);
   const shape = new T.CatmullRomCurve3(path, false, 'catmullrom', 0.45);
   const taper = (t) =>
-    width * (0.74 + 0.26 * Math.sin(Math.PI * t)) * (1 - 0.25 * t) * (0.045 + 0.955 * (1 - ease(t, 0.79, 1)));
+    width * (0.74 + 0.26 * Math.sin(Math.PI * t)) * (1 - 0.25 * t) * (0.04 + 0.96 * (1 - ease(t, 0.85, 1)));
   addCurlMesh(
     g,
     curlRibbon(shape, taper, radial, 40, 10, origin),
@@ -315,4 +349,99 @@ export function makeRomaGroom(head, materials) {
   for (const side of [-1, 1])
     for (let i = 0; i < 42; i++) locks.push(shapeCurl(head, materials, side, i, i >= 32));
   return locks;
+}
+
+// Derive the curved contact surfaces from the actual rib-knit roll and
+// the band. Their UVs run from end to end (u) and across the fabric (v).
+// Fitting to these sections also keeps the envelopes attached as the
+// shoulder and head move independently during a tuck or overhead reach.
+export function clothHairColliders(mesh, spanCount, role) {
+  const position = mesh.geometry.getAttribute('position');
+  const uv = mesh.geometry.getAttribute('uv');
+  const sections = Array.from({ length: spanCount + 1 }, () => new T.Box3());
+  const vertex = new T.Vector3();
+  for (let i = 0; i < position.count; i++) {
+    const u = uv.getX(i) * spanCount;
+    const k = Math.round(u);
+    if (Math.abs(k - u) < 0.0001) sections[k].expandByPoint(vertex.fromBufferAttribute(position, i));
+  }
+  const centers = sections.map((box) => box.getCenter(new T.Vector3()));
+  return centers.slice(0, -1).map((a, k) => {
+    const b = centers[k + 1];
+    const line = new T.Line3(a, b),
+      nearest = new T.Vector3();
+    let radius = 0;
+    for (let i = 0; i < position.count; i++) {
+      const u = uv.getX(i) * spanCount;
+      if (u < k || u > k + 1) continue;
+      vertex.fromBufferAttribute(position, i);
+      line.closestPointToPoint(vertex, true, nearest);
+      radius = Math.max(radius, vertex.distanceTo(nearest));
+    }
+    return {
+      role,
+      localContact: true,
+      node: mesh,
+      a: a.toArray(),
+      b: b.toArray(),
+      radius: radius + (role === 'band' ? 0.0035 : 0.0015),
+    };
+  });
+}
+
+// The folded hood shares skin weights with the jacket yoke. Sample the
+// outside of each panel in its current pose so the hair clears the raised
+// shoulder as well as the resting collar. The sample buffers and envelopes
+// are retained across fixed ticks, including switches of geometry tier.
+export function bindHoodContacts(hood) {
+  const count = 8;
+  const panels = Array.from({ length: count }, () => {
+    const node = new T.Group();
+    node.name = 'Folded hood contact';
+    hood.add(node);
+    return { node, role: 'collar', localContact: true, center: [0, 0, 0], radii: [1, 1, 1] };
+  });
+  const tables = new Map();
+  for (const g of [hood.geometry, hood.userData.mobileGeometry]) {
+    const uv = g.getAttribute('uv');
+    const rows = panels.map(() => []);
+    // Both walls of this closed piece share their (u,v) grid. The first
+    // wall carries the exterior binding and is the hair contact surface.
+    for (let i = 0; i < uv.count / 2; i++) {
+      const u = uv.getX(i),
+        v = uv.getY(i);
+      const station = u * count * 2;
+      if (Math.abs(station - Math.round(station)) > 1e-4 || Math.abs(v * 4 - Math.round(v * 4)) > 1e-4)
+        continue;
+      rows[Math.floor(u * count) % count].push(i);
+      if (Math.round(station) % 2 === 0) rows[(Math.round(u * count) + count - 1) % count].push(i);
+    }
+    tables.set(
+      g,
+      rows.map((ids) => ids.map((id) => ({ id, p: new T.Vector3() }))),
+    );
+  }
+  const bounds = new T.Box3();
+  const rel = new T.Vector3();
+  function update() {
+    const sets = tables.get(hood.geometry);
+    for (let i = 0; i < count; i++) {
+      const frame = panels[i].node;
+      bounds.makeEmpty();
+      for (const sample of sets[i]) {
+        hood.getVertexPosition(sample.id, sample.p);
+        bounds.expandByPoint(sample.p);
+      }
+      bounds.getCenter(frame.position);
+      bounds.getSize(frame.scale).multiplyScalar(0.5).addScalar(0.001);
+      let enclosing = 1;
+      for (const { p } of sets[i]) {
+        rel.copy(p).sub(frame.position).divide(frame.scale);
+        enclosing = Math.max(enclosing, rel.length());
+      }
+      frame.scale.multiplyScalar(enclosing).addScalar(0.0015);
+    }
+  }
+  update();
+  return { panels, update };
 }

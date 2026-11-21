@@ -12,7 +12,7 @@ export const garmentPoses = [
   'apex',
   'emote25',
   'emote50',
-  'emote56', // Sippy's sniff and Hummin's bow reach their crest here.
+  'emote56', // Capture the crest as the hero completes the gesture.
   'emote75',
 ];
 

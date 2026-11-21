@@ -62,6 +62,7 @@ function makeShape(spec, sleeveRoute) {
   return {
     node: spec.node,
     role: spec.role,
+    localContact: spec.localContact === true,
     sleeveRoute: spec.sleeveJoint ? sleeveRoute : null,
     sleeveJoint: spec.sleeveJoint,
     restNormal: v(),
@@ -206,7 +207,13 @@ function keepOutside(
     let moved = false;
     for (let j = 0; j < count; j++) {
       const s = shapes[j];
-      if (s.planeActive && arc > s.first - 0.45 && arc < s.last + 0.45 && arc > 0.5) {
+      // Small pieces such as an earring or one short section of a hood have
+      // a local contact patch. Their tangent must not lift a distant curl.
+      if (
+        s.planeActive &&
+        (!s.localContact || s.box.containsPoint(point)) &&
+        arc > s.first - 0.45 && arc < s.last + 0.45 && arc > 0.5
+      ) {
         // A shared plane is needed on both sides of the *crossing segment*.
         // Keep its proximal anchors intact, including on long face tendrils.
         const influence =

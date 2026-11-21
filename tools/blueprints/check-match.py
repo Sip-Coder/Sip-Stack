@@ -2,6 +2,7 @@
 """Compare the frozen design against the posed production meshes at the same projection."""
 
 import argparse
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -34,36 +35,51 @@ def read_mask(path, channel):
     return coverage
 
 
-def measure(hero, root):
-    spec = json.loads((HERE / f'{hero}.json').read_text())
-    folder = root / hero
-    actual = json.loads((folder / 'model/landmarks.json').read_text())
+def read_design(hero):
+    design_root = REPO / 'characters-review' / 'blueprints'
+    entry = json.loads((design_root / 'design-freeze.json').read_text())['targets'][hero]
+    digest = hashlib.sha256()
+    for path in entry['files']:
+        digest.update((REPO / path).read_bytes())
+    if digest.hexdigest() != entry['sha256']:
+        raise ValueError(f'{hero} blueprint differs from its recorded design')
+    return design_root / hero / 'design'
+
+
+def measure_proportions(hero, tier, actual, spec, failures):
     height = actual['standingHeightM']
-    if not all(math.isfinite(x) and x > 0 for x in (height, actual['headCount'])):
-        raise ValueError(f'Invalid measured crown or chin for {hero}')
-    result = {
-        'heightM': height,
-        'headCount': actual['headCount'],
-        'landmarks': {},
-        'silhouettes': {},
-        'materials': [],
-        'failures': [],
-    }
-    failures = result['failures']
+    if actual['tier'] != tier or not all(math.isfinite(x) and x > 0 for x in (height, actual['headCount'])):
+        raise ValueError(f'Invalid {tier} measured crown or chin for {hero}')
     if abs(height / spec['heightM'] - 1) > .02:
-        failures.append(f'Measured height {height:.3f} m is outside the 2% tolerance')
-    if hero in ('sippy', 'roma') and not 3 <= actual['headCount'] <= 3.5:
-        failures.append(f"Human proportion {actual['headCount']:.3f} heads is outside 3–3.5")
+        failures.append(f'{tier} measured height {height/.0254:.2f} in is outside the 2% tolerance')
+    if 'headCountRange' in spec:
+        low, high = spec['headCountRange']
+        if not low <= actual['headCount'] <= high:
+            failures.append(f"{tier} proportion {actual['headCount']:.3f} heads is outside {low}–{high}")
+    landmarks = {}
     for key in LANDMARKS:
         design, model = spec['landmarks'][key], actual['landmarks'][key]
         if not all(math.isfinite(x) and 0 < x < 105 for x in (design, model)):
-            raise ValueError(f'Invalid landmark {hero} {key}')
+            raise ValueError(f'Invalid {tier} landmark {hero} {key}')
         error = abs(model - design)
-        result['landmarks'][key] = {'designPct': design, 'modelPct': model, 'errorPctHeight': error}
+        landmarks[key] = {'designPct': design, 'modelPct': model, 'errorPctHeight': error}
         if error > 1.5:
-            failures.append(f'{key} error {error:.2f} percentage points')
+            failures.append(f'{tier} {key} error {error:.2f} percentage points')
+    return {'heightM': height, 'heightIn': height/.0254, 'headCount': actual['headCount'], 'landmarks': landmarks}
+
+
+def measure(hero, root):
+    design_dir = read_design(hero)
+    spec = json.loads((HERE / f'{hero}.json').read_text())
+    folder = root / hero
+    failures = []
+    high = json.loads((folder / 'model/landmarks.json').read_text())
+    mobile = json.loads((folder / 'model/landmarks-mobile.json').read_text())
+    result = measure_proportions(hero, 'high', high, spec, failures)
+    result.update(mobile=measure_proportions(hero, 'mobile', mobile, spec, failures),
+                  silhouettes={}, materials=[], failures=failures)
     for view in VIEWS['views']:
-        design = read_mask(folder / 'design' / f'{view}.png', 'A')
+        design = read_mask(design_dir / f'{view}.png', 'A')
         model = read_mask(folder / 'model' / f'{view}-mask.png', 'L')
         intersection = int(np.count_nonzero(design & model))
         union = int(np.count_nonzero(design | model))
