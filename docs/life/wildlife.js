@@ -1,4 +1,5 @@
 import * as T from 'three';
+import { m as metres, scaleSpec } from './scale.js';
 import { Sections, tau, seed } from './forms.js';
 
 function schoolGeometry() {
@@ -90,7 +91,7 @@ function schoolGeometry() {
   }
   return g;
 }
-export function trout(scene, count, centerX, centerZ, height, radius = 1) {
+export function trout(scene, count, centerX, centerZ, height, radius, sceneKey, lengthM) {
   const time = { value: 0 },
     m = new T.MeshPhysicalMaterial({
       vertexColors: true,
@@ -124,9 +125,11 @@ export function trout(scene, count, centerX, centerZ, height, radius = 1) {
   shoal.frustumCulled = false;
   shoal.receiveShadow = true;
   shoal.castShadow = true;
+  scaleSpec(shoal, sceneKey, 'fish', [null, null, lengthM]);
   scene.add(shoal);
   const dummy = new T.Object3D();
-  return (t, mobile) => {
+  const lengthScale = metres(sceneKey, lengthM) / 0.888; // snout to caudal tip of the pattern
+  function swim(t, mobile) {
     time.value = t;
     shoal.count = mobile ? Math.ceil(count / 2) : count;
     for (let i = 0; i < shoal.count; i++) {
@@ -139,12 +142,14 @@ export function trout(scene, count, centerX, centerZ, height, radius = 1) {
         Math.atan2(-Math.sin(a), 1.22 * Math.cos(a)),
         0.11 * Math.cos(a),
       );
-      dummy.scale.setScalar(0.53 + 0.078 * (i % 4));
+      dummy.scale.setScalar(lengthScale * (0.925 + 0.05 * (i % 4)));
       dummy.updateMatrix();
       shoal.setMatrixAt(i, dummy.matrix);
     }
     shoal.instanceMatrix.needsUpdate = true;
-  };
+  }
+  swim(0, false);
+  return swim;
 }
 function insectGeometry(kind) {
   const f = new Sections(),
@@ -219,7 +224,7 @@ function insectGeometry(kind) {
   g.setAttribute('wing', new T.BufferAttribute(wing, 1));
   return g;
 }
-export function insects(scene, kind, count, center, spread, size) {
+export function insects(scene, kind, count, center, spread, sceneKey) {
   const time = { value: 0 },
     night = kind === 'firefly',
     fly = kind === 'dragonfly';
@@ -263,12 +268,16 @@ export function insects(scene, kind, count, center, spread, size) {
       if(firefly>.5 && markings.z<-.075 && membrane<.5) totalEmissiveRadiance+=vec3(2.8,1.9,.3)*(.55+.45*sin(insectTime*2.+markings.z));`,
         );
   };
+  // Design spans (firefly body length) and the corresponding original pattern dimensions.
+  const dimension = night ? 0.018 : fly ? 0.115 : 0.060;
+  const size = metres(sceneKey, dimension) / (night ? 0.235 : fly ? 0.62 : 0.428);
   const batch = new T.InstancedMesh(insectGeometry(kind), m, count),
     dummy = new T.Object3D();
   batch.name = kind;
   batch.frustumCulled = false;
   batch.castShadow = !night;
   batch.receiveShadow = true;
+  scaleSpec(batch, sceneKey, kind, night ? [null, null, dimension] : [null, dimension, null]);
   scene.add(batch);
   let lights;
   if (night) {
@@ -294,7 +303,7 @@ export function insects(scene, kind, count, center, spread, size) {
   }
   const random = seed(739),
     seeds = Array.from({ length: count }, () => random() * tau);
-  return (t, mobile, dusk) => {
+  function flyAt(t, mobile, dusk) {
     time.value = t;
     batch.visible = !night || dusk;
     batch.count = mobile ? Math.ceil(count * 0.55) : count;
@@ -316,10 +325,12 @@ export function insects(scene, kind, count, center, spread, size) {
         Math.atan2(-spread[0] * Math.sin(a), spread[2] * Math.cos(a * 0.93 + ph)),
         0.14 * Math.cos(a),
       );
-      dummy.scale.setScalar(size * (0.85 + 0.24 * Math.sin(ph) ** 2));
+      dummy.scale.setScalar(size * (0.925 + 0.15 * Math.sin(ph) ** 2));
       dummy.updateMatrix();
       batch.setMatrixAt(i, dummy.matrix);
     }
     batch.instanceMatrix.needsUpdate = true;
-  };
+  }
+  flyAt(0, false, true);
+  return flyAt;
 }

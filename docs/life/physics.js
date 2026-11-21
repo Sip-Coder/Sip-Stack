@@ -27,33 +27,33 @@ function makeCapsules(rig, build, waist) {
     add(side + 'hand', hand, hand, palmEnvelope.r0, palmEnvelope.r1, 0.006, palmEnvelope.y0, palmEnvelope.y1);
   }
   const capsules = data(8 * segments.length),
-    grid = capsuleGrid(segments.length),
-    bounds = grid.boxes;
+    grid = capsuleGrid(segments.length);
   const footOffsets = sides.map(
     (_, i) => segments.findIndex((v) => v.name === (i ? 'right foot' : 'left foot')) * 8,
   );
   const names = segments.map((v) => v.name);
+  grid.legOffsets = segments.flatMap((s, i) => (/pelvis|thigh|shin/.test(s.name) ? [8 * i] : []));
+  let mass = 0;
+  for (let i = 0; i < segments.length; i++) {
+    const s = segments[i];
+    mass += s.mass;
+    capsules[i * 8 + 3] = s.r0;
+    capsules[i * 8 + 7] = s.r1;
+  }
   function update(matrices, com) {
-    let mass = 0;
     com.fill(0);
     for (let i = 0; i < segments.length; i++) {
       const s = segments[i],
-        c = 8 * i,
-        d = 6 * i;
+        c = 8 * i;
       const a = matrices[s.a].elements,
         b = matrices[s.b].elements;
-      capsules[c + 3] = s.r0;
-      capsules[c + 7] = s.r1;
       for (let j = 0; j < 3; j++) {
         const x = a[12 + j] + a[4 + j] * s.ay + a[8 + j] * s.az;
         const y = b[12 + j] + b[4 + j] * s.by + b[8 + j] * s.bz;
         capsules[c + j] = x;
         capsules[c + 4 + j] = y;
-        bounds[d + j] = Math.min(x - s.r0, y - s.r1) - 0.013;
-        bounds[d + 3 + j] = Math.max(x + s.r0, y + s.r1) + 0.013;
         com[j] += s.mass * (x * 0.55 + y * 0.45);
       }
-      mass += s.mass;
     }
     for (let j = 0; j < 3; j++) com[j] /= mass;
   }
@@ -292,8 +292,11 @@ export function createDynamics({ root, rig, style, build = 1, waist = 1, clothCo
     include(s.a);
     include(s.b);
   }
+  const balancePaths = new Set(required);
   for (const a of anchors) include(a);
-  for (const c of springs) for (const i of c.ids) include(i);
+  // Spring chains start in their parent sewing frame; none of their posed
+  // child matrices is read by the solver.
+  for (const c of springs) include(bones.indexOf(bones[c.ids[0]].parent));
   const order = [];
   function visit(node) {
     if (node !== root && !required.has(node)) return;
@@ -310,11 +313,10 @@ export function createDynamics({ root, rig, style, build = 1, waist = 1, clothCo
     localMatrices.set(node, local);
     return { node, local, parent };
   });
-  function transforms() {
-    // Accumulate directly in the character frame. This avoids a world-space
-    // multiply followed by an inverse-root multiply for every collider.
-    for (let i = 0; i < paths.length; i++) {
-      const { node, local, parent } = paths[i];
+  const balanceOnly = paths.filter(({ node }) => balancePaths.has(node));
+  function transforms(activePaths) {
+    for (let i = 0; i < activePaths.length; i++) {
+      const { node, local, parent } = activePaths[i];
       node.updateMatrix();
       local.multiplyMatrices(parent, node.matrix);
     }
@@ -378,7 +380,7 @@ export function createDynamics({ root, rig, style, build = 1, waist = 1, clothCo
     lastTime = t;
     carry += elapsed;
     const pending = Math.floor((carry + 1e-10) / h);
-    steps = Math.min(4, pending);
+    steps = Math.min(2, pending);
     stats.steps = steps;
     stats.maxSubsteps = Math.max(stats.maxSubsteps, steps);
     stats.discarded += pending - steps;
@@ -428,12 +430,16 @@ export function createDynamics({ root, rig, style, build = 1, waist = 1, clothCo
     for (let k = 0; k < 3; k++) lag[k] = display[k];
     bones[hip].position.x += display[3];
     bones[hip].position.z += display[4];
-    bones[hip].rotation.x += display[5] * 0.32;
-    bones[hip].rotation.z += display[6] * 0.32;
-    bones[chest].rotation.x += display[5] * 0.45;
-    bones[chest].rotation.z += display[6] * 0.45 + display[7];
-    bones[head].rotation.x += display[5] * 0.23;
-    bones[head].rotation.z += display[6] * 0.23 - display[7] * 0.6;
+    const hipTurn = bones[hip].rotation,
+      chestTurn = bones[chest].rotation,
+      headTurn = bones[head].rotation;
+    hipTurn.set(hipTurn.x + display[5] * 0.32, hipTurn.y, hipTurn.z + display[6] * 0.32);
+    chestTurn.set(chestTurn.x + display[5] * 0.45, chestTurn.y, chestTurn.z + display[6] * 0.45 + display[7]);
+    headTurn.set(
+      headTurn.x + display[5] * 0.23,
+      headTurn.y,
+      headTurn.z + display[6] * 0.23 - display[7] * 0.6,
+    );
     stepAge = Math.max(0, stepAge - elapsed);
     if (stepAge === 0) {
       stepTarget[0] = -1;
@@ -448,7 +454,7 @@ export function createDynamics({ root, rig, style, build = 1, waist = 1, clothCo
   function finish() {
     if (finished === frame) return;
     finished = frame;
-    transforms();
+    transforms(level === 2 ? balanceOnly : paths);
     colliders.update(matrices, com);
     const fraction = kg / (70 + kg);
     for (let i = 0; i < 3; i++) com[i] += (loadPoint[i] - com[i]) * fraction;
@@ -473,13 +479,14 @@ export function createDynamics({ root, rig, style, build = 1, waist = 1, clothCo
       total++;
       windNow = wind(simTime, last[0], last[2]);
       for (let i = 0; i < panels.length; i++)
-        panels[i].solve(h, mobile ? 2 : level === 1 ? 4 : 8, windNow, acc, capsules, bounds);
+        panels[i].solve(h, mobile ? 1 : level === 1 ? 2 : 3, windNow, acc, capsules, bounds);
       for (let i = 0; i < springs.length; i++) springs[i].solve(h, windNow, acc, capsules, bounds);
     }
     for (let i = 0; i < panels.length; i++) {
       const panel = panels[i];
       if (!steps)
-        for (let k = 0; k < panel.position.length; k += 3) collide(panel.position, k, capsules, bounds, 0.0045);
+        for (let k = 0; k < panel.position.length; k += 3)
+          collide(panel.position, k, capsules, bounds, 0.0045);
       panel.render(blend, capsules, bounds);
     }
     for (let i = 0; i < springs.length; i++) springs[i].render(blend, matrices);
@@ -497,9 +504,9 @@ export function createDynamics({ root, rig, style, build = 1, waist = 1, clothCo
       if (level < 2 && !panels.length && anchors.length) preparePanels();
       for (const p of panels) {
         p.mesh.visible = level < 2;
-        p.setLOD(level);
       }
-      if (level === 2) for (const chain of springs) for (const id of chain.ids) bones[id].quaternion.identity();
+      if (level === 2)
+        for (const chain of springs) for (const id of chain.ids) bones[id].quaternion.identity();
     }
   }
   function restore() {

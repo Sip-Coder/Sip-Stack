@@ -1,5 +1,9 @@
 # People review
 
+[Scale and stair review](scale/README.md) · [Measured scale report](scale-report.md)
+
+## Earlier human-realism review
+
 [Watch the 15-second portrait reel](people-portrait.mp4). The stair walker, porter, cantina host and cooper each appear for 3.75 seconds.
 
 ## Scene comparisons

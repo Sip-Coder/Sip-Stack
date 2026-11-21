@@ -1,8 +1,11 @@
+import { batchStaticMeshes } from '../life/static-batches.js';
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { seeded } from './sip-craft-sky.js';
 
 import { flock } from '../life/birds.js';
+import { coastStairs } from '../life/stairs.js';
+import { m, SCENE_M, scaleSpec } from '../life/scale.js';
 import { peopleNav } from '../life/nav.js';
 import { worker, rankPeople } from '../life/people.js';
 import { cutter, clothPanel, floatHull, tastingGlass } from '../life/harbor.js';
@@ -40,6 +43,20 @@ export function buildHarbor(scene, u, grain) {
     return box(w,h,d,m,x,y,z);
   }
   const cyl = (a, b, h, m, x, y, z, n = 32) => mesh(new THREE.CylinderGeometry(a, b, h, n), m, x, y, z);
+  const metres = (value) => m('tidelight', value);
+  const measuredParts = new Map();
+  function measure(kind, name, reference, ...meshes) {
+    const frame = new THREE.Object3D();
+    frame.position.copy(meshes[0].position);
+    frame.quaternion.copy(meshes[0].quaternion);
+    group.add(frame);
+    scaleSpec(frame, 'tidelight', kind, reference, name);
+    frame.userData.scaleParts = meshes.map((source) => {
+      const part = { mesh: source };
+      measuredParts.set(source, part);
+      return part;
+    });
+  }
   function weathered(material, masonry = false) {
     material.onBeforeCompile = (shader) => {
       shader.uniforms.grain = { value: grain };
@@ -118,19 +135,21 @@ export function buildHarbor(scene, u, grain) {
       );
   };
   // Vine trellises follow the crown of the island.
-  for(let row=0;row<4;row++) nav.box('vine row',-2.63,-3.4+row*.8,2.20,.21,2.68,3.36);
+  for (let row = 0; row < 4; row++) nav.box('vine row', -2.63, -3.4 + row * 0.8, 2.2, 0.21, 2.68, 3.36);
   for (let row = 0; row < 4; row++)
     for (let col = 0; col < 9; col++) {
       const x = -4.55 + col * 0.48,
         z = -3.4 + row * 0.8;
-      box(0.035, 0.68, 0.035, clay, x, 3.02, z);
+      const post = box(0.035, metres(1.36), 0.035, clay, x, 3.02, z);
+      if (col === 0) measure('vine trellis', 'Tidelight vine support ' + (row + 1), [1.36, null, null], post);
       mesh(new THREE.IcosahedronGeometry(0.21, 1), vine, x, 3.2, z).scale.set(1.35, 0.65, 1);
       if (col < 8) box(0.48, 0.025, 0.025, mauve, x + 0.24, 3.12, z);
       if (col % 3 === 0) mesh(new THREE.SphereGeometry(0.045, 6, 4), grape, x, 3.04, z + 0.13);
     }
   // Limestone tasting house with a terracotta roof, glazed arches, and warm windows.
   obstacle='tasting house';
-  box(2.35, 1.55, 1.6, mint, -2.6, 3.48, -0.15);
+  measure('storey','Tasting house storey',[3.10,4.70,3.20],
+    box(metres(4.70),metres(3.10),metres(3.20),mint,-2.6,3.48,-.15));
   obstacle=null;
   const roofShape = new THREE.Shape();
   roofShape.moveTo(-1.35, 0);
@@ -180,32 +199,84 @@ export function buildHarbor(scene, u, grain) {
     for (let i = 0; i < 6; i++) box(0.18, 0.12, 0.16, sand, -2.6 + side * 1.18, 2.85 + i * 0.24, 0.65);
   box(2.6, 0.12, 1.8, sand, -2.6, 4.22, -0.15);
   obstacle='awning stanchion';
-  for (let x of [-3.4, -1.8]) box(0.08, 1.25, 0.08, teal, x, 3.45, 1.65);
+  for (const x of [-3.4,-1.8]) measure('awning stanchion','Tasting terrace awning post',
+    [2.5,null,null],box(.08,metres(2.50),.08,teal,x,3.45,1.65));
   const awning = clothPanel(2.3, 1.15, '#b47750');
   awning.position.set(-2.6, 4.06, 1.18);
   awning.rotation.x = -1.44;
   scene.add(awning);
   // Terrace railings, a table, wine amphorae and cypress silhouettes.
-  obstacle='terrace rail';
-  for (let i = 0; i < 9; i++) box(0.04, 0.4, 0.04, teal, -4.05 + i * 0.37, 3.05, 1.8);
-  box(3.1, 0.035, 0.035, teal, -2.55, 3.25, 1.8);
-  obstacle=null;
-  nav.circle('tasting table',-2.5,1.1,.31,2.84,3.385);
-  cyl(0.31, 0.31, 0.07, sand, -2.5, 3.35, 1.1);
-  cyl(0.035, 0.06, 0.48, teal, -2.5, 3.08, 1.1);
+  const terraceY = 2.88;
+  const railHeight = metres(0.98),
+    railDepth = metres(0.065);
+  obstacle = 'terrace rail';
+  const railing = [];
+  for (let i = 0; i < 9; i++)
+    railing.push(
+      box(
+        0.04,
+        railHeight - railDepth,
+        0.04,
+        teal,
+        -4.05 + i * 0.37,
+        terraceY + (railHeight - railDepth) / 2,
+        1.8,
+      ),
+    );
+  railing.push(box(3.1, railDepth, railDepth, teal, -2.55, terraceY + railHeight - railDepth / 2, 1.8));
+  measure('terrace rail', 'Tasting terrace guardrail', [0.98, null, null], ...railing);
+  obstacle = null;
+  const barHeight = metres(1.0),
+    barRadius = metres(0.325),
+    topDepth = metres(0.05);
+  const top = cyl(barRadius, barRadius, topDepth, sand, -2.5, terraceY + barHeight - topDepth / 2, 1.1);
+  const pedestal = cyl(
+    metres(0.055),
+    metres(0.12),
+    barHeight - topDepth,
+    teal,
+    -2.5,
+    terraceY + (barHeight - topDepth) / 2,
+    1.1,
+  );
+  nav.circle('tasting table', -2.5, 1.1, barRadius, terraceY, terraceY + barHeight);
+  measure('bar table', 'Tidelight standing tasting table', [1.0, 0.65, 0.65], top, pedestal);
+  const amphoraProfile = [
+    [0.067, 0],
+    [0.09, 0.055],
+    [0.173, 0.3],
+    [0.19, 0.52],
+    [0.161, 0.67],
+    [0.077, 0.738],
+    [0.058, 0.839],
+    [0.075, 0.858],
+    [0.075, 0.9],
+    [0.053, 0.9],
+    [0.053, 0.862],
+  ];
   for (let i = 0; i < 3; i++) {
-    const a = mesh(new THREE.SphereGeometry(0.19, 14, 12), clay, -4.4 + i * 0.42, 2.98, 0.45);
-    a.scale.y = 1.35;
-    nav.circle('amphora',a.position.x,a.position.z,.19,2.72,3.30);
-    cyl(0.08, 0.065, 0.12, clay, -4.4 + i * 0.42, 3.24, 0.45);
+    const x = -3.82 + i * metres(0.53),
+      z = 0.99;
+    const vessel = mesh(
+      new THREE.LatheGeometry(
+        amphoraProfile.map(([r, y]) => new THREE.Vector2(metres(r), metres(y))),
+        20,
+      ),
+      clay,
+      x,
+      terraceY,
+      z,
+    );
+    nav.circle('amphora', x, z, metres(0.19), terraceY, terraceY + metres(0.9));
+    measure('amphora', 'Terrace transport amphora ' + (i + 1), [0.9, 0.38, 0.38], vessel);
   }
   for (const [x, z] of [
     [-4.1, -2.7],
     [-0.9, -3.6],
     [-5.2, -1.9],
   ]) {
-    nav.circle('cypress',x,z,.21,2.70,4.85);
-    cyl(0.045, 0.065, 0.7, clay, x, 3.05, z);
+    nav.circle('cypress', x, z, 0.21, 2.7, 4.85);
+    const cypress = [cyl(0.045, 0.065, 0.7, clay, x, 3.05, z)];
     for (let k = 0; k < 32; k++) {
       const a = rng() * 6.28,
         y = k / 32,
@@ -218,7 +289,9 @@ export function buildHarbor(scene, u, grain) {
         z + r * Math.sin(a),
       );
       leaf.scale.set(1 - y * 0.64, 2.1, 1 - y * 0.64);
+      cypress.push(leaf);
     }
+    measure('cypress', 'Tidelight cypress', [4.3, null, null], ...cypress);
   }
   // Fine masonry seams and mint-painted gallery rings on the lighthouse.
   for (let i = 0; i < 11; i++)
@@ -248,21 +321,17 @@ export function buildHarbor(scene, u, grain) {
   towerOpening(1.03, 0.26, 0.58);
   for (let i = 0; i < 3; i++) towerOpening(1.67 + i * 0.65, 0.145, 0.26);
   for (let i = 0; i < 4; i++) {
-    box(0.29, 0.65, 0.025, teal, -3.4 + i * 0.52, 3.55, 0.665);
+    measure('window','Tasting house glazed arch '+(i+1),[1.30,.58,null],
+      box(metres(.58),metres(1.30),.025,teal,-3.4+i*.52,3.55,.665));
     box(0.2, 0.48, 0.03, lamp, -3.4 + i * 0.52, 3.55, 0.685);
   }
   deck('tasting terrace',2.8, 0.12, 1.4, sand, -2.6, 2.82, 1.15);
-  for (let i = 0; i < 16; i++) {
-    const h = 2.64 - i * 0.124,
-      x = -1.38 + i * 0.084,
-      z = 1.23 + i * 0.083;
-    box(1.18, h + 0.15, 0.22, sand, x, h * 0.5 - 0.07, z);
-    deck('stair tread',1.22, 0.055, 0.24, mauve, x, h, z,true);
-  }
+  coastStairs(group,nav,{step:mauve,stone:sand,rail:teal});
   // Detached lighthouse, breakwater and lantern gallery.
 
   nav.circle('lighthouse',4.4,-2.25,.68,.55,3.95);
-  cyl(0.48, 0.68, 3.4, mint, 4.4, 2.25, -2.25);
+  measure('lighthouse','Harbour light tower',[6.80,2.72,2.72],
+    cyl(metres(.96),metres(1.36),metres(6.80),mint,4.4,2.25,-2.25));
   cyl(0.557, 0.591, 0.5, clay, 4.4, 2.62, -2.25);
   cyl(0.76, 0.76, 0.12, teal, 4.4, 3.91, -2.25);
   cyl(0.2, 0.2, 0.51, lamp, 4.4, 4.23, -2.25);
@@ -332,11 +401,11 @@ export function buildHarbor(scene, u, grain) {
     hanger.position.set(x + 0.192, 1.78, 2.8);
     group.add(hanger);
     lanterns.push(hanger);
-    box(0.045, 0.9, 0.045, teal, x, 1.08, 2.8);
+    measure('lamp post','Pier lantern timber',[1.8,null,null],box(.045,metres(1.80),.045,teal,x,1.08,2.8));
     mesh(new THREE.SphereGeometry(0.105, 12, 8), lamp, 0, -0.2, 0, hanger);
   }
   obstacle=null;
-  const rig = cutter('#e6dac3', '#286564', true),
+  const rig = cutter('#e6dac3', '#286564', true,'tidelight'),
     boat = rig.root;
   boat.name = 'Tidelight cutter';
   boat.position.set(3, 0, 4.2);
@@ -395,7 +464,7 @@ export function buildHarbor(scene, u, grain) {
   for (const x of [-0.76, 0.96, 2.68]) {
     for (const z of [2.13, 2.87]) {
       nav.circle('mooring post',x,z,.061,-.16,.80);
-      cyl(0.052, 0.061, 0.96, darkWood, x, 0.32, z, 10);
+      measure('bollard','Tidelight mooring pile',[1.92,null,null],cyl(.052,.061,metres(1.92),darkWood,x,.32,z,10));
       for (let i = 0; i < 3; i++) cyl(0.06, 0.06, 0.018, brass, x, 0.71 + i * 0.023, z, 10);
     }
   }
@@ -406,25 +475,25 @@ export function buildHarbor(scene, u, grain) {
     box(0.31, 0.055, 0.13, sand, x, 3.27, 0.7);
   }
   const flights = flock(scene, {
-    kind: 'gull',
+    sceneKey: 'tidelight', kind: 'gull',
     count: 5,
     center: [-0.5, 5.65, -0.9],
     radii: [4.9, 3.1],
     perch: [-2.6, 5.15, -0.15],
-    scale: 0.64,
     obstacles: [
       [4.4, 5.3, -2.25, 1.15],
       [-2.6, 5.1, -0.15, 1.65],
     ],
   });
-  const fish = trout(scene, 8, 2.05, 3.83, (x, z, t) => hullWave(x, z, t, u.storm.value), 0.72);
-  const insectsAtVines = insects(scene, 'butterfly', 5, [-3.1, 3.48, -2.49], [1.02, 0.22, 0.48], 0.34);
-  const dockhand = worker(scene, 7, 0.51, 'Pier hand');
+  const fish = trout(scene, 8, 2.05, 3.83, (x, z, t) => hullWave(x, z, t, u.storm.value), 0.72, 'tidelight', 0.35);
+  const insectsAtVines = insects(scene, 'butterfly', 5, [-3.1, 3.48, -2.49], [1.02, 0.22, 0.48], 'tidelight');
+  for (const hanger of lanterns) batchStaticMeshes(hanger);
+  const dockhand = worker(scene,7,SCENE_M.tidelight,'Pier hand');
   nav.place(dockhand,1.64,2.54,.71);
-  const guest = worker(scene, 6, 0.49, 'Terrace taster');
-  nav.place(guest,-1.89,1.16,-1.52,.06);
+  const guest = worker(scene,6,SCENE_M.tidelight,'Terrace taster');
+  nav.place(guest,-2.10,1.15,-1.55,.04);
   const people=[dockhand,guest];
-  const taste = tastingGlass(guest);
+  const taste = tastingGlass(guest, 'tidelight');
   nav.agents.find(a=>a.actor===guest).props=[taste.prop];
   // Batch static architecture by material. Keep moving elements and the light
   // shaft separate so their transforms remain independent.
@@ -433,18 +502,29 @@ export function buildHarbor(scene, u, grain) {
   for (const child of [...group.children]) {
     if (!child.isMesh || child.isSprite || child.material.transparent) continue;
     const key = child.material;
-    if (!batches.has(key)) batches.set(key, []);
+    if (!batches.has(key)) batches.set(key, { parts: [], measurements: [], count: 0 });
     const g = child.geometry.index ? child.geometry.toNonIndexed() : child.geometry.clone();
     g.applyMatrix4(child.matrixWorld);
-    batches.get(key).push(g);
+    const batch = batches.get(key),
+      part = measuredParts.get(child);
+    // Measurements cover the actual merged draw buffer, including the
+    // individual vertex ranges of mixed-material tables and railings.
+    if (part) {
+      part.start = batch.count;
+      part.count = g.attributes.position.count;
+      batch.measurements.push(part);
+    }
+    batch.count += g.attributes.position.count;
+    batch.parts.push(g);
     group.remove(child);
     child.geometry.dispose();
   }
-  for (const [material, parts] of batches) {
+  for (const [material, { parts, measurements }] of batches) {
     const merged = new THREE.Mesh(mergeGeometries(parts), material);
     merged.castShadow = true;
     merged.receiveShadow = true;
     group.add(merged);
+    for (const ref of measurements) ref.mesh = merged;
     parts.forEach((p) => p.dispose());
   }
   return (t, w, camera, tier) => {

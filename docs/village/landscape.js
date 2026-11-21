@@ -1,6 +1,7 @@
 import * as T from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { surface } from './surfaces.js';
+import { m } from '../life/scale.js';
 
 export const stone = new RoundedBoxGeometry(1, 1, 1, 1, 0.12);
 // Folded leaf blades keep their venation and serrated silhouette at close range.
@@ -163,49 +164,52 @@ export function masonry(k, x0, x1, z, low, high, random) {
 }
 
 export function cypress(k, x, y, z, s, r) {
-  k.nav?.circle('cypress',x,z,.25*s,y,y+3*s);
-  k.cyl(x, y + s * 0.72, z, s * 0.09, s * 1.42, '#584c37');
-  for (let n = 0; n < 15; n++) {
-    const t = n / 15,
-      thick = s * (0.14 + 0.23 * Math.sin(Math.PI * t)) * (1 - t * 0.55);
-    k.push(
-      'foliage',
-      [x + (r() - 0.5) * thick * 0.7, y + s * (0.55 + 2.55 * t), z + (r() - 0.5) * thick * 0.7],
-      [thick, thick * 2.2, thick],
-      n % 3 ? '#435535' : '#576344',
-      [0, r() * 6, 0],
-    );
-  }
-}
-export function olive(k, x, y, z, s, r) {
-  k.nav?.circle('olive tree',x,z,.17*s,y,y+2.2*s);
-  k.cyl(x, y + 0.53 * s, z, s * 0.14, s * 1.12, '#695c47', [0, 0, 0.13]);
-  for (let i = 0; i < 6; i++) {
-    const a = i * 2.4,
-      dx = Math.cos(a),
-      dz = Math.sin(a);
-    k.cyl(x + dx * 0.25 * s, y + 1.08 * s, z + dz * 0.25 * s, 0.067 * s, 0.96 * s, '#746852', [
-      dz * 0.64,
-      0,
-      -dx * 0.64,
-    ]);
-    for (let j = 0; j < 7; j++) {
-      const rad = (0.28 + r() * 0.3) * s;
+  k.nav?.circle('cypress', x, z, 0.25 * s, y, y + 3 * s);
+  k.measure('cypress', [5.13 * s, null, null], 'Village cypress ' + x.toFixed(2) + ' ' + z.toFixed(2), () => {
+    k.cyl(x, y + s * 0.72, z, s * 0.09, s * 1.42, '#584c37');
+    for (let n = 0; n < 15; n++) {
+      const t = n / 15,
+        thick = s * (0.14 + 0.23 * Math.sin(Math.PI * t)) * (1 - t * 0.55);
       k.push(
         'foliage',
-        [
-          x + (dx * 0.63 + (r() - 0.5) * 0.57) * s,
-          y + (1.5 + r() * 0.35) * s,
-          z + (dz * 0.6 + (r() - 0.5) * 0.55) * s,
-        ],
-        [rad, rad * 0.73, rad],
-        j % 3 ? '#788167' : '#929d79',
-        [r(), r() * 5, r()],
+        [x + (r() - 0.5) * thick * 0.7, y + s * (0.55 + 2.55 * t), z + (r() - 0.5) * thick * 0.7],
+        [thick, thick * 2.2, thick],
+        n % 3 ? '#435535' : '#576344',
+        [0, r() * 6, 0],
       );
     }
-  }
+  });
 }
-
+export function olive(k, x, y, z, s, r) {
+  k.nav?.circle('olive tree', x, z, 0.17 * s, y, y + 2.2 * s);
+  k.measure('olive', [3.68 * s, null, null], 'Village olive ' + x.toFixed(2) + ' ' + z.toFixed(2), () => {
+    k.cyl(x, y + 0.53 * s, z, s * 0.14, s * 1.12, '#695c47', [0, 0, 0.13]);
+    for (let i = 0; i < 6; i++) {
+      const a = i * 2.4,
+        dx = Math.cos(a),
+        dz = Math.sin(a);
+      k.cyl(x + dx * 0.25 * s, y + 1.08 * s, z + dz * 0.25 * s, 0.067 * s, 0.96 * s, '#746852', [
+        dz * 0.64,
+        0,
+        -dx * 0.64,
+      ]);
+      for (let j = 0; j < 7; j++) {
+        const rad = (0.28 + r() * 0.3) * s;
+        k.push(
+          'foliage',
+          [
+            x + (dx * 0.63 + (r() - 0.5) * 0.57) * s,
+            y + (1.5 + r() * 0.35) * s,
+            z + (dz * 0.6 + (r() - 0.5) * 0.55) * s,
+          ],
+          [rad, rad * 0.73, rad],
+          j % 3 ? '#788167' : '#929d79',
+          [r(), r() * 5, r()],
+        );
+      }
+    }
+  });
+}
 function civicSquare(k, r) {
   k.nav?.surface('piazza',-11,2,-17,-10,7.075);
   k.box(-11, 2, -0.95, 7.02, -17, -10, '#857d67');
@@ -221,21 +225,31 @@ function civicSquare(k, r) {
     z = -13.7,
     b = 7.06;
   k.nav?.box('belfry',x,z,1.14,1.14,b,15.72);
-  k.box(x - 1, x + 1, b, 13.4, z - 1, z + 1, '#d5b08a', 'plaster');
-  for (const h of [7.4, 11.75, 13.4, 15.55])
-    k.box(x - 1.14, x + 1.14, h, h + 0.17, z - 1.14, z + 1.14, '#ead7b1');
-  for (const dx of [-0.82, 0.82])
-    for (const dz of [-0.82, 0.82]) k.push('stone', [x + dx, 14.55, z + dz], [0.41, 1.92, 0.41], '#d7bc91');
-  for (const side of [-1, 1])
-    for (let j = 0; j < 11; j++) {
-      const a = ((j + 0.5) * Math.PI) / 11,
-        dx = Math.cos(a) * 0.79,
-        yy = 14.7 + Math.sin(a) * 0.65;
-      k.push('stone', [x + dx, yy, z + side * 0.82], [0.24, 0.31, 0.42], '#e4cba5', [0, 0, a - Math.PI / 2]);
-      k.push('stone', [x + side * 0.82, yy, z + dx], [0.42, 0.31, 0.24], '#e4cba5', [Math.PI / 2 - a, 0, 0]);
-    }
-  k.cyl(x, 14.58, z, 0.36, 0.49, '#615039');
-  k.cyl(x, 14.34, z, 0.44, 0.1, '#837048');
+  k.measure('belfry', [14.4, null, null], 'Piazza belfry masonry to upper cornice', () => {
+    k.box(x - 1, x + 1, b, 13.4, z - 1, z + 1, '#d5b08a', 'plaster');
+    for (const h of [7.4, 11.75, 13.4, 15.55])
+      k.box(x - 1.14, x + 1.14, h, h + 0.17, z - 1.14, z + 1.14, '#ead7b1');
+    for (const dx of [-0.82, 0.82])
+      for (const dz of [-0.82, 0.82]) k.push('stone', [x + dx, 14.55, z + dz], [0.41, 1.92, 0.41], '#d7bc91');
+    for (const side of [-1, 1])
+      for (let j = 0; j < 11; j++) {
+        const a = ((j + 0.5) * Math.PI) / 11,
+          dx = Math.cos(a) * 0.79,
+          yy = 14.7 + Math.sin(a) * 0.65;
+        k.push('stone', [x + dx, yy, z + side * 0.82], [0.24, 0.31, 0.42], '#e4cba5', [
+          0,
+          0,
+          a - Math.PI / 2,
+        ]);
+        k.push('stone', [x + side * 0.82, yy, z + dx], [0.42, 0.31, 0.24], '#e4cba5', [
+          Math.PI / 2 - a,
+          0,
+          0,
+        ]);
+      }
+    k.cyl(x, 14.58, z, 0.36, 0.49, '#615039');
+    k.cyl(x, 14.34, z, 0.44, 0.1, '#837048');
+  });
   k.push('spire', [x, 16.52, z], [1.54, 1.83, 1.54], '#925e42', [0, Math.PI / 4, 0]);
   k.cyl(x, 17.64, z, 0.034, 0.56, '#594632');
   k.ball(x, 17.41, z, 0.12, '#ae8d53');
@@ -305,7 +319,7 @@ function civicSquare(k, r) {
   for (let i = 0; i < 5; i++) {
     const xx = -8.86 + i * 1.62;
     k.nav?.box('loggia post',xx,az,.12,.12,7.025,8.475);
-    k.push('stone', [xx, 7.75, az], [0.22, 1.45, 0.24], '#c5af8e');
+    k.measure('loggia post',[2.4,null,null],'Piazza loggia post '+(i+1),()=>k.push('stone',[xx,7.75,az],[.22,m('village',2.4),.24],'#c5af8e'));
     k.push('stone', [xx, 8.48, az], [0.31, 0.14, 0.33], '#e4cfaa');
     if (i === 4) break;
     for (let j = 0; j < 11; j++) {
@@ -325,11 +339,22 @@ function civicSquare(k, r) {
   cypress(k, 0.86, 7, -15.8, 1.28, r);
   cypress(k, -10.45, 7, -16.1, 1.48, r);
   for (const x of [-4, -0.5]) {
-    k.nav?.box('piazza bench',x,-12.995,.64,.165,7.075,7.53);
-    k.box(x - 0.64, x + 0.64, 7.44, 7.53, -13.16, -12.83, '#815b39');
-    for (const dx of [-0.49, 0.49])
-      k.box(x + dx - 0.09, x + dx + 0.09, 7.08, 7.44, -13.13, -12.88, '#9d937e');
+    const y = 7.075,
+      z = -12.995,
+      h = m('village', 0.45),
+      depth = m('village', 0.42),
+      halfWidth = m('village', 1.06),
+      slab = m('village', 0.065);
+    k.nav?.box('piazza bench', x, z, halfWidth, depth / 2, y, y + h);
+    k.measure('bench', [0.45, 2.12, 0.42], 'Piazza bench ' + x, () => {
+      k.box(x - halfWidth, x + halfWidth, y + h - slab, y + h, z - depth / 2, z + depth / 2, '#815b39');
+      for (const side of [-1, 1]) {
+        const cx = x + side * halfWidth * 0.77;
+        k.box(cx - 0.08, cx + 0.08, y, y + h - slab, z - depth * 0.4, z + depth * 0.4, '#9d937e');
+      }
+    });
   }
+
 }
 
 export function landscape(scene, k, slab, r) {
@@ -344,11 +369,13 @@ export function landscape(scene, k, slab, r) {
     [2, 6, -7.52, 5, 7, k],
     [6, 10, -7.52, 5, 7, slab],
     [3, 9.3, 7, 0.3, 1, k],
-  ])
-    masonry(kit, a, b, z, lo, hi, r);
+  ]) {
+    if(hi-lo>1.8)kit.measure('terrace rise',[3.33,null,null],'Vine terrace at '+a+', '+z,()=>masonry(kit,a,b,z,lo,hi,r));
+    else masonry(kit,a,b,z,lo,hi,r);
+  }
   for (const [x, y, z, s] of [
     [10, 5, -7, 0.66],
-    [1.8, 5, -7.1, 0.77],
+    [2.36, 5, -7.1, 0.77],
     [-9.9, 3, -4, 1.03],
     [-10.4, 7, -11.8, 1.03],
   ])

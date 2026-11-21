@@ -227,7 +227,7 @@ export function mountCraft(root) {
     const mobile = tier === 0;
     renderer.shadowMap.enabled = !mobile;
     sun.castShadow = !mobile;
-    const size = tier === 2 ? 2048 : 1024;
+    const size = tier === 2 ? 1024 : 512;
     if (sun.shadow.mapSize.x !== size) {
       sun.shadow.map?.dispose();
       sun.shadow.map = null;
@@ -247,8 +247,8 @@ export function mountCraft(root) {
     height = h;
     const ratio = Math.min(
       devicePixelRatio,
-      [1.25, 1.4, 1.7][tier],
-      Math.sqrt([440000, 850000, 1720000][tier] / (w * h)),
+      [1, 1.1, 1.25][tier],
+      Math.sqrt([440000, 720000, 1200000][tier] / (w * h)),
     );
     renderer.setPixelRatio(ratio);
     renderer.setSize(w, h, false);

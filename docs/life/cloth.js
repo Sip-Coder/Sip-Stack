@@ -34,6 +34,11 @@ export function capsuleGrid(n) {
       shape[j + 3] = sq > 1e-10 ? 1 / sq : 0;
       shape[j + 4] = dr / Math.sqrt(Math.max(1e-10, sq * (sq - dr * dr)));
       for (let axis = 0; axis < 3; axis++) {
+        // Only near/mid cloth and accessory chains need a broad phase. The
+        // distant actors still supply their complete posed capsules and COM.
+        boxes[d + axis] = Math.min(caps[c + axis] - caps[c + 3], caps[c + 4 + axis] - caps[c + 7]) - 0.013;
+        boxes[d + axis + 3] =
+          Math.max(caps[c + axis] + caps[c + 3], caps[c + 4 + axis] + caps[c + 7]) + 0.013;
         const base = axis * binCount,
           lo = base + slab(boxes[d + axis]),
           hi = base + slab(boxes[d + axis + 3]);
@@ -110,84 +115,6 @@ export function collide(p, k, caps, grid, pad) {
   p[k + 1] = Math.max(0.004, p[k + 1]);
 }
 
-// Orient three garment bones along each radial column (one chain on each
-// scarf end). The coarse grid drives their origins and tangents. Render-only
-// pleats use these transported frames between the interpolated particles.
-function garmentRig(mesh, kind, cols, rows, wrapped) {
-  const strips = kind === 'scarf' ? 1 : cols,
-    chains = [],
-    normal = new Float32Array(strips * 9);
-  const point = new T.Vector3(),
-    parentPoint = new T.Vector3(),
-    x = new T.Vector3(),
-    y = new T.Vector3(),
-    z = new T.Vector3();
-  const rot = new T.Quaternion(),
-    parentRot = new T.Quaternion(),
-    inverse = new T.Quaternion(),
-    basis = new T.Matrix4();
-  for (let i = 0; i < strips; i++) {
-    const chain = [];
-    let parent = mesh;
-    for (let j = 0; j < 3; j++) {
-      const bone = new T.Bone();
-      bone.name = kind + ' fold ' + (i + 1) + ' / ' + (j + 1);
-      parent.add(bone);
-      chain.push(bone);
-      parent = bone;
-    }
-    chains.push(chain);
-  }
-  let stride = 1;
-  function setLOD(level) {
-    stride = level === 0 ? 1 : 2;
-    for (let i = 0; i < strips; i++) chains[i][0].visible = level < 2 && i % stride === 0;
-  }
-  function update(pos) {
-    for (let i = 0; i < strips; i += stride) {
-      const col = strips === 1 ? 1 : i;
-      const left = wrapped ? (col + cols - 1) % cols : Math.max(0, col - 1),
-        right = wrapped ? (col + 1) % cols : Math.min(cols - 1, col + 1);
-      for (let j = 0; j < 3; j++) {
-        const r = Math.round(j * (rows - 1) * 0.5),
-          index = 3 * (r * cols + col),
-          rowTop = Math.max(0, r - 1),
-          rowBottom = Math.min(rows - 1, r + 1);
-        const l = 3 * (r * cols + left),
-          h = 3 * (r * cols + right),
-          t = 3 * (rowTop * cols + col),
-          b = 3 * (rowBottom * cols + col);
-        x.set(pos[h] - pos[l], pos[h + 1] - pos[l + 1], pos[h + 2] - pos[l + 2]);
-        y.set(pos[t] - pos[b], pos[t + 1] - pos[b + 1], pos[t + 2] - pos[b + 2]).normalize();
-        z.crossVectors(x, y).normalize();
-        x.crossVectors(y, z).normalize();
-        rot.setFromRotationMatrix(basis.makeBasis(x, y, z));
-        point.fromArray(pos, index);
-        const bone = chains[i][j];
-        if (j) {
-          inverse.copy(parentRot).invert();
-          bone.position.copy(point).sub(parentPoint).applyQuaternion(inverse);
-          bone.quaternion.copy(inverse).multiply(rot);
-          parentRot.multiply(bone.quaternion);
-        } else {
-          bone.position.copy(point);
-          bone.quaternion.copy(rot);
-          parentRot.copy(bone.quaternion);
-        }
-        parentPoint.copy(point);
-        z.set(0, 0, 1)
-          .applyQuaternion(parentRot)
-          .toArray(normal, 9 * i + 3 * j);
-      }
-    }
-  }
-  function joint(col, row) {
-    const i = strips === 1 ? 0 : Math.floor(col / stride) * stride;
-    return 9 * i + 3 * Math.round((2 * row) / (rows - 1));
-  }
-  return { chains, normal, setLOD, update, joint };
-}
-
 let warmGeometry;
 export function warmGarmentMesh() {
   if (!warmGeometry) {
@@ -201,12 +128,104 @@ export function warmGarmentMesh() {
   return mesh;
 }
 
+// The four corners of a cloth cell must clear the same side of a leg.
+// Independent vertex projections alone let a triangle cut through a raised
+// knee even when each of its vertices is outside. Its supporting plane is
+// needed only through the vertical interval spanned by that cell.
+function legDrape(cols, rows, wrapped) {
+  const cells = wrapped ? cols : cols - 1;
+  const step = (wrapped ? TAU : 2.7) / cells;
+  const outward = new Float64Array(2 * cols),
+    normals = new Float64Array(2 * cells);
+  const extension = new Float64Array(cols * rows);
+  const rest = new Float64Array(2 * cols);
+  for (let c = 0; c < cols; c++) {
+    const angle = c * step - (wrapped ? 0 : 1.35);
+    rest[2 * c] = Math.sin(angle);
+    rest[2 * c + 1] = Math.cos(angle);
+  }
+  const halfCos = Math.cos(step / 2),
+    halfSin = Math.sin(step / 2);
+  function orient(matrix) {
+    const e = matrix.elements;
+    const length = Math.hypot(e[8], e[10]);
+    const sin = length > 1e-8 ? e[8] / length : 0;
+    const cos = length > 1e-8 ? e[10] / length : 1;
+    for (let c = 0; c < cols; c++) {
+      const x = cos * rest[2 * c] + sin * rest[2 * c + 1],
+        z = cos * rest[2 * c + 1] - sin * rest[2 * c];
+      outward[2 * c] = x;
+      outward[2 * c + 1] = z;
+      if (c < cells) {
+        normals[2 * c] = halfCos * x + halfSin * z;
+        normals[2 * c + 1] = halfCos * z - halfSin * x;
+      }
+    }
+  }
+  function fit(points, capsules, legOffsets) {
+    extension.fill(0);
+    for (let r = 0; r + 1 < rows; r++)
+      for (let c = 0; c < cells; c++) {
+        const a = r * cols + c,
+          b = r * cols + ((c + 1) % cols);
+        const lo = Math.min(
+          points[3 * a + 1],
+          points[3 * b + 1],
+          points[3 * (a + cols) + 1],
+          points[3 * (b + cols) + 1],
+        );
+        const hi = Math.max(
+          points[3 * a + 1],
+          points[3 * b + 1],
+          points[3 * (a + cols) + 1],
+          points[3 * (b + cols) + 1],
+        );
+        const nx = normals[2 * c],
+          nz = normals[2 * c + 1];
+        let limit = -Infinity;
+        for (let j = 0; j < legOffsets.length; j++) {
+          const k = legOffsets[j],
+            y = capsules[k + 1],
+            endY = capsules[k + 5],
+            dy = endY - y;
+          const r0 = capsules[k + 3],
+            r1 = capsules[k + 7],
+            radius = Math.max(r0, r1);
+          if (Math.max(y, endY) + radius < lo || Math.min(y, endY) - radius > hi) continue;
+          let from = 0,
+            to = 1;
+          if (Math.abs(dy) > 1e-8) {
+            const low = (lo - radius - y) / dy,
+              high = (hi + radius - y) / dy;
+            from = Math.max(0, Math.min(low, high));
+            to = Math.min(1, Math.max(low, high));
+          }
+          const start = nx * capsules[k] + nz * capsules[k + 2] + r0;
+          const slope =
+            nx * (capsules[k + 4] - capsules[k]) + nz * (capsules[k + 6] - capsules[k + 2]) + r1 - r0;
+          limit = Math.max(limit, start + slope * (slope > 0 ? to : from));
+        }
+        for (let j = 0; j < 4; j++) {
+          const i = (j & 1 ? b : a) + (j >> 1) * cols;
+          const extra = (limit + 0.0005 - nx * points[3 * i] - nz * points[3 * i + 2]) / halfCos;
+          extension[i] = Math.max(extension[i], extra);
+        }
+      }
+    for (let i = 0; i < extension.length; i++) {
+      const c = 2 * (i % cols);
+      points[3 * i] += extension[i] * outward[c];
+      points[3 * i + 2] += extension[i] * outward[c + 1];
+    }
+  }
+  return { orient, fit };
+}
+
 export function createPanel(root, kind, side, build, waist, color, anchorY) {
   const skirt = kind === 'skirt',
     apron = kind === 'apron',
     wrapped = skirt;
-  const cols = skirt || apron ? 8 : 3,
-    rows = skirt || apron ? 6 : 5;
+  const cols = skirt ? 8 : apron ? 6 : 3,
+    rows = skirt || apron ? 4 : 3;
   const n = rows * cols,
     position = new Float32Array(3 * n),
     previous = new Float32Array(3 * n);
@@ -249,11 +268,12 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
       if (next) edge(i, particle(r, c + 1), 0.000006);
       if (r + 1 < rows) edge(i, particle(r + 1, c), 0.000004);
       if (next && r + 1 < rows) {
-        edge(i, particle(r + 1, c + 1), 0.000035);
-        edge(particle(r, c + 1), particle(r + 1, c), 0.000035);
+        // Alternate the bias so the cloth resists shear on both diagonals
+        // without solving two redundant diagonals in every quad.
+        if ((r + c) % 2) edge(i, particle(r + 1, c + 1), 0.000035);
+        else edge(particle(r, c + 1), particle(r + 1, c), 0.000035);
       }
       if (r + 2 < rows) edge(i, particle(r + 2, c), 0.0009);
-      if (wrapped || c + 2 < cols) edge(i, particle(r, c + 2), 0.0011);
       if (r > 2) edge(particle(0, c), i, -0.000007, 1.035); // unilateral long-range attachment
     }
   const links = new Uint16Array(pairs),
@@ -275,8 +295,8 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
   }
   const desktop = prepareRate(60),
     mobile = prepareRate(30);
-  const rw = 2 * (wrapped ? cols : cols - 1) + 1,
-    rh = 2 * (rows - 1) + 1,
+  const rw = wrapped ? cols + 1 : cols,
+    rh = rows,
     nv = rw * rh;
   const renderPosition = new Float32Array(nv * 3),
     normals = new Float32Array(nv * 3);
@@ -304,33 +324,29 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
   mesh.frustumCulled = false;
   mesh.visible = false;
   root.add(mesh);
-  const driver = garmentRig(mesh, kind, cols, rows, wrapped);
-  const surface = new Float32Array(position.length),
-    fold = new Float32Array(nv);
-  const foldJoint = new Uint8Array(nv),
-    neighbours = new Uint16Array(4 * nv);
-  function setLOD(level) {
-    driver.setLOD(level);
-    for (let r = 0; r < rh; r++)
-      for (let c = 0; c < rw; c++) {
-        const i = r * rw + c;
-        foldJoint[i] = driver.joint(Math.min(cols - 1, c >> 1), Math.round(r * 0.5));
-      }
-  }
-  for (let r = 0; r < rh; r++)
+  // The rendered grid shares the simulation knots. The wrap column is
+  // duplicated only for UVs. Keep real deformed normals and collisions on
+  // this surface without constructing another three-bone chain per column.
+  const source = new Uint16Array(nv);
+  const neighbours = new Uint16Array(4 * nv);
+  for (let r = 0; r < rh; r++) {
     for (let c = 0; c < rw; c++) {
       const i = r * rw + c;
-      fold[i] = (c & 1) * 0.0032 * Math.cos(c * 2.08 + r * 0.14) * (r / (rh - 1));
-      neighbours[4 * i] = 3 * (r * rw + (c === 0 ? (wrapped ? rw - 2 : 0) : c - 1));
+      source[i] = 3 * particle(r, c);
+      neighbours[4 * i] = 3 * (r * rw + (c === 0 ? (wrapped ? cols - 1 : 0) : c - 1));
       neighbours[4 * i + 1] = 3 * (r * rw + (c === rw - 1 ? (wrapped ? 1 : c) : c + 1));
       neighbours[4 * i + 2] = 3 * (Math.max(0, r - 1) * rw + c);
       neighbours[4 * i + 3] = 3 * (Math.min(rh - 1, r + 1) * rw + c);
     }
+  }
+  const drape = skirt || apron ? legDrape(cols, rows, wrapped) : null;
+  const surface = wrapped ? new Float32Array(position.length) : renderPosition;
   let anchored = false,
     lastX = 0,
     lastY = 0,
     lastZ = 0;
   function anchor(m) {
+    drape?.orient(m);
     const e = m.elements;
     // Carry the sewing frame through changes in solved hip height (a stair
     // landing can lower the pelvis dramatically in a single animation sample).
@@ -407,15 +423,13 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
         position[b + 1] -= wb * scale * y;
         position[b + 2] -= wb * scale * z;
       }
-      for (let k = 0; k < position.length; k += 3) {
-        // Restrict upward folding against the grain at the sewn edge. Pure
-        // distance constraints also admit the reflected (inside-out) garment.
-        const row = Math.floor(k / (cols * 3));
-        position[k + 1] = Math.min(position[k + 1], target[k + 1] + (0.078 * row) / (rows - 1));
-        collide(position, k, caps, bounds, 0.0045);
-      }
     }
     for (let k = 0; k < position.length; k += 3) {
+      // Project the final constrained location. Rechecking intermediate
+      // iterations would push the same particle away from the same capsule.
+      const row = Math.floor(k / (cols * 3));
+      position[k + 1] = Math.min(position[k + 1], target[k + 1] + (0.078 * row) / (rows - 1));
+      collide(position, k, caps, bounds, 0.0045);
       let x = (position[k] - previous[k]) / dt,
         y = (position[k + 1] - previous[k + 1]) / dt,
         z = (position[k + 2] - previous[k + 2]) / dt;
@@ -428,39 +442,12 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
     }
   }
   function render(f, caps, bounds) {
-    for (let j = 0; j < surface.length; j++) surface[j] = previous[j] + (position[j] - previous[j]) * f;
-    driver.update(surface);
-    // Separable bilinear subdivision of the same proxy. Each proxy vertex
-    // and horizontal midpoint is interpolated just once, including the seam.
-    for (let r = 0; r < rows; r++) {
-      const row = r * rw * 6;
-      for (let c = 0; c < rw; c += 2) {
-        const a = 3 * (r * cols + ((c >> 1) % cols)),
-          k = row + 3 * c;
-        renderPosition[k] = surface[a];
-        renderPosition[k + 1] = surface[a + 1];
-        renderPosition[k + 2] = surface[a + 2];
-      }
-      for (let c = 1; c < rw; c += 2) {
-        const k = row + 3 * c;
-        for (let j = k; j < k + 3; j++)
-          renderPosition[j] = 0.5 * (renderPosition[j - 3] + renderPosition[j + 3]);
-      }
-    }
-    const span = 3 * rw;
-    for (let r = 1; r < rh; r += 2) {
-      const end = (r + 1) * span;
-      for (let j = r * span; j < end; j++)
-        renderPosition[j] = 0.5 * (renderPosition[j - span] + renderPosition[j + span]);
-    }
-    for (let i = 0; i < nv; i++) {
-      const k = 3 * i,
-        j = foldJoint[i],
-        amount = fold[i];
-      renderPosition[k] += amount * driver.normal[j];
-      renderPosition[k + 1] += amount * driver.normal[j + 1];
-      renderPosition[k + 2] += amount * driver.normal[j + 2];
-      collide(renderPosition, k, caps, bounds, 0.003);
+    for (let i = 0; i < surface.length; i++) surface[i] = previous[i] + (position[i] - previous[i]) * f;
+    for (let k = 0; k < surface.length; k += 3) collide(surface, k, caps, bounds, 0.003);
+    drape?.fit(surface, caps, bounds.legOffsets);
+    if (wrapped) {
+      for (let i = 0; i < nv; i++)
+        for (let k = 0; k < 3; k++) renderPosition[3 * i + k] = surface[source[i] + k];
     }
     for (let i = 0; i < nv; i++) {
       const k = i * 3,
@@ -506,7 +493,5 @@ export function createPanel(root, kind, side, build, waist, color, anchorY) {
     get peakSpeed() {
       return peakSpeed;
     },
-    chains: driver.chains,
-    setLOD,
   };
 }

@@ -1,5 +1,6 @@
 import * as T from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { m, SCENE_M, scaleSpec } from './scale.js';
 import { Sections, finish, mesh, tube, wind, tau } from './forms.js';
 
 const material = (color, roughness = 0.78) =>
@@ -36,14 +37,18 @@ let cargoPattern;
 export function crate() {
   if (cargoPattern) return cargoPattern.clone(true);
   const g = new T.Group();
-  for (const s of [-1, 1]) {
-    for (let j = 0; j < 3; j++) {
-      plank(g, 0.41, 0.064, 0.021, 0, 0.035 + j * 0.076, s * 0.146);
-      plank(g, 0.021, 0.064, 0.272, s * 0.195, 0.035 + j * 0.076, 0);
+  // A 12-bottle wooden case, in metres, with its bottom on the load surface.
+  const width = .50, height = .30, depth = .33, board = .021;
+  for (const side of [-1, 1]) {
+    for (let row = 0; row < 3; row++) {
+      const y = .055 + row * .095;
+      plank(g, width, .080, board, 0, y, side * (depth - board) / 2);
+      plank(g, board, .080, depth - 2 * board, side * (width - board) / 2, y, 0);
     }
-    for (const q of [-1, 1]) plank(g, 0.028, 0.247, 0.029, s * 0.179, 0.123, q * 0.126, iron);
+    for (const end of [-1, 1])
+      plank(g, .028, height, .029, side * .214, height / 2, end * .129, iron);
   }
-  plank(g, 0.405, 0.024, 0.29, 0, 0.003, 0);
+  plank(g, width - board, .024, depth - board, 0, .012, 0);
   batchParts(g);
   cargoPattern = g;
   return g.clone(true);
@@ -104,21 +109,20 @@ export function basket(actor) {
     0.014,
     rope,
   );
+  scaleSpec(g, 'village', 'basket', [.365, .335, .272], 'Picking basket');
   return grip;
 }
-export function tastingGlass(actor) {
+export function tastingGlass(actor, scene = 'village') {
   const goal=new T.Object3D(),g=new T.Group();
-  actor.g.add(goal);goal.add(g);g.position.y=-.047;
+  actor.g.add(goal);goal.add(g);
+  const toPerson = SCENE_M[scene] / actor.g.scale.y;
+  g.scale.setScalar(toPerson);
+  g.position.y=-.047 * toPerson;
   const profile = [
-    [0.044, 0],
-    [0.044, 0.006],
-    [0.008, 0.014],
-    [0.006, 0.079],
-    [0.024, 0.085],
-    [0.049, 0.112],
-    [0.053, 0.143],
-    [0.042, 0.187],
+    [.032, 0], [.032, .005], [.004, .013], [.0035, .079],
+    [.018, .085], [.034, .112], [.038, .143], [.029, .187],
   ];
+  scaleSpec(g, scene, 'tasting glass', [.187, .076, .076], 'Held tasting glass');
   const glass = new T.MeshPhysicalMaterial({
     color: '#e0ebe3',
     roughness: 0.16,
@@ -139,8 +143,8 @@ export function tastingGlass(actor) {
   wine.loft(
     [
       [0.086, 0.016, 0.016],
-      [0.11, 0.046, 0.046],
-      [0.135, 0.05, 0.05],
+      [0.11, 0.031, 0.031],
+      [0.135, 0.036, 0.036],
     ],
     '#78263e',
     24,
@@ -151,12 +155,12 @@ export function tastingGlass(actor) {
     const sip=.5-.5*Math.cos(t*1.23),lag=actor.dynamics.lag;
     head.localToWorld(lip.set(.012,.047,.103));actor.g.worldToLocal(lip);
     goal.position.set(.205,1.11,.28);
-    lip.y-=.119;lip.z+=.102;
+    lip.y-=.119 * toPerson;lip.z+=.102 * toPerson;
     goal.position.lerp(lip,sip).x+=lag[0];
     goal.position.y+=lag[1];goal.position.z+=lag[2];
     goal.rotation.x=-.75*sip;actor.grasp(wrists);
   };
-  taste.prop={object:g,radius:.053,center:new T.Vector3(0,.12,0),halfLength:.024};
+  taste.prop={object:g,radius:.038,center:new T.Vector3(0,.12,0),halfLength:.024};
   return taste;
 }
 function cutterPattern(color, stripe, sail) {
@@ -312,7 +316,7 @@ function cutterPattern(color, stripe, sail) {
 }
 
 const cutterPatterns = new Map();
-export function cutter(color, stripe, sail = false) {
+export function cutter(color, stripe, sail = false, scene = 'village') {
   // A boat gets its own complete transform hierarchy, including two oarlocks
   // and two grip sockets. The mould, fixed fittings and oar geometry are shared.
   if (!cutterPatterns.has(sail)) cutterPatterns.set(sail,cutterPattern(color,stripe,sail));
@@ -331,8 +335,19 @@ export function cutter(color, stripe, sail = false) {
     pattern.shells.set(paintKey,painted);
   }
   shell.geometry = pattern.shells.get(paintKey);
+  // The common hull mould is 2.2 pattern units between the bow and stern.
+  const length = scene === 'creek' ? 2.4 : scene === 'tidelight' ? 4.4 : 3.67;
+  const oarLength = scene === 'creek' ? 1.9 : scene === 'tidelight' ? 2.35 : 1.96;
+  root.scale.setScalar(m(scene, length) / 2.2);
+  const beam = scene === 'creek' ? 0.95 : scene === 'tidelight' ? 1.70 : 1.43;
+  scaleSpec(shell, scene, 'boat', [null, length, beam], 'Cutter hull');
   const seat=pattern.seat.clone(), deckHeight=pattern.deckHeight;
   const oars=root.children.slice(1), grips=oars.map(lock=>lock.getObjectByName('Oar grip'));
+  for (let i = 0; i < oars.length; i++) {
+    const lock = oars[i];
+    lock.scale.z = m(scene, oarLength) / (1.177 * root.scale.z);
+    scaleSpec(lock.children[0], scene, 'oar', [null, null, oarLength], i ? 'Starboard oar' : 'Port oar');
+  }
   function stroke(t, active) {
     for (let i = 0; i < 2; i++) {
       const s = i * 2 - 1;
@@ -364,43 +379,47 @@ export function floatHull(g, t, height, weather = 0, offset = 0) {
   g.rotation.x = -Math.atan2(star - port, 0.66);
 }
 export function clothPanel(w, h, color, axis = 'hem') {
-  const geo = new T.PlaneGeometry(w, h, 10, 7),
-    pos = geo.attributes.position;
-  const rest = pos.array.slice(),
-    normal = geo.attributes.normal,
-    m = material(color),
-    o = new T.Mesh(geo, m);
-  o.castShadow = o.receiveShadow = true;
-  o.userData.billow = (t, x, z) => {
-    const gust = wind(t, x, z);
-    for (let i = 0; i < pos.count; i++) {
-      const k = i * 3,
-        u = rest[k] / w + 0.5,
-        v = 0.5 - rest[k + 1] / h,
-        weight = axis === 'flag' ? u : v;
-      const angle = u * 11 + v * 2 - t * 2,
-        ripple = 0.036 * Math.sin(angle),
-        slope = 0.036 * Math.cos(angle);
-      const size = axis === 'flag' ? w : h,
-        displacement = 0.12 * gust + ripple;
-      pos.setZ(i, weight * displacement * size);
-      const dx = (size / w) * (weight * 11 * slope + (axis === 'flag' ? displacement : 0));
-      const dy = (-size / h) * (weight * 2 * slope + (axis === 'hem' ? displacement : 0));
-      const inv = 1 / Math.hypot(dx, dy, 1);
-      normal.setXYZ(i, -dx * inv, -dy * inv, inv);
+  const geometry = new T.PlaneGeometry(w, h, 10, 7);
+  const uv = geometry.attributes.uv;
+  const flag = axis === 'flag', size = flag ? w : h;
+  geometry.morphTargetsRelative = true;
+  geometry.morphAttributes.position = [];
+  geometry.morphAttributes.normal = [];
+  // sin(a - t) = sin(a)cos(t) - cos(a)sin(t). The original traveling
+  // wave and its two tangent slopes are three fixed shapes on the GPU.
+  for (let shape = 0; shape < 3; shape++) {
+    const position = new Float32Array(3 * uv.count);
+    const normal = new Float32Array(3 * uv.count);
+    for (let i = 0; i < uv.count; i++) {
+      const u = uv.getX(i), v = 1 - uv.getY(i), phase = 11*u + 2*v;
+      const weight = flag ? u : v;
+      const lift = shape === 0 ? 0.12 : 0.036*(shape === 1 ? Math.sin(phase) : -Math.cos(phase));
+      const slope = shape === 0 ? 0 : 0.036*(shape === 1 ? Math.cos(phase) : Math.sin(phase));
+      position[3*i + 2] = size * weight * lift;
+      normal[3*i] = -size / w * (11 * weight * slope + (flag ? lift : 0));
+      normal[3*i+1] = size / h * (2 * weight * slope + (flag ? 0 : lift));
     }
-    pos.needsUpdate = normal.needsUpdate = true;
+    geometry.morphAttributes.position.push(new T.BufferAttribute(position,3));
+    geometry.morphAttributes.normal.push(new T.BufferAttribute(normal,3));
+  }
+  const panel = new T.Mesh(geometry, material(color));
+  panel.castShadow = panel.receiveShadow = true;
+  panel.userData.billow = (t, x, z) => {
+    const weights = panel.morphTargetInfluences;
+    weights[0] = wind(t,x,z);
+    weights[1] = Math.cos(t*2);
+    weights[2] = Math.sin(t*2);
   };
-  return o;
+  return panel;
 }
 
-// The fill meshes start at the bottoms of their bowls. Scaling only the liquid
-// depth preserves the meniscus while the teaching control advances the pour.
-export function tableService(scene) {
-  const table = new T.Group();
-  scene.add(table);
-  table.position.set(-6.6, 1.83, 0.5);
-  table.scale.setScalar(1.7);
+// The fill meshes start at the bottoms of their bowls.
+export function tableService(scene, x = -6.6, top = 1.1 + m('village', 0.75), z = 0.5) {
+  const service = new T.Group();
+  service.name = 'Cantina table service';
+  service.position.set(x, top, z);
+  service.scale.setScalar(SCENE_M.village);
+  scene.add(service);
   const glass = new T.MeshPhysicalMaterial({
     color: '#dce9df',
     roughness: 0.13,
@@ -410,46 +429,42 @@ export function tableService(scene) {
     side: T.DoubleSide,
     depthWrite: false,
   });
-  function turn(profile, x, y, z, m) {
-    const o = mesh(
-      table,
-      new T.LatheGeometry(
-        profile.map(([r, h]) => new T.Vector2(r, h)),
-        32,
-      ),
-      m,
-    );
-    o.position.set(x, y, z);
-    o.castShadow = !m.transparent;
-    return o;
+  function turn(profile, x, y, z, surface) {
+    const shape = profile.map(([radius, height]) => new T.Vector2(radius, height));
+    const object = mesh(service, new T.LatheGeometry(shape, 32), surface);
+    object.position.set(x, y, z);
+    object.castShadow = !surface.transparent;
+    return object;
   }
-  turn(
+  // Profiles and offsets are metres in the tabletop frame. The solid glasses
+  // keep their original dimensions while the controls vary their liquid depth.
+  const tumbler = turn(
     [
-      [0.054, 0],
-      [0.06, 0.006],
-      [0.069, 0.035],
-      [0.074, 0.223],
-      [0.072, 0.228],
-      [0.068, 0.224],
-      [0.064, 0.03],
-      [0.054, 0.013],
+      [0.03, 0],
+      [0.032, 0.004],
+      [0.0375, 0.106],
+      [0.037, 0.11],
+      [0.034, 0.108],
+      [0.032, 0.013],
+      [0.03, 0.007],
     ],
-    -0.215,
+    -0.15,
     0,
-    0.048,
+    0.035,
     glass,
   );
+  scaleSpec(tumbler, 'village', 'tumbler', [0.11, 0.075, 0.075], 'Cantina water tumbler');
   const wf = turn(
     [
       [0.001, 0],
-      [0.057, 0.006],
-      [0.069, 0.18],
-      [0.067, 0.183],
-      [0.001, 0.179],
+      [0.03, 0.003],
+      [0.034, 0.08],
+      [0.033, 0.082],
+      [0.001, 0.08],
     ],
-    -0.215,
-    0.009,
-    0.048,
+    -0.15,
+    0.008,
+    0.035,
     new T.MeshPhysicalMaterial({
       color: '#b1d8d9',
       transparent: true,
@@ -458,77 +473,109 @@ export function tableService(scene) {
       clearcoat: 0.5,
     }),
   );
-  turn(
+  const stemmed = turn(
     [
       [0.001, 0],
-      [0.061, 0.002],
-      [0.062, 0.007],
-      [0.012, 0.013],
-      [0.009, 0.12],
-      [0.028, 0.134],
-      [0.077, 0.17],
-      [0.093, 0.219],
-      [0.078, 0.29],
-      [0.075, 0.291],
-      [0.088, 0.219],
-      [0.071, 0.172],
-      [0.022, 0.14],
+      [0.0375, 0.0015],
+      [0.036, 0.0035],
+      [0.007, 0.007],
+      [0.0035, 0.012],
+      [0.0035, 0.087],
+      [0.008, 0.095],
+      [0.027, 0.108],
+      [0.0425, 0.142],
+      [0.0415, 0.164],
+      [0.0325, 0.21],
+      [0.0305, 0.21],
+      [0.0395, 0.164],
+      [0.04, 0.142],
+      [0.025, 0.11],
+      [0.007, 0.099],
     ],
-    0.18,
+    0.15,
     0,
-    -0.05,
+    -0.035,
     glass,
   );
+  scaleSpec(stemmed, 'village', 'wine glass', [0.21, 0.085, 0.085], 'Cantina stemmed glass');
   const wine = turn(
     [
       [0.001, 0],
-      [0.025, 0.008],
-      [0.073, 0.049],
-      [0.088, 0.079],
-      [0.086, 0.081],
-      [0.001, 0.078],
+      [0.007, 0.003],
+      [0.024, 0.016],
+      [0.038, 0.044],
+      [0.038, 0.046],
+      [0.001, 0.045],
     ],
-    0.18,
-    0.135,
-    -0.05,
+    0.15,
+    0.099,
+    -0.035,
     new T.MeshPhysicalMaterial({ color: '#6b213c', roughness: 0.18, clearcoat: 0.67 }),
   );
   const bottle = turn(
     [
-      [0.058, 0],
-      [0.061, 0.015],
-      [0.062, 0.215],
-      [0.055, 0.239],
-      [0.024, 0.269],
-      [0.02, 0.334],
-      [0.024, 0.34],
-      [0.024, 0.352],
-      [0.017, 0.352],
+      [0.032, 0],
+      [0.0365, 0.006],
+      [0.0375, 0.017],
+      [0.0375, 0.194],
+      [0.033, 0.212],
+      [0.015, 0.233],
+      [0.0116, 0.281],
+      [0.0135, 0.286],
+      [0.0135, 0.3],
+      [0.01, 0.3],
     ],
-    -0.01,
+    -0.015,
     0,
-    0.124,
+    0.175,
     new T.MeshPhysicalMaterial({ color: '#324433', roughness: 0.23, clearcoat: 0.74 }),
   );
-  const label = mesh(bottle, new T.CylinderGeometry(0.0625, 0.0625, 0.082, 32, 1, true), material('#cdbfa5'));
-  label.position.y = 0.12;
-  turn(
+  scaleSpec(bottle, 'village', 'bottle', [0.3, 0.075, 0.075], 'Cantina wine bottle');
+  const label = mesh(bottle, new T.CylinderGeometry(0.0377, 0.0377, 0.074, 32, 1, true), material('#cdbfa5'));
+  label.position.y = 0.1;
+  const carafe = turn(
     [
-      [0.048, 0],
-      [0.071, 0.014],
-      [0.088, 0.095],
-      [0.078, 0.14],
-      [0.042, 0.189],
-      [0.037, 0.222],
-      [0.045, 0.236],
-      [0.04, 0.237],
+      [0.043, 0],
+      [0.052, 0.01],
+      [0.06, 0.06],
+      [0.058, 0.112],
+      [0.04, 0.152],
+      [0.024, 0.183],
+      [0.024, 0.231],
+      [0.033, 0.247],
+      [0.032, 0.25],
+      [0.029, 0.249],
+      [0.021, 0.231],
     ],
-    0.035,
+    -0.015,
     0,
-    -0.155,
+    -0.165,
     glass,
   );
-  wf.scale.y = wine.scale.y = 0.01;
+  scaleSpec(carafe, 'village', 'carafe', [0.25, 0.12, 0.12], 'Cantina carafe');
+  // Both glass profiles end at their inner floor. Fit every liquid ring inside
+  // that same wall as the level moves up the taper, including a partial pour.
+  function fillControl(liquid, vessel) {
+    const rings = liquid.geometry.parameters.points;
+    const wall = vessel.geometry.parameters.points;
+    return level => {
+      let width = 1;
+      for (const ring of rings) {
+        const height = liquid.position.y + ring.y * level;
+        let i = wall.length - 1;
+        while (i > 1 && wall[i - 1].y < height) i--;
+        const low = wall[i], high = wall[i - 1];
+        const radius = T.MathUtils.lerp(low.x, high.x, (height - low.y) / (high.y - low.y));
+        width = Math.min(width, (0.985 * radius) / ring.x);
+      }
+      liquid.scale.set(width, level, width);
+      liquid.visible = level > 0.010001;
+    };
+  }
+  const setWater = fillControl(wf, tumbler);
+  const setWine = fillControl(wine, stemmed);
+  setWater(0.01);
+  setWine(0.01);
   bottle.visible = false;
-  return { wf, wine, bottle };
+  return { wf, wine, bottle, setWater, setWine };
 }

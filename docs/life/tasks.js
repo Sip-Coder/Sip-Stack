@@ -16,14 +16,17 @@ export function inspectCask(actor, barrel) {
     const rail = [];
     for (let j = 0; j <= 8; j++) {
       // In barrel coordinates +Y runs along its length and +X faces the cooper.
-      const axial = (0.21 + (hand - 0.5) * 0.29 + (j / 8 - 0.5) * 0.12) / barrel.scale.y;
-      barrel.localToWorld(p.set(1.3, axial, -0.24));
-      barrel.localToWorld(normal.set(0, axial, -0.24));
+      const axial = (hand - 0.5) * 0.34 + (j / 8 - 0.5) * 0.105;
+      const height = -0.285;
+      barrel.localToWorld(p.set(0.8, axial, height));
+      barrel.localToWorld(normal.set(0, axial, height));
       normal.sub(p).normalize();
       caster.set(p, normal);
       const hit = caster.intersectObject(stave, false)[0];
       if (!hit) throw new Error('Cooper inspection ray missed the stave');
-      rail.push(barrel.worldToLocal(hit.point).add(new T.Vector3(0.054, 0, 0)));
+      const contact = barrel.worldToLocal(hit.point);
+      normal.set(contact.x, 0, contact.z).normalize();
+      rail.push(contact.addScaledVector(normal, 0.041));
     }
     const socket = new T.Object3D();
     barrel.add(socket);
@@ -54,9 +57,11 @@ export function inspectCask(actor, barrel) {
           const radius = actor.g.scale.y * T.MathUtils.lerp(palmEnvelope.r0, palmEnvelope.r1, u);
           clearance = Math.min(clearance, pointGap(surface, p.x, p.y, p.z) - radius);
         }
-        const correction = (0.001 - clearance) / (barrel.scale.x * 0.9);
+        const correction = (0.0018 - clearance) / barrel.scale.x;
         if (Math.abs(correction) > 0.0005) {
-          sockets[i].position.x += correction;
+          const grip = sockets[i].position;
+          normal.set(grip.x, 0, grip.z).normalize();
+          grip.addScaledVector(normal, correction);
           adjust = true;
         }
       }

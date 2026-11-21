@@ -168,6 +168,67 @@ export function armSolver(rig) {
   });
   const grips = [null, null],
     errors = new Float32Array(2);
+  const desired = new T.Quaternion(),
+    base = new T.Quaternion(),
+    candidate = new T.Quaternion(),
+    wrist = new T.Quaternion();
+  const offset = new T.Vector3();
+  // Fix the endpoint first. There is one free angular degree of freedom about
+  // its ray, which selects an anatomically feasible wrist and elbow plane.
+  function positionArm(side, arm, elbow) {
+    const upper = elbow.position,
+      A = upper.y * lower.y + upper.z * lower.z,
+      B = upper.y * lower.z - upper.z * lower.y;
+    const dot = (goal.lengthSq() - upper.lengthSq() - lower.lengthSq()) * 0.5 - upper.x * lower.x;
+    const angle = clamp(Math.atan2(B, A) + Math.acos(clamp(dot / Math.hypot(A, B), -1, 1)), 0, 150 * rad);
+    elbow.rotation.set(-angle, 0, 0);
+    reach.copy(lower).applyAxisAngle(axisX, -angle).add(upper);
+    const reachLength = reach.length();
+    ray.copy(goal).normalize();
+    arm.quaternion.setFromUnitVectors(reach.normalize(), ray);
+    pole
+      .set(side.s * 0.62, -0.85, -0.38)
+      .addScaledVector(ray, -pole.dot(ray))
+      .normalize();
+    elbowDir.copy(upper).applyQuaternion(arm.quaternion);
+    elbowDir.addScaledVector(ray, -elbowDir.dot(ray)).normalize();
+    const turn = Math.atan2(cross.crossVectors(elbowDir, pole).dot(ray), elbowDir.dot(pole));
+    arm.quaternion.premultiply(rotation.setFromAxisAngle(ray, turn));
+    cone(arm, 160 * rad, 145 * rad);
+    return goal.distanceTo(reach.multiplyScalar(reachLength).applyQuaternion(arm.quaternion));
+  }
+  function violation(q, maxFlex, maxRoll) {
+    const roll = rollOf(q);
+    const angle = 2 * Math.acos(clamp(Math.abs(swing.copy(q).multiply(twist.invert()).w), 0, 1));
+    return Math.max(0, angle - maxFlex) ** 2 + Math.max(0, Math.abs(roll) - maxRoll) ** 2;
+  }
+  function orientGrip(target, side, arm, elbow, hand, socket) {
+    target.getWorldQuaternion(desired);
+    desired.premultiply(arm.parent.getWorldQuaternion(rotation).invert());
+    // Convert the requested palm contact into a wrist goal in shoulder space.
+    offset.copy(socket).applyQuaternion(desired);
+    goal.sub(offset);
+    lower.copy(hand.position);
+    positionArm(side, arm, elbow);
+    base.copy(arm.quaternion);
+    let best = Infinity;
+    for (let i = 0; i < 33; i++) {
+      const swivel = ((i % 2 ? 1 : -1) * Math.ceil(i / 2) * Math.PI) / 16;
+      candidate.copy(base).premultiply(rotation.setFromAxisAngle(ray, swivel));
+      wrist.copy(candidate).multiply(elbow.quaternion).invert().multiply(desired);
+      const error = violation(wrist, 70 * rad, 80 * rad) + violation(candidate, 160 * rad, 145 * rad);
+      const cost = error + 0.00000001 * swivel ** 2;
+      if (cost < best) {
+        best = cost;
+        arm.quaternion.copy(candidate);
+        hand.quaternion.copy(wrist);
+      }
+      if (error < 1e-12) break;
+    }
+    cone(arm, 160 * rad, 145 * rad);
+    cone(hand, 70 * rad, 80 * rad);
+    goal.add(offset);
+  }
   function grasp(targets) {
     for (let i = 0; i < 2; i++) {
       const target = targets[i];
@@ -180,32 +241,25 @@ export function armSolver(rig) {
       const side = sides[i],
         arm = bones[side.arm],
         elbow = bones[side.elbow],
-        hand = bones[side.hand];
+        hand = bones[side.hand],
+        socket = palms[i].position;
       target.getWorldPosition(goal);
       arm.parent.worldToLocal(goal);
       goal.sub(arm.position);
-      cone(hand, 70 * rad, 80 * rad);
-      lower.copy(palms[i].position).applyQuaternion(hand.quaternion).add(hand.position);
-      const upper = elbow.position,
-        A = upper.y * lower.y + upper.z * lower.z,
-        B = upper.y * lower.z - upper.z * lower.y;
-      const dot = (goal.lengthSq() - upper.lengthSq() - lower.lengthSq()) * 0.5 - upper.x * lower.x;
-      const angle = clamp(Math.atan2(B, A) + Math.acos(clamp(dot / Math.hypot(A, B), -1, 1)), 0, 150 * rad);
-      elbow.rotation.set(-angle, 0, 0);
-      reach.copy(lower).applyAxisAngle(axisX, -angle).add(upper);
-      const reachLength = reach.length();
-      ray.copy(goal).normalize();
-      arm.quaternion.setFromUnitVectors(reach.normalize(), ray);
-      pole
-        .set(side.s * 0.62, -0.85, -0.38)
-        .addScaledVector(ray, -pole.dot(ray))
-        .normalize();
-      elbowDir.copy(upper).applyQuaternion(arm.quaternion);
-      elbowDir.addScaledVector(ray, -elbowDir.dot(ray)).normalize();
-      const turn = Math.atan2(cross.crossVectors(elbowDir, pole).dot(ray), elbowDir.dot(pole));
-      arm.quaternion.premultiply(rotation.setFromAxisAngle(ray, turn));
-      cone(arm, 160 * rad, 145 * rad);
-      errors[i] = goal.distanceTo(reach.multiplyScalar(reachLength).applyQuaternion(arm.quaternion));
+      if (target.userData.orientPalm) {
+        orientGrip(target, side, arm, elbow, hand, socket);
+        lower.copy(socket).applyQuaternion(hand.quaternion).add(hand.position);
+        reach
+          .copy(lower)
+          .applyQuaternion(elbow.quaternion)
+          .add(elbow.position)
+          .applyQuaternion(arm.quaternion);
+        errors[i] = reach.distanceTo(goal);
+      } else {
+        cone(hand, 70 * rad, 80 * rad);
+        lower.copy(socket).applyQuaternion(hand.quaternion).add(hand.position);
+        errors[i] = positionArm(side, arm, elbow);
+      }
     }
     rig.update();
   }

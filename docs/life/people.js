@@ -14,7 +14,7 @@ const wardrobe = [
   [1.68, 1.12, 1.04, 1.14, 'cap', '#93867b', '#817487', '#514e43'],
   [1.78, 0.89, 0.97, 0.87, 'skirt', '#583a2e', '#a9563e', '#2a5752'],
   [1.82, 1.05, 1.09, 1.0, 'cap', '#37312c', '#54778a', '#534a40'],
-  [1.57, 1.01, 0.9, 1.12, 'scarf', '#b3a59b', '#e3c49a', '#785953'],
+  [1.62, 1.01, 0.9, 1.12, 'scarf', '#b3a59b', '#e3c49a', '#785953'],
   [1.88, 0.94, 1.04, 0.91, 'vest', '#584534', '#d8ddca', '#565348'],
 ];
 const tones = ['#9c674c', '#c68a63', '#c99774', '#aa775b', '#d9a381', '#86573f', '#ba8969', '#c08d69'];
@@ -149,33 +149,88 @@ export function worker(parent, variant, unit, job, bulk = false) {
   }
   const gait = footPlant(skinRoot, bones, sides, bones[hip], prints);
   const { grasp, release, palms, grips, gripErrors } = armSolver(rig);
-  let travel = 0,
+  let cycles = 0,
     prevX = NaN,
-    prevZ = 0;
+    prevZ = 0,
+    prevYaw = 0,
+    prevTime = NaN,
+    speed = 0,
+    activeMotion = null;
   const phase = rand() * tau;
-  function pose(t, action = job, floor = null) {
+  const gazeMark = new T.Vector3(),
+    nextMark = new T.Vector3();
+  function pose(t, action = job, floor = null, motion = null) {
     release();
     currentAction = action;
+    activeMotion = motion;
     const pos = skinRoot.position,
-      sc = skinRoot.scale.y;
-    const dist = Number.isFinite(prevX) ? Math.hypot(pos.x - prevX, pos.z - prevZ) / sc : 0;
-    if (dist < 1.8) travel += dist;
+      sc = skinRoot.scale.y,
+      dt = t - prevTime;
+    const dist = Math.hypot(pos.x - prevX, pos.z - prevZ) / sc;
+    const yaw = skinRoot.rotation.y,
+      turn = Math.atan2(Math.sin(yaw - prevYaw), Math.cos(yaw - prevYaw));
+    const walking = action === 'walk' || action === 'carry';
+    if (dt > 0 && dt < 0.31 && dist < 1.8) speed += (dist / dt - speed) * (1 - Math.exp(-dt * 12));
+    else speed = 0;
+    // The root is scaled by stature. A taller walker naturally covers more
+    // ground per step while a shorter walker turns the legs over more often.
+    const stride = T.MathUtils.clamp(0.72 + 0.45 * speed, 0.72, 1.34) * (action === 'carry' ? 0.92 : 1);
+    if (dt > 0 && dt < 0.31 && dist < 1.8 && walking) cycles += (dist + 0.16 * Math.abs(turn)) / stride;
+    const cycle = motion ? motion.step * 0.5 : cycles;
+    const effort = motion ? 1 : T.MathUtils.smoothstep(speed, 0, 0.9);
+    const sway = walking ? Math.sin(tau * cycle) * effort : Math.sin(t * 0.81 + phase) * 0.34;
     prevX = pos.x;
     prevZ = pos.z;
-    const walking = action === 'walk' || action === 'carry',
-      stride = job === 'Stair walker' ? 0.55 : action === 'carry' ? 0.89 : 1.02,
-      cycle = travel / stride,
-      sway = walking ? Math.sin(tau * cycle) : Math.sin(t * 0.81 + phase) * 0.34;
+    prevTime = t;
+    prevYaw = yaw;
+    const step = motion ? Math.floor(motion.step) : 0;
+    const onFlight = motion?.direction || 0;
+    const nextTread = motion?.tread(step),
+      age = motion ? motion.step - step : 0;
+    const treadPhase = nextTread ? nextTread.index - 1 + age : 0;
+    const ascent =
+      onFlight > 0 && nextTread
+        ? T.MathUtils.smoothstep(treadPhase, 0, 2) *
+          (1 -
+            T.MathUtils.smoothstep(
+              treadPhase,
+              nextTread.flight.treads.length - 2,
+              nextTread.flight.treads.length,
+            ))
+        : 0;
+    const trunkLean = ascent * 0.245 + (onFlight < 0 ? 0.024 : 0);
+    // Track a visible tread two and a half contacts ahead. The cervical joints
+    // supply most of the turn and the eyes make the finer vertical adjustment.
+    let headPitch = 0,
+      headYaw = 0,
+      eyePitch = null,
+      eyeYaw = null;
+    if (onFlight) {
+      motion.point(step + 2, gazeMark);
+      motion.point(step + 3, nextMark);
+      gazeMark.lerp(nextMark, 0.5);
+      const dx = gazeMark.x - pos.x,
+        dz = gazeMark.z - pos.z;
+      const downward = Math.atan2(pos.y + 1.52 * sc - gazeMark.y, Math.max(0.001, Math.hypot(dx, dz)));
+      const bearing = Math.atan2(
+        dx * Math.cos(yaw) - dz * Math.sin(yaw),
+        dx * Math.sin(yaw) + dz * Math.cos(yaw),
+      );
+      headPitch = T.MathUtils.clamp((downward * 0.72 - trunkLean) / 1.22, -0.4, 0.54);
+      headYaw = T.MathUtils.clamp(bearing * 0.65, -0.48, 0.48);
+      eyePitch = T.MathUtils.clamp(downward - trunkLean - 1.22 * headPitch, -0.32, 0.51);
+      eyeYaw = T.MathUtils.clamp(bearing - 1.22 * headYaw, -0.38, 0.38);
+    }
     const work = 0.5 - 0.5 * Math.cos(t * 1.8 + phase),
       stroke = Math.sin(t * 2),
       breath = Math.sin(t * 1.75 + phase);
     const pelvis = bones[hip];
     pelvis.position.set(
-      0.018 * sway,
-      0.869 + (walking ? 0.015 * Math.cos(cycle * tau * 2) : breath * 0.004),
+      0.026 * sway,
+      walking ? 0.821 - 0.023 * Math.cos(cycle * tau * 2) * effort : 0.869 + breath * 0.004,
       0,
     );
-    pelvis.rotation.set(0, 0.058 * sway, 0.026 * sway);
+    pelvis.rotation.set(0, 0.0785 * sway, 0.0506 * sway);
     bones[chest].rotation.set(0.018 * breath, -0.105 * sway, -0.018 * sway);
     bones[spine].rotation.x =
       action === 'pick'
@@ -184,17 +239,17 @@ export function worker(parent, variant, unit, job, bulk = false) {
           ? 0.18 + 0.12 * work
           : action === 'row'
             ? 0.12 * stroke
-            : 0;
+            : trunkLean;
     bones[head].rotation.set(
-      action === 'pick' || action === 'inspect' ? 0.16 + 0.14 * work : 0.025 * breath,
-      0.19 * Math.sin(t * 0.67 + phase),
+      action === 'pick' || action === 'inspect' ? 0.16 + 0.14 * work : onFlight ? headPitch : 0.025 * breath,
+      onFlight ? headYaw : 0.19 * Math.sin(t * 0.67 + phase),
       -0.026 * sway,
     );
     bones[hem].rotation.set(0.03 * wind(t, pos.x, pos.z), 0, 0.021 * sway);
     for (let i = 0; i < 2; i++) {
       const { s, thigh, shin, ankle, arm, elbow, hand, h } = sides[i],
         p = (cycle + i * 0.5) % 1;
-      let reach = walking ? 0.53 * Math.sin(tau * p) : 0.06,
+      let reach = walking ? (onFlight ? 0.18 : 0.31) * Math.cos(tau * p) * effort : 0.06,
         bend = -0.23 - 0.06 * work,
         spread = 0.065;
       if (action === 'row') {
@@ -241,9 +296,11 @@ export function worker(parent, variant, unit, job, bulk = false) {
                   : 0.1 + 0.06 * sway;
       bones[hand].rotation.set(-0.08 * breath, s * pronation, 0);
     }
-    appearance.animate(t, action, phase);
+    appearance.animate(t, action, phase, eyePitch, eyeYaw);
+    // A low work surface requires flexion at the knees before planted-leg IK.
+    if (action === 'inspect') pelvis.position.y -= skinRoot.userData.inspectLowering || 0;
     dynamics.pose(t, action);
-    gait.solve(t, action, cycle, stride, floor, dynamics);
+    gait.solve(t, action, cycle, stride, floor, dynamics, motion);
     rig.update();
   }
   pose(0);
@@ -251,6 +308,9 @@ export function worker(parent, variant, unit, job, bulk = false) {
     g: skinRoot,
     get action() {
       return currentAction;
+    },
+    get motion() {
+      return activeMotion;
     },
     feet: gait.feet,
     tiers,

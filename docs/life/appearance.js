@@ -903,7 +903,7 @@ export function makeAppearance(spec, group, skeleton, bulk = false) {
     fixY = 0,
     fromX = 0,
     fromY = 0;
-  function animate(t, action, phase) {
+  function animate(t, action, phase, eyePitch = null, eyeYaw = null) {
     if (t < lastTime) {
       blinkTime = 0.8 + 0.05 * spec.variant;
       blinkNumber = 0;
@@ -942,8 +942,8 @@ export function makeAppearance(spec, group, skeleton, bulk = false) {
       }
     }
     const q = smooth(((t + phase) * 1.18 - n) / (1.18 * 0.035));
-    const gazeX = mix(fromX, fixX, q) + 0.003 * sin(t * 27 + phase),
-      gazeY = mix(fromY, fixY, q) + 0.002 * cos(t * 21 + phase);
+    const gazeX = (eyeYaw ?? mix(fromX, fixX, q)) + 0.003 * sin(t * 27 + phase),
+      gazeY = (eyePitch ?? mix(fromY, fixY, q)) + 0.002 * cos(t * 21 + phase);
     const talk = action === 'talk' ? 0.5 + 0.5 * sin(t * 8.4 + phase) * cos(t * 2.3) : 0;
     const taste = action === 'taste' ? 0.5 - 0.5 * cos(t * 1.8 + phase) : 0;
     const work = action === 'inspect' || action === 'pick' ? 0.7 : 0;

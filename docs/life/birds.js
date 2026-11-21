@@ -1,4 +1,6 @@
 import * as T from 'three';
+import { instanceRigidParts } from './rigid-instances.js';
+import { m, scaleSpec } from './scale.js';
 import { Sections, finish, mesh, smooth, sat, tau } from './forms.js';
 
 // Shaft, graduated barbs and dark trailing margin. Geometry gives each primary
@@ -72,7 +74,7 @@ class Feathers {
 }
 const species = {
   gull: ['#e8e2d3', '#909da5', '#39424a', '#d79f45', 1, 0.24],
-  swallow: ['#e0bb94', '#304e62', '#263843', '#434041', 0.72, 0.24],
+  swallow: ['#e0bb94', '#304e62', '#263843', '#434041', 1.05, 0.24],
   kingfisher: ['#c4824d', '#286f7a', '#34575c', '#473e37', 0.9, 0.38],
   songbird: ['#d0af86', '#8a705a', '#665341', '#6d5440', 0.84, 0.17],
 };
@@ -204,7 +206,8 @@ function bird(kind) {
     // handwing leaves the last few primaries free to fan apart at the tip.
     const armwing = new Sections(),
       handwing = new Sections();
-    const alongWing = ([x, y, z]) => [s * y, x, z];
+    const chord = kind === 'swallow' ? 0.73 : 1;
+    const alongWing = ([x, y, z]) => [s * y, x, z * chord];
     armwing.loft(
       [
         [-0.025, 0.04, 0.119, 0, -0.018],
@@ -277,8 +280,10 @@ function bird(kind) {
         back,
       );
     }
-    inner.build(shoulder).name = 'coverts';
-    outer.build(wrist);
+    const coverts = inner.build(shoulder);
+    coverts.name = 'coverts';
+    coverts.scale.z = chord;
+    outer.build(wrist).scale.z = chord;
   }
   const feet = new Sections();
   for (const s of [-1, 1]) {
@@ -307,7 +312,16 @@ function bird(kind) {
 }
 // Steering integrates separation, alignment, cohesion and terrain clearance in
 // bounded time steps. Perching is a timed landing/hop/preen/departure sequence.
-export function flock(scene, { kind, count, center, radii, perch, scale, obstacles = [] }) {
+// Neutral wing span, bill-to-tail length, and metres per unit of the feather pattern.
+const dimensions = {
+  gull: [1.4, 0.60, 0.67],
+  swallow: [0.33, 0.18, 0.156],
+  kingfisher: [0.25, 0.165, 0.156],
+  songbird: [0.24, 0.14, 0.15],
+};
+export function flock(scene, { sceneKey, kind, count, center, radii, perch, obstacles = [] }) {
+  const [span, length, patternUnit] = dimensions[kind];
+  const scale = m(sceneKey, patternUnit);
   const birds = [],
     aim = new T.Vector3(),
     steer = new T.Vector3(),
@@ -319,6 +333,13 @@ export function flock(scene, { kind, count, center, radii, perch, scale, obstacl
       a = i * 2.399;
     root.name = kind + ' ' + (i + 1);
     root.scale.setScalar(scale);
+    // Kingfishers have a long bill and a relatively short, rounded wing.
+    if (kind === 'kingfisher') root.scale.x *= 0.865;
+    if (kind === 'songbird') {
+      root.scale.x *= 0.92;
+      root.scale.z *= 1.08;
+    }
+    scaleSpec(root, sceneKey, kind, [null, span, length]);
     scene.add(root);
     root.position.set(
       center[0] + radii[0] * Math.cos(a),
@@ -336,6 +357,7 @@ export function flock(scene, { kind, count, center, radii, perch, scale, obstacl
       head: root.getObjectByName('bird head'),
     });
   }
+  const updateParts = instanceRigidParts(scene, birds.map(bird => bird.root));
   let last = null;
   return (t, mobile = false, camera = null) => {
     const dt = last === null ? 0 : Math.min(0.1, Math.max(0, t - last));
@@ -416,5 +438,6 @@ export function flock(scene, { kind, count, center, radii, perch, scale, obstacl
         );
       }
     }
+    updateParts();
   };
 }
