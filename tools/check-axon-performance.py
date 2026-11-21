@@ -137,7 +137,8 @@ def native_rows(page):
         page.locator("[data-setting=tier]").evaluate(
             "(e,t)=>{e.value=t;e.dispatchEvent(new Event('change',{bubbles:true}))}", tier
         )
-        for name in ("sippy", "roma", "hummin"):
+        # End on a human so the stall and offscreen checks include the studio pass.
+        for name in ("hummin", "roma", "sippy"):
             page.locator("[data-axon-hero]").select_option(name)
             canvas = page.locator("[data-axon-canvas]")
             canvas.evaluate("e=>e.scrollIntoView({block:'center',behavior:'instant'})")
@@ -270,7 +271,7 @@ def main():
                 slider(page, 0.75)
                 presented(page, begin)
                 gap = page.evaluate("axPerf.measure()")
-                assert gap["maxPasses"] == 1 and gap["maxAllDraws"] < 300, gap
+                assert gap["maxPasses"] == gap["maxCompositeDraws"] == 1 and gap["maxAllDraws"] < 300, gap
                 floor = page.locator(".ct-stage canvas")
                 floor.evaluate("e=>e.scrollIntoView({block:'center',behavior:'instant'})")
                 page.wait_for_function(
@@ -321,6 +322,7 @@ def main():
                     "renderer": "ANGLE Vulkan SwiftShader",
                     "rows": rows,
                     "stallMs": 250,
+                    "stallActor": "sippy-high",
                     "afterStall": gap,
                     "offscreen": off,
                     "contexts": contexts,
