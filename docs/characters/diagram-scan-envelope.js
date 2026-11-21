@@ -386,6 +386,17 @@ export function coverArticularProcesses(parts, landmarks, rig) {
           : [whole, label + ' foot inside trainer'],
       ],
     ];
+    // In flexion the true femoral neck passes under the anterior inguinal
+    // fold. The lower-density sewn thigh can otherwise intersect its cortex
+    // between the final circular band and the actual pelvic saddle.
+    if (!roma && rig.secondary.sippy.body.geometry === rig.secondary.sippy.body.userData.mobileGeometry) {
+      const pelvisUp = landmarks.pelvis
+        .place(0, 1, 0)
+        .sub(landmarks.pelvis.place(0, 0, 0))
+        .normalize();
+      const thighDown = leg.knee.clone().sub(leg.femoralHead).normalize();
+      if (thighDown.dot(pelvisUp) > -0.97) regions.push([['FEMUR'], [whole]]);
+    }
     for (const [nodes, names] of regions) {
       // Sippy's sewn calf/condyle rings already follow the scanned cortex.
       // Further nearest-surface displacement can buckle the flexed knee.
@@ -397,8 +408,12 @@ export function coverArticularProcesses(parts, landmarks, rig) {
           a = g.attributes.position,
           ix = g.index.array;
         const points = Array.from({ length: a.count }, (_, i) => new Vector3().fromBufferAttribute(a, i));
-        const include = (p) => name !== 'FEMUR' || p.distanceTo(knee) < h * 0.058;
-        const knee = rig['shin' + (side === 'LEFT' ? 'L' : 'R')].getWorldPosition(new Vector3());
+        const proximalFemur = nodes.length === 1 && name === 'FEMUR';
+        const joint = proximalFemur
+          ? leg.femoralHead
+          : rig['shin' + axisSide].getWorldPosition(new Vector3());
+        const radius = h * (proximalFemur ? 0.07 : 0.058);
+        const include = (point) => name !== 'FEMUR' || point.distanceTo(joint) < radius;
         for (const p of points) if (include(p)) samples.push(p);
         const edges = new Set();
         for (let i = 0; i < ix.length; i += 3) {
@@ -423,6 +438,12 @@ export function coverArticularProcesses(parts, landmarks, rig) {
             }
           }
         }
+      }
+      if (nodes.length === 1 && nodes[0] === 'FEMUR') {
+        // The donor neck is already seated. Only lift sewn vertices at
+        // actual contacts, retaining the other side of the flexion crease.
+        coverAtlasContacts(parts, samples, h);
+        continue;
       }
       let candidates = samples;
       for (let pass = 0; pass < 4; pass++) {
