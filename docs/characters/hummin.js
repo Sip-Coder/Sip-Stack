@@ -1113,6 +1113,14 @@ export function buildHummin(rig) {
   const measured = (label, parts) => ({ label, parts });
   const paired = (key, caption) => ['L', 'R'].map((s) => measured(caption + ' ' + s, [features[key + s]]));
   const dome = measured('Pearl helmet casting, excluding side receivers', apron.surfaces.head);
+  // The widest ring of ceramic supports the helmet through a shoulder roll.
+  // Keep its real surface vertices even when another trim wins a hull direction.
+  const casting = apron.surfaces.head[0];
+  const latitudes = casting.geometry.attributes.uv;
+  const ring = [];
+  for (let i = 0; i < latitudes.count; i++)
+    if (latitudes.getY(i) === 0.5 && latitudes.getX(i) < 1) ring.push(i);
+  casting.userData.rollContactIndices = ring;
   const glass = features.display,
     uv = glass.geometry.attributes.uv;
   const eyes = [1, -1].map((side) => {

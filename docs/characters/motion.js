@@ -91,7 +91,7 @@ function rollHull(rig) {
     probe = new T.Vector3(),
     coordinates = new T.Vector3();
   const local = new T.Matrix4();
-  const directions = [];
+  const directions = [], contactRings = [];
   for (let i = 0; i < 64; i++) {
     const y = 1 - (2 * i + 1) / 64,
       r = Math.sqrt(1 - y * y),
@@ -126,6 +126,8 @@ function rollHull(rig) {
       mesh.isSkinnedMesh &&
       mesh.skeleton.boneInverses.map((inverse) => new T.Matrix4().multiplyMatrices(inverse, mesh.bindMatrix));
     const source = { mesh, parent, position, skinIndex, skinWeight, matrices, transform, kept: new Set() };
+    const indices = mesh.userData.rollContactIndices;
+    if (indices) contactRings.push({ index: indices, sample: indices.map(() => source) });
     const count = Math.min(position.count, 576);
     const rigid = !matrices && group(parent);
     for (let k = 0; k < count; k++) {
@@ -157,7 +159,7 @@ function rollHull(rig) {
     }
   });
   const contacts = [];
-  for (const { sample, index } of groups.values()) {
+  for (const { sample, index } of [...groups.values(), ...contactRings]) {
     for (let j = 0; j < sample.length; j++) {
       const src = sample[j],
         i = index[j];
