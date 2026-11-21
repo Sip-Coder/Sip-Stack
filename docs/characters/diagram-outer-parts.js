@@ -5,10 +5,20 @@ const skin = (name) => ({ name, layer: 'skin' });
 const kit = (name) => ({ name, layer: 'clothes' });
 const sideName = (x) => (x > 0 ? 'Left' : 'Right');
 
-export function describeRoma(_rig, mesh, c) {
+// World-space observer positions include travel and heading. Measure the
+// lateral coordinate along the posed actor's own anatomical axis in metres.
+function anatomicalX(rig, point) {
+  const m = rig.root.matrixWorld.elements;
+  return (
+    ((point.x - m[12]) * m[0] + (point.y - m[13]) * m[1] + (point.z - m[14]) * m[2]) /
+    Math.hypot(m[0], m[1], m[2])
+  );
+}
+
+export function describeRoma(rig, mesh, c) {
   const id = mesh.name.replace(/^Roma /, ''),
     { index: i, color, objectCenter: p } = c;
-  const side = sideName(c.worldCenter.x);
+  const side = sideName(anatomicalX(rig, c.worldCenter));
   if (id.startsWith('eye ')) {
     const labels = ['sclera', 'iris rim', 'iris', 'pupil', 'catchlights', 'catchlights', 'upper eyelash'];
     return skin(side + ' ' + labels[i]);
@@ -74,7 +84,8 @@ export function sippyCatalog(rig) {
     const id = surfaces.get(mesh),
       mat = c.material.userData.blueprintId,
       p = c.worldCenter;
-    const side = sideName(p.x),
+    const x = anatomicalX(rig, p),
+      side = sideName(x),
       named = [];
     for (let n = mesh; n; n = n.parent) if (n.name) named.push(n.name);
     const path = named.join('/'),
@@ -92,7 +103,7 @@ export function sippyCatalog(rig) {
         return skin(sideName(Number(s)) + ' tapered lock ' + (Number(i) + 1));
       }
       if (/sippy-face-[LR]/.test(path)) return skin(side + ' forelock');
-      if (mat === 'hair') return skin(Math.abs(p.x) > 0.1 ? side + ' sideburn' : 'Scalp and crest');
+      if (mat === 'hair') return skin(Math.abs(x) > 0.1 ? side + ' sideburn' : 'Scalp and crest');
       if (mat === 'sclera')
         return skin(c.material.userData.blueprintSamples ? side + ' cornea and iris' : 'Teeth');
       if (mat === 'mouth') return skin('Mouth opening');
@@ -102,8 +113,8 @@ export function sippyCatalog(rig) {
           side + (mesh.material[0].userData.blueprintId === 'pupil' ? ' upper eyelid' : ' lower eyelid'),
         );
       if (mesh.parent.parent?.name === 'sippy-head') return skin(side + ' orbital rim');
-      if (Math.abs(p.x) > 0.1) return skin(side + ' ear');
-      if (Math.abs(p.x) < 0.027) return skin(mat === 'flush' ? 'Nostrils' : 'Nose');
+      if (Math.abs(x) > 0.1) return skin(side + ' ear');
+      if (Math.abs(x) < 0.027) return skin(mat === 'flush' ? 'Nostrils' : 'Nose');
       return skin(side + ' cheek freckles');
     }
     if (named.some((n) => /^hand[LR]$/.test(n))) return skin(side + ' fingernails and knuckles');
@@ -121,13 +132,13 @@ export function sippyCatalog(rig) {
     if (path.includes('Embroidered sleeve vine')) return kit(side + ' sleeve embroidery');
     if (path.includes('Sippy hood drawcords')) return kit(side + ' hood drawcord');
     if (path.includes('headphones')) {
-      if (Math.abs(p.x) < 0.04) return kit('Headphone band');
+      if (Math.abs(x) < 0.04) return kit('Headphone band');
       return kit(side + (mat === 'pad' ? ' headphone cushion' : ' headphone cup and emblem'));
     }
     if (path.includes('Sippy explorer backpack')) {
       if (id === 'backpack') return kit('Leather backpack case');
       if (path.includes('Curved satchel flap')) return kit('Curved backpack flap');
-      if (Math.abs(p.x) > 0.028) return kit(side + ' pack buckle and tab');
+      if (Math.abs(x) > 0.028) return kit(side + ' pack buckle and tab');
       return kit(mat === 'leather' ? 'Backpack handle' : 'Backpack piping');
     }
     if (named.some((n) => /^forearm[LR]$/.test(n))) {
@@ -138,7 +149,7 @@ export function sippyCatalog(rig) {
       if (mat === 'trousers') return kit(side + ' gathered ankle cuff');
       if (mat === 'shirt') return kit(side + ' sock');
       if (mat === 'shoe') return kit(side + ' sneaker upper and tongue');
-      if (c.triangles === 60 && p.y > 0.07) return kit(side + ' shoelaces');
+      if (c.triangles === 60 && p.y - rig.root.matrixWorld.elements[13] > 0.07) return kit(side + ' shoelaces');
       return kit(side + ' sneaker sole and panels');
     }
     throw new Error('Unregistered Sippy mesh: ' + path);

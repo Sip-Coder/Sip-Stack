@@ -16,8 +16,6 @@ export async function buildDiagramModel(name, tier) {
     throw new Error('Unknown character or geometry tier');
   const build = await builders[name](),
     rig = createActor(name, heights[names.indexOf(name)]);
-  const resources = snapshotResources(),
-    parts = [];
   try {
     const pose = build(rig),
       ctrl = createController(rig);
@@ -29,6 +27,19 @@ export async function buildDiagramModel(name, tier) {
       pose(ctrl.step(FIXED_DT, neutral));
       ctrl.finishPose();
     }
+    return await snapshotDiagramModel(rig, tier);
+  } finally {
+    // This construction rig is never drawn: it owns no GPU allocations. Some
+    // unrendered geometries/textures are cached by the live builders (Roma in
+    // particular), so leave those shared assets in the production cache.
+    rig.root.clear();
+  }
+}
+
+// Inspection and pose verification freeze exactly the same deformed triangles.
+export async function snapshotDiagramModel(rig, tier, inspect) {
+  const name = rig.name, resources = snapshotResources(), parts = [];
+  try {
     rig.root.updateMatrixWorld(true);
     const describe =
       name === 'sippy'
@@ -53,7 +64,8 @@ export async function buildDiagramModel(name, tier) {
       parts.push({ name, layer, mesh, source: 'Live character geometry' });
     }
     const { addInnerLayers } = await import('./diagram-anatomy.js');
-    await addInnerLayers(rig, name, tier, parts);
+    const landmarks = await addInnerLayers(rig, name, tier, parts);
+    inspect?.(landmarks);
     for (const part of parts) part.id = part.layer + '/' + part.name;
     let disposed = false;
     return {
@@ -67,10 +79,5 @@ export async function buildDiagramModel(name, tier) {
   } catch (error) {
     resources.dispose(parts);
     throw error;
-  } finally {
-    // This construction rig is never drawn: it owns no GPU allocations. Some
-    // unrendered geometries/textures are cached by the live builders (Roma in
-    // particular), so leave those shared assets in the production cache.
-    rig.root.clear();
   }
 }
