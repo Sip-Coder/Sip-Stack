@@ -1,14 +1,15 @@
 // Each pattern follows the same reference body. Inner cloth faces and joined
 // edge strips give the cutaway fronts, hems, and cuffs a real thickness.
 import * as T from 'three';
+import { articulatedSleeve } from './sippy-skin.js';
 
 const tau = 2 * Math.PI;
 const lerp = T.MathUtils.lerp;
 const smooth = T.MathUtils.smoothstep;
 const gauss = (x, c, w) => Math.exp(-(((x - c) / w) ** 2));
 
-function piece(parent, name, geometry, material) {
-  const mesh = new T.Mesh(geometry, material);
+function piece(parent, name, geometry, material, skinned = false) {
+  const mesh = skinned ? new T.SkinnedMesh(geometry, material) : new T.Mesh(geometry, material);
   mesh.name = 'sippy-' + name;
   mesh.userData.patternPiece = true;
   if (geometry.userData.mobileGeometry) mesh.userData.mobileGeometry = geometry.userData.mobileGeometry;
@@ -69,6 +70,7 @@ export function shell(along, around, point, closed = false) {
   const g = new T.BufferGeometry();
   g.setAttribute('position', new T.Float32BufferAttribute(verts, 3));
   g.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+  g.userData.pattern = { along, around, columns };
   g.setIndex(stitch(1, 1));
   g.computeVertexNormals();
   const mobile = new T.BufferGeometry();
@@ -147,7 +149,7 @@ function waistY(v, a) {
 }
 function clothStrip(parent, name, mat, line, radius) {
   const curve = new T.CatmullRomCurve3(line.map((p) => new T.Vector3(...p)));
-  const g = new T.TubeGeometry(curve, Math.max(12, line.length - 1), radius, 6, false);
+  const g = new T.TubeGeometry(curve, Math.max(8, Math.ceil(line.length / 2)), radius, 4, false);
   const m = piece(parent, name, g, mat);
   m.userData.highDetail = true;
   return m;
@@ -159,8 +161,8 @@ export function cutExplorerLayers(rig, mats) {
   const surfaces = {},
     pairs = [],
     updates = [];
-  const add = (name, parent, geom, material) => {
-    const m = piece(parent, name, geom, material);
+  const add = (name, parent, geom, material, skinned = false) => {
+    const m = piece(parent, name, geom, material, skinned);
     (surfaces[name] ??= []).push(m);
     return m;
   };
@@ -169,8 +171,8 @@ export function cutExplorerLayers(rig, mats) {
     'shirt',
     chest,
     shell(
-      34,
-      48,
+      15,
+      24,
       (v, u, inner) => torsoPoint(lerp(-0.076, 0.178, v), u * tau, 0.892, inner ? -0.00125 : 0),
       true,
     ),
@@ -184,7 +186,7 @@ export function cutExplorerLayers(rig, mats) {
     chest,
     shell(
       14,
-      56,
+      28,
       (v, u, inner) => torsoPoint(lerp(-0.163, -0.0628, v), u * tau, 0.9255, inner ? -0.00135 : 0),
       true,
     ),
@@ -195,8 +197,8 @@ export function cutExplorerLayers(rig, mats) {
     'hoodie',
     chest,
     shell(
-      36,
-      56,
+      18,
+      28,
       (v, u, inner) => {
         const a = u * tau;
         return torsoPoint(waistY(v, a), a, 0.947, inner ? -0.00135 : 0);
@@ -212,7 +214,7 @@ export function cutExplorerLayers(rig, mats) {
       y = jacketY(v, a);
     return torsoPoint(y, a, 1, inside ? -0.0016 : 0);
   }
-  add('quilted-vest', chest, shell(44, 68, jacketPoint), suit);
+  add('quilted-vest', chest, shell(24, 36, jacketPoint), suit);
   beneath('quilted-vest', 'hoodie');
   beneath('quilted-vest', 'shirt');
   for (const side of [-1, 1]) {
@@ -222,7 +224,7 @@ export function cutExplorerLayers(rig, mats) {
       const a = side * (open + 0.015 + 0.056 * u);
       return torsoPoint(jacketY(v, a), a, 1, inside ? 0.0029 : 0.0047);
     };
-    add('zipper-plackets', chest, shell(46, 7, slope), lapel);
+    add('zipper-plackets', chest, shell(20, 4, slope), lapel);
     const line = [];
     for (let i = 0; i <= 44; i++) line.push(slope(i / 44, 0.87, false));
     clothStrip(chest, 'lapel-topstitch', edge, line, 0.00043);
@@ -242,7 +244,7 @@ export function cutExplorerLayers(rig, mats) {
     // The outer collar rolls away from the placket at its tips.
     return torsoPoint(y, a, 1.025, (inner ? 0.0016 : 0.0031) + (1 - v) * 0.005);
   };
-  add('collar', chest, shell(11, 60, collarPoint), waistcoat);
+  add('collar', chest, shell(6, 32, collarPoint), waistcoat);
   beneath('collar', 'shirt');
   beneath('collar', 'hoodie');
   const tails = [];
@@ -265,7 +267,7 @@ export function cutExplorerLayers(rig, mats) {
   }
   beneath('split-back', 'quilted-vest');
   rig.garments = { surfaces, pairs, seams: [] };
-  return { add, beneath, surfaces, tails, updates, rig };
+  return { add, beneath, surfaces, tails, updates, rig, limbs: {} };
 }
 
 // A single articulated pattern runs across each elbow and knee. Slices
@@ -275,8 +277,7 @@ export function fitLimb(suit, side, leg, mats) {
   const { rig, add, beneath, updates } = suit;
   const joint = rig[(leg ? 'thigh' : 'upperArm') + side],
     lower = rig[(leg ? 'shin' : 'forearm') + side];
-  const sign = side === 'L' ? 1 : -1,
-    pivot = lower.position.y;
+  const pivot = lower.position.y;
   const rows = leg
     ? [
         [-0.435, 0.026, 0.03, 0.001],
@@ -310,7 +311,9 @@ export function fitLimb(suit, side, leg, mats) {
         [0.015, 0.008, 0.01, -0.002],
         [0.017, 0.001, 0.001, -0.002],
       ];
-  const pieces = [];
+  const binder = articulatedSleeve(joint, lower, leg);
+  suit.limbs[(leg ? 'leg' : 'arm') + side] = binder;
+  updates.push(binder.step);
   const key = (leg ? 'trousers-' : 'sleeve-') + side;
   function tube(name, mat, shrink, y0, y1, thick, n, nr) {
     const shape = shell(
@@ -334,130 +337,22 @@ export function fitLimb(suit, side, leg, mats) {
       },
       true,
     );
-    const m = add(name, joint, shape, mat);
-    pieces.push([m, true]);
+    const m = add(name, joint, shape, mat, true);
+    binder.bind(m);
     return m;
   }
   if (leg) {
-    tube(key, mats.trousers, 1, rows[0][0], -0.09, 0.00145, 44, 56);
+    tube(key, mats.trousers, 1, rows[0][0], -0.09, 0.00145, 22, 28);
     beneath(key, 'body');
   } else {
     const sh = 'shirtsleeve-' + side;
-    tube(sh, mats.white, 0.808, -0.317, 0.01, 0.00125, 36, 30);
+    tube(sh, mats.white, 0.808, -0.317, 0.01, 0.00125, 18, 16);
     beneath(sh, 'body');
-    tube(key, mats.waistcoat, 1, -0.312, 0.017, 0.00145, 58, 34);
+    tube(key, mats.waistcoat, 1, -0.312, 0.017, 0.00145, 28, 20);
     beneath(key, sh);
     beneath(key, 'body');
   }
-  const q = new T.Quaternion(),
-    cross = new T.Vector3(),
-    d = new T.Vector3(),
-    mat = new T.Matrix4();
-  const down = new T.Vector3(0, -1, 0),
-    swing = new T.Quaternion(),
-    twist = new T.Quaternion(),
-    axial = new T.Quaternion();
-  for (const [m, wrinkles] of pieces) {
-    const shape = m.geometry,
-      p = shape.attributes.position,
-      n = shape.attributes.normal,
-      rest = p.array.slice(),
-      norm = n.array.slice(),
-      slices = new Map();
-    let maxR = 0;
-    for (let i = 0; i < p.count; i++) {
-      const y = rest[3 * i + 1],
-        x = rest[3 * i],
-        z = rest[3 * i + 2],
-        k = Math.round(y * 1e8);
-      const section = slices.get(k) ?? { y, points: [] };
-      section.points.push(i);
-      slices.set(k, section);
-      maxR = Math.max(maxR, Math.hypot(x, z));
-    }
-    const sections = [...slices.values()];
-    // Bake the cut and compressed fold footprint once. Runtime creases grow
-    // with the actual joint flex and never move a cuff or a seam boundary.
-    const fold = new Float32Array(p.count),
-      slope = new Float32Array(p.count),
-      radial = new Float32Array(2 * p.count);
-    for (let i = 0; i < p.count; i++) {
-      const x = rest[3 * i],
-        y = rest[3 * i + 1],
-        z = rest[3 * i + 2] - interpolate(rows, y, 3),
-        length = Math.hypot(x, z) || 1,
-        nx = x / length,
-        nz = z / length;
-      radial[2 * i] = nx;
-      radial[2 * i + 1] = nz;
-      const sideBias = 0.65 + 0.35 * nx * sign,
-        near = gauss(y, pivot, 0.046),
-        turn = nx * 0.0045 + nz * 0.0025,
-        phase = (y - pivot + turn) * 260,
-        reverse = leg ? -nz : nz;
-      const weight = near * (0.45 + 0.55 * Math.max(0, reverse));
-      const seam = leg ? gauss(y, -0.439, 0.014) : gauss(y, -0.045, 0.022);
-      fold[i] = sideBias * (0.0025 * weight * Math.cos(phase) + 0.0016 * seam * Math.sin((y + turn) * 230));
-      slope[i] = sideBias * (-0.65 * weight * Math.sin(phase) + 0.37 * seam * Math.cos((y + turn) * 230));
-    }
-    p.setUsage(T.DynamicDrawUsage);
-    n.setUsage(T.DynamicDrawUsage);
-    shape.computeBoundingSphere();
-    // The cuff can fold back toward the shoulder. Keep rotation and roll
-    // culling conservative even when this long mesh doubles back on itself.
-    shape.boundingSphere.center.set(0, pivot, 0);
-    shape.boundingSphere.radius = Math.max(rows.at(-1)[0] - pivot, pivot - rows[0][0]) + maxR + 0.006;
-    updates.push(() => {
-      d.copy(down).applyQuaternion(lower.quaternion);
-      const angle = Math.acos(T.MathUtils.clamp(-d.y, -1, 1)),
-        tangent = Math.tan(angle / 2);
-      const available = 0.94 * Math.min(-pivot, pivot - rows[0][0]);
-      const radius = Math.min(leg ? 0.082 : 0.054, available / Math.max(0.001, tangent));
-      const blend = Math.max(0.00001, radius * tangent),
-        amplitude = wrinkles ? Math.min(1, angle / 1.6) : 0;
-      cross.set(d.x, 0, d.z).normalize();
-      swing.setFromUnitVectors(down, d);
-      twist.copy(swing).invert().multiply(lower.quaternion);
-      for (const section of sections) {
-        const y = section.y,
-          t = T.MathUtils.clamp((pivot + blend - y) / (2 * blend), 0, 1);
-        q.identity().slerp(swing, t).multiply(axial.identity().slerp(twist, t));
-        mat.makeRotationFromQuaternion(q);
-        const e = mat.elements;
-        let cx = 0,
-          cy = y,
-          cz = 0;
-        if (t === 1) {
-          const v = pivot - y;
-          cx = d.x * v;
-          cy = pivot + d.y * v;
-          cz = d.z * v;
-        } else if (t > 0) {
-          const arc = angle * t,
-            offset = radius * (1 - Math.cos(arc));
-          cx = cross.x * offset;
-          cy = pivot + blend - radius * Math.sin(arc);
-          cz = cross.z * offset;
-        }
-        for (const i of section.points) {
-          const k = i * 3,
-            f = amplitude * fold[i],
-            x = rest[k] + f * radial[2 * i],
-            z = rest[k + 2] + f * radial[2 * i + 1];
-          p.array[k] = cx + e[0] * x + e[8] * z;
-          p.array[k + 1] = cy + e[1] * x + e[9] * z;
-          p.array[k + 2] = cz + e[2] * x + e[10] * z;
-          const ny = norm[k + 1] - amplitude * slope[i],
-            nx = norm[k],
-            nz = norm[k + 2];
-          n.array[k] = e[0] * nx + e[4] * ny + e[8] * nz;
-          n.array[k + 1] = e[1] * nx + e[5] * ny + e[9] * nz;
-          n.array[k + 2] = e[2] * nx + e[6] * ny + e[10] * nz;
-        }
-      }
-      p.needsUpdate = n.needsUpdate = true;
-    });
-  }
+
 }
 
 export function anatomyRegions(suit, neck) {

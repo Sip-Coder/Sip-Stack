@@ -3,7 +3,6 @@
 // boundary vertices with the torso. Only the wrist uses a nonuniform ring:
 // it joins the small isosurface used to sculpt the opposing thumb and grip.
 import * as T from 'three';
-import { edgeTable, triTable } from 'three/addons/objects/MarchingCubes.js';
 
 const tau = 2 * Math.PI;
 const mix = T.MathUtils.lerp;
@@ -19,20 +18,9 @@ const corners = [
   [1, 1, 1],
   [0, 1, 1],
 ];
-const edges = [
-  [0, 1],
-  [1, 2],
-  [2, 3],
-  [3, 0],
-  [4, 5],
-  [5, 6],
-  [6, 7],
-  [7, 4],
-  [0, 4],
-  [1, 5],
-  [2, 6],
-  [3, 7],
-];
+// Six consistently oriented cells meet along the body diagonal. A shared face
+// uses the same diagonal from either side, including between adjacent fingers.
+const tetrahedra = [[0,1,2,6], [0,2,3,6], [0,3,7,6], [0,7,4,6], [0,4,5,6], [0,5,1,6]];
 
 const chestShape = [
   // y above chest, half-width, depth, spinal offset
@@ -118,7 +106,27 @@ function fingers() {
   return digits;
 }
 
-const digits = fingers();
+// Store segment tangents and their influence bounds once. Most voxels are
+// outside every finger and only need the elliptical palm field.
+const digits = fingers().map(({ points, radius }, finger) => {
+  const margin = radius * 1.07 + 0.009;
+  return {
+    minX: Math.min(...points.map(p => p[0])) - margin,
+    maxX: Math.max(...points.map(p => p[0])) + margin,
+    minY: Math.min(...points.map(p => p[1])) - margin,
+    maxY: Math.max(...points.map(p => p[1])) + margin,
+    minZ: Math.min(...points.map(p => p[2])) - margin,
+    maxZ: Math.max(...points.map(p => p[2])) + margin,
+    zScale: finger === 4 ? 1 : 1.32,
+    segments: points.slice(1).map(([x, y, z], i) => {
+      const [ax, ay, az] = points[i];
+      const dx = x - ax, dy = y - ay, dz = z - az;
+      return { ax, ay, az, dx, dy, dz, invLength: 1 / (dx*dx + dy*dy + dz*dz),
+        radius: radius * mix(1.07, 0.72, i / (points.length - 1)),
+        taper: radius * (0.72 - 1.07) / (points.length - 1) };
+    }),
+  };
+});
 const palm = [
   [-0.041, 0.009, 0.013, 0.001],
   [-0.033, 0.016, 0.019, 0],
@@ -142,27 +150,14 @@ function handField(x, y, z) {
   }
   if (y < -0.003)
     for (const finger of digits) {
+      if (x < finger.minX || x > finger.maxX || y < finger.minY || y > finger.maxY ||
+          z < finger.minZ || z > finger.maxZ) continue;
       let fd = 1;
-      for (let j = 1; j < finger.points.length; j++) {
-        const a = finger.points[j - 1],
-          b = finger.points[j],
-          dx = b[0] - a[0],
-          dy = b[1] - a[1],
-          dz = b[2] - a[2],
-          t = clamp(
-            ((x - a[0]) * dx + (y - a[1]) * dy + (z - a[2]) * dz) / (dx * dx + dy * dy + dz * dz),
-            0,
-            1,
-          );
-        const r = finger.radius * mix(1.07, 0.72, (j - 1 + t) / (finger.points.length - 1));
-        fd = Math.min(
-          fd,
-          Math.hypot(
-            x - a[0] - dx * t,
-            y - a[1] - dy * t,
-            (z - a[2] - dz * t) * (finger === digits[4] ? 1 : 1.32),
-          ) - r,
-        );
+      for (const seg of finger.segments) {
+        const sx = x-seg.ax, sy = y-seg.ay, sz = z-seg.az;
+        const t = clamp((sx*seg.dx + sy*seg.dy + sz*seg.dz) * seg.invLength, 0, 1);
+        const ex = sx - t*seg.dx, ey = sy - t*seg.dy, ez = (sz - t*seg.dz)*finger.zScale;
+        fd = Math.min(fd, Math.sqrt(ex*ex + ey*ey + ez*ez) - seg.radius - t*seg.taper);
       }
       const k = 0.00025 + 0.00175 * T.MathUtils.smoothstep(y, -0.044, -0.033),
         h = Math.max(0, k - Math.abs(fd - d));
@@ -173,7 +168,9 @@ function handField(x, y, z) {
 
 // Sample only the fingers at sculpt resolution. A horizontal slice at the
 // wrist supplies a single ordered ring that the forearm can sew directly.
+const handCache = new Map();
 function sculptHand(step) {
+  if (handCache.has(step)) return handCache.get(step);
   const limits = [
     [-0.027, 0.025],
     [-0.062, 0.005],
@@ -183,58 +180,66 @@ function sculptHand(step) {
     const n = Math.ceil((b - a) / step);
     return Array.from({ length: n + 1 }, (_, i) => mix(a, b, i / n));
   });
-  const [xs, ys, zs] = axes,
-    nx = xs.length,
-    ny = ys.length,
-    plane = nx * ny;
-  const field = new Float32Array(plane * zs.length),
-    pos = [],
-    indices = [],
-    ring = [],
-    cache = new Map();
-  for (let k = 0; k < zs.length; k++)
-    for (let j = 0; j < ny; j++)
-      for (let i = 0; i < nx; i++) field[k * plane + j * nx + i] = handField(xs[i], ys[j], zs[k]);
-  const cornerId = new Int32Array(8),
-    points = new Int32Array(12);
-  for (let k = 0; k < zs.length - 1; k++)
-    for (let j = 0; j < ny - 1; j++)
-      for (let i = 0; i < nx - 1; i++) {
-        let inside = 0;
-        for (let n = 0; n < 8; n++) {
-          const [a, b, c] = corners[n],
-            id = (k + c) * plane + (j + b) * nx + i + a;
-          cornerId[n] = id;
-          if (field[id] < 0) inside |= 1 << n;
-        }
-        const mask = edgeTable[inside];
-        if (!mask) continue;
-        for (let e = 0; e < 12; e++)
-          if (mask & (1 << e)) {
-            const [v, w] = edges[e],
-              ca = corners[v],
-              cb = corners[w],
-              ia = cornerId[v],
-              ib = cornerId[w];
-            const id = Math.min(ia, ib) * 3 + (ca[0] !== cb[0] ? 0 : ca[1] !== cb[1] ? 1 : 2);
-            let q = cache.get(id);
-            if (q === undefined) {
-              const t = clamp(field[ia] / (field[ia] - field[ib]), 0.003, 0.997);
-              q = pos.length;
-              pos.push([
-                mix(xs[i + ca[0]], xs[i + cb[0]], t) * 1.14,
-                mix(ys[j + ca[1]], ys[j + cb[1]], t) * 1.06,
-                mix(zs[k + ca[2]], zs[k + cb[2]], t) * 1.14,
-              ]);
-              if (j + ca[1] === ny - 1 && j + cb[1] === ny - 1) ring.push(q);
-              cache.set(id, q);
-            }
-            points[e] = q;
+  const [xs, ys, zs] = axes;
+  const nx = xs.length, ny = ys.length, plane = nx * ny;
+  const offsets = corners.map(([x,y,z]) => x + y*nx + z*plane);
+  const values = new Float32Array(plane*zs.length);
+  const pos = [], indices = [], ring = [], cache = new Map();
+  for (let k=0; k<zs.length; k++)
+    for (let j=0; j<ny; j++)
+      for (let i=0; i<nx; i++)
+        values[k*plane+j*nx+i] = handField(xs[i],ys[j],zs[k]);
+  let origin = 0, column = 0, row = 0, depth = 0;
+  function crossing(a,b) {
+    const ia=origin+offsets[a], ib=origin+offsets[b];
+    const key=Math.min(ia,ib)*values.length+Math.max(ia,ib);
+    if (cache.has(key)) return cache.get(key);
+    const t = clamp(values[ia] / (values[ia]-values[ib]), .001,.999);
+    const first=corners[a], second=corners[b];
+    const id=pos.length;
+    pos.push([1.14*mix(xs[column+first[0]],xs[column+second[0]],t),
+      1.06*mix(ys[row+first[1]],ys[row+second[1]],t),
+      1.14*mix(zs[depth+first[2]],zs[depth+second[2]],t)]);
+    if (row+first[1] === ny-1 && row+second[1] === ny-1) ring.push(id);
+    cache.set(key,id);
+    return id;
+  }
+  function triangle(a,b,c,inside,outside) {
+    const p=pos[a], q=pos[b], r=pos[c];
+    const ux=q[0]-p[0],uy=q[1]-p[1],uz=q[2]-p[2];
+    const vx=r[0]-p[0],vy=r[1]-p[1],vz=r[2]-p[2];
+    const from=corners[inside], to=corners[outside];
+    const facing=(uy*vz-uz*vy)*(to[0]-from[0]) +
+      (uz*vx-ux*vz)*(to[1]-from[1]) +(ux*vy-uy*vx)*(to[2]-from[2]);
+    if (facing>0) indices.push(a,b,c);
+    else indices.push(a,c,b);
+  }
+  const inside=[],outside=[];
+  for (depth=0;depth<zs.length-1;depth++)
+    for (row=0;row<ny-1;row++)
+      for (column=0;column<nx-1;column++) {
+        origin=depth*plane+row*nx+column;
+        let mask=0;
+        for (let n=0;n<8;n++) if (values[origin+offsets[n]]<0) mask|=1<<n;
+        if (mask===0 || mask===255) continue;
+        for (const tetra of tetrahedra) {
+          inside.length=outside.length=0;
+          for (const c of tetra) ((mask & (1<<c)) ? inside : outside).push(c);
+          if (!inside.length || !outside.length) continue;
+          if (inside.length===2) {
+            const [a,b]=inside, [c,d]=outside;
+            const ac=crossing(a,c), ad=crossing(a,d), bc=crossing(b,c), bd=crossing(b,d);
+            triangle(ac,ad,bd,a,c);triangle(ac,bd,bc,a,c);
+          } else {
+            const [one]=inside.length===1 ? inside : outside;
+            const [a,b,c]=inside.length===1 ? outside : inside;
+            triangle(crossing(one,a),crossing(one,b),crossing(one,c),inside[0],outside[0]);
           }
-        for (let q = inside * 16; triTable[q] !== -1; q += 3)
-          indices.push(points[triTable[q]], points[triTable[q + 2]], points[triTable[q + 1]]);
+        }
       }
-  return { pos, indices, ring };
+  const shape = { pos, indices, ring };
+  handCache.set(step, shape);
+  return shape;
 }
 
 function orientedRing(indices, points) {
@@ -330,8 +335,8 @@ export function makeSippyBody(rig, skin) {
       updates.push(result.update);
     }
   function build(mobile) {
-    const n = mobile ? 24 : 40,
-      hand = sculptHand(mobile ? 0.00315 : 0.00235),
+    const n = mobile ? 16 : 24,
+      hand = sculptHand(mobile ? 0.0054 : 0.0047),
       pos = [],
       skinIndices = [],
       weights = [],
@@ -365,7 +370,7 @@ export function makeSippyBody(rig, skin) {
     }
     const lo = 7,
       hi = 10,
-      span = n === 40 ? 4 : 2;
+      span = n === 24 ? 2 : 1;
     const trunk = chestShape.map(([y, rx, rz, z], row) =>
       ellipse(
         0,
@@ -493,7 +498,7 @@ export function makeSippyBody(rig, skin) {
       );
     }
     const g = new T.BufferGeometry();
-    g.setAttribute('position', new T.Float32BufferAttribute(pos.flat(), 3).setUsage(T.DynamicDrawUsage));
+    g.setAttribute('position', new T.Float32BufferAttribute(pos.flat(), 3));
     g.setIndex(index);
     const uv = new Float32Array(pos.length * 2);
     for (let i = 0; i < pos.length; i++) {
@@ -508,20 +513,7 @@ export function makeSippyBody(rig, skin) {
     g.computeBoundingSphere();
     for (let i = 1; i < 7; i++)
       for (let j = 0; j < n; j++) hips.trunk.push({ i: trunk[i][j], y: chestShape[i][0] });
-    // Recalculate only the portions which slide on the pelvis and turn in
-    // the armscyes. Rigid hand detail and the axial limb normals stay on
-    // their bones and do not need to be regenerated every simulation tick.
-    const moving = new Set(
-      [...hips.trunk, ...hips.interior, ...hips.fork, ...caps.flatMap((c) => c.ring)].map((p) => p.i),
-    );
-    const faces = [];
-    for (let j = 0; j < index.length; j += 3)
-      if (moving.has(index[j]) || moving.has(index[j + 1]) || moving.has(index[j + 2]))
-        faces.push(index[j] * 3, index[j + 1] * 3, index[j + 2] * 3);
-    const offsets = Uint32Array.from(moving, (i) => i * 3),
-      touched = new Uint8Array(pos.length);
-    for (const i of moving) touched[i] = 1;
-    return { g, regions, knees, hips, caps, faces: Uint32Array.from(faces), offsets, touched };
+    return { g, regions, knees, hips, caps };
   }
   const high = build(false),
     mobile = build(true),
@@ -685,39 +677,24 @@ export function makeSippyBody(rig, skin) {
       }
     }
   }
-  function updateNormals({ g, faces, offsets, touched }) {
-    const p = g.attributes.position.array,
-      norm = g.attributes.normal,
-      n = norm.array;
-    for (const i of offsets) n[i] = n[i + 1] = n[i + 2] = 0;
-    for (let i = 0; i < faces.length; i += 3) {
-      const a = faces[i],
-        b = faces[i + 1],
-        c = faces[i + 2],
-        x1 = p[b] - p[a],
-        y1 = p[b + 1] - p[a + 1],
-        z1 = p[b + 2] - p[a + 2],
-        x2 = p[c] - p[a],
-        y2 = p[c + 1] - p[a + 1],
-        z2 = p[c + 2] - p[a + 2],
-        x = y1 * z2 - z1 * y2,
-        y = z1 * x2 - x1 * z2,
-        z = x1 * y2 - y1 * x2;
-      for (let j = i; j < i + 3; j++) {
-        const k = faces[j];
-        if (!touched[k / 3]) continue;
-        n[k] += x;
-        n[k + 1] += y;
-        n[k + 2] += z;
+  for (const shape of [high, mobile]) {
+    posePelvis(shape);
+    poseShoulders(shape);
+    shape.g.computeVertexNormals();
+    // Grade the covered skin bridges with the same end bones as the fitted costume.
+    const index = shape.g.attributes.skinIndex, weight = shape.g.attributes.skinWeight;
+    for (const cap of shape.caps) {
+      const w = T.MathUtils.smoothstep(cap.row / 10, 0, 1);
+      for (const {i} of cap.ring) {
+        index.setXY(i, 0, frames['arm' + cap.side] + armShape.length - 1);
+        weight.setXY(i, 1 - w, w);
       }
     }
-    for (const i of offsets) {
-      const inv = 1 / (Math.sqrt(n[i] * n[i] + n[i + 1] * n[i + 1] + n[i + 2] * n[i + 2]) || 1);
-      n[i] *= inv;
-      n[i + 1] *= inv;
-      n[i + 2] *= inv;
+    for (const v of shape.hips.interior) {
+      const w = T.MathUtils.smoothstep(v.sample / 14, 0, 1);
+      index.setXY(v.i, frames['leg' + v.side] + legShape.length - 1, 0);
+      weight.setXY(v.i, 1 - w, w);
     }
-    norm.needsUpdate = true;
   }
   return {
     mesh,
@@ -728,10 +705,7 @@ export function makeSippyBody(rig, skin) {
     },
     update() {
       for (const fn of updates) fn();
-      const shape = mesh.geometry === mobile.g ? mobile : high;
-      posePelvis(shape);
-      poseShoulders(shape);
-      updateNormals(shape);
+
     },
   };
 }

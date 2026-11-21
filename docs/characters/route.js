@@ -1,5 +1,5 @@
-// The shared router runs first. Its fallback releases Village and the two
-// dioramas when entering #heros. Keep this fourth view local to the tab.
+// The shared router releases the previous view. Mount the WebGL stage only
+// when this tab is visible.
 const panel = document.querySelector('#heros');
 const host = document.querySelector('#character-test');
 const status = document.querySelector('#character-status');
@@ -25,6 +25,32 @@ function loadStyles() {
 }
 
 let styles;
+const selectionKey = 'sip-heros-selected';
+function initialHero() {
+  try {
+    const name = sessionStorage.getItem(selectionKey);
+    if (name === 'roma' || name === 'hummin') return name;
+  } catch { /* Storage can be disabled in embedded or private windows. */ }
+  return 'sippy';
+}
+
+function rememberHero(name) {
+  try { sessionStorage.setItem(selectionKey, name); } catch { /* Optional across reloads. */ }
+}
+
+function preloadFloor(hero) {
+  // Start the renderer and the selected model alongside the controller.
+  // Native imports discover the remaining small modules from those entries.
+  const modules = ['three', './stage.js', './motion.js', './' + hero + '.js'];
+  for (const specifier of modules) {
+    const link = document.createElement('link');
+    link.rel = 'modulepreload';
+    link.crossOrigin = 'anonymous';
+    if (specifier === 'three' && !import.meta.resolve) continue;
+    link.href = specifier === 'three' ? import.meta.resolve(specifier) : new URL(specifier, import.meta.url);
+    document.head.append(link);
+  }
+}
 async function syncScene() {
   if (instance) {
     instance.setVisible(active());
@@ -32,11 +58,15 @@ async function syncScene() {
   }
   if (!active() || loading || failed) return;
   loading = true;
+  const hero = initialHero();
   try {
-    styles ??= loadStyles();
+    if (!styles) {
+      preloadFloor(hero);
+      styles = loadStyles();
+    }
     const [{ mountCharacters }] = await Promise.all([import('./main.js'), styles]);
     if (active()) {
-      instance = await mountCharacters(host);
+      instance = await mountCharacters(host, hero, rememberHero);
       instance.setVisible(active());
       status.hidden = true;
     }
@@ -84,11 +114,6 @@ function route() {
   syncScene();
 }
 
-// The legacy switcher's button listener maps unknown modes to Outline.
-tab.addEventListener('click', event => {
-  event.stopImmediatePropagation();
-  location.hash = 'heros';
-}, { capture: true });
 addEventListener('hashchange', route);
 document.addEventListener('visibilitychange', syncScene);
 route();

@@ -75,6 +75,7 @@ export function makeScarf(rig, wool, apron) {
   // the apron straps. The rounded hem carries individually twisted tassels.
   const tail = new T.Group();
   tail.name = 'Scarf free end';
+  tail.userData.dynamicPose = true;
   rig.chest.add(tail);
   tail.position.set(0.077, 0.125, 0.083);
   const profile = [
@@ -131,44 +132,6 @@ export function makeScarf(rig, wool, apron) {
   apron.surfaces.scarfTail.push(fringe);
   for (const geometry of strands) geometry.dispose();
   apron.pairs.push({ outer: 'scarfTail', inner: 'bib' }, { outer: 'scarfTail', inner: 'scarf' });
-  let swing = 0,
-    velocity = 0,
-    lastTime = -1;
-  function step(frame, accel, jolt) {
-    if (frame.time <= lastTime) swing = velocity = 0;
-    lastTime = frame.time;
-    const drive = T.MathUtils.clamp(
-      0.006 * accel +
-        0.003 * jolt +
-        0.06 * frame.turn +
-        0.045 * Math.sin(frame.phase) * Math.min(1, frame.speed / 3.9),
-      -0.16,
-      0.16,
-    );
-    velocity += ((drive - swing) * 88 - velocity * 13) * frame.dt;
-    swing += velocity * frame.dt;
-    tail.rotation.z = swing * 0.26;
-    const knee = Math.max(-rig.thighL.rotation.x, -rig.thighR.rotation.x, 0);
-    const raisedKnee = T.MathUtils.smoothstep(knee, 0.52, 1.3);
-    // The knit bunches over the bent thigh instead of dragging through the knee bearing.
-    tail.scale.y = 1 - 0.36 * raisedKnee;
-    tail.position.z =
-      0.083 + 0.008 * raisedKnee + (frame.emote >= 0 ? 0.008 * Math.sin(Math.PI * frame.emote) ** 2 : 0);
-    tail.rotation.x =
-      -0.06 -
-      Math.abs(swing) * 0.77 -
-      0.28 * raisedKnee -
-      0.49 * T.MathUtils.smoothstep(rig.chest.rotation.x, 0.14, 0.38);
-    const raised = Math.max(Math.abs(rig.upperArmL.rotation.z), Math.abs(rig.upperArmR.rotation.z));
-    collar.position.y = 0.001 * raisedKnee - 0.002 * T.MathUtils.smoothstep(raised, 1.4, 2.5);
-    collar.scale.z = 1 + 0.11 * raisedKnee;
-    collar.morphTargetInfluences[0] = Math.max(
-      raisedKnee,
-      T.MathUtils.smoothstep(raised, 1.4, 2.5),
-      T.MathUtils.smoothstep(rig.chest.rotation.x, 0.14, 0.31),
-    );
-    collar.scale.x =
-      1 - 0.42 * T.MathUtils.smoothstep(raised, 1.4, 2.5) - 0.09 * T.MathUtils.smoothstep(knee, 0.8, 1.4);
-  }
-  return { tail, mesh, step };
+  tail.rotation.x = -0.06;
+  return { tail, mesh, collar };
 }

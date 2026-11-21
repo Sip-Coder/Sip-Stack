@@ -1,6 +1,7 @@
 // Hummin's cast shells, OLED display and fitted field gear share the articulated rig.
 // The normalized sole plane sits 0.047 below each ankle.
 import * as T from 'three';
+import { secondaryMotion } from './secondary.js';
 import { fitCasting, fieldCasting } from './hummin-shell-fit.js';
 import { fitArmor } from './hummin-panels.js';
 import { detailMaterial } from './material-detail.js';
@@ -162,8 +163,8 @@ export function buildHummin(rig) {
     return node;
   };
   function oval(parent, mat, x, y, z, rx, ry, rz) {
-    const mesh = part(parent, new T.SphereGeometry(1, 24, 16), mat, x, y, z);
-    mesh.userData.mobileGeometry = new T.SphereGeometry(1, 12, 8);
+    const mesh = part(parent, new T.SphereGeometry(1, 18, 12), mat, x, y, z);
+    mesh.userData.mobileGeometry = new T.SphereGeometry(1, 10, 7);
     mesh.scale.set(rx, ry, rz);
     return mesh;
   }
@@ -171,7 +172,7 @@ export function buildHummin(rig) {
     const a = new T.Vector3(...start),
       b = new T.Vector3(...end);
     const axis = b.clone().sub(a);
-    const mesh = part(parent, new T.CylinderGeometry(capRadius, radius, axis.length(), 12), mat);
+    const mesh = part(parent, new T.CylinderGeometry(capRadius, radius, axis.length(), 8), mat);
     mesh.position.copy(a).lerp(b, 0.5);
     mesh.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), axis.normalize());
     return mesh;
@@ -184,7 +185,7 @@ export function buildHummin(rig) {
     );
     return part(
       parent,
-      new T.TubeGeometry(path, smooth ? Math.max(10, points.length * 4) : points.length, radius, 6, false),
+      new T.TubeGeometry(path, smooth ? Math.max(6, points.length * 2) : points.length, radius, 5, false),
       mat,
     );
   }
@@ -195,10 +196,10 @@ export function buildHummin(rig) {
     if (!cuff && rings.at(-1)[1] !== 0) rings.push([rings.at(-1)[0], 0]);
     const g = new T.LatheGeometry(
       rings.map(([h, r]) => new T.Vector2(r, h)),
-      32,
+      22,
     );
     const mesh = part(parent, g, mat, x, y, z);
-    mesh.userData.mobileGeometry = new T.LatheGeometry(g.parameters.points, 16);
+    mesh.userData.mobileGeometry = new T.LatheGeometry(g.parameters.points, 12);
     mesh.scale.z = depth;
     return mesh;
   }
@@ -221,7 +222,7 @@ export function buildHummin(rig) {
   }
   function pivot(parent, x, y, z, radius, thickness) {
     function disc(mat, r, length, offset) {
-      const disk = part(parent, new T.CylinderGeometry(r, r, length, 28), mat, x + offset, y, z);
+      const disk = part(parent, new T.CylinderGeometry(r, r, length, 18), mat, x + offset, y, z);
       disk.rotation.z = PI / 2;
       return disk;
     }
@@ -265,8 +266,8 @@ export function buildHummin(rig) {
     const p = [],
       uv = [],
       idx = [];
-    const steps = 88,
-      rings = 12;
+    const steps = 52,
+      rings = 8;
     for (let row = 0; row <= rings; row++) {
       const radius = row / rings;
       for (let i = 0; i <= steps; i++) {
@@ -419,6 +420,7 @@ export function buildHummin(rig) {
   // The short receiver whisker is mounted on the port service pod. Its
   // hinge sits below the crown even when the spring points straight up.
   const antenna = group(head, 0.12, 0.046, -0.033);
+  antenna.userData.dynamicPose = true;
   antenna.scale.set(-0.28, 0.78, 1.0);
   rod(antenna, titanium, [0, 0, 0], [-0.004, 0.022, -0.013], 0.0039, 0.0025);
   rod(antenna, graphite, [-0.004, 0.019, -0.011], [-0.016, 0.053, -0.037], 0.0025, 0.0019);
@@ -601,7 +603,7 @@ export function buildHummin(rig) {
   );
   const { flaps, tools, pen } = apron;
   const neckwear = makeScarf(rig, scarf, apron);
-  const stowGear = fitPouches(
+  const gear = fitPouches(
     rig,
     apron,
     { leather, darkLeather, leatherEdge, thread, agedBrass },
@@ -637,8 +639,9 @@ export function buildHummin(rig) {
   }
   const worm = line(tools, titanium, spiral, 0.00125).geometry;
   const ends = Array.from(worm.index.array),
-    lastRing = worm.attributes.position.count - 7;
-  for (let k = 1; k < 5; k++) ends.push(0, k + 1, k, lastRing, lastRing + k, lastRing + k + 1);
+    sides = worm.parameters.radialSegments,
+    lastRing = worm.attributes.position.count - (sides + 1);
+  for (let k = 1; k < sides - 1; k++) ends.push(0, k + 1, k, lastRing, lastRing + k, lastRing + k + 1);
   worm.setIndex(ends);
   rod(tools, agedBrass, [0.025, 0.024, -0.001], [0.025, 0.033, -0.001], 0.0024);
   rod(tools, darkLeather, [0.013, 0.032, -0.001], [0.038, 0.034, -0.001], 0.0033);
@@ -1010,7 +1013,15 @@ export function buildHummin(rig) {
         'uv',
         new T.BufferAttribute(new Float32Array(geometry.attributes.position.count * 2), 2),
       );
-    const baked = geometry.index ? geometry.toNonIndexed() : geometry.clone();
+    // A smooth ring vertex serves several triangles. Fit its casting once and
+    // preserve that index through both the joint and final render batches.
+    const baked = geometry;
+    if (!baked.index) {
+      const count = baked.attributes.position.count;
+      const indices = count > 65535 ? new Uint32Array(count) : new Uint16Array(count);
+      for (let i = 0; i < count; i++) indices[i] = i;
+      baked.setIndex(new T.BufferAttribute(indices, 1));
+    }
     baked.applyMatrix4(mesh.matrix);
     fitCasting(baked, parent);
     fieldCasting(baked, parent);
@@ -1145,30 +1156,15 @@ export function buildHummin(rig) {
   helmetHousing.scale.set(1.17, 1.427, 1.15);
   helmetHousing.position.set(0, 0.011, 0.0055);
   head.add(helmetHousing);
-  apron.prepareWrinkles();
   rig.secondary ??= {};
   rig.secondary.hummin = { apron: flaps[0], antenna, tools, scarf: neckwear.tail };
-  let toolAngle = 0,
-    toolVelocity = 0,
-    mastAngle = 0,
-    mastVelocity = 0,
-    lastSpeed = 0,
-    lastVy = 0;
-  let springL = 0,
-    velocityL = 0,
-    springR = 0,
-    velocityR = 0,
-    servo = 0,
-    servoVelocity = 0;
+  const secondary = secondaryMotion(rig, './hummin-secondary.js', { apron, gear, neckwear, antenna, tools });
+  let servo = 0, servoVelocity = 0;
   let lastTime = -1;
   return function animate(frame) {
     const { dt, time, speed, state, emote } = frame;
     if (time <= lastTime) {
-      springL = springR = -0.09;
-      velocityL = velocityR = 0;
-      servo = servoVelocity = toolAngle = toolVelocity = mastAngle = mastVelocity = 0;
-      lastSpeed = speed;
-      lastVy = frame.vy;
+      servo = servoVelocity = 0;
       expression.value.set(1, 0, 0, 0);
     }
     lastTime = time;
@@ -1183,29 +1179,6 @@ export function buildHummin(rig) {
     rig.upperArmR.position.x =
       -0.125 - 0.018 * T.MathUtils.smoothstep(Math.abs(rig.upperArmR.rotation.z), 1.5, 2.5);
 
-    // Stowage and service antenna are driven by the same root impulses as the
-    // apron. Each has its own restoring torque and damping at the fixed step.
-    const accel = dt > 0 ? T.MathUtils.clamp((speed - lastSpeed) / dt, -20, 20) : 0;
-    const jolt = dt > 0 ? T.MathUtils.clamp((frame.vy - lastVy) / dt, -22, 22) : 0;
-    lastSpeed = speed;
-    lastVy = frame.vy;
-    const stride = Math.sin((frame.phase ?? 0) * 2) * Math.min(1, speed / 3.9);
-    const mastTarget = T.MathUtils.clamp(
-      -0.014 * accel - 0.008 * jolt + 0.15 * stride + 0.052 * frame.turn,
-      -0.48,
-      0.48,
-    );
-    const toolTarget = T.MathUtils.clamp(
-      0.008 * accel + 0.005 * jolt - 0.13 * stride - 0.025 * frame.turn,
-      -0.35,
-      0.35,
-    );
-    mastVelocity += ((mastTarget - mastAngle) * 120 - 11 * mastVelocity) * dt;
-    toolVelocity += ((toolTarget - toolAngle) * 105 - 13 * toolVelocity) * dt;
-    mastAngle += mastVelocity * dt;
-    toolAngle += toolVelocity * dt;
-    antenna.rotation.x = mastAngle;
-    tools.rotation.z = toolAngle;
     const beat = emote >= 0 ? Math.sin(PI * emote) ** 2 : 0;
     const bow = emote >= 0 ? Math.sin(PI * T.MathUtils.clamp((emote - 0.18) / 0.76, 0, 1)) ** 2 : 0;
     // Acceleration-limited servo tracking allows a small settling overshoot.
@@ -1240,16 +1213,6 @@ export function buildHummin(rig) {
       state === 'idle' && emote < 0
         ? T.MathUtils.smoothstep(idleCycle, 8.5, 9.0) * (1 - T.MathUtils.smoothstep(idleCycle, 9.4, 9.9))
         : 0;
-    const tug = Math.min(0.26, Math.abs(frame.vy) * 0.045) + speed * 0.02;
-    const aimL = Math.max(-0.84, Math.min(0, rig.thighL.rotation.x) * 0.58 - 0.09 - tug);
-    const aimR = Math.max(-0.84, Math.min(0, rig.thighR.rotation.x) * 0.58 - 0.09 - tug);
-    velocityL += ((aimL - springL) * 160 - velocityL * 20) * dt;
-    velocityR += ((aimR - springR) * 160 - velocityR * 20) * dt;
-    springL += velocityL * dt;
-    springR += velocityR * dt;
-    flaps[0].rotation.set(Math.min(springL, aimL + 0.065, springR, aimR + 0.065), 0, 0);
-    apron.crease(frame);
-    stowGear();
-    neckwear.step(frame, accel, jolt);
+    secondary(frame);
   };
 }

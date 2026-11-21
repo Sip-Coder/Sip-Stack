@@ -1,34 +1,33 @@
 import * as T from 'three';
-import { setModelDetail } from './material-detail.js';
+import { setModelDetail } from './model-tier.js';
 import { createActor } from './rig.js';
 import { FIXED_DT, createController } from './motion.js';
-import { buildSippy } from './sippy.js';
-import { buildRoma } from './roma.js';
-import { buildHummin } from './hummin.js';
-import { createStage, debugRig, contactShadows } from './stage.js';
-import { createUI, heights, names } from './ui.js';
+import { createStage, contactShadows } from './stage.js';
+import { createUI, heights, labels, names } from './ui.js';
 import { createInput } from './input.js';
+import { optimizeCharacter } from './render-batches.js';
 
-export function mountCharacters(host) {
+const loadBuilder = [
+  () => import('./sippy.js').then(m => m.buildSippy),
+  () => import('./roma.js').then(m => m.buildRoma),
+  () => import('./hummin.js').then(m => m.buildHummin),
+];
+
+export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
   const el = createUI(host),
     stage = createStage(el),
     loading = el.querySelector('.ct-loading');
-  const builders = [buildSippy, buildRoma, buildHummin];
-  const cast = names.map((name, i) => {
-    const rig = createActor(name, heights[i]);
-    const pose = builders[i](rig),
-      ctrl = createController(rig);
-    stage.scene.add(rig.root);
-    return { rig, pose, ctrl, contactShadow: contactShadows(stage.scene, rig) };
-  });
+  const cast = Array(3).fill(null);
+  const pending = new Map();
   const query = new URLSearchParams(location.search);
-  const debug =
-    query.get('debug') === 'heros' ? cast.map((a) => debugRig(stage.scene, a.rig, a.ctrl)) : null;
+  const debug = query.get('debug') === 'heros';
+  let autoLimited = false, slowWindows = 0, stepCost = 0, windowCost = 0;
+  let firstHeroPainted = false;
   const neutral = { x: 0, z: 0, run: false, jump: false, roll: false, emote: false };
   const steering = { ...neutral };
   const target = new T.Vector3(),
     desired = new T.Vector3();
-  let selected = 0,
+  let selected = Math.max(0, names.indexOf(initialHero)),
     view = 'follow',
     party = false,
     slow = false,
@@ -59,39 +58,71 @@ export function mountCharacters(host) {
     lineupButton = find('[data-action=lineup]'),
     slowCheck = find('[data-setting=slow]');
   function updateHUD() {
-    const f = cast[selected].ctrl.frame;
+    const f = cast[selected]?.ctrl.frame;
+    if (!f) return;
     const state = view === 'lineup' ? 'Lineup' : f.emote >= 0 ? 'Emote' : f.state;
     if (stateText.textContent !== state) stateText.textContent = state;
     speedText.textContent = (f.speed * 3600 / 1609.344).toFixed(2) + ' mph';
-    rateText.textContent = rate + ' Hz physics';
+    rateText.textContent = `${rate} Hz physics · ${stepCost.toFixed(1)} / ${(FIXED_DT * 1000).toFixed(1)} ms`;
   }
   function showCast() {
     for (let i = 0; i < cast.length; i++)
-      cast[i].rig.root.visible = view === 'lineup' || party || i === selected;
+      if (cast[i]) cast[i].rig.root.visible = view === 'lineup' || party || i === selected;
     groupButton.setAttribute('aria-pressed', String(party));
     lineupButton.setAttribute('aria-pressed', String(view === 'lineup'));
     stage.scale.visible = view === 'lineup';
     for (let i = 0; i < picks.length; i++) picks[i].setAttribute('aria-pressed', String(i === selected));
+    stage.invalidateShadow();
     updateHUD();
+  }
+  function place(i) {
+    const actor = cast[i];
+    const side = i < selected ? i : i - 1;
+    const follower = view !== 'lineup' && i !== selected;
+    actor.ctrl.reset(view === 'lineup' ? (i - 1) * 1.04 : follower ? (side === 0 ? -0.9 : 0.9) : 0,
+      follower ? -0.85 : 0);
+    stepActor(actor, neutral);
+  }
+  function loadActor(i) {
+    if (pending.has(i)) return pending.get(i);
+    if (cast[i]) return Promise.resolve();
+    const job = loadBuilder[i]().then(async build => {
+      const rig = createActor(names[i], heights[i]);
+      const pose = build(rig), ctrl = createController(rig);
+      optimizeCharacter(rig);
+      setModelDetail(rig.root, actualTier);
+      const drawDebug = debug ? (await import('./debug-rig.js')).debugRig(stage.scene, rig, ctrl) : null;
+      stage.scene.add(rig.root);
+      cast[i] = { rig, pose, ctrl, drawDebug, contactShadow: contactShadows(stage.scene, rig) };
+      place(i);
+      showCast();
+      if (!lost && rig.root.visible) await warm();
+    }).finally(() => pending.delete(i));
+    pending.set(i, job);
+    return job;
+  }
+  function requestedCast() {
+    const indices = party || view === 'lineup' ? [0, 1, 2] : [selected];
+    const missing = indices.filter(i => !cast[i]);
+    loading.hidden = !missing.length;
+    if (missing.length) loading.textContent = 'Preparing ' + missing.map(i => labels[i]).join(' and ') + '…';
+    return Promise.all(indices.map(loadActor)).catch(async error => {
+      try {
+        const { recover } = await import('../assets/sip-recover.js');
+        if (await recover('Heros', error, indices.map(i => './characters/' + names[i] + '.js'))) return;
+      } catch {
+        // Recovery itself can be unavailable while the connection is down.
+      }
+      loading.hidden = false;
+      loading.textContent = 'Could not load the character. Refresh the page to retry.';
+    });
   }
   function stepActor(actor, input) {
     actor.pose(actor.ctrl.step(FIXED_DT, input));
     actor.ctrl.finishPose();
   }
   function reset() {
-    let follower = 0;
-    for (let i = 0; i < 3; i++) {
-      const a = cast[i];
-      let x = 0,
-        z = 0;
-      if (view === 'lineup') x = (i - 1) * 1.04;
-      else if (i !== selected) {
-        x = follower++ === 0 ? -0.9 : 0.9;
-        z = -0.85;
-      }
-      a.ctrl.reset(x, z);
-      stepActor(a, neutral);
-    }
+    for (let i = 0; i < cast.length; i++) if (cast[i]) place(i);
     debt = 0;
     previous = null;
     snap = true;
@@ -99,13 +130,15 @@ export function mountCharacters(host) {
     showCast();
   }
   function choose(i) {
-    if (i < 0 || i >= 3) return;
+    if (!Number.isInteger(i) || i < 0 || i >= names.length) return;
     selected = i;
+    rememberHero?.(names[i]);
     if (!party || view === 'lineup') {
       view = 'follow';
       reset();
     } else showCast();
     snap = true;
+    return requestedCast();
   }
   function setView(next) {
     if (!['front', 'side', 'back', 'lineup', 'follow'].includes(next)) return;
@@ -115,10 +148,11 @@ export function mountCharacters(host) {
       party = false;
       reset();
     }
-    if (next === 'follow') yaw = cast[selected].ctrl.frame.heading + Math.PI;
+    if (next === 'follow') yaw = (cast[selected]?.ctrl.frame.heading ?? 0) + Math.PI;
     pitch = 0.13;
     snap = true;
     showCast();
+    return requestedCast();
   }
   function action(cmd, value) {
     if (cmd === 'select') choose(value);
@@ -129,6 +163,7 @@ export function mountCharacters(host) {
       if (view === 'lineup') view = 'follow';
       party = !party;
       reset();
+      requestedCast();
     } else if (cmd === 'slow') {
       slow = !slow;
       slowCheck.checked = slow;
@@ -154,13 +189,17 @@ export function mountCharacters(host) {
   });
   const mobileDisplay = matchMedia('(pointer:coarse), (max-width:739px)');
   function quality() {
-    const auto = mobileDisplay.matches ? 'mobile' : 'high';
+    const auto = autoLimited || mobileDisplay.matches ? 'mobile' : stage.autoTier();
     actualTier = tierSelect.value === 'auto' ? auto : tierSelect.value;
     tierSelect.options[0].textContent = 'Auto · ' + (auto === 'high' ? 'High' : 'Mobile');
-    for (const actor of cast) setModelDetail(actor.rig.root, actualTier);
+    for (const actor of cast) if (actor) setModelDetail(actor.rig.root, actualTier);
     stage.quality(actualTier);
   }
-  tierSelect.addEventListener('change', quality);
+  tierSelect.addEventListener('change', () => {
+    autoLimited = false;
+    slowWindows = 0;
+    quality();
+  });
   mobileDisplay.addEventListener('change', () => {
     if (tierSelect.value === 'auto') quality();
   });
@@ -169,7 +208,7 @@ export function mountCharacters(host) {
   );
   function angle() {
     if (view === 'lineup') return 0.035;
-    const heading = cast[selected].ctrl.frame.heading;
+    const heading = cast[selected]?.ctrl.frame.heading ?? 0;
     if (view === 'front') return heading + 0.045;
     if (view === 'side') return heading + Math.PI / 2;
     if (view === 'back') return heading + Math.PI;
@@ -177,10 +216,11 @@ export function mountCharacters(host) {
   }
   function simulate(intent) {
     if (view === 'lineup') {
-      for (const a of cast) stepActor(a, neutral);
+      for (const a of cast) if (a) stepActor(a, neutral);
       return;
     }
     const driver = cast[selected];
+    if (!driver) return;
     stepActor(driver, intent);
     if (!party) return;
     const root = driver.rig.root.position,
@@ -189,14 +229,14 @@ export function mountCharacters(host) {
       sn = Math.sin(h);
     let slot = 0;
     for (let i = 0; i < 3; i++)
-      if (i !== selected) {
+      if (i !== selected && cast[i]) {
         const a = cast[i],
           p = a.rig.root.position,
           side = slot++ === 0 ? -1 : 1;
         let x = root.x + side * 0.83 * cs - 0.86 * sn - p.x,
           z = root.z - side * 0.83 * sn - 0.86 * cs - p.z;
         for (const other of cast)
-          if (other !== a) {
+          if (other && other !== a) {
             const dx = p.x - other.rig.root.position.x,
               dz = p.z - other.rig.root.position.z,
               d = Math.hypot(dx, dz);
@@ -217,9 +257,10 @@ export function mountCharacters(host) {
       }
   }
   function render(dt = FIXED_DT) {
-    if (!ready || lost || !visible || !stage.fit()) return;
-    const actor = cast[selected],
-      base = actor.rig.root.position;
+    const actor = cast[selected];
+    // Keep the last complete frame while the newly selected model downloads.
+    if (!ready || lost || !visible || !actor || !stage.fit()) return;
+    const base = actor.rig.root.position;
     if (view === 'lineup') desired.set(0.16, 0.94, 0);
     else desired.set(base.x, base.y + actor.rig.height * 0.5, base.z);
     if (snap || manual) target.copy(desired);
@@ -237,15 +278,19 @@ export function mountCharacters(host) {
     );
     stage.camera.lookAt(target);
     stage.illuminate(target);
-    for (const a of cast) a.contactShadow();
+    for (const a of cast) if (a) a.contactShadow();
     if (debug) {
       stage.scene.updateMatrixWorld(true);
-      for (const draw of debug) draw();
+      for (const a of cast) if (a?.rig.root.visible) a.drawDebug();
     }
     stage.draw();
     snap = false;
     stage.canvas.style.visibility = 'visible';
-    loading.hidden = true;
+    if (!firstHeroPainted) {
+      firstHeroPainted = true;
+      performance.mark('heros-first-hero-frame');
+    }
+    if (!(party || lineup) || cast.every(Boolean)) loading.hidden = true;
   }
   function active() {
     return visible && onscreen && !lost && !document.hidden && ready;
@@ -257,15 +302,24 @@ export function mountCharacters(host) {
     const dt = Math.min(0.2, wallTime);
     previous = now;
     debt += dt * (slow ? 0.25 : 1);
+    const due = Math.floor(debt / FIXED_DT);
+    // Drop whole overdue ticks. Preserve the fractional tick for smooth cadence.
+    debt -= due * FIXED_DT;
+    const steps = Math.min(2, due);
+    const start = performance.now();
+    for (let i = 0; i < steps; i++) simulate(input.sample(angle(), FIXED_DT));
+    windowCost += performance.now() - start;
+    windowSteps += steps;
     windowTime += wallTime;
-    while (debt >= FIXED_DT) {
-      debt -= FIXED_DT;
-      simulate(input.sample(angle(), FIXED_DT));
-      windowSteps++;
-    }
-    if (windowTime >= 0.5) {
+    if (windowTime >= 1) {
       rate = Math.round(windowSteps / windowTime);
-      windowTime = windowSteps = 0;
+      stepCost = windowSteps ? windowCost / windowSteps : 0;
+      slowWindows = !slow && cast[selected] && rate < 50 ? slowWindows + 1 : 0;
+      if (slowWindows >= 2 && actualTier === 'high' && tierSelect.value === 'auto') {
+        autoLimited = true;
+        quality();
+      }
+      windowTime = windowSteps = windowCost = 0;
     }
     hudTime += dt;
     if (hudTime >= 0.1) {
@@ -284,7 +338,7 @@ export function mountCharacters(host) {
       raf = 0;
       previous = null;
       debt = 0;
-      windowTime = windowSteps = 0;
+      windowTime = windowSteps = windowCost = slowWindows = 0;
       input.setEnabled(false);
     } else {
       input.setEnabled(!manual);
@@ -295,7 +349,9 @@ export function mountCharacters(host) {
   function warm() {
     const id = ++generation;
     ready = false;
-    stage.warm().then(() => {
+    previous = null;
+    debt = 0;
+    return stage.warm().then(() => {
       if (id !== generation || lost) return;
       ready = true;
       snap = true;
@@ -316,7 +372,7 @@ export function mountCharacters(host) {
   stage.canvas.addEventListener('webglcontextrestored', () => {
     lost = false;
     quality();
-    warm();
+    if (cast.some(Boolean)) warm();
   });
   new IntersectionObserver(([e]) => {
     onscreen = e.isIntersecting;
@@ -327,57 +383,37 @@ export function mountCharacters(host) {
     if (manual && active()) render();
   }).observe(el);
   if (debug || query.get('review') === 'heros') {
-    host.characterTest = {
-      select(name) {
-        choose(names.indexOf(name));
-      },
-      view: setView,
-      tier(q) {
-        tierSelect.value = q;
-        quality();
-      },
-      reset,
-      setManual(v) {
-        manual = !!v;
-        cancelAnimationFrame(raf);
-        raf = 0;
-        previous = null;
-        debt = 0;
-        sync();
-      },
-      tick(n, intent = neutral) {
-        if (!manual || lost) return;
-        const request = { ...neutral, ...intent };
-        for (let i = 0; i < n; i++) {
-          simulate(request);
-          request.jump = request.roll = request.emote = false;
-        }
-        updateHUD();
-      },
-      render,
-      snapshot() {
-        const a = cast[selected],
-          f = a.ctrl.frame,
-          p = a.rig.root.position;
-        return {
-          name: names[selected],
-          state: f.state,
-          speed: f.speed,
-          x: p.x,
-          y: p.y,
-          z: p.z,
-          heading: f.heading,
-          tier: actualTier,
-          view,
-          emote: f.emote,
-          visible: active(),
-        };
-      },
-    };
+    import('./review-controls.js').then(({ reviewControls }) => {
+      host.characterTest = reviewControls({
+        choose, names, setView, tierSelect, quality, reset, neutral, render, simulate, updateHUD,
+        manualMode(v) {
+          manual = !!v;
+          cancelAnimationFrame(raf);
+          raf = 0;
+          previous = null;
+          debt = 0;
+          sync();
+        },
+        primeSecondary: async () => {
+          const visible = cast.filter(actor => actor?.rig.root.visible);
+          return (await Promise.all(visible.map(actor => actor.rig.loadSecondary()))).every(Boolean);
+        },
+        canTick: () => manual && !lost,
+        snapshot() {
+          const actor = cast[selected], f = actor?.ctrl.frame, p = actor?.rig.root.position;
+          return {
+            name: names[selected], state: f?.state, speed: f?.speed ?? 0,
+            x: p?.x ?? 0, y: p?.y ?? 0, z: p?.z ?? 0, heading: f?.heading ?? 0,
+            tier: actualTier, view, emote: f?.emote ?? -1, visible: active(),
+            built: cast.flatMap((a, i) => a ? [names[i]] : []), firstHeroPainted,
+          };
+        },
+      });
+    });
   }
   quality();
   reset();
-  warm();
+  requestedCast();
   return {
     setVisible(v) {
       visible = v;

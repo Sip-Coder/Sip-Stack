@@ -24,7 +24,7 @@ async function measure(onlyHero, { tier }) {
     setModelDetail(rig.root, tier);
     const registry = rig.garments;
     if (!registry) {
-      failures.push(name + ': missing garment registration');
+      failures.push(name + ': missing detailed-art garment registration. For the original garment certification use a59620d. Current movement checks: tools/heros-checks.md.');
       continue;
     }
     const omittedMobileDetails = {};
