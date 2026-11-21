@@ -48,7 +48,7 @@ Historical sizes come from the supplied scale audit of main at `411f01d`. Measur
 | creek | Creek skiff | Length 2.39, beam .93 | 0.6785 × 2.4 × 0.9644 | — × 2.4 × 0.95 | 1.512% |
 | creek | Creek oars | Length 1.28 | 0.0524 × 0.1593 × 1.9 | — × — × 1.9 | 0% |
 | village | Village stair rail | Height varied .42–3.3 above the old treads | 0.9107 × 0.0333 × 0.035 | 0.9 × — × — | 1.19% |
-| creek | Finches | Span .68, length .33 | 0.0525 × 0.2412 × 0.1373 | — × 0.24 × 0.14 | 1.965% |
+| creek | Finches | Span .68, length .33 | 0.0525 × 0.2412 × 0.1373 | — × 0.24 × 0.14 | 1.966% |
 | village | Lane doors | H 2.15, W 1.26 | 2.1317 × 1.2533 × 0.2067 | 2.15 × 1.26 × — | 0.853% |
 | village | Fortified barrels | Length .83, Ø .67 | 0.7067 × 0.7067 × 0.95 | 0.7 × 0.7 × 0.95 | 0.952% |
 | village | Quay barrels | H .92, Ø .57 | 0.92 × 0.57 × 0.57 | 0.92 × 0.57 × 0.57 | 0% |
@@ -991,7 +991,7 @@ Measured 122 objects and instances. The test checks registered counts for 16 kin
 | oar | Starboard oar | 0.0524 × 0.1593 × 1.9 | — × — × 1.9 | —, —, 0% |
 | kingfisher | kingfisher 1 | 0.0546 × 0.2511 × 0.1649 | — × 0.25 × 0.165 | —, 0.423%, -0.045% |
 | songbird | songbird 1 | 0.0525 × 0.2412 × 0.1373 | — × 0.24 × 0.14 | —, 0.495%, -1.965% |
-| songbird | songbird 2 | 0.0525 × 0.2412 × 0.1373 | — × 0.24 × 0.14 | —, 0.495%, -1.965% |
+| songbird | songbird 2 | 0.0525 × 0.2412 × 0.1373 | — × 0.24 × 0.14 | —, 0.495%, -1.966% |
 | songbird | songbird 3 | 0.0525 × 0.2412 × 0.1373 | — × 0.24 × 0.14 | —, 0.495%, -1.965% |
 | songbird | songbird 4 | 0.0525 × 0.2412 × 0.1373 | — × 0.24 × 0.14 | —, 0.495%, -1.965% |
 | fish | Trout 1 | 0.1225 × 0.1139 × 0.3237 | — × — × 0.35 | —, —, -7.5% |

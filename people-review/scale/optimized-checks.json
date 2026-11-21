@@ -1,0 +1,175 @@
+{
+  "testedBranch": "scale-and-stairs-2026-11-19",
+  "testedAgainstBase": "e9743ca65f792ba6090fe2582aa6fc01a9893b58",
+  "threeVersion": "0.170.0",
+  "probeSourceFingerprint": {
+    "algorithm": "sha256 of relative path, NUL, and binary SHA-256 of the contents for every distinct matching path in sorted order",
+    "globs": [
+      "docs/assets/sip-village*.js",
+      "docs/assets/sip-craft*.js",
+      "docs/assets/sip-creek*.js",
+      "docs/life/**/*.js",
+      "docs/village/**/*.js",
+      "tools/check-people*.mjs",
+      "tools/check-scale.mjs"
+    ],
+    "sha256": "a85c9082b626f8c9efd365c811208af66d7ab2d1baa6f698e51e6777c6e79c59"
+  },
+  "runner": "THREE_ROOT=/path/to/three@0.170.0 node tools/check-people.mjs --suite=SUITE",
+  "suites": [
+    "scene",
+    "rig",
+    "scale",
+    "motion"
+  ],
+  "failedAssertions": 0,
+  "scene": {
+    "High": {
+      "Village": {
+        "sampledFrames": 1800,
+        "articulatedWorkers": 7,
+        "obstacles": 360
+      },
+      "Tidelight": {
+        "sampledFrames": 1800,
+        "articulatedWorkers": 2,
+        "obstacles": 77
+      },
+      "Creek": {
+        "sampledFrames": 1800,
+        "articulatedWorkers": 1,
+        "obstacles": 5
+      }
+    },
+    "Mobile": {
+      "Village": {
+        "sampledFrames": 1800,
+        "articulatedWorkers": 7,
+        "obstacles": 360
+      },
+      "Tidelight": {
+        "sampledFrames": 1800,
+        "articulatedWorkers": 2,
+        "obstacles": 77
+      },
+      "Creek": {
+        "sampledFrames": 1800,
+        "articulatedWorkers": 1,
+        "obstacles": 5
+      }
+    }
+  },
+  "rig": {
+    "workerVariants": 10,
+    "variantLodPairs": 20,
+    "flippedTriangles": 0,
+    "invalidSkinWeights": 0,
+    "minimumCrossSectionAreaRatio": 0.86317
+  },
+  "scale": {
+    "village": {
+      "measuredObjects": 592,
+      "ergonomicMeasurements": 53,
+      "detailMeasurements": 11,
+      "measuredTreads": 60,
+      "riseIn": [
+        6.562,
+        6.562
+      ],
+      "runIn": [
+        11.024,
+        11.024
+      ],
+      "railHeightAboveNosingIn": [
+        35.433,
+        35.433
+      ]
+    },
+    "tidelight": {
+      "measuredObjects": 113,
+      "ergonomicMeasurements": 4,
+      "detailMeasurements": 0,
+      "measuredTreads": 26,
+      "riseIn": [
+        6.508,
+        6.508
+      ],
+      "runIn": [
+        11.024,
+        11.024
+      ],
+      "railHeightAboveNosingIn": [
+        35.433,
+        35.433
+      ]
+    },
+    "creek": {
+      "measuredObjects": 122,
+      "ergonomicMeasurements": 2,
+      "detailMeasurements": 0,
+      "measuredTreads": 0
+    }
+  },
+  "stairMotion": {
+    "High": {
+      "trialSeconds": 126,
+      "samplesPerSecond": 30,
+      "physicalTreads": 60,
+      "uniqueTreadsAscended": 60,
+      "uniqueTreadsDescended": 60,
+      "ascendingPlantEvents": 62,
+      "descendingPlantEvents": 60,
+      "missingOrRepeatedSteps": 0,
+      "soleOutsideTreadFrames": 0,
+      "nosingCrossings": 245,
+      "descendingNosingCrossings": 120,
+      "minimumSwingClearanceIn": 2.807,
+      "minimumDescentSwingClearanceIn": 2.827,
+      "minimumPlantedToeNosingMarginIn": 0.846,
+      "riserIntersections": 0,
+      "maxRiserPenetrationIn": 0.0,
+      "palmRailSamples": 2133,
+      "missingPalmRailFrames": 0,
+      "maxPalmRailSurfaceGapIn": 0.906,
+      "minPalmRailSurfaceClearanceIn": 0.102,
+      "maxStairWalkerStanceSlipIn": 0.008,
+      "maxWorkerStanceSlipAcrossScenesIn": 0.02,
+      "trunkPitchDeg": [
+        9.9589,
+        11.3419
+      ],
+      "midflightStepsPerSecond": 1.7857,
+      "ascentVerticalFtPerSecond": 0.973
+    },
+    "Mobile": {
+      "trialSeconds": 126,
+      "samplesPerSecond": 30,
+      "physicalTreads": 60,
+      "uniqueTreadsAscended": 60,
+      "uniqueTreadsDescended": 60,
+      "ascendingPlantEvents": 62,
+      "descendingPlantEvents": 60,
+      "missingOrRepeatedSteps": 0,
+      "soleOutsideTreadFrames": 0,
+      "nosingCrossings": 245,
+      "descendingNosingCrossings": 120,
+      "minimumSwingClearanceIn": 2.807,
+      "minimumDescentSwingClearanceIn": 2.827,
+      "minimumPlantedToeNosingMarginIn": 0.846,
+      "riserIntersections": 0,
+      "maxRiserPenetrationIn": 0.0,
+      "palmRailSamples": 2133,
+      "missingPalmRailFrames": 0,
+      "maxPalmRailSurfaceGapIn": 0.906,
+      "minPalmRailSurfaceClearanceIn": 0.102,
+      "maxStairWalkerStanceSlipIn": 0.008,
+      "maxWorkerStanceSlipAcrossScenesIn": 0.02,
+      "trunkPitchDeg": [
+        9.9589,
+        11.3419
+      ],
+      "midflightStepsPerSecond": 1.7857,
+      "ascentVerticalFtPerSecond": 0.973
+    }
+  }
+}

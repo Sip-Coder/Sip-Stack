@@ -1,0 +1,380 @@
+{
+  "browser": "Chromium 155.0.8059.79, ANGLE SwiftShader, Debian Linux",
+  "threeVersion": "0.170.0",
+  "viewportCSSPixels": [
+    800,
+    700
+  ],
+  "devicePixelRatio": 1,
+  "method": "Counted all four WebGL2 array, element and instanced draw entry points on the scene canvas across complete RAF frames. Each camera waypoint reselects its tier to refresh shadows. Included beauty, shadows, reflections, lighting and postprocessing where used. Depth draws identify submissions with MeshDepthMaterial. Presented FPS and draw-callback wall time describe this software renderer.",
+  "waypointFlightFractions": [
+    0,
+    0.25,
+    0.5,
+    0.75,
+    1
+  ],
+  "warmAnimation": {
+    "revision": "2732ef7",
+    "exceptions": [
+      "Village Mobile was sampled before the High-only transparent foreground composition update in this revision.",
+      "Creek High used the released cloth and physics of e9743ca. The probe replayed its completed flight to reach 24 real frames on SwiftShader."
+    ],
+    "movingFramesPerScenario": 24,
+    "results": [
+      {
+        "scene": "village",
+        "tier": "Mobile",
+        "drawingBuffer": [
+          716,
+          460
+        ],
+        "peakDraws": 214,
+        "peakDepthDraws": 74,
+        "medianAnimationDraws": 141.0,
+        "waypointDraws": [
+          210,
+          194,
+          174,
+          170,
+          214
+        ],
+        "waypointDepthDraws": [
+          73,
+          74,
+          73,
+          73,
+          73
+        ],
+        "meanPresentedFps": 0.62,
+        "medianDrawCallbackMs": 8.9
+      },
+      {
+        "scene": "village",
+        "tier": "High",
+        "drawingBuffer": [
+          716,
+          460
+        ],
+        "peakDraws": 263,
+        "peakDepthDraws": 74,
+        "medianAnimationDraws": 239.5,
+        "waypointDraws": [
+          263,
+          210,
+          177,
+          171,
+          243
+        ],
+        "waypointDepthDraws": [
+          73,
+          74,
+          74,
+          73,
+          73
+        ],
+        "meanPresentedFps": 0.57,
+        "medianDrawCallbackMs": 10.15
+      },
+      {
+        "scene": "tidelight",
+        "tier": "Mobile",
+        "drawingBuffer": [
+          752,
+          456
+        ],
+        "peakDraws": 120,
+        "peakDepthDraws": 0,
+        "medianAnimationDraws": 98.5,
+        "waypointDraws": [
+          120,
+          118,
+          117,
+          120,
+          120
+        ],
+        "waypointDepthDraws": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "meanPresentedFps": 2.38,
+        "medianDrawCallbackMs": 5.45
+      },
+      {
+        "scene": "tidelight",
+        "tier": "High",
+        "drawingBuffer": [
+          752,
+          456
+        ],
+        "peakDraws": 183,
+        "peakDepthDraws": 59,
+        "medianAnimationDraws": 161.5,
+        "waypointDraws": [
+          181,
+          179,
+          178,
+          183,
+          181
+        ],
+        "waypointDepthDraws": [
+          57,
+          57,
+          59,
+          59,
+          57
+        ],
+        "meanPresentedFps": 1.41,
+        "medianDrawCallbackMs": 8.85
+      },
+      {
+        "scene": "creek",
+        "tier": "Mobile",
+        "drawingBuffer": [
+          752,
+          456
+        ],
+        "peakDraws": 94,
+        "peakDepthDraws": 0,
+        "medianAnimationDraws": 83.0,
+        "waypointDraws": [
+          94,
+          84,
+          68,
+          78,
+          82
+        ],
+        "waypointDepthDraws": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "meanPresentedFps": 1.1,
+        "medianDrawCallbackMs": 4.75
+      },
+      {
+        "scene": "creek",
+        "tier": "High",
+        "drawingBuffer": [
+          752,
+          456
+        ],
+        "peakDraws": 154,
+        "peakDepthDraws": 59,
+        "medianAnimationDraws": 142.0,
+        "waypointDraws": [
+          154,
+          146,
+          128,
+          142,
+          142
+        ],
+        "waypointDepthDraws": [
+          57,
+          59,
+          57,
+          59,
+          57
+        ],
+        "meanPresentedFps": 0.49,
+        "medianDrawCallbackMs": 5.45
+      }
+    ]
+  },
+  "finalSource": {
+    "revision": "e9743ca",
+    "fingerprintAlgorithm": "SHA-256 of repo-relative path + NUL + binary SHA-256 of contents, in sorted path order",
+    "globs": [
+      "docs/assets/sip-village*.js",
+      "docs/assets/sip-craft*.js",
+      "docs/assets/sip-creek*.js",
+      "docs/assets/sip-warm.js",
+      "docs/life/*.js",
+      "docs/village/*.js"
+    ],
+    "fileCount": 49,
+    "sha256": "f48299644b504d91a4a40b09b19b6f776e0ec9f0a79dad3887dfe2f736469d2b",
+    "clothSha256": "7436d556b5d6da13d150e7f193d8d63120203fbc5d1005c8511bb890455acd48",
+    "physicsSha256": "4812921279d8a05f3096d65f6cc4b030d90d63d46526429eef5217096e43cb3c",
+    "drawProbeSha256": "0ece042fb5bf97d4274854ae7209215c60f18576bcd718e05d93bff74e61ae54",
+    "restoreProbeSha256": "a516e5c401464d285659c342c0a6a6a740aa1156ba82f2b397e3bb24a3515b70",
+    "movingFramesPerScenario": 3,
+    "results": [
+      {
+        "scene": "village",
+        "tier": "Mobile",
+        "drawingBuffer": [
+          716,
+          460
+        ],
+        "peakDraws": 214,
+        "peakDepthDraws": 74,
+        "medianAnimationDraws": 126,
+        "waypointDraws": [
+          210,
+          194,
+          174,
+          170,
+          214
+        ],
+        "waypointDepthDraws": [
+          73,
+          74,
+          73,
+          73,
+          73
+        ]
+      },
+      {
+        "scene": "village",
+        "tier": "High",
+        "drawingBuffer": [
+          716,
+          460
+        ],
+        "peakDraws": 243,
+        "peakDepthDraws": 74,
+        "medianAnimationDraws": 219,
+        "waypointDraws": [
+          236,
+          210,
+          177,
+          171,
+          243
+        ],
+        "waypointDepthDraws": [
+          73,
+          74,
+          74,
+          73,
+          73
+        ]
+      },
+      {
+        "scene": "tidelight",
+        "tier": "Mobile",
+        "drawingBuffer": [
+          752,
+          456
+        ],
+        "peakDraws": 120,
+        "peakDepthDraws": 0,
+        "medianAnimationDraws": 101,
+        "waypointDraws": [
+          120,
+          118,
+          118,
+          120,
+          120
+        ],
+        "waypointDepthDraws": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "scene": "tidelight",
+        "tier": "High",
+        "drawingBuffer": [
+          752,
+          456
+        ],
+        "peakDraws": 183,
+        "peakDepthDraws": 59,
+        "medianAnimationDraws": 162,
+        "waypointDraws": [
+          181,
+          179,
+          178,
+          183,
+          181
+        ],
+        "waypointDepthDraws": [
+          57,
+          57,
+          59,
+          59,
+          57
+        ]
+      },
+      {
+        "scene": "creek",
+        "tier": "Mobile",
+        "drawingBuffer": [
+          752,
+          456
+        ],
+        "peakDraws": 94,
+        "peakDepthDraws": 0,
+        "medianAnimationDraws": 94,
+        "waypointDraws": [
+          94,
+          84,
+          68,
+          78,
+          82
+        ],
+        "waypointDepthDraws": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "scene": "creek",
+        "tier": "High",
+        "drawingBuffer": [
+          752,
+          456
+        ],
+        "peakDraws": 154,
+        "peakDepthDraws": 59,
+        "medianAnimationDraws": 97,
+        "waypointDraws": [
+          154,
+          146,
+          128,
+          142,
+          142
+        ],
+        "waypointDepthDraws": [
+          57,
+          59,
+          57,
+          59,
+          57
+        ]
+      }
+    ],
+    "contextRecovery": {
+      "viewportCSSPixels": [
+        390,
+        844
+      ],
+      "restoredScenes": [
+        "Village",
+        "Tidelight Coast",
+        "Sip Creek"
+      ],
+      "exclusiveActiveWorkers": [
+        "Harvester",
+        "Pier hand",
+        "Cooper"
+      ],
+      "minimumDistinctRecoveredColorsPer32pxSquare": 25,
+      "initializedVillagePinNotes": 18,
+      "defaultFramebufferColorClears": 0,
+      "consoleOrPageErrors": 0
+    }
+  }
+}
