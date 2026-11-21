@@ -513,11 +513,11 @@
           "medianSrgb": "#312527"
         },
         "back": {
-          "pixels": 2897,
+          "pixels": 2915,
           "medianSrgb": "#261a1d"
         },
         "left": {
-          "pixels": 1466,
+          "pixels": 1464,
           "medianSrgb": "#261a1d"
         },
         "right": {
@@ -525,15 +525,15 @@
           "medianSrgb": "#2d2023"
         },
         "high-front": {
-          "pixels": 1521,
+          "pixels": 1507,
           "medianSrgb": "#36292c"
         },
         "rear-three-quarter": {
-          "pixels": 2858,
+          "pixels": 2871,
           "medianSrgb": "#261a1d"
         },
         "top": {
-          "pixels": 1827,
+          "pixels": 1825,
           "medianSrgb": "#362a2d"
         }
       }
@@ -561,31 +561,31 @@
       "hex": "#392829",
       "modelViews": {
         "front": {
-          "pixels": 4926,
+          "pixels": 4921,
           "medianSrgb": "#3a2525"
         },
         "back": {
-          "pixels": 9372,
+          "pixels": 9359,
           "medianSrgb": "#332021"
         },
         "left": {
-          "pixels": 5875,
+          "pixels": 5878,
           "medianSrgb": "#332021"
         },
         "right": {
-          "pixels": 6317,
+          "pixels": 6302,
           "medianSrgb": "#3b2626"
         },
         "high-front": {
-          "pixels": 5679,
+          "pixels": 5677,
           "medianSrgb": "#402929"
         },
         "rear-three-quarter": {
-          "pixels": 9438,
+          "pixels": 9400,
           "medianSrgb": "#342020"
         },
         "top": {
-          "pixels": 7547,
+          "pixels": 7546,
           "medianSrgb": "#402c2c"
         }
       }
@@ -617,7 +617,7 @@
           "medianSrgb": "#4e2f28"
         },
         "back": {
-          "pixels": 3813,
+          "pixels": 3756,
           "medianSrgb": "#442923"
         },
         "left": {
@@ -625,19 +625,19 @@
           "medianSrgb": "#462a24"
         },
         "right": {
-          "pixels": 1538,
+          "pixels": 1552,
           "medianSrgb": "#4f312a"
         },
         "high-front": {
-          "pixels": 2161,
+          "pixels": 2165,
           "medianSrgb": "#53322a"
         },
         "rear-three-quarter": {
-          "pixels": 3955,
+          "pixels": 3953,
           "medianSrgb": "#452922"
         },
         "top": {
-          "pixels": 2993,
+          "pixels": 3001,
           "medianSrgb": "#51352e"
         }
       }
@@ -669,7 +669,7 @@
           "medianSrgb": "#5c3623"
         },
         "back": {
-          "pixels": 79,
+          "pixels": 73,
           "medianSrgb": "#5a301c"
         },
         "left": {
@@ -677,20 +677,20 @@
           "medianSrgb": "#5b3120"
         },
         "right": {
-          "pixels": 44,
-          "medianSrgb": "#663b28"
+          "pixels": 46,
+          "medianSrgb": "#663a26"
         },
         "high-front": {
           "pixels": 48,
-          "medianSrgb": "#6c3e2a"
+          "medianSrgb": "#6c3d2a"
         },
         "rear-three-quarter": {
-          "pixels": 94,
-          "medianSrgb": "#5b311d"
+          "pixels": 95,
+          "medianSrgb": "#5a311d"
         },
         "top": {
           "pixels": 30,
-          "medianSrgb": "#6c4233"
+          "medianSrgb": "#6c4434"
         }
       }
     },
@@ -773,7 +773,7 @@
           "medianSrgb": "#f9ead5"
         },
         "back": {
-          "pixels": 1284,
+          "pixels": 1337,
           "medianSrgb": "#e6d7c4"
         },
         "left": {
@@ -789,7 +789,7 @@
           "medianSrgb": "#feeed9"
         },
         "rear-three-quarter": {
-          "pixels": 1515,
+          "pixels": 1529,
           "medianSrgb": "#e4d5c2"
         },
         "top": {
@@ -825,8 +825,8 @@
           "medianSrgb": "#d49267"
         },
         "back": {
-          "pixels": 18,
-          "medianSrgb": "#a67655"
+          "pixels": 19,
+          "medianSrgb": "#a57655"
         },
         "left": {
           "pixels": 1259,
@@ -877,7 +877,7 @@
           "medianSrgb": "#d9986b"
         },
         "back": {
-          "pixels": 1132,
+          "pixels": 1131,
           "medianSrgb": "#ad7a56"
         },
         "left": {
@@ -893,7 +893,7 @@
           "medianSrgb": "#db996b"
         },
         "rear-three-quarter": {
-          "pixels": 914,
+          "pixels": 916,
           "medianSrgb": "#b27e59"
         },
         "top": {
@@ -1093,11 +1093,11 @@
           "medianSrgb": "#714932"
         },
         "rear-three-quarter": {
-          "pixels": 5008,
+          "pixels": 5012,
           "medianSrgb": "#64412d"
         },
         "top": {
-          "pixels": 2060,
+          "pixels": 2055,
           "medianSrgb": "#684734"
         }
       }
