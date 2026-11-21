@@ -1,0 +1,554 @@
+{
+  "units": "inches except where noted",
+  "source": {
+    "docs/characters/diagram-skull.js": "6e1ec51ed36eaa33fc9eda28b5554193c6f5ace742b7a9dcc67892847bc55d68",
+    "docs/characters/diagram-hair-roots.js": "b1d193201eebe13336167160187a6921a7d84ed21943e6eff590edeba9e6405e",
+    "docs/characters/diagram-fabricator.js": "befa7e68b31155938f58f14eec4a5f6987a83aea8c87fd5d31d88f1e24e991de",
+    "docs/characters/diagram-outer-parts.js": "d08a26b609ce0b9e70af1da167b5097c013f3b370cd05d50fea40656ed0ad3e6"
+  },
+  "reference": "The live explorer head geometry sets orbital registration and hairline, with stylized cranial traits after Walker (2008).",
+  "method": {
+    "poses": "Each production rig was fixed-stepped to neutral, walking, running and rolling. All cranial, dental and facial muscle triangles were compared to the actual rendered Face triangles by a separating-axis triangle test. An independent enclosure check intersected skin on either side of each head-local vertex.",
+    "eyesAndHair": "Triangulated corneas, lids/lashes, and active groom pieces were transformed to the same head frame as the skull. Orbital dimensions are measured on the front inner rim. The visible frontal hairline is the first visible hair surface ahead of the actual facial skin, sampled at 0.0004 head-local units.",
+    "exterior": "Orthographic depth/part-ID rasters of the original production facial surfaces and the revised Axon surfaces, nine directions including front, rear, both profiles, overhead and underside, 512 by 512 per image. This verifies silhouette and visible part identity, not GPU color equality.",
+    "webglExterior": "Chromium 155 WebGL2 High and Mobile, original production hair against root-fitted hair in the same frozen Axon study, skin/hair isolated. Counts compare actual RGB readbacks from the 2D presenter after the shared WebGL renderer. Front, profile, rear and high-front views were captured at 342,370 pixels each.",
+    "reproduceGeometry": "THREE_ROOT=/path/to/unpacked/three-0.170.0 node tools/check-axon-head-fit.mjs"
+  },
+  "heroes": {
+    "sippy": {
+      "highMeshTraitMeasures": {
+        "mastoidStationSpanIn": 1.4075968535547847,
+        "browCentralGaugeIn": 0.7007870386155512,
+        "nuchalMedialGaugeIn": 0.5218552266132382,
+        "upperOrbitLeadingEdgeSpanIn": 0.23469657788902637,
+        "mentalTubercleSpanIn": 2.4161326753199006
+      },
+      "eyeAndHair": {
+        "mobile": {
+          "bonyOpeningWH": [
+            3.18,
+            2.2
+          ],
+          "cornealSurfaceWH": [
+            3.12,
+            2.77
+          ],
+          "centreFrontHairlineAboveCornea": 2.227,
+          "poses": {
+            "idle": {
+              "cranialAndFacialMuscleTriangles": 9200,
+              "skinTriangles": 1904,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                0.0,
+                0.027
+              ],
+              "insideVertices": 4860
+            },
+            "walk": {
+              "cranialAndFacialMuscleTriangles": 9200,
+              "skinTriangles": 1904,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                0.0,
+                0.027
+              ],
+              "insideVertices": 4860
+            },
+            "run": {
+              "cranialAndFacialMuscleTriangles": 9200,
+              "skinTriangles": 1904,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                0.0,
+                0.027
+              ],
+              "insideVertices": 4860
+            },
+            "roll": {
+              "cranialAndFacialMuscleTriangles": 9200,
+              "skinTriangles": 1904,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                0.0,
+                0.026
+              ],
+              "insideVertices": 4860
+            }
+          },
+          "exteriorChangedPixelCounts": {
+            "silhouette": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "visiblePart": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "webglOriginalVsFitted": {
+            "front": {
+              "pixels": 342370,
+              "changed": 0,
+              "peakChannel": 0,
+              "aboveTwoLevels": 0
+            },
+            "profile": {
+              "pixels": 342370,
+              "changed": 1,
+              "peakChannel": 1,
+              "aboveTwoLevels": 0
+            },
+            "rear": {
+              "pixels": 342370,
+              "changed": 0,
+              "peakChannel": 0,
+              "aboveTwoLevels": 0
+            },
+            "high-front": {
+              "pixels": 342370,
+              "changed": 0,
+              "peakChannel": 0,
+              "aboveTwoLevels": 0
+            }
+          }
+        },
+        "high": {
+          "bonyOpeningWH": [
+            3.18,
+            2.2
+          ],
+          "cornealSurfaceWH": [
+            3.12,
+            2.77
+          ],
+          "centreFrontHairlineAboveCornea": 2.227,
+          "poses": {
+            "idle": {
+              "cranialAndFacialMuscleTriangles": 16432,
+              "skinTriangles": 1904,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                0.0,
+                0.027
+              ],
+              "insideVertices": 8542
+            },
+            "walk": {
+              "cranialAndFacialMuscleTriangles": 16432,
+              "skinTriangles": 1904,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                0.0,
+                0.027
+              ],
+              "insideVertices": 8542
+            },
+            "run": {
+              "cranialAndFacialMuscleTriangles": 16432,
+              "skinTriangles": 1904,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                0.0,
+                0.027
+              ],
+              "insideVertices": 8542
+            },
+            "roll": {
+              "cranialAndFacialMuscleTriangles": 16432,
+              "skinTriangles": 1904,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                0.0,
+                0.026
+              ],
+              "insideVertices": 8542
+            }
+          },
+          "exteriorChangedPixelCounts": {
+            "silhouette": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "visiblePart": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "webglOriginalVsFitted": {
+            "front": {
+              "pixels": 342370,
+              "changed": 0,
+              "peakChannel": 0,
+              "aboveTwoLevels": 0
+            },
+            "profile": {
+              "pixels": 342370,
+              "changed": 1,
+              "peakChannel": 1,
+              "aboveTwoLevels": 0
+            },
+            "rear": {
+              "pixels": 342370,
+              "changed": 0,
+              "peakChannel": 0,
+              "aboveTwoLevels": 0
+            },
+            "high-front": {
+              "pixels": 342370,
+              "changed": 0,
+              "peakChannel": 0,
+              "aboveTwoLevels": 0
+            }
+          }
+        }
+      }
+    },
+    "roma": {
+      "highMeshTraitMeasures": {
+        "mastoidStationSpanIn": 1.0860776167849118,
+        "browCentralGaugeIn": 0.277796453565318,
+        "nuchalMedialGaugeIn": 0.143710464462398,
+        "upperOrbitLeadingEdgeSpanIn": 0.0812810405765567,
+        "mentalTubercleSpanIn": 1.081734807983634
+      },
+      "eyeAndHair": {
+        "mobile": {
+          "bonyOpeningWH": [
+            3.26,
+            2.16
+          ],
+          "cornealSurfaceWH": [
+            3.26,
+            1.8
+          ],
+          "centreFrontHairlineAboveCornea": 3.22,
+          "poses": {
+            "idle": {
+              "cranialAndFacialMuscleTriangles": 9160,
+              "skinTriangles": 3536,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                -0.001,
+                0.019
+              ],
+              "insideVertices": 4840
+            },
+            "walk": {
+              "cranialAndFacialMuscleTriangles": 9160,
+              "skinTriangles": 3536,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                -0.001,
+                0.019
+              ],
+              "insideVertices": 4840
+            },
+            "run": {
+              "cranialAndFacialMuscleTriangles": 9160,
+              "skinTriangles": 3536,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                -0.001,
+                0.019
+              ],
+              "insideVertices": 4840
+            },
+            "roll": {
+              "cranialAndFacialMuscleTriangles": 9160,
+              "skinTriangles": 3536,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                -0.001,
+                0.019
+              ],
+              "insideVertices": 4840
+            }
+          },
+          "exteriorChangedPixelCounts": {
+            "silhouette": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "visiblePart": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "webglOriginalVsFitted": {
+            "front": {
+              "pixels": 342370,
+              "changed": 6,
+              "peakChannel": 7,
+              "aboveTwoLevels": 2
+            },
+            "profile": {
+              "pixels": 342370,
+              "changed": 0,
+              "peakChannel": 0,
+              "aboveTwoLevels": 0
+            },
+            "rear": {
+              "pixels": 342370,
+              "changed": 1,
+              "peakChannel": 1,
+              "aboveTwoLevels": 0
+            },
+            "high-front": {
+              "pixels": 342370,
+              "changed": 1,
+              "peakChannel": 1,
+              "aboveTwoLevels": 0
+            }
+          }
+        },
+        "high": {
+          "bonyOpeningWH": [
+            3.26,
+            2.17
+          ],
+          "cornealSurfaceWH": [
+            3.26,
+            1.8
+          ],
+          "centreFrontHairlineAboveCornea": 3.22,
+          "poses": {
+            "idle": {
+              "cranialAndFacialMuscleTriangles": 16376,
+              "skinTriangles": 3536,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                -0.001,
+                0.018
+              ],
+              "insideVertices": 8514
+            },
+            "walk": {
+              "cranialAndFacialMuscleTriangles": 16376,
+              "skinTriangles": 3536,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                -0.001,
+                0.018
+              ],
+              "insideVertices": 8514
+            },
+            "run": {
+              "cranialAndFacialMuscleTriangles": 16376,
+              "skinTriangles": 3536,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                -0.001,
+                0.018
+              ],
+              "insideVertices": 8514
+            },
+            "roll": {
+              "cranialAndFacialMuscleTriangles": 16376,
+              "skinTriangles": 3536,
+              "skinCrossings": 0,
+              "verticesOutsideSkin": 0,
+              "eyeLidCrossings": 0,
+              "hairCrossings": 0,
+              "frontalOrbitMinusCorneaXY": [
+                -0.001,
+                0.018
+              ],
+              "insideVertices": 8514
+            }
+          },
+          "exteriorChangedPixelCounts": {
+            "silhouette": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "visiblePart": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "webglOriginalVsFitted": {
+            "front": {
+              "pixels": 342370,
+              "changed": 6,
+              "peakChannel": 7,
+              "aboveTwoLevels": 2
+            },
+            "profile": {
+              "pixels": 342370,
+              "changed": 0,
+              "peakChannel": 0,
+              "aboveTwoLevels": 0
+            },
+            "rear": {
+              "pixels": 342370,
+              "changed": 1,
+              "peakChannel": 1,
+              "aboveTwoLevels": 0
+            },
+            "high-front": {
+              "pixels": 342370,
+              "changed": 1,
+              "peakChannel": 1,
+              "aboveTwoLevels": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "controls": {
+    "hummin": {
+      "main": "702e298aee00263e901ac07ba0da150caf1306ed",
+      "method": "SHA-256 over every named diagram part, transform, index and geometry attribute, material PBR fields, shader callbacks and attached texture buffers. Eleven Hummin-specific JavaScript sources were also compared byte for byte to this commit.",
+      "mobile": {
+        "parts": 135,
+        "triangles": 94740,
+        "identicalDigest": "ba9e05c349b6dc0d881f37bb59a210a22572de0308307e7223162d6f0e31e937"
+      },
+      "high": {
+        "parts": 135,
+        "triangles": 142444,
+        "identicalDigest": "450d2bf2aa0480250934fd550a391c6721110d89ba72615e4e8fcf70d0b177f5"
+      }
+    }
+  },
+  "closedSkeletonComponents": {
+    "inwardSignedVolumes": 0,
+    "tiers": [
+      "mobile",
+      "high"
+    ],
+    "heroes": [
+      "sippy",
+      "roma"
+    ],
+    "scope": "All edge-closed connected skeletal components; signed enclosed volume in the posed world frame."
+  },
+  "fittedHairBounds": {
+    "scope": "Picker box versus extrema of all remaining indexed hair vertices",
+    "maximumExtentDifferenceInches": 0
+  },
+  "translatedLabels": {
+    "translationMeters": [
+      4.7,
+      -0.18,
+      -3.8
+    ],
+    "yawsRadians": [
+      0,
+      0.51,
+      1.57,
+      2.9,
+      -2.3
+    ],
+    "differentLabels": 0,
+    "comparedComponents": {
+      "sippyMobile": 219,
+      "sippyHigh": 231,
+      "romaMobile": 168,
+      "romaHigh": 168
+    }
+  }
+}

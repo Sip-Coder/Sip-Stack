@@ -1,0 +1,1392 @@
+{
+  "revision": "67b6ba440c005ecc1331d58e8c868baec07713ac",
+  "network": {
+    "offline": false,
+    "latency": 60,
+    "downloadThroughput": 1125000.0,
+    "uploadThroughput": 187500.0,
+    "connectionType": "cellular4g"
+  },
+  "cpu": 4,
+  "viewport": "800x680@1",
+  "renderer": "ANGLE Vulkan SwiftShader",
+  "note": "Fresh Chromium process/profile per visit; HTTP cache disabled. Native 2D blit of selected hero at actual tier, plus one RAF. All first scroll JS response bodies (gzip level 6).",
+  "rows": [
+    {
+      "presentedMs": 5232.29999999702,
+      "firstBlitMs": 5196.29999999702,
+      "floor": {
+        "name": "sippy",
+        "shadowMapWidth": 512
+      },
+      "bones": 204,
+      "triangles": 49704,
+      "allDraws": 31,
+      "allTriangles": 258560,
+      "scripts": [
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 12456,
+          "gzip": 4221
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 449,
+          "gzip": 266
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 6827,
+          "gzip": 2454
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 7813,
+          "gzip": 2744
+        },
+        {
+          "path": "/characters/diagram-foot.js",
+          "raw": 7765,
+          "gzip": 2670
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7959,
+          "gzip": 2461
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscles.js",
+          "raw": 13203,
+          "gzip": 3851
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 7994,
+          "gzip": 2715
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3302,
+          "gzip": 1362
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 25539,
+          "gzip": 8320
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 27831,
+          "gzip": 8670
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 17844,
+          "gzip": 6002
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 24285,
+          "gzip": 8077
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 20339,
+          "gzip": 6681
+        }
+      ],
+      "skeletonDraws": 1,
+      "renderedSkeletonTriangles": 49704,
+      "rawJs": 202245,
+      "gzipJs": 67347,
+      "round": 1,
+      "tier": "mobile",
+      "hero": "sippy"
+    },
+    {
+      "presentedMs": 3205.199999988079,
+      "firstBlitMs": 3178.699999988079,
+      "floor": {
+        "name": "roma",
+        "shadowMapWidth": 512
+      },
+      "bones": 204,
+      "triangles": 49664,
+      "allDraws": 7,
+      "allTriangles": 126398,
+      "scripts": [
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 12456,
+          "gzip": 4221
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 449,
+          "gzip": 266
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 6827,
+          "gzip": 2454
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 7813,
+          "gzip": 2744
+        },
+        {
+          "path": "/characters/diagram-foot.js",
+          "raw": 7765,
+          "gzip": 2670
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7959,
+          "gzip": 2461
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscles.js",
+          "raw": 13203,
+          "gzip": 3851
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 7994,
+          "gzip": 2715
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3302,
+          "gzip": 1362
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 25539,
+          "gzip": 8320
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 27831,
+          "gzip": 8670
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 17844,
+          "gzip": 6002
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 24285,
+          "gzip": 8077
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 20339,
+          "gzip": 6681
+        }
+      ],
+      "skeletonDraws": 1,
+      "renderedSkeletonTriangles": 49664,
+      "rawJs": 202245,
+      "gzipJs": 67347,
+      "round": 1,
+      "tier": "mobile",
+      "hero": "roma"
+    },
+    {
+      "presentedMs": 6518.20000000298,
+      "firstBlitMs": 6500.9000000059605,
+      "floor": {
+        "name": "sippy",
+        "shadowMapWidth": 1024
+      },
+      "bones": 204,
+      "triangles": 82798,
+      "allDraws": 31,
+      "allTriangles": 374952,
+      "scripts": [
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 12456,
+          "gzip": 4221
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 449,
+          "gzip": 266
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 6827,
+          "gzip": 2454
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 7813,
+          "gzip": 2744
+        },
+        {
+          "path": "/characters/diagram-foot.js",
+          "raw": 7765,
+          "gzip": 2670
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7959,
+          "gzip": 2461
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscles.js",
+          "raw": 13203,
+          "gzip": 3851
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 7994,
+          "gzip": 2715
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3302,
+          "gzip": 1362
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 25539,
+          "gzip": 8320
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 27831,
+          "gzip": 8670
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 17844,
+          "gzip": 6002
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 24285,
+          "gzip": 8077
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 20339,
+          "gzip": 6681
+        }
+      ],
+      "skeletonDraws": 1,
+      "renderedSkeletonTriangles": 82798,
+      "rawJs": 202245,
+      "gzipJs": 67347,
+      "round": 1,
+      "tier": "high",
+      "hero": "sippy"
+    },
+    {
+      "presentedMs": 2933.5999999940395,
+      "firstBlitMs": 2901.5,
+      "floor": {
+        "name": "roma",
+        "shadowMapWidth": 1024
+      },
+      "bones": 204,
+      "triangles": 82742,
+      "allDraws": 7,
+      "allTriangles": 179464,
+      "scripts": [
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 12456,
+          "gzip": 4221
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 449,
+          "gzip": 266
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 6827,
+          "gzip": 2454
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 7813,
+          "gzip": 2744
+        },
+        {
+          "path": "/characters/diagram-foot.js",
+          "raw": 7765,
+          "gzip": 2670
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7959,
+          "gzip": 2461
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscles.js",
+          "raw": 13203,
+          "gzip": 3851
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 7994,
+          "gzip": 2715
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3302,
+          "gzip": 1362
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 25539,
+          "gzip": 8320
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 27831,
+          "gzip": 8670
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 17844,
+          "gzip": 6002
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 24285,
+          "gzip": 8077
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 20339,
+          "gzip": 6681
+        }
+      ],
+      "skeletonDraws": 1,
+      "renderedSkeletonTriangles": 82742,
+      "rawJs": 202245,
+      "gzipJs": 67347,
+      "round": 1,
+      "tier": "high",
+      "hero": "roma"
+    },
+    {
+      "presentedMs": 3650.1000000089407,
+      "firstBlitMs": 3637.6000000089407,
+      "floor": {
+        "name": "roma",
+        "shadowMapWidth": 1024
+      },
+      "bones": 204,
+      "triangles": 82742,
+      "allDraws": 7,
+      "allTriangles": 179464,
+      "scripts": [
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 12456,
+          "gzip": 4221
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 449,
+          "gzip": 266
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 6827,
+          "gzip": 2454
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 7813,
+          "gzip": 2744
+        },
+        {
+          "path": "/characters/diagram-foot.js",
+          "raw": 7765,
+          "gzip": 2670
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7959,
+          "gzip": 2461
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscles.js",
+          "raw": 13203,
+          "gzip": 3851
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 7994,
+          "gzip": 2715
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3302,
+          "gzip": 1362
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 25539,
+          "gzip": 8320
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 27831,
+          "gzip": 8670
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 17844,
+          "gzip": 6002
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 24285,
+          "gzip": 8077
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 20339,
+          "gzip": 6681
+        }
+      ],
+      "skeletonDraws": 1,
+      "renderedSkeletonTriangles": 82742,
+      "rawJs": 202245,
+      "gzipJs": 67347,
+      "round": 2,
+      "tier": "high",
+      "hero": "roma"
+    },
+    {
+      "presentedMs": 6496.70000000298,
+      "firstBlitMs": 6474.600000008941,
+      "floor": {
+        "name": "sippy",
+        "shadowMapWidth": 1024
+      },
+      "bones": 204,
+      "triangles": 82798,
+      "allDraws": 31,
+      "allTriangles": 374952,
+      "scripts": [
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 12456,
+          "gzip": 4221
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 449,
+          "gzip": 266
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 6827,
+          "gzip": 2454
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 7813,
+          "gzip": 2744
+        },
+        {
+          "path": "/characters/diagram-foot.js",
+          "raw": 7765,
+          "gzip": 2670
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7959,
+          "gzip": 2461
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscles.js",
+          "raw": 13203,
+          "gzip": 3851
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 7994,
+          "gzip": 2715
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3302,
+          "gzip": 1362
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 25539,
+          "gzip": 8320
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 27831,
+          "gzip": 8670
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 17844,
+          "gzip": 6002
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 24285,
+          "gzip": 8077
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 20339,
+          "gzip": 6681
+        }
+      ],
+      "skeletonDraws": 1,
+      "renderedSkeletonTriangles": 82798,
+      "rawJs": 202245,
+      "gzipJs": 67347,
+      "round": 2,
+      "tier": "high",
+      "hero": "sippy"
+    },
+    {
+      "presentedMs": 2534.2000000029802,
+      "firstBlitMs": 2520.1000000089407,
+      "floor": {
+        "name": "roma",
+        "shadowMapWidth": 512
+      },
+      "bones": 204,
+      "triangles": 49664,
+      "allDraws": 7,
+      "allTriangles": 126398,
+      "scripts": [
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 12456,
+          "gzip": 4221
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 449,
+          "gzip": 266
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 6827,
+          "gzip": 2454
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 7813,
+          "gzip": 2744
+        },
+        {
+          "path": "/characters/diagram-foot.js",
+          "raw": 7765,
+          "gzip": 2670
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7959,
+          "gzip": 2461
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscles.js",
+          "raw": 13203,
+          "gzip": 3851
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 7994,
+          "gzip": 2715
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3302,
+          "gzip": 1362
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 25539,
+          "gzip": 8320
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 27831,
+          "gzip": 8670
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 17844,
+          "gzip": 6002
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 24285,
+          "gzip": 8077
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 20339,
+          "gzip": 6681
+        }
+      ],
+      "skeletonDraws": 1,
+      "renderedSkeletonTriangles": 49664,
+      "rawJs": 202245,
+      "gzipJs": 67347,
+      "round": 2,
+      "tier": "mobile",
+      "hero": "roma"
+    },
+    {
+      "presentedMs": 5358,
+      "firstBlitMs": 5330.5999999940395,
+      "floor": {
+        "name": "sippy",
+        "shadowMapWidth": 512
+      },
+      "bones": 204,
+      "triangles": 49704,
+      "allDraws": 31,
+      "allTriangles": 258560,
+      "scripts": [
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 12456,
+          "gzip": 4221
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 449,
+          "gzip": 266
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 6827,
+          "gzip": 2454
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 7813,
+          "gzip": 2744
+        },
+        {
+          "path": "/characters/diagram-foot.js",
+          "raw": 7765,
+          "gzip": 2670
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7959,
+          "gzip": 2461
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscles.js",
+          "raw": 13203,
+          "gzip": 3851
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 7994,
+          "gzip": 2715
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3302,
+          "gzip": 1362
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 25539,
+          "gzip": 8320
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 27831,
+          "gzip": 8670
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 17844,
+          "gzip": 6002
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 24285,
+          "gzip": 8077
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 20339,
+          "gzip": 6681
+        }
+      ],
+      "skeletonDraws": 1,
+      "renderedSkeletonTriangles": 49704,
+      "rawJs": 202245,
+      "gzipJs": 67347,
+      "round": 2,
+      "tier": "mobile",
+      "hero": "sippy"
+    },
+    {
+      "presentedMs": 5801.79999999702,
+      "firstBlitMs": 5755.29999999702,
+      "floor": {
+        "name": "sippy",
+        "shadowMapWidth": 512
+      },
+      "bones": 204,
+      "triangles": 49704,
+      "allDraws": 31,
+      "allTriangles": 258560,
+      "scripts": [
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 12456,
+          "gzip": 4221
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 449,
+          "gzip": 266
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 6827,
+          "gzip": 2454
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 7813,
+          "gzip": 2744
+        },
+        {
+          "path": "/characters/diagram-foot.js",
+          "raw": 7765,
+          "gzip": 2670
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7959,
+          "gzip": 2461
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscles.js",
+          "raw": 13203,
+          "gzip": 3851
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 7994,
+          "gzip": 2715
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3302,
+          "gzip": 1362
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 25539,
+          "gzip": 8320
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 27831,
+          "gzip": 8670
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 17844,
+          "gzip": 6002
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 24285,
+          "gzip": 8077
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 20339,
+          "gzip": 6681
+        }
+      ],
+      "skeletonDraws": 1,
+      "renderedSkeletonTriangles": 49704,
+      "rawJs": 202245,
+      "gzipJs": 67347,
+      "round": 3,
+      "tier": "mobile",
+      "hero": "sippy"
+    },
+    {
+      "presentedMs": 2998.0999999940395,
+      "firstBlitMs": 2968.8999999910593,
+      "floor": {
+        "name": "roma",
+        "shadowMapWidth": 512
+      },
+      "bones": 204,
+      "triangles": 49664,
+      "allDraws": 7,
+      "allTriangles": 126398,
+      "scripts": [
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 12456,
+          "gzip": 4221
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 449,
+          "gzip": 266
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 6827,
+          "gzip": 2454
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 7813,
+          "gzip": 2744
+        },
+        {
+          "path": "/characters/diagram-foot.js",
+          "raw": 7765,
+          "gzip": 2670
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7959,
+          "gzip": 2461
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscles.js",
+          "raw": 13203,
+          "gzip": 3851
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 7994,
+          "gzip": 2715
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3302,
+          "gzip": 1362
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 25539,
+          "gzip": 8320
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 27831,
+          "gzip": 8670
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 17844,
+          "gzip": 6002
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 24285,
+          "gzip": 8077
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 20339,
+          "gzip": 6681
+        }
+      ],
+      "skeletonDraws": 1,
+      "renderedSkeletonTriangles": 49664,
+      "rawJs": 202245,
+      "gzipJs": 67347,
+      "round": 3,
+      "tier": "mobile",
+      "hero": "roma"
+    },
+    {
+      "presentedMs": 6268.0999999940395,
+      "firstBlitMs": 6235.899999991059,
+      "floor": {
+        "name": "sippy",
+        "shadowMapWidth": 1024
+      },
+      "bones": 204,
+      "triangles": 82798,
+      "allDraws": 31,
+      "allTriangles": 374952,
+      "scripts": [
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 12456,
+          "gzip": 4221
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 449,
+          "gzip": 266
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 6827,
+          "gzip": 2454
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 7813,
+          "gzip": 2744
+        },
+        {
+          "path": "/characters/diagram-foot.js",
+          "raw": 7765,
+          "gzip": 2670
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7959,
+          "gzip": 2461
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscles.js",
+          "raw": 13203,
+          "gzip": 3851
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 7994,
+          "gzip": 2715
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3302,
+          "gzip": 1362
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 25539,
+          "gzip": 8320
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 27831,
+          "gzip": 8670
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 17844,
+          "gzip": 6002
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 24285,
+          "gzip": 8077
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 20339,
+          "gzip": 6681
+        }
+      ],
+      "skeletonDraws": 1,
+      "renderedSkeletonTriangles": 82798,
+      "rawJs": 202245,
+      "gzipJs": 67347,
+      "round": 3,
+      "tier": "high",
+      "hero": "sippy"
+    },
+    {
+      "presentedMs": 4567.0999999940395,
+      "firstBlitMs": 4556.29999999702,
+      "floor": {
+        "name": "roma",
+        "shadowMapWidth": 1024
+      },
+      "bones": 204,
+      "triangles": 82742,
+      "allDraws": 7,
+      "allTriangles": 179464,
+      "scripts": [
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 12456,
+          "gzip": 4221
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 449,
+          "gzip": 266
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 6827,
+          "gzip": 2454
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 7813,
+          "gzip": 2744
+        },
+        {
+          "path": "/characters/diagram-foot.js",
+          "raw": 7765,
+          "gzip": 2670
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7959,
+          "gzip": 2461
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscles.js",
+          "raw": 13203,
+          "gzip": 3851
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 7994,
+          "gzip": 2715
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3302,
+          "gzip": 1362
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 25539,
+          "gzip": 8320
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 27831,
+          "gzip": 8670
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 17844,
+          "gzip": 6002
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 24285,
+          "gzip": 8077
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 20339,
+          "gzip": 6681
+        }
+      ],
+      "skeletonDraws": 1,
+      "renderedSkeletonTriangles": 82742,
+      "rawJs": 202245,
+      "gzipJs": 67347,
+      "round": 3,
+      "tier": "high",
+      "hero": "roma"
+    }
+  ],
+  "browser": "155.0.8059.79",
+  "sourceSha256": {
+    "/": "c7abb21b74be5e33fe15957a3de7e701ad470e4997a3e15d473a29a4a8535159",
+    "/__three/build/three.module.js": "ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb",
+    "/assets/sip-app.js": "c80d5bcfad97e9dfba3d0ebc4d80309b5937998fa6f8a28ff2e95b13eeba2193",
+    "/assets/sip-stack.css": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
+    "/assets/sip-warm.js": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
+    "/characters/axon-view.css": "e1d2f0bb5a09fd8eda2b55c523d335b762b9a24383b2288b089b28e2dcfbdfad",
+    "/characters/axon-view.js": "03390017503969d82fae3dd6290b61b6afbb5315817cf4225f0fa4aa33799e4b",
+    "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
+    "/characters/diagram-anatomy.js": "7777a00abc14e3b588ee315d16d4523e49a035d6e261cc2941aacb04c8625f1a",
+    "/characters/diagram-fabricator.js": "befa7e68b31155938f58f14eec4a5f6987a83aea8c87fd5d31d88f1e24e991de",
+    "/characters/diagram-fascia.js": "3714689ba708d30c8ef95371c70eccd9a4454184f6e0ec2258b9894f289ec2ff",
+    "/characters/diagram-foot.js": "0ac2068c925a17ae65492761be12b4343aa6b8584f1ca19f11d1bf9ce3755ec6",
+    "/characters/diagram-hair-roots.js": "b1d193201eebe13336167160187a6921a7d84ed21943e6eff590edeba9e6405e",
+    "/characters/diagram-human.js": "392f2f2be477d329c41b25e0f2df16b430152d428fcea4b9bb3aec6b4695c58e",
+    "/characters/diagram-leg-fit.js": "b17df683d935eeb534861053e348fe83b4d0b8349b064617ecdaaec79674bac9",
+    "/characters/diagram-muscles.js": "1b609eb3f962d528ff105f0cfed8079c4fca69efedb1b8f64d94d3446a838a1f",
+    "/characters/diagram-outer-parts.js": "d08a26b609ce0b9e70af1da167b5097c013f3b370cd05d50fea40656ed0ad3e6",
+    "/characters/diagram-parts.js": "276a1a358164eed1d014a22e064b4f6b46a93ec4d1b1c99f3dbac6443b303356",
+    "/characters/diagram-pelvis.js": "ac9971ff9687c3670b34d8634364a62931f6aec0a2fcb05607166c15504805e4",
+    "/characters/diagram-shoulder.js": "700f0a9614a4fb4dbb8f5d4f22d788a270bed277731568ecb7739f7dc43874f5",
+    "/characters/diagram-skull.js": "6e1ec51ed36eaa33fc9eda28b5554193c6f5ace742b7a9dcc67892847bc55d68",
+    "/characters/diagram-snapshot.js": "072370c7c1fe88c4f871ed2d64892af9bf9453c8c860025c49070f4a872b86bf",
+    "/characters/diagram-thorax.js": "e787594a2d9ebdabbacc0438010f32a09848b718d667ce9b1256120dda9c119d",
+    "/characters/diagram-view.js": "204ab0a37971b6a51cf992fd12030e28e59362e7e81ce0644055214faff7030d",
+    "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
+    "/characters/main.js": "3fea4f0da88e7330c1512861213aac9e3bcdfd82a57c134ce7aef2e03ef7fb3d",
+    "/characters/model-tier.js": "f1c83eb8d91b243948aea6d45c04fcb19e4340a52fc63bb40c960885aa1e11a9",
+    "/characters/motion.js": "88132184dde77d7b3ccb2d9b370a212a6da4811cee6072fd865dc2a55eaf98b2",
+    "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
+    "/characters/rig.js": "fc0c1d81f2695004894aa0dd4e12f9886d5ea6f5d375bce4dadc71026537bb5c",
+    "/characters/roma-forms.js": "b7c27e14d407728c661dbd79c75a001941ae1d14aaaf1992907be868dad581ec",
+    "/characters/roma-light-groom.js": "b76a5f82ecd48cab4dccdab3d4da5c78197e765603eda0a35411f008be87dccd",
+    "/characters/roma.js": "db55e1e5155eefa3a4e8a1e286473b0a93cc630bf6c47dfd9c84284e9ebebe34",
+    "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+    "/characters/secondary.js": "80ed341ab1b5bdc86164c46e3585f724c919c6fcb5a90a3b59f2a681bf47e24d",
+    "/characters/sippy-body.js": "2d5690035f0fbd2bd648d908db99524e3878357e1973d673655623ef6fc2ee8b",
+    "/characters/sippy-explorer.js": "99a3d325033ddb551220398462bb28f92317ecea5b35dc02262906e70f38f172",
+    "/characters/sippy-expression.js": "5ad54467f42692d2bbd42a3abbdba2038e9dc9cae67a1c35bcd675eb88591e46",
+    "/characters/sippy-hips.js": "dde1e1080e348fdf994266e99515ef4af91c110333905746925f59d1ec894eb9",
+    "/characters/sippy-shoulders.js": "178d942fab123c16eabcd0ef8a3d948e9a121e68fe568364d0eaacbb14423b6e",
+    "/characters/sippy-skin.js": "a40f2bf5b900c4be94e6b9ced5a0c7a640ce27c2c2bddf96e0cac95cebe90a0f",
+    "/characters/sippy-tailoring.js": "a3e917d000cc04c0f78f5e0956617669cba914067a6ba5ff084861c02b1ed1dc",
+    "/characters/sippy.js": "ab4fc809a7b73b6ec5d100dfaf8436b5db4a7d752ab208f5c4d1203dee4c4305",
+    "/characters/stage.js": "d206cbd7a4cfb063c1f86c41cbe345e133023021ef9a940650dc05a80fc4d112",
+    "/characters/ui.js": "145b3db0740fcfd83535c2250edc0e52dcda7843c41ed62b2a394d5df934a7cd"
+  },
+  "summary": [
+    {
+      "tier": "mobile",
+      "hero": "sippy",
+      "visits": 3,
+      "presentedMs": 5358,
+      "firstBlitMs": 5330.5999999940395,
+      "skeletonDraws": 1,
+      "triangles": 49704,
+      "bones": 204,
+      "allDraws": 31,
+      "gzipJs": 67347,
+      "rawJs": 202245
+    },
+    {
+      "tier": "mobile",
+      "hero": "roma",
+      "visits": 3,
+      "presentedMs": 2998.0999999940395,
+      "firstBlitMs": 2968.8999999910593,
+      "skeletonDraws": 1,
+      "triangles": 49664,
+      "bones": 204,
+      "allDraws": 7,
+      "gzipJs": 67347,
+      "rawJs": 202245
+    },
+    {
+      "tier": "high",
+      "hero": "sippy",
+      "visits": 3,
+      "presentedMs": 6496.70000000298,
+      "firstBlitMs": 6474.600000008941,
+      "skeletonDraws": 1,
+      "triangles": 82798,
+      "bones": 204,
+      "allDraws": 31,
+      "gzipJs": 67347,
+      "rawJs": 202245
+    },
+    {
+      "tier": "high",
+      "hero": "roma",
+      "visits": 3,
+      "presentedMs": 3650.1000000089407,
+      "firstBlitMs": 3637.6000000089407,
+      "skeletonDraws": 1,
+      "triangles": 82742,
+      "bones": 204,
+      "allDraws": 7,
+      "gzipJs": 67347,
+      "rawJs": 202245
+    }
+  ],
+  "verifiedRuntimeRevision": "67b6ba440c005ecc1331d58e8c868baec07713ac",
+  "verifiedServedSources": true
+}
