@@ -7,7 +7,6 @@ import { shell } from './sippy-tailoring.js';
 
 const tau = Math.PI * 2,
   lerp = T.MathUtils.lerp,
-  around = 56,
   rows = 14;
 const v = () => new T.Vector3();
 
@@ -106,6 +105,9 @@ export function fitHipSeams(suit) {
     chest = rig.chest,
     rise = surfaces['trouser-rise'][0],
     jacket = surfaces['quilted-vest'][0],
+    around = rise.geometry.userData.pattern.around,
+    waistRows = rise.geometry.userData.pattern.along,
+    vestRows = surfaces.hoodie[0].geometry.userData.pattern.along,
     parts = [],
     tails = [];
   const seams = (rig.garments.seams ??= []);
@@ -173,7 +175,7 @@ export function fitHipSeams(suit) {
     arcs.push(arc(sign > 0 ? around / 2 : 0));
   }
   seams.push({ name: 'crotch', edge: arcs[0], mate: arcs[1] });
-  seams.push(seam('waist', rise, 14 * 56, 56, true, surfaces['hoodie']));
+  seams.push(seam('waist', rise, waistRows * around, around, true, surfaces['hoodie']));
   const vest = surfaces['hoodie'][0],
     riseRest = rise.geometry.attributes.position.array.slice();
   const grid = rearGrid([...surfaces['trousers-L'], ...surfaces['trousers-R'], rise], chest);
@@ -193,17 +195,17 @@ export function fitHipSeams(suit) {
     // Trace the true waistcoat lining, using the very same warp columns on
     // both detail tiers. A uniform seam allowance fits its varying curvature.
     for (let h = 0; h < 2; h++)
-      for (let j = 0; j < 56; j++) {
-        const a = (tau * j) / 56,
-          base = 37 * 56 + j,
+      for (let j = 0; j < around; j++) {
+        const a = (tau * j) / around,
+          base = (vestRows + 1) * around + j,
           pad = 0.00084 + h * 0.00135;
         let k = 0;
-        for (let i = 0; i <= 14; i++) {
-          const index = (h * 15 + i) * 56 + j,
+        for (let i = 0; i <= waistRows; i++) {
+          const index = (h * (waistRows + 1) + i) * around + j,
             y = rp.getY(index);
-          while (k < 35 && vp.getY(base + 56 * (k + 1)) < y) k++;
-          const lo = base + 56 * k,
-            hi = lo + 56;
+          while (k + 1 < vestRows && vp.getY(base + around * (k + 1)) < y) k++;
+          const lo = base + around * k,
+            hi = lo + around;
           const y0 = vp.getY(lo),
             f = T.MathUtils.clamp((y - y0) / (vp.getY(hi) - y0), 0, 1);
           const mix = 1 - T.MathUtils.smoothstep(y0 - y, 0, 0.01);
@@ -222,7 +224,8 @@ export function fitHipSeams(suit) {
       tr.multiplyMatrices(chestInv, leg.matrixWorld);
       up.setFromMatrixColumn(tr, 1).normalize();
       legInv.copy(tr).invert();
-      const p = layer.geometry.attributes.position,
+      const legRows = leg.geometry.userData.pattern.along,
+        p = layer.geometry.attributes.position,
         n = layer.geometry.attributes.normal,
         lp = leg.geometry.attributes.position;
       for (let h = 0; h < 2; h++)
@@ -230,9 +233,9 @@ export function fitHipSeams(suit) {
           const u = j / around,
             a = u * tau,
             cut = sign * Math.sin(a) < 0;
-          sampleRow(rp, h * 15 * 56, 56, u, upper);
-          sampleRow(rp, h * 15 * 56, 56, 0, front);
-          sampleRow(rp, h * 15 * 56, 56, 0.5, back);
+          sampleRow(rp, h * (waistRows + 1) * around, around, u, upper);
+          sampleRow(rp, h * (waistRows + 1) * around, around, 0, front);
+          sampleRow(rp, h * (waistRows + 1) * around, around, 0.5, back);
           if (cut) {
             upper.x = sign * (0.00032 + h * 0.00055);
             upper.z = lerp(back.z, front.z, 0.5 + 0.5 * Math.cos(a));
@@ -241,7 +244,7 @@ export function fitHipSeams(suit) {
           upper.y = beltY - (cut ? 0.055 * Math.abs(Math.sin(a)) : 0);
           // Keep a submillimetre sewing allowance at the original leg edge.
           lower
-            .fromBufferAttribute(lp, (h * 45 + 44) * around + j)
+            .fromBufferAttribute(lp, (h * (legRows + 1) + legRows) * around + j)
             .applyMatrix4(tr)
             .addScaledVector(up, 0.00055);
           const dist = lower.distanceTo(upper);
@@ -301,9 +304,10 @@ export function fitHipSeams(suit) {
     grid.update();
     const jp = jacket.geometry.attributes.position;
     for (const { m, sign, data } of tails) {
+      const { along, around: jacketAround, columns } = jacket.geometry.userData.pattern;
       const count = 19,
-        knotRow = 4,
-        t = knotRow / 44,
+        knotRow = Math.round(along / 11),
+        t = knotRow / along,
         open =
           0.205 +
           0.185 * T.MathUtils.smoothstep(t, 0.41, 0.9) +
@@ -313,10 +317,10 @@ export function fitHipSeams(suit) {
       for (let h = 0; h < 2; h++)
         for (let j = 0; j < count; j++) {
           const a = Math.PI - sign * lerp(0.037, 0.88, j / 18),
-            f = ((a - open) / (tau - 2 * open)) * 68,
+            f = ((a - open) / (tau - 2 * open)) * jacketAround,
             k = Math.floor(f);
-          start.fromBufferAttribute(jp, knotRow * 69 + k);
-          end.fromBufferAttribute(jp, knotRow * 69 + k + 1);
+          start.fromBufferAttribute(jp, knotRow * columns + k);
+          end.fromBufferAttribute(jp, knotRow * columns + k + 1);
           start.lerp(end, f - k);
           const pad = h ? 0.0005 : 0.0011;
           start.x += Math.sin(a) * pad;

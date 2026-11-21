@@ -81,8 +81,7 @@ function props(scene) {
   boxes(scene, solids, 0.84, true);
   boxes(scene, trim, 0.67, false);
 }
-function ruler(scene) {
-  const group = new T.Group();
+function fillRuler(group) {
   const foot = 0.3048;
   const span = 3 * foot;
   const parts = [];
@@ -107,13 +106,13 @@ function ruler(scene) {
   sprite.position.set(0, span + 0.11, 0);
   group.add(sprite);
   group.position.set(1.68, 0.001, 0);
-  group.visible = false;
-  scene.add(group);
-  return group;
 }
 // Baked radial occlusion approximates diffuse light blocked at the sole, in
 // addition to the directional shadow. It fades continuously as each foot lifts.
-export function contactShadows(scene, rig) {
+const contactStamps = new WeakMap();
+function contactStamp(scene) {
+  const existing = contactStamps.get(scene);
+  if (existing) return existing;
   const stamp = document.createElement('canvas');
   stamp.width = stamp.height = 64;
   const ctx = stamp.getContext('2d');
@@ -127,6 +126,12 @@ export function contactShadows(scene, rig) {
   map.colorSpace = T.SRGBColorSpace;
   const geometry = new T.PlaneGeometry(1, 1);
   geometry.rotateX(-Math.PI * 0.5);
+  const resource = { map, geometry };
+  contactStamps.set(scene, resource);
+  return resource;
+}
+export function contactShadows(scene, rig) {
+  const { map, geometry } = contactStamp(scene);
   const shadows = [rig.footL, rig.footR].map((ankle) => {
     const pad = new T.Mesh(geometry, new T.MeshBasicMaterial({ map, transparent: true, depthWrite: false }));
     pad.renderOrder = 1;
@@ -158,7 +163,7 @@ function studioReflections() {
   const faceSize = 16,
     width = 7 * 3 * faceSize,
     height = 4 * faceSize;
-  const data = new Uint8Array(width * height * 4);
+  const data = new Uint8Array(width * height * 3);
   const bands = [0.21, 0.305, 0.4, 0.53, 0.67, 0.8, 1];
   const lights = [
     [-3, 3, 4, '#fff0dc', 5.7, 16],
@@ -212,17 +217,17 @@ function studioReflections() {
             b += light.color.b * amount;
           }
           const offset =
-            4 * (((face >= 3 ? faceSize : 0) + y) * width + (band * 3 + (face % 3)) * faceSize + x);
+            3 * (((face >= 3 ? faceSize : 0) + y) * width + (band * 3 + (face % 3)) * faceSize + x);
           // Linear radiance up to 8 encoded in normalized bytes. The environment
           // intensity restores this range in the physical materials.
           data[offset] = Math.round((r * 255) / 8);
           data[offset + 1] = Math.round((g * 255) / 8);
           data[offset + 2] = Math.round((b * 255) / 8);
-          data[offset + 3] = 255;
         }
     }
   }
-  const texture = new T.DataTexture(data, width, height);
+  const texture = new T.DataTexture(data, width, height, T.RGBFormat);
+  texture.internalFormat = 'RGB8';
   texture.mapping = T.CubeUVReflectionMapping;
   texture.minFilter = texture.magFilter = T.LinearFilter;
   texture.needsUpdate = true;
@@ -281,7 +286,9 @@ export function createStage(el) {
   key.shadow.normalBias = 0.004;
   ground(scene);
   props(scene);
-  const scale = ruler(scene);
+  const scale = new T.Group();
+  scale.visible = false;
+  scene.add(scale);
   scene.environmentIntensity = 0.61 * 8;
   let tier,
     fitWidth = 0,
@@ -290,6 +297,8 @@ export function createStage(el) {
     shadowAge = 0;
   let environment;
   function warm() {
+    if (scale.visible && !scale.children.length) fillRuler(scale);
+    fit();
     scene.environment = environment ??= studioReflections();
     return warmShaders(renderer, [
       [scene, camera, target],
@@ -386,6 +395,7 @@ export function createStage(el) {
     lighting,
     illuminate,
     draw() {
+      if (scale.visible && !scale.children.length) fillRuler(scale);
       // Cache the expensive directional map between animation samples. Foot
       // contact stamps still follow the live soles on every presented frame.
       if (++shadowAge >= (tier === 'high' ? 4 : 8)) invalidateShadow();

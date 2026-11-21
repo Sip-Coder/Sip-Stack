@@ -2,6 +2,7 @@
 // joins the sleeves and joggers through the bending joints; accessories ride
 // their anatomical carriers and all colours are batched at construction.
 import * as T from 'three';
+import { secondaryMotion } from './secondary.js';
 import { romaForms } from './roma-forms.js';
 import { buildRomaHair } from './roma-light-groom.js';
 
@@ -715,10 +716,12 @@ export function buildRoma(rig) {
   const head = forms.group(rig.head, 'face and band', 0, -0.009, -0.0065);
   head.scale.set(1.1, 1.075, 0.94);
   const facial = face(head, forms);
-  const hair = buildRomaHair(head, hairMaterial);
+  const waves = buildRomaHair(head, hairMaterial);
   clothes(rig, forms);
   const bag = fieldKit(rig, forms);
+  bag.rotation.x = 0.035;
   forms.finish();
+  const secondary = secondaryMotion(rig, './roma-secondary.js', { waves, bag });
   return function poseRoma(f) {
     const t = f.time,
       emote = f.emote;
@@ -740,9 +743,6 @@ export function buildRoma(rig) {
     facial.brows[0].rotation.z = 0.1 * lift;
     facial.brows[1].position.y = 0.097 + 0.0035 * lift;
     facial.smile.scale.y = 1 + 0.32 * lift;
-    const drive = Math.min(1, f.speed / 3.5);
-    bag.rotation.x = 0.035 + 0.13 * drive * Math.sin(f.phase - 0.4) + 0.036 * T.MathUtils.clamp(f.vy, -2, 2);
-    bag.position.z = -0.028 - 0.024 * drive;
-    hair(f);
+    secondary(f);
   };
 }

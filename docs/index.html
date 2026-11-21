@@ -11,9 +11,6 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&amp;family=Inter:wght@400;500;600&amp;display=swap" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath d=%27M12 3l8 4.5v9L12 21l-8-4.5v-9z%27 fill=%27%23914C2C%27/%3E%3C/svg%3E" />
 <link rel="stylesheet" href="assets/sip-stack.css" />
-<link rel="stylesheet" href="village/controls.css" />
-<link rel="stylesheet" href="assets/sip-craft.css" />
-<link rel="stylesheet" href="assets/sip-creek.css" />
 <style>
   .seg { grid-template-columns: repeat(4, 1fr); }
   .seg .thumb { width: calc((100% - 6px) / 4); }
@@ -24,6 +21,8 @@
   #character-status { text-align: center; padding: 2rem; color: var(--teal); }
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module" src="assets/sip-app.js" onerror="import('./assets/sip-recover.js').then(m => m.recover('Site navigation', new Error('Site navigation could not load.'), ['./assets/sip-app.js']))"></script>
+<script type="module" src="characters/route.js" onerror="import('./assets/sip-recover.js').then(m => m.recover('Heros navigation', new Error('Heros navigation could not load.'), ['./characters/route.js']))"></script>
 </head>
 <body data-mode="world">
   <div class="topbar">
@@ -51,6 +50,7 @@
     <p class="values">Culture · Credible · Catalyze · Legacy</p>
   </header>
 
+  <p id="chart-status" role="status" hidden></p>
   <section id="world" class="view active" aria-label="World view">
     <div class="world-wrap">
       <div class="canvas">
@@ -662,9 +662,5 @@
     <p><b>Sip-Stack</b> · Sip Studios · Ai Edu · Water to Wine</p>
     <p>Explore World scenes, Outline stops, the Village, and Heros. Deep links: <code>#world/05/red</code>, <code>#outline/05</code>, <code>#village/auger</code>, <code>#heros</code>. Source: <a href="https://github.com/Sip-Coder/Sip-Stack">github.com/Sip-Coder/Sip-Stack</a>.</p>
   </footer>
-  <script type="module" src="assets/sip-app.js"></script>
-  <script type="module" src="characters/route.js" onerror="import('./assets/sip-recover.js').then(m => m.recover('Heros navigation', new Error('Heros navigation could not load.'), ['./characters/route.js']))"></script>
-  <script type="module" src="assets/sip-craft-loader.js"></script>
-  <script type="module" src="assets/sip-creek-loader.js"></script>
 </body>
 </html>

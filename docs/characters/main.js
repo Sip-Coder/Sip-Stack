@@ -1,5 +1,5 @@
 import * as T from 'three';
-import { setModelDetail } from './material-detail.js';
+import { setModelDetail } from './model-tier.js';
 import { createActor } from './rig.js';
 import { FIXED_DT, createController } from './motion.js';
 import { createStage, contactShadows } from './stage.js';
@@ -13,7 +13,7 @@ const loadBuilder = [
   () => import('./hummin.js').then(m => m.buildHummin),
 ];
 
-export function mountCharacters(host) {
+export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
   const el = createUI(host),
     stage = createStage(el),
     loading = el.querySelector('.ct-loading');
@@ -27,7 +27,7 @@ export function mountCharacters(host) {
   const steering = { ...neutral };
   const target = new T.Vector3(),
     desired = new T.Vector3();
-  let selected = 0,
+  let selected = Math.max(0, names.indexOf(initialHero)),
     view = 'follow',
     party = false,
     slow = false,
@@ -130,8 +130,9 @@ export function mountCharacters(host) {
     showCast();
   }
   function choose(i) {
-    if (i < 0 || i >= 3) return;
+    if (!Number.isInteger(i) || i < 0 || i >= names.length) return;
     selected = i;
+    rememberHero?.(names[i]);
     if (!party || view === 'lineup') {
       view = 'follow';
       reset();
@@ -256,12 +257,12 @@ export function mountCharacters(host) {
       }
   }
   function render(dt = FIXED_DT) {
-    if (!ready || lost || !visible || !stage.fit()) return;
-    const actor = cast[selected],
-      base = actor?.rig.root.position;
+    const actor = cast[selected];
+    // Keep the last complete frame while the newly selected model downloads.
+    if (!ready || lost || !visible || !actor || !stage.fit()) return;
+    const base = actor.rig.root.position;
     if (view === 'lineup') desired.set(0.16, 0.94, 0);
-    else if (actor) desired.set(base.x, base.y + actor.rig.height * 0.5, base.z);
-    else desired.set(0, heights[selected] * 0.5, 0);
+    else desired.set(base.x, base.y + actor.rig.height * 0.5, base.z);
     if (snap || manual) target.copy(desired);
     else target.lerp(desired, 1 - Math.exp(-dt * 13));
     const lineup = view === 'lineup',
@@ -285,13 +286,11 @@ export function mountCharacters(host) {
     stage.draw();
     snap = false;
     stage.canvas.style.visibility = 'visible';
-    if (actor) {
-      if (!firstHeroPainted) {
-        firstHeroPainted = true;
-        performance.mark('heros-first-hero-frame');
-      }
-      if (!(party || lineup) || cast.every(Boolean)) loading.hidden = true;
+    if (!firstHeroPainted) {
+      firstHeroPainted = true;
+      performance.mark('heros-first-hero-frame');
     }
+    if (!(party || lineup) || cast.every(Boolean)) loading.hidden = true;
   }
   function active() {
     return visible && onscreen && !lost && !document.hidden && ready;
@@ -373,7 +372,7 @@ export function mountCharacters(host) {
   stage.canvas.addEventListener('webglcontextrestored', () => {
     lost = false;
     quality();
-    warm();
+    if (cast.some(Boolean)) warm();
   });
   new IntersectionObserver(([e]) => {
     onscreen = e.isIntersecting;
@@ -395,6 +394,10 @@ export function mountCharacters(host) {
           debt = 0;
           sync();
         },
+        primeSecondary: async () => {
+          const visible = cast.filter(actor => actor?.rig.root.visible);
+          return (await Promise.all(visible.map(actor => actor.rig.loadSecondary()))).every(Boolean);
+        },
         canTick: () => manual && !lost,
         snapshot() {
           const actor = cast[selected], f = actor?.ctrl.frame, p = actor?.rig.root.position;
@@ -410,7 +413,6 @@ export function mountCharacters(host) {
   }
   quality();
   reset();
-  warm();
   requestedCast();
   return {
     setVisible(v) {

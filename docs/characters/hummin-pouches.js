@@ -140,8 +140,11 @@ export function fitPouches(rig, apron, m, parts) {
     30,
     4,
     (u, v) => {
-      const p = apron.pattern((6 + u * 30) / 42, (3 + v * 4) / 23);
-      p.z += 0.008;
+      const col = 6 + u * 30;
+      const p = apron.wornPattern(col / 42, (3 + v * 4) / 23);
+      const a = (col / 21 - 1) * 1.18;
+      p.x += 0.014 * Math.sin(a);
+      p.z += 0.014 * Math.cos(a);
       return p;
     },
     0.0015,
@@ -157,53 +160,14 @@ export function fitPouches(rig, apron, m, parts) {
   }
   line(buckle, agedBrass, loop, 0.0021);
   rod(buckle, agedBrass, [0, -0.005, 0.001], [0.005, 0.005, 0.001], 0.00125);
-  const pos = apron.panel.geometry.attributes.position;
-  const field = beltFace.geometry.attributes.position;
-  const tangent = new T.Vector3(),
-    base = new T.Vector3();
-  function placeGear() {
-    // The band shares the skirt's exact fabric stations and follows their
-    // collision displacement. Offset radially, including around the hips.
-    for (let i = 0; i < field.count; i++) {
-      const row = (Math.floor(i / 31) % 5) + 3,
-        col = (i % 31) + 6,
-        source = row * 43 + col;
-      const angle = (col / 21 - 1) * 1.18,
-        gauge = i < 155 ? 0.014 : 0.0124;
-      field.setXYZ(
-        i,
-        pos.getX(source) + gauge * Math.sin(angle),
-        pos.getY(source),
-        pos.getZ(source) + gauge * Math.cos(angle),
-      );
-    }
-    field.needsUpdate = true;
-    apron.updateNormals(beltFace.geometry);
-    beltFace.geometry.computeBoundingSphere();
-    const tuck = T.MathUtils.smoothstep(Math.max(-rig.thighL.rotation.x, -rig.thighR.rotation.x), 0.6, 1.3);
-    for (const a of mounts) {
-      const k = 5 * 43 + a.cell;
-      base.fromBufferAttribute(pos, k);
-      tangent.fromBufferAttribute(pos, k + 1).sub(base);
-      const tilt = Math.atan2(-tangent.z, tangent.x) * 0.5;
-      const slope = Math.tan(tilt);
-      const cx = base.x,
-        cy = base.y + 0.001 + 0.014 * tuck;
-      let support = base.z + 0.009;
-      for (let row = 1; row < 20; row++)
-        for (let col = Math.max(0, a.cell - 7); col <= Math.min(42, a.cell + 7); col++) {
-          const i = row * 43 + col,
-            dx = pos.getX(i) - cx,
-            dy = pos.getY(i) - cy;
-          if (Math.abs(dx) < 0.034 && dy < 0.012 && dy > -0.065)
-            support = Math.max(support, pos.getZ(i) + slope * dx + 0.008);
-        }
-      a.frame.position.set(cx, cy, support + 0.008 + 0.01 * tuck);
-      a.frame.scale.y = 1 - 0.32 * tuck;
-      a.frame.rotation.y = tilt;
-    }
-    const mid = 2 * 31 + 15;
-    buckle.position.set(field.getX(mid), field.getY(mid), field.getZ(mid) + 0.002);
+  // Rivet each pouch to its matching station on the worn apron, ready at rest.
+  const panel = apron.panel.geometry.attributes.position;
+  for (const { frame, cell, side } of mounts) {
+    const rivet = 5 * 43 + cell;
+    frame.position.set(panel.getX(rivet), panel.getY(rivet) + 0.001, panel.getZ(rivet) + 0.022);
+    frame.rotation.y = side * 0.30;
   }
-  return placeGear;
+  const band = beltFace.geometry.attributes.position, center = 2 * 31 + 15;
+  buckle.position.set(band.getX(center), band.getY(center), band.getZ(center) + 0.002);
+  return { beltFace, mounts, buckle };
 }

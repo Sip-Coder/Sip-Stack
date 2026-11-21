@@ -2,7 +2,6 @@
 import * as T from 'three';
 import { rearGrid } from './sippy-hips.js';
 import { shell, torsoPoint } from './sippy-tailoring.js';
-import { addVineEmbroidery } from './embroidery.js';
 
 const tau = Math.PI * 2;
 const mix = T.MathUtils.lerp;
@@ -55,7 +54,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
     return stroke(parent, mat, pts, r, 7);
   }
   function edgeRing(parent, mat, x, y, z, rx, ry, rz, axis = 'z') {
-    const o = mesh(parent, new T.TorusGeometry(1, 0.078, 7, 36), mat, x, y, z);
+    const o = mesh(parent, new T.TorusGeometry(1, 0.078, 5, 24), mat, x, y, z);
     if (axis === 'x') o.rotation.y = Math.PI / 2;
     o.scale.set(rx, ry, rz);
     return o;
@@ -115,7 +114,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
     );
     ellipsoid(drawcord, m.gold, sx * 0.8, yEnd - 0.003, 0.001, 0.0021, 0.0048, 0.0021);
   }
-  const hoodShape = addShell('hood', chest, m.waistcoat, 11, 48, (v, u, inner) => {
+  const hoodShape = addShell('hood', chest, m.waistcoat, 8, 32, (v, u, inner) => {
     const a = mix(0.3, tau - 0.3, u),
       cs = Math.cos(a);
     const y = mix(0.163 + 0.001 * cs - 0.007 * Math.max(0, -cs), 0.178 + 0.001 * cs, v);
@@ -307,7 +306,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
       [sign * 0.08, 0.019, 0.091],
     ];
     const curve = new T.CatmullRomCurve3(points.map((p) => vec(...p)));
-    const rows = 54,
+    const rows = 28,
       cols = 8,
       join = 0.64;
     const strap = addShell('backpack-straps', chest, m.saddle, rows, cols, (v, u, inner) => {
@@ -343,8 +342,9 @@ export function outfitExplorer(rig, tailoring, m, h) {
           const open =
             0.205 + 0.185 * smooth(vv, 0.41, 0.9) + 0.076 * Math.exp(-(((vv - 0.985) / 0.12) ** 2));
           const normalized = ((sign > 0 ? angle : tau - angle) - open) / (tau - 2 * open);
-          const row = vv * 44,
-            col = normalized * 68,
+          const pattern = surfaces['quilted-vest'][0].geometry.userData.pattern;
+          const row = vv * pattern.along,
+            col = normalized * pattern.around,
             r0 = Math.floor(row),
             c0 = Math.floor(col);
           const rf = row - r0,
@@ -352,7 +352,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
             mixAmount = smooth(f, 0, 0.19);
           bindings.push({
             index,
-            ids: [r0 * 69 + c0, r0 * 69 + c0 + 1, (r0 + 1) * 69 + c0, (r0 + 1) * 69 + c0 + 1],
+            ids: [r0 * pattern.columns + c0, r0 * pattern.columns + c0 + 1, (r0 + 1) * pattern.columns + c0, (r0 + 1) * pattern.columns + c0 + 1],
             weights: [(1 - rf) * (1 - cf), (1 - rf) * cf, rf * (1 - cf), rf * cf],
             mixAmount,
             x0: pts.getX(index),
@@ -420,18 +420,34 @@ export function outfitExplorer(rig, tailoring, m, h) {
     const upper = rig['upperArm' + side],
       fore = rig['forearm' + side],
       foot = rig['foot' + side];
-    addVineEmbroidery(upper, {
-      x: s * 0.042,
-      y: -0.093,
-      z: 0.003,
-      width: 0.04,
-      height: 0.054,
-      side: s,
-      style: 'gold',
-      radius: 0.04,
-      rotation: s * -0.32,
-      materials: { leaf: m.gold, berry: m.saddleEdge, thread: m.gold },
-    });
+    // The sleeve uses the same grape drawing as the headphone enamel,
+    // worked in low relief across the cylinder of the sleeve.
+    const badge = group(upper, s * .042, -.093, .003);
+    badge.name = 'Embroidered sleeve vine';
+    badge.rotation.y = s * (Math.PI / 2 - .32);
+    const berryCenters = [[-.009,.002], [.0005,.0025], [.008,.003], [-.006,-.004],
+      [.0045,-.004], [-.0025,-.009], [.001,-.014]];
+    const position = [], index = [];
+    const relief = x => -.5*x*x/.04;
+    for (const [x,y] of berryCenters) {
+      const centre = position.length / 3;
+      position.push(x,y,relief(x)+.0015);
+      for (let n=0; n<8; n++) {
+        const a=tau*n/8, bx=x+.0047*Math.cos(a), by=y+.0037*Math.sin(a);
+        position.push(bx,by,relief(bx)+.0004);
+        index.push(centre,centre+1+n,centre+1+(n+1)%8);
+      }
+    }
+    const berries = new T.BufferGeometry();
+    berries.setAttribute('position',new T.Float32BufferAttribute(position,3));
+    berries.setIndex(index);
+    berries.computeVertexNormals();
+    mesh(badge,berries,m.saddleEdge);
+    for (const points of [
+      [[0,.003],[.002,.009],[-.001,.015],[.006,.019]],
+      [[.001,.011],[-.006,.017],[-.013,.017],[-.008,.010],[.001,.011]],
+      [[.001,.012],[.009,.015],[.014,.012],[.008,.008],[.001,.012]],
+    ]) path(badge,m.gold,points.map(([x,y])=>[x,y,relief(x)+.0009]),.0008);
     // Construct trainers from continuous foot profiles. The outsole stays at the same tread plane as the controller.
     const trainer = group(foot, 0, 0.002, -0.006);
     trainer.scale.set(1.13, 1.045, 1.2);
@@ -611,8 +627,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
     tagStitch(pocket.userData.mobileGeometry ?? pocket.geometry.userData.mobileGeometry);
     // The stitched pocket is sampled from the moving jogger mesh. Both faces and the flap
     // follow the same deforming surface, including a bent knee and the seated hip.
-    const segments = 56,
-      ringCount = 44;
+    const { around: segments, along: ringCount } = pants.geometry.userData.pattern;
     const samples = [];
     for (let iu = 0; iu < 2; iu++)
       for (let j = 0; j <= 16; j++)
@@ -742,18 +757,9 @@ export function outfitExplorer(rig, tailoring, m, h) {
     packFront.update();
     for (const attach of strapAttachments) attach(packFront);
   }
-  function step(f, lag) {
-    const pace = Math.min(1, f.speed / 4);
-    pack.rotation.x = 0.18 * lag + 0.012 * pace * Math.sin(f.phase * 2);
-    pack.rotation.z = 0.018 * Math.tanh(f.turn * 0.3);
-    pack.position.y = 0.072 + 0.0041 * pace * Math.sin(f.phase * 2 - 0.38);
-    drawcord.rotation.z = lag * 0.31 + 0.035 * pace * Math.sin(f.phase - 0.32);
-    drawcord.rotation.x = -0.7 * lag;
-  }
   return {
     pack,
     drawcord,
-    step,
     bakeFit: () => {
       for (const fit of mobilePockets) fit();
       for (const fit of fitStraps) fit();

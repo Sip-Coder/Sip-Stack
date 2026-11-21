@@ -1,6 +1,7 @@
 // Hummin's cast shells, OLED display and fitted field gear share the articulated rig.
 // The normalized sole plane sits 0.047 below each ankle.
 import * as T from 'three';
+import { secondaryMotion } from './secondary.js';
 import { fitCasting, fieldCasting } from './hummin-shell-fit.js';
 import { fitArmor } from './hummin-panels.js';
 import { detailMaterial } from './material-detail.js';
@@ -602,7 +603,7 @@ export function buildHummin(rig) {
   );
   const { flaps, tools, pen } = apron;
   const neckwear = makeScarf(rig, scarf, apron);
-  const stowGear = fitPouches(
+  const gear = fitPouches(
     rig,
     apron,
     { leather, darkLeather, leatherEdge, thread, agedBrass },
@@ -1155,30 +1156,15 @@ export function buildHummin(rig) {
   helmetHousing.scale.set(1.17, 1.427, 1.15);
   helmetHousing.position.set(0, 0.011, 0.0055);
   head.add(helmetHousing);
-  apron.prepareWrinkles();
   rig.secondary ??= {};
   rig.secondary.hummin = { apron: flaps[0], antenna, tools, scarf: neckwear.tail };
-  let toolAngle = 0,
-    toolVelocity = 0,
-    mastAngle = 0,
-    mastVelocity = 0,
-    lastSpeed = 0,
-    lastVy = 0;
-  let springL = 0,
-    velocityL = 0,
-    springR = 0,
-    velocityR = 0,
-    servo = 0,
-    servoVelocity = 0;
+  const secondary = secondaryMotion(rig, './hummin-secondary.js', { apron, gear, neckwear, antenna, tools });
+  let servo = 0, servoVelocity = 0;
   let lastTime = -1;
   return function animate(frame) {
     const { dt, time, speed, state, emote } = frame;
     if (time <= lastTime) {
-      springL = springR = -0.09;
-      velocityL = velocityR = 0;
-      servo = servoVelocity = toolAngle = toolVelocity = mastAngle = mastVelocity = 0;
-      lastSpeed = speed;
-      lastVy = frame.vy;
+      servo = servoVelocity = 0;
       expression.value.set(1, 0, 0, 0);
     }
     lastTime = time;
@@ -1193,29 +1179,6 @@ export function buildHummin(rig) {
     rig.upperArmR.position.x =
       -0.125 - 0.018 * T.MathUtils.smoothstep(Math.abs(rig.upperArmR.rotation.z), 1.5, 2.5);
 
-    // Stowage and service antenna are driven by the same root impulses as the
-    // apron. Each has its own restoring torque and damping at the fixed step.
-    const accel = dt > 0 ? T.MathUtils.clamp((speed - lastSpeed) / dt, -20, 20) : 0;
-    const jolt = dt > 0 ? T.MathUtils.clamp((frame.vy - lastVy) / dt, -22, 22) : 0;
-    lastSpeed = speed;
-    lastVy = frame.vy;
-    const stride = Math.sin((frame.phase ?? 0) * 2) * Math.min(1, speed / 3.9);
-    const mastTarget = T.MathUtils.clamp(
-      -0.014 * accel - 0.008 * jolt + 0.15 * stride + 0.052 * frame.turn,
-      -0.48,
-      0.48,
-    );
-    const toolTarget = T.MathUtils.clamp(
-      0.008 * accel + 0.005 * jolt - 0.13 * stride - 0.025 * frame.turn,
-      -0.35,
-      0.35,
-    );
-    mastVelocity += ((mastTarget - mastAngle) * 120 - 11 * mastVelocity) * dt;
-    toolVelocity += ((toolTarget - toolAngle) * 105 - 13 * toolVelocity) * dt;
-    mastAngle += mastVelocity * dt;
-    toolAngle += toolVelocity * dt;
-    antenna.rotation.x = mastAngle;
-    tools.rotation.z = toolAngle;
     const beat = emote >= 0 ? Math.sin(PI * emote) ** 2 : 0;
     const bow = emote >= 0 ? Math.sin(PI * T.MathUtils.clamp((emote - 0.18) / 0.76, 0, 1)) ** 2 : 0;
     // Acceleration-limited servo tracking allows a small settling overshoot.
@@ -1250,16 +1213,6 @@ export function buildHummin(rig) {
       state === 'idle' && emote < 0
         ? T.MathUtils.smoothstep(idleCycle, 8.5, 9.0) * (1 - T.MathUtils.smoothstep(idleCycle, 9.4, 9.9))
         : 0;
-    const tug = Math.min(0.26, Math.abs(frame.vy) * 0.045) + speed * 0.02;
-    const aimL = Math.max(-0.84, Math.min(0, rig.thighL.rotation.x) * 0.58 - 0.09 - tug);
-    const aimR = Math.max(-0.84, Math.min(0, rig.thighR.rotation.x) * 0.58 - 0.09 - tug);
-    velocityL += ((aimL - springL) * 160 - velocityL * 20) * dt;
-    velocityR += ((aimR - springR) * 160 - velocityR * 20) * dt;
-    springL += velocityL * dt;
-    springR += velocityR * dt;
-    flaps[0].rotation.set(Math.min(springL, aimL + 0.065, springR, aimR + 0.065), 0, 0);
-    apron.crease(frame);
-    stowGear();
-    neckwear.step(frame, accel, jolt);
+    secondary(frame);
   };
 }

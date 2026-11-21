@@ -6,11 +6,6 @@ import { bindCloth } from './sippy-skin.js';
 const tau = Math.PI * 2,
   sections = 10;
 const { lerp } = T.MathUtils;
-function triangleKey(a, b, c) {
-  const lo = Math.min(a, b, c),
-    hi = Math.max(a, b, c);
-  return lo + ',' + (a + b + c - lo - hi) + ',' + hi;
-}
 function circleAngle(a) {
   return (a + tau) % tau;
 }
@@ -27,11 +22,11 @@ function cutPorts(mesh, sites, highColumns) {
     const p = g.attributes.position,
       idx = g.index.array,
       plane = p.count / 2,
+      removed = new Uint8Array(idx.length / 3),
       kept = [],
       holes = [];
     for (const site of sites) {
       const sign = site.side,
-        killed = new Set(),
         edgeMap = new Map();
       let cutRow = 0;
       if (site.arm) {
@@ -55,7 +50,9 @@ function cutPorts(mesh, sites, highColumns) {
           ? Math.min(a, b, c) >= cutRow * highColumns
           : sign * x > 0 && ((y - site.cy) / site.ry) ** 2 + ((z - site.cz) / site.rz) ** 2 < 1;
         if (!outside) continue;
-        killed.add(triangleKey(a, b, c));
+        // shell() emits the two outer triangles of each cell, immediately
+        // followed by their two reversed lining partners.
+        removed[i / 3] = removed[i / 3 + 2] = 1;
         edge(a, b);
         edge(b, c);
         edge(c, a);
@@ -77,7 +74,7 @@ function cutPorts(mesh, sites, highColumns) {
         if (current == null || ring.length > directed.size) throw Error('Open shoulder cut on ' + mesh.name);
       } while (current !== start);
       if (ring.length !== directed.size) throw Error('Multiple shoulder cuts on ' + mesh.name);
-      holes.push({ killed, ring });
+      holes.push(ring);
     }
     // Sew the lining back to every exposed cut edge, including where the
     // underlayer's armhole meets its original neckline.
@@ -93,8 +90,7 @@ function cutPorts(mesh, sites, highColumns) {
         c = idx[i + 2],
         shell = (a >= plane) + (b >= plane) + (c >= plane);
       if (shell !== 0 && shell !== 3) continue;
-      const key = triangleKey(a % plane, b % plane, c % plane);
-      if (holes.some((h) => h.killed.has(key))) continue;
+      if (removed[i / 3]) continue;
       kept.push(a, b, c);
       if (shell === 0) {
         boundary(a, b);
@@ -104,7 +100,7 @@ function cutPorts(mesh, sites, highColumns) {
     }
     for (const [a, b] of border.values()) kept.push(b, a, a + plane, b, a + plane, b + plane);
     g.setIndex(kept);
-    output.push(holes.map((h) => h.ring));
+    output.push(holes);
   }
   return output;
 }
@@ -503,21 +499,18 @@ export function setSleeveHeads(suit) {
   const collarHoles = cutBodyPorts(jacket, sites);
   // Enlarge the holes in the layers below. The outer shell covers their
   // seam allowances while the continuous skin passes through all three cuts.
-  for (const [name, cols] of [
-    ['shirt', 48],
-    ['hoodie', 56],
-  ])
+  for (const name of ['shirt', 'hoodie'])
     cutPorts(
       surfaces[name][0],
       sites.map((s) => ({ ...s, ry: 0.039, rz: 0.054 })),
-      cols,
+      surfaces[name][0].geometry.userData.pattern.columns,
     );
   for (const [i, suffix] of ['L', 'R'].entries()) {
     const side = sites[i].side,
       sleeve = surfaces['sleeve-' + suffix][0],
       shirt = surfaces['shirtsleeve-' + suffix][0];
-    const cuts = cutPorts(sleeve, [{ side, arm: true, cutY: -0.064 }], 34);
-    cutPorts(shirt, [{ side, arm: true, cutY: -0.074 }], 30);
+    const cuts = cutPorts(sleeve, [{ side, arm: true, cutY: -0.064 }], sleeve.geometry.userData.pattern.columns);
+    cutPorts(shirt, [{ side, arm: true, cutY: -0.074 }], shirt.geometry.userData.pattern.columns);
     const high = makeCrown(jacket, sleeve, collarHoles[0][i], cuts[0][0], side);
     const mobile = makeCrown(jacket, sleeve, collarHoles[1][i], cuts[1][0], side);
     const name = 'shoulder-' + suffix,

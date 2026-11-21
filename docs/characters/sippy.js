@@ -1,5 +1,6 @@
 // The field educator. All dimensions here are fractions of standing height.
 import * as T from 'three';
+import { secondaryMotion } from './secondary.js';
 import { outfitExplorer, quiltFinish } from './sippy-explorer.js';
 import { fitExpression } from './sippy-expression.js';
 import { fitHipSeams } from './sippy-hips.js';
@@ -28,8 +29,10 @@ function mesh(parent, shape, material, x = 0, y = 0, z = 0) {
   parent.add(m);
   return m;
 }
+let unitOval;
 function ellipsoid(p, mat, x, y, z, rx, ry, rz) {
-  const shape = new T.SphereGeometry(1, 16, 11);
+  unitOval ??= new T.SphereGeometry(1, 10, 7);
+  const shape = unitOval.clone();
   shape.scale(rx, ry, rz);
   return mesh(p, shape, mat, x, y, z);
 }
@@ -50,7 +53,7 @@ function rings(rows, count = 40) {
     'catmullrom',
     0.32,
   );
-  const layers = (rows.length - 1) * 3;
+  const layers = (rows.length - 1) * 2;
   for (let j = 0; j <= layers; j++) {
     const v = profiles.getPoint(j / layers),
       offset = offsets.getPoint(j / layers).x;
@@ -89,7 +92,8 @@ function rings(rows, count = 40) {
 }
 function stroke(parent, mat, coords, w, facets = 7) {
   const path = new T.CatmullRomCurve3(coords.map((c) => vec(...c)));
-  return mesh(parent, new T.TubeGeometry(path, Math.max(5, coords.length * 3), w, facets), mat);
+  path.arcLengthDivisions = Math.max(12, coords.length * 6);
+  return mesh(parent, new T.TubeGeometry(path, Math.max(4, coords.length * 2), w, Math.min(facets, 5)), mat);
 }
 // Tapered locks, brows and fingers have elliptical, continuously turning sections.
 function sweep(parent, mat, coords, width, depth, thickEnd = 0.04) {
@@ -99,8 +103,9 @@ function sweep(parent, mat, coords, width, depth, thickEnd = 0.04) {
     'catmullrom',
     0.45,
   );
-  const n = coords.length * 4,
-    sides = 10,
+  path.arcLengthDivisions = coords.length * 8;
+  const n = coords.length * 2,
+    sides = 8,
     p = [],
     index = [];
   const frames = path.computeFrenetFrames(n, false);
@@ -156,7 +161,7 @@ function styleQuiff(head, locks) {
     const x = lock.points[0][0];
     const crest = lock.group.name.startsWith('sippy-quiff-');
     const id = crest ? (x < -0.014 ? 0 : x > 0.014 ? 2 : 1) : x < 0 ? 3 : 4;
-    if (!sections.has(id)) sections.set(id, { pivot: vec(0,0,0), locks: [], crest, side: Math.sign(x) });
+    if (!sections.has(id)) sections.set(id, { pivot: vec(0,0,0), locks: [], side: Math.sign(x) });
     const section = sections.get(id);
     section.pivot.add(vec(...lock.points[0]));
     section.locks.push(lock.group);
@@ -171,24 +176,9 @@ function styleQuiff(head, locks) {
       root.add(lock);
       lock.position.sub(pivot);
     }
-    banks.push({ root, amplitude: section.crest ? 0.87 : 0.60, phase: id * 0.42, side: section.side });
+    banks.push({ root, id, side: section.side });
   }
-  let pitch = 0, roll = 0, pitchV = 0, rollV = 0, last = -Infinity;
-  return (f) => {
-    if (f.time <= last) pitch = roll = pitchV = rollV = 0;
-    last = f.time;
-    const walk = Math.min(1, f.speed / 2.5), dt = f.dt;
-    const target = 0.09 * walk * Math.sin(2*f.phase) + 0.023 * Math.sin(f.time*1.23)
-      + 0.019 * T.MathUtils.clamp(f.vy, -3, 3);
-    pitchV += (95 * (target - pitch) - 10 * pitchV) * dt;
-    rollV += (80 * (T.MathUtils.clamp(f.turn * -0.018, -0.13, 0.13) - roll) - 11 * rollV) * dt;
-    pitch += pitchV * dt;
-    roll += rollV * dt;
-    for (const bank of banks) {
-      bank.root.rotation.x = bank.amplitude * (pitch + 0.014 * walk * Math.sin(2*f.phase - bank.phase));
-      bank.root.rotation.z = bank.amplitude * (roll + bank.side * 0.15 * pitch);
-    }
-  };
+  return banks;
 }
 
 // Iris, limbus, pupil, wet catchlight and sclera share one corneal dome.
@@ -395,7 +385,8 @@ export function buildSippy(rig) {
   ];
   // Shape the cheek planes and the shallow orbit into the same continuous
   // surface as the jaw. A broad warm face sits beneath the raised brow bone.
-  const faceShape = rings(cheekRows, 96);
+  const cheekColumns = 56,
+    faceShape = rings(cheekRows, cheekColumns);
   const facePos = faceShape.attributes.position;
   const bump = (x, c, w) => Math.exp(-(((x - c) / w) ** 2));
   for (let i = 0; i < facePos.count; i++) {
@@ -426,7 +417,7 @@ export function buildSippy(rig) {
   const skullMesh = mesh(headSkin, faceShape, skin);
   skullMesh.name = 'sippy-face-sculpt';
   skullMesh.userData.patternPiece = true;
-  const expression = fitExpression(skullMesh, 96, mouth, enamel, lip);
+  const expression = fitExpression(skullMesh, cheekColumns, mouth, enamel, lip);
   const orbitalRims = [];
   const neck = group(chest);
   neck.name = 'sippy-neck';
@@ -516,8 +507,12 @@ export function buildSippy(rig) {
   }
   function fitSkull(p, pad) {
     if (p[1] >= skull[skull.length - 1][0]) return p;
-    let i = 1;
-    while (i + 1 < skull.length && skull[i][0] < p[1]) i++;
+    let lo = 1, i = skull.length - 1;
+    while (lo < i) {
+      const mid = (lo + i) >> 1;
+      if (skull[mid][0] < p[1]) lo = mid + 1;
+      else i = mid;
+    }
     const a = skull[i - 1],
       b = skull[i],
       f = T.MathUtils.clamp((p[1] - a[0]) / (b[0] - a[0]), 0, 1);
@@ -560,8 +555,8 @@ export function buildSippy(rig) {
     capColor = [],
     capUV = [],
     capI = [];
-  const sectors = 88,
-    latitudes = 24;
+  const sectors = 44,
+    latitudes = 14;
   for (let j = 0; j <= latitudes; j++)
     for (let i = 0; i <= sectors; i++) {
       const a = (i / sectors) * tau,
@@ -616,8 +611,9 @@ export function buildSippy(rig) {
       uv = [],
       ix = [],
       base = new T.Color(colour);
-    const along = 18,
-      around = 12,
+    curve.arcLengthDivisions = 48;
+    const along = 12,
+      around = 8,
       centre = vec(),
       tangent = vec(),
       side = vec(),
@@ -736,8 +732,8 @@ export function buildSippy(rig) {
   const crestP = [],
     crestC = [],
     crestI = [];
-  const columns = 42,
-    steps = 30;
+  const columns = 28,
+    steps = 18;
   for (let j = 0; j <= columns; j++) {
     const a = (j / columns) * tau,
       u = (1 + Math.sin(a)) * 0.5;
@@ -988,8 +984,7 @@ export function buildSippy(rig) {
       ellipsoid(headSkin, blush, x * s, y, z, r, r * 0.69, r * 0.4);
     }
   }
-  const followGroom = styleQuiff(headSkin, grooms);
-  rig.hair = { step: followGroom };
+  const banks = styleQuiff(headSkin, grooms);
   rig.secondary ??= {};
   // Keep the actual face and collar surfaces available to the review tools.
   const faceSkin = headSkin.children
@@ -1031,7 +1026,7 @@ export function buildSippy(rig) {
     groom: feature('Combed scalp, temple tapers and full swept crown', ...haircut),
     chin: feature('Mandibular skin under the laugh line', skullMesh),
     eyes: corneas.map((m, i) => feature('Corneal dome over the iris ' + (i ? 'R' : 'L'), m)),
-    waist: feature('Top trouser-rise band', edgeBinding(g['trouser-rise'][0], 14 * 56, 56)),
+    waist: feature('Top trouser-rise band', edgeBinding(g['trouser-rise'][0], 14 * rig.garments.hips.columns, rig.garments.hips.columns)),
     shoulders: ['L', 'R'].map((s) =>
       feature('Outer shoulder sleeve head ' + s, ...g['shoulder-' + s], g['sleeve-' + s][0]),
     ),
@@ -1039,19 +1034,12 @@ export function buildSippy(rig) {
       feature('Patella equator ' + s, { mesh: body.mesh, vertices: body.knees[s] }),
     ),
     ankleCuff: ['L', 'R'].map((s) =>
-      feature('Lower trouser cuff ' + s, edgeBinding(g['trousers-' + s][0], 0, 56)),
+      feature('Lower trouser cuff ' + s, edgeBinding(g['trousers-' + s][0], 0, rig.garments.hips.columns)),
     ),
   };
-  let lag = 0,
-    lagV = 0,
-    lastTime = -Infinity;
+  const secondary = secondaryMotion(rig, './sippy-secondary.js', { banks, tails, pack, drawcord });
   return function animate(f) {
-    const t = f.time,
-      dt = f.dt;
-    if (t <= lastTime) {
-      lag = lagV = 0;
-    }
-    lastTime = t;
+    const t = f.time;
     const blinkTime = (t + 0.13) % 4.2,
       blink = blinkTime < 0.16 ? Math.sin((Math.PI * blinkTime) / 0.16) : 0;
     const focus = f.emote >= 0 ? Math.sin(Math.PI * f.emote) ** 0.8 : 0;
@@ -1096,16 +1084,8 @@ export function buildSippy(rig) {
     rig.head.rotation.y += 0.32 * focus;
     rig.head.rotation.x += 0.18 * focus;
     rig.head.position.y = 0.24 + 0.04 * Math.max(0, Math.sin(rig.head.rotation.x));
-    const target =
-      Math.min(0.35, f.speed * 0.035 + Math.abs(f.vy) * 0.026) +
-      0.025 * Math.sin(f.phase * 2) * Math.min(1, f.speed);
-    lagV += dt * (65 * (target - lag) - 10 * lagV);
-    lag += lagV * dt;
-    tails[0].rotation.x = lag + 0.02 * Math.sin(f.phase);
-    tails[1].rotation.x = lag - 0.02 * Math.sin(f.phase);
-    explorer.step(f, lag);
     for (let i = 0; i < tailoring.updates.length; i++) tailoring.updates[i]();
     body.update();
-    followGroom(f);
+    secondary(f);
   };
 }

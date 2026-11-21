@@ -2,7 +2,9 @@
 // denim has a brushed two-over, one-under diagonal twill.
 import * as T from 'three';
 
-export function weave(material, knit) {
+const finishes = new Map();
+function fiberMap(knit) {
+  if (finishes.has(knit)) return finishes.get(knit);
   const size = 128;
   const fiber = new Uint8Array(size * size * 4);
   const fract = (v) => v - Math.floor(v);
@@ -29,6 +31,11 @@ export function weave(material, knit) {
   tex.generateMipmaps = true;
   tex.minFilter = T.LinearMipmapLinearFilter;
   tex.needsUpdate = true;
+  finishes.set(knit, tex);
+  return tex;
+}
+export function weave(material, knit) {
+  const tex = fiberMap(knit);
   material.map = material.bumpMap = tex;
   material.bumpScale = knit ? 0.00036 : 0.00015;
   return material;

@@ -9,6 +9,7 @@ export function reviewControls(floor) {
     },
     reset: floor.reset,
     setManual: floor.manualMode,
+    primeSecondary: floor.primeSecondary,
     tick(n, intent = floor.neutral) {
       if (!floor.canTick()) return;
       const request = { ...floor.neutral, ...intent };

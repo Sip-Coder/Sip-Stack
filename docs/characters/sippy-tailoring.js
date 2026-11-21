@@ -70,6 +70,7 @@ export function shell(along, around, point, closed = false) {
   const g = new T.BufferGeometry();
   g.setAttribute('position', new T.Float32BufferAttribute(verts, 3));
   g.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+  g.userData.pattern = { along, around, columns };
   g.setIndex(stitch(1, 1));
   g.computeVertexNormals();
   const mobile = new T.BufferGeometry();
@@ -148,7 +149,7 @@ function waistY(v, a) {
 }
 function clothStrip(parent, name, mat, line, radius) {
   const curve = new T.CatmullRomCurve3(line.map((p) => new T.Vector3(...p)));
-  const g = new T.TubeGeometry(curve, Math.max(12, line.length - 1), radius, 6, false);
+  const g = new T.TubeGeometry(curve, Math.max(8, Math.ceil(line.length / 2)), radius, 4, false);
   const m = piece(parent, name, g, mat);
   m.userData.highDetail = true;
   return m;
@@ -170,8 +171,8 @@ export function cutExplorerLayers(rig, mats) {
     'shirt',
     chest,
     shell(
-      34,
-      48,
+      15,
+      24,
       (v, u, inner) => torsoPoint(lerp(-0.076, 0.178, v), u * tau, 0.892, inner ? -0.00125 : 0),
       true,
     ),
@@ -185,7 +186,7 @@ export function cutExplorerLayers(rig, mats) {
     chest,
     shell(
       14,
-      56,
+      28,
       (v, u, inner) => torsoPoint(lerp(-0.163, -0.0628, v), u * tau, 0.9255, inner ? -0.00135 : 0),
       true,
     ),
@@ -196,8 +197,8 @@ export function cutExplorerLayers(rig, mats) {
     'hoodie',
     chest,
     shell(
-      36,
-      56,
+      18,
+      28,
       (v, u, inner) => {
         const a = u * tau;
         return torsoPoint(waistY(v, a), a, 0.947, inner ? -0.00135 : 0);
@@ -213,7 +214,7 @@ export function cutExplorerLayers(rig, mats) {
       y = jacketY(v, a);
     return torsoPoint(y, a, 1, inside ? -0.0016 : 0);
   }
-  add('quilted-vest', chest, shell(44, 68, jacketPoint), suit);
+  add('quilted-vest', chest, shell(24, 36, jacketPoint), suit);
   beneath('quilted-vest', 'hoodie');
   beneath('quilted-vest', 'shirt');
   for (const side of [-1, 1]) {
@@ -223,7 +224,7 @@ export function cutExplorerLayers(rig, mats) {
       const a = side * (open + 0.015 + 0.056 * u);
       return torsoPoint(jacketY(v, a), a, 1, inside ? 0.0029 : 0.0047);
     };
-    add('zipper-plackets', chest, shell(46, 7, slope), lapel);
+    add('zipper-plackets', chest, shell(20, 4, slope), lapel);
     const line = [];
     for (let i = 0; i <= 44; i++) line.push(slope(i / 44, 0.87, false));
     clothStrip(chest, 'lapel-topstitch', edge, line, 0.00043);
@@ -243,7 +244,7 @@ export function cutExplorerLayers(rig, mats) {
     // The outer collar rolls away from the placket at its tips.
     return torsoPoint(y, a, 1.025, (inner ? 0.0016 : 0.0031) + (1 - v) * 0.005);
   };
-  add('collar', chest, shell(11, 60, collarPoint), waistcoat);
+  add('collar', chest, shell(6, 32, collarPoint), waistcoat);
   beneath('collar', 'shirt');
   beneath('collar', 'hoodie');
   const tails = [];
@@ -341,13 +342,13 @@ export function fitLimb(suit, side, leg, mats) {
     return m;
   }
   if (leg) {
-    tube(key, mats.trousers, 1, rows[0][0], -0.09, 0.00145, 44, 56);
+    tube(key, mats.trousers, 1, rows[0][0], -0.09, 0.00145, 22, 28);
     beneath(key, 'body');
   } else {
     const sh = 'shirtsleeve-' + side;
-    tube(sh, mats.white, 0.808, -0.317, 0.01, 0.00125, 36, 30);
+    tube(sh, mats.white, 0.808, -0.317, 0.01, 0.00125, 18, 16);
     beneath(sh, 'body');
-    tube(key, mats.waistcoat, 1, -0.312, 0.017, 0.00145, 58, 34);
+    tube(key, mats.waistcoat, 1, -0.312, 0.017, 0.00145, 28, 20);
     beneath(key, sh);
     beneath(key, 'body');
   }

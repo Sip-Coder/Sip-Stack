@@ -1,6 +1,7 @@
 // Tileable material studies drawn from weave, pores, grain and brushed-metal
 // functions. RG encode tangent-space slopes, B roughness variation, A cavity AO.
 import * as T from 'three';
+export { setModelDetail } from './model-tier.js';
 
 const tiles = new Map();
 const profiles = {
@@ -68,12 +69,18 @@ function tile(kind, size) {
 export function detailMaterial(material, kind) {
   if (material.userData.surfaceDetail || !profiles[kind]) return material;
   const [frequency, strength] = profiles[kind];
-  const data = { kind, map: { value: tile(kind, 128) } };
+  const data = {
+    kind,
+    map: { value: null },
+    setTier(high) { this.map.value = tile(kind, high ? 128 : 32); },
+  };
   material.userData.surfaceDetail = data;
   const prior = material.onBeforeCompile,
     priorKey = material.customProgramCacheKey();
   material.onBeforeCompile = function (shader, renderer) {
     prior.call(this, shader, renderer);
+    // Isolated authoring views that never select a tier use the full finish.
+    if (!data.map.value) data.setTier(true);
     shader.uniforms.sipSurfaceTile = data.map;
     shader.vertexShader =
       'varying vec3 sipRest;\n' +
@@ -122,22 +129,4 @@ export function detailMaterial(material, kind) {
   material.customProgramCacheKey = () => priorKey + '-surface-v1-' + kind;
   material.needsUpdate = true;
   return material;
-}
-
-export function setModelDetail(root, tier) {
-  const high = tier === 'high';
-  root.traverse((node) => {
-    if (!node.isMesh) return;
-    if (node.userData.highDetail) node.visible = high;
-    if (node.userData.mobileGeometry) {
-      node.userData.highGeometry ??= node.geometry;
-      node.geometry = high ? node.userData.highGeometry : node.userData.mobileGeometry;
-      if (!node.isSkinnedMesh && !node.geometry.boundingSphere) node.geometry.computeBoundingSphere();
-    }
-    const materials = Array.isArray(node.material) ? node.material : [node.material];
-    for (const mat of materials) {
-      const detail = mat.userData.surfaceDetail;
-      if (detail) detail.map.value = tile(detail.kind, high ? 128 : 32);
-    }
-  });
 }

@@ -147,6 +147,9 @@ async function measure(name, tier) {
     ctrl = createController(rig);
   optimizeCharacter(rig);
   setModelDetail(rig.root, tier);
+  // Synchronous fixed-tick playback begins after the same optional update
+  // module that a player's first moving frame requests is ready.
+  if (!await rig.loadSecondary()) throw Error('Secondary motion did not load for ' + name);
   const check = (ok, msg) => {
     if (!ok) failures.push(name + '/' + tier + ': ' + msg);
   };

@@ -88,6 +88,7 @@ def record(page, hero, destination, samples):
     call(page, "setManual", True)
     call(page, "tier", "mobile")
     call(page, "select", hero)
+    assert page.locator(QA["HOST"]).evaluate("host => host.characterTest.primeSecondary?.() ?? true"), hero
     call(page, "reset")
     call(page, "view", "front")
     page.wait_for_function("""name => {

@@ -97,6 +97,7 @@ def hot_run(page, hero, tier, frame_count, step_count):
         if (hero === 'lineup') await t.view('lineup');
         else await t.select(hero);
         await t.reset();
+        if (t.primeSecondary && !await t.primeSecondary()) throw Error('Secondary motion did not load');
         t.render();
         const snap=t.snapshot();
         if (snap.tier!==tier || (hero==='lineup' ? snap.view!=='lineup' : snap.name!==hero))
