@@ -792,6 +792,15 @@ export function buildRoma(rig) {
         center: [0, -0.083, 0],
         radii: [0.045, 0.078, 0.047],
       },
+      // The outer upper sleeve remains rounded behind the medial fold when
+      // Roma reaches overhead. Follow the humerus through that outer arc.
+      {
+        role: 'sleeve',
+        node: joint,
+        sleeveJoint: joint,
+        center: [side * 0.015, -0.115, -0.001],
+        radii: [0.039, 0.055, 0.035],
+      },
       {
         role: 'sleeve',
         node: elbow,
