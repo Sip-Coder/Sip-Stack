@@ -350,19 +350,6 @@ export function buildHummin(rig) {
       totalEmissiveRadiance += vec3(.001,.003,.004)*(1.+sin(screenUV.y*140.));`,
       );
   };
-  // A shallow inset in the cream chin gives him a readable physical smile
-  // below the display, even in backlit views.
-  const chinSmile = [];
-  for (let i = 0; i <= 14; i++) {
-    const lon = (i / 7 - 1) * 0.26,
-      lat = -0.82 + 0.07 * (i / 7 - 1) ** 2;
-    chinSmile.push([
-      (rx + 0.001) * Math.sin(lon) * Math.cos(lat),
-      cy + (ry + 0.001) * Math.sin(lat),
-      -0.001 + (rz + 0.001) * Math.cos(lon) * Math.cos(lat),
-    ]);
-  }
-  line(head, graphite, chinSmile, 0.00135);
   mark(visor(screen, 1.043, 0.63, 0.00185), 'display');
   for (const s of [-1, 1]) {
     const ear = group(head, s * 0.114, 0.066, -0.004);
