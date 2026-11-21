@@ -15,7 +15,7 @@ Home: Sip Studios › Ai Edu · Through-line: Somm Support water accessibility
 | `sip-studies-tasting-map-closed-list-source.md` | Source closed list (placeholder W1–W9) |
 | `sip-studies-exam-structure-patterns.md` | Structure-only format map + Sip skeleton |
 
-## Dual view (GitHub Pages)
+## GitHub Pages views
 
 `docs/index.html` is the Pages home, with four views.
 

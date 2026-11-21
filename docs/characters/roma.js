@@ -846,7 +846,7 @@ export function buildRoma(rig) {
       radii: [0.018, 0.02, 0.012],
     });
   }
-  const curlSystem = createHair(rig, colliders);
+  const curlSystem = createHair(rig, colliders, { materialSlackM: 0.019 });
   for (let k = 0; k < locks.length; k++) {
     const strand = locks[k],
       face = strand.role === 'face';
@@ -861,6 +861,7 @@ export function buildRoma(rig) {
       damping: face ? 9.8 + (k % 3) * 0.7 : 12.2 + (k % 3) * 0.5,
       maxOffset: strand.maxOffset,
       radius: strand.radius,
+      contactSlide: strand.contactSlide,
     });
   }
   bindRunningHold(curlSystem, locks);

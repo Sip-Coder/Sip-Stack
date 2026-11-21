@@ -3,6 +3,7 @@
 // All integration, length limits and skinning run on the controller's fixed clock.
 import * as T from 'three';
 import { ellipsoidFaceGuard } from './hair-support-faces.js';
+import { ribbonSpanConstraint } from './hair-ribbon-spans.js';
 
 const v = () => new T.Vector3();
 const matrix = () => new T.Matrix4();
@@ -212,6 +213,15 @@ function updateGuard(shape, nodes, initial, a, b, nearest, direction, normal) {
     inv[1] * n.x + inv[5] * n.y + inv[9] * n.z,
     inv[2] * n.x + inv[6] * n.y + inv[10] * n.z,
   );
+  const slip = shape.contactSlip;
+  if (slip) {
+    slip.normal.copy(shape.planeNormal).multiplyScalar(1 / shape.planeNormal.lengthSq());
+    slip.tangent.subVectors(shape.push, slip.normal);
+    slip.tangentLength = slip.tangent.length();
+    // The support of a spherical guide on this plane is r · |Mᵀn|.
+    // A thin fold's shortest axis cannot inflate every other direction.
+    slip.guidePad = slip.radius * shape.planeNormal.length();
+  }
   shape.planeOffset =
     surfaceShell + Math.max(0, shape.end?.dot(n) ?? 0) - e[12] * n.x - e[13] * n.y - e[14] * n.z;
   shape.planeActive = true;
@@ -257,10 +267,19 @@ function keepOutside(
         const influence =
           T.MathUtils.smoothstep(arc, Math.max(0.5, s.first - 0.45), Math.max(1.05, s.first + 0.1)) *
           (1 - T.MathUtils.smoothstep(arc, s.last + 0.05, s.last + 0.45));
-        const inset =
-          s.planeOffset + (isGuide ? s.guideShell - surfaceShell : 0) - s.planeNormal.dot(point);
+        const guidePad = s.contactSlip?.guidePad ?? (s.guideShell - surfaceShell);
+        const inset = s.planeOffset + (isGuide ? guidePad : 0) - s.planeNormal.dot(point);
         if (inset > 1e-4 && influence > 0) {
-          point.addScaledVector(s.push, inset * influence);
+          const travel = inset * influence, slip = s.contactSlip;
+          if (slip && travel * slip.tangentLength > slip.limits[Math.ceil(arc)]) {
+            // The oblique escape can slide sideways across a thin tilted fold.
+            // The normal part delivers all the required separation. Limit only
+            // tangential travel to the slack in the relevant sewn guide span.
+            point.addScaledVector(slip.normal, travel);
+            point.addScaledVector(slip.tangent, slip.limits[Math.ceil(arc)] / slip.tangentLength);
+          } else {
+            point.addScaledVector(s.push, travel);
+          }
           moved = true;
         }
         if (influence > 0.99) continue;
@@ -349,6 +368,13 @@ function retainTerminalTurn(chain, offset, trial, projected, scratch) {
       supported[i].subVectors(nodes[i], freeNodes[i]).sub(offset);
     chain.hasSupportedRest = true;
   }
+  // A cut can touch both sides of a folded collar. Begin on the last
+  // supported branch, allowing its sewn bridge to advance towards the new
+  // contact. The following projections still solve the complete current pose.
+  if (chain.offsetValid) {
+    trial.subVectors(offset, chain.contactOffset).clampLength(0, chain.length[first] * 0.2);
+    offset.copy(chain.contactOffset).add(trial);
+  }
   for (let pass = 0; pass < 3; pass++) {
     for (let i = first; i <= last; i++) {
       trial.copy(freeNodes[i]).add(offset);
@@ -363,9 +389,11 @@ function retainTerminalTurn(chain, offset, trial, projected, scratch) {
     if (supported) nodes[i].add(supported[i]);
   }
   drapeGuide(chain, trial, projected);
+  chain.contactOffset.subVectors(nodes[last], freeNodes[last]);
+  chain.offsetValid = true;
 }
 
-export function createHair(rig, colliders) {
+export function createHair(rig, colliders, { materialSlackM = 0 } = {}) {
   const chains = [],
     a = v(),
     b = v(),
@@ -393,6 +421,7 @@ export function createHair(rig, colliders) {
       breathingBend,
       gaitCoupling = 1,
       sleeveRoute = null,
+      contactSlide = null,
     } = {},
   ) {
     if (points.length < 2) throw new Error('A hair guide needs a root and tip');
@@ -464,8 +493,16 @@ export function createHair(rig, colliders) {
       bend: rest.map(() => new T.Quaternion()),
       skin: rest.map(matrix),
     };
+    if (contactSlide) {
+      const limits = chain.length.map((length) => length * contactSlide.fraction);
+      for (const shape of shapes) {
+        if (shape.localContact && (!contactSlide.role || shape.role === contactSlide.role))
+          shape.contactSlip = { limits, radius, guidePad: 0, normal: v(), tangent: v(), tangentLength: 0 };
+      }
+    }
     for (const surface of surfaces) {
       if (chain.faceGuards.length) surface.fitFaces = ellipsoidFaceGuard(surface);
+      if (materialSlackM) surface.fitSpans = ribbonSpanConstraint(surface, group, materialSlackM);
       surface.mesh.geometry.computeBoundingBox();
       for (let i = 0; i < surface.position.count; i++) {
         const j = surface.segment[i];
@@ -501,8 +538,10 @@ export function createHair(rig, colliders) {
         updateShape(shape, group.matrixWorld, chain.radius);
         shape.planeActive = false;
       }
-      if (chain.freeNodes)
+      if (chain.freeNodes) {
+        if (restart) chain.offsetValid = false;
         for (let i = 0; i < nodes.length; i++) nodes[i].copy(chain.freeNodes[i]);
+      }
       // Shoulder lift and release load the curl twice per stride. A small
       // alternating term makes opposite face tendrils recover independently.
       const phase = (f.phase ?? 0) + chain.variation * (chain.role === 'face' ? 0.17 : 0.065);
@@ -618,14 +657,14 @@ export function createHair(rig, colliders) {
             s.normal.setXYZ(i, p.x, p.y, p.z);
           }
         }
-        if (s.fitFaces) {
+        if (s.fitFaces || s.fitSpans) {
           for (let pass = 0; pass < 4; pass++) {
-            let moved = false;
+            let moved = s.fitSpans?.(geometry) ?? false;
             for (const shape of chain.faceGuards) {
               if (shape.protectsFaces === 'coarse' && geometry !== s.mesh.userData.mobileGeometry) continue;
               if (s.fitFaces(shape, box)) moved = true;
             }
-            if (!moved || chain.faceGuards.length === 1) break;
+            if (!moved || (!s.fitSpans && chain.faceGuards.length === 1)) break;
           }
         }
         box.getBoundingSphere(geometry.boundingSphere);

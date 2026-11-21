@@ -13,6 +13,7 @@ async function measure(onlyHero, { mobileHair, onlyMobile, designs }) {
   const T = await import('three');
   const { measureRigLandmarks } = await import('/tools/blueprints/measure-landmarks.mjs');
   const { checkBandCoverage } = await import('/tools/characters-band-coverage.mjs');
+  const { measureStrandMotion } = await import('/tools/characters-strand-motion.mjs');
   const { checkFlorence, captureIdleMotion } = await import('/tools/characters-florence.mjs');
   const { garmentPoses, poseGarment } = await import('/tools/characters-garment-poses.mjs');
   const { createActor } = await import('/characters/rig.js');
@@ -1015,6 +1016,7 @@ async function measure(onlyHero, { mobileHair, onlyMobile, designs }) {
         poses: 0,
         minimumUnitRadius: Infinity,
         worstDepthM: 0,
+        colliderPenetrations: {},
         tipPeakM: 0,
       };
       report.shoulderCapCoverage = sleeveCaps(system);
@@ -1336,6 +1338,9 @@ async function measure(onlyHero, { mobileHair, onlyMobile, designs }) {
                 if (r >= 1) continue;
                 const scale = c.node.getWorldScale(new T.Vector3());
                 const depth = (1 - r) * Math.max(...c.radii) * Math.max(scale.x, scale.y, scale.z);
+                const name = c.role + ' / ' + c.node.name;
+                if (depth > (report.colliderPenetrations[name]?.depthM ?? 0))
+                  report.colliderPenetrations[name] = { depthM: depth, pose: label, lock: mesh.parent.name };
                 if (depth > report.worstDepthM) {
                   report.worstDepthM = depth;
                   report.worstPose = label;
@@ -1694,6 +1699,7 @@ async function measure(onlyHero, { mobileHair, onlyMobile, designs }) {
     }
     dynamics();
     checkFlorence({ rig, controller, input, animate, name, result, check });
+    if (name === 'roma') auditFilmMotion('high');
 
     result.props = {};
     for (const prop of PROPS) {
@@ -1738,6 +1744,20 @@ async function measure(onlyHero, { mobileHair, onlyMobile, designs }) {
       checkHairGeometry(hair.report, 'Mobile ');
       result.secondary ??= {};
       result.secondary.mobileHair = hair.report;
+      if (name === 'roma') auditFilmMotion('mobile');
+    }
+
+    function auditFilmMotion(tier) {
+      const film = measureStrandMotion(tier);
+      result.secondary.filmStrandMotion ??= {};
+      result.secondary.filmStrandMotion[tier] = film;
+      check(film.fixedTicks === 1095 && film.edgesPerTick > 0, tier + ' full film strand coverage');
+      // Engineering limits for a disappearing single-frame spike. The wave
+      // is stationary, while the full sequence includes a rapid running tuck.
+      check(film.all.vertexTravelM <= 0.10, tier + ' hair material travels at most 10 cm per fixed tick');
+      check(film.all.edgeExtensionM <= 0.05, tier + ' a material edge stretches by at most 5 cm');
+      check(film.wave.vertexTravelM <= 0.06, tier + ' wave hair travels at most 6 cm per fixed tick');
+      check(film.wave.edgeExtensionM <= 0.035, tier + ' wave hair edge extension stays below 3.5 cm');
     }
   }
   return {

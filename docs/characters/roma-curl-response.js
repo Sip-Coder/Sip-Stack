@@ -4,12 +4,12 @@
 const shoulderCoupling = {
   right: [
     1.554, 0.356, 0.322, 1.293, 0.604, 0.986, 0.716, 0.573, 0.694, 0.516, 1.197, 1.28, 0.773, 0.676, 1.152,
-    0.803, 1.084, 0.639, 0.893, 0.609, 1.323, 1.336, 0.992, 0.434, 0.988, 2.062, 1.264, 0.286, 0.745, 0.563,
+    0.803, 1.084, 0.639, 0.893, 0.609, 1.323, 1.53, 0.992, 0.434, 0.988, 2.062, 1.264, 0.286, 0.745, 0.563,
     3.113, 1.002, 1.44, 0.684, 0.783, 1.917, 2.655, 1.141, 1.824, 0.764, 1.724, 2.217,
   ],
   left: [
     1.099, 0.93, 1.236, 0.874, 0.827, 0.877, 0.417, 0.706, 0.738, 0.919, 0.838, 0.697, 0.706, 1.464, 0.873,
-    0.791, 0.624, 0.634, 1.08, 0.868, 1.412, 0.372, 0.366, 1.562, 1.455, 1.831, 0.988, 0.486, 1.426, 1.966,
+    0.791, 0.624, 0.634, 1.08, 0.868, 1.412, 0.372, 0.8418, 1.562, 1.455, 1.831, 0.988, 0.486, 1.426, 1.966,
     1.997, 2.475, 0.663, 1.659, 1.234, 2.356, 0.849, 1.861, 1.794, 0.96, 1.334, 2.381,
   ],
 };
@@ -72,13 +72,13 @@ function runningHold(side, index, coupling) {
 // Bundles against earring posts and the folds of the pack retain their tight
 // terminal turn. A loaded curl slides as a unit while its root bends.
 const retainedTurns = {
-  right: new Set([3, 4, 21, 22, 24, 25, 26, 31, 33, 34, 35, 39]),
-  left: new Set([3, 7, 14, 20, 24, 25, 26, 32, 34, 39]),
+  right: new Set([3, 4, 7, 21, 22, 24, 25, 26, 31, 33, 34, 35, 39]),
+  left: new Set([3, 7, 14, 20, 22, 24, 25, 26, 32, 34, 39]),
 };
 
 const fittedTurns = {
-  right: new Set([4, 21, 22, 24, 25, 31, 39]),
-  left: new Set([20, 24, 25, 39]),
+  right: new Set([4, 7, 21, 22, 24, 25, 31, 39]),
+  left: new Set([20, 22, 24, 25, 39]),
 };
 
 export function curlResponse(side, index, face) {
@@ -87,6 +87,12 @@ export function curlResponse(side, index, face) {
   const breathFlex = napeFlex[bank][index] ?? (face ? 0.98 : index >= 34 && index <= 38 ? 0.9 : 0.83);
   const coupling = (face ? 1.06 : 1.02) * shoulderCoupling[bank][index];
   return {
+    // The higher of these two nape coils also passes the shoulder hardware.
+    // Both must be able to slide along the thin folds without jumping sides.
+    contactSlide:
+      side < 0 && (index === 21 || index === 39)
+        ? { role: index === 39 ? 'collar' : null, fraction: 0.2 }
+        : null,
     retainTurn: retainedTurns[bank].has(index),
     fittedTurn: fittedTurns[bank].has(index),
     runningHold: runningHold(side, index, coupling),
@@ -101,7 +107,11 @@ export function bindRunningHold(system, strands) {
   const held = [];
   for (let i = 0; i < strands.length; i++) {
     const chain = system.chains[i];
-    if (strands[i].retainTurn) chain.freeNodes = chain.rest.map((node) => node.clone());
+    if (strands[i].retainTurn) {
+      chain.freeNodes = chain.rest.map((node) => node.clone());
+      chain.contactOffset = chain.rest[0].clone().setScalar(0);
+      chain.offsetValid = false;
+    }
     if (strands[i].fittedTurn) chain.supportedRest = chain.rest.map((node) => node.clone());
     const hold = strands[i].runningHold;
     if (!hold) continue;

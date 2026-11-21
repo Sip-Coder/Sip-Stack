@@ -445,9 +445,9 @@ export function bindHoodContacts(hood, hips) {
     node.name = 'Folded hood contact';
     node.matrixAutoUpdate = false;
     hips.add(node);
-    // The longer triangles of the coarse ribbon can span the fold between
-    // clear endpoints when the shoulder compresses during a roll.
-    return { node, role: 'collar', localContact: true, protectsFaces: 'coarse', center: [0, 0, 0], radii: [1, 1, 1] };
+    // A ribbon triangle can span this fold between clear endpoints when
+    // the shoulder compresses during a roll.
+    return { node, role: 'collar', localContact: true, protectsFaces: true, center: [0, 0, 0], radii: [1, 1, 1] };
   });
   const tables = new Map();
   for (const g of [hood.geometry, hood.userData.mobileGeometry]) {
@@ -549,7 +549,7 @@ export function bindPackContacts(kit) {
     const node = new T.Group();
     node.name = 'Hair contact on ' + parent.name;
     parent.add(node);
-    shapes.push({ node, localContact: true, role: 'pack', center: [0, 0, 0], radii: [1, 1, 1] });
+    shapes.push({ node, localContact: true, protectsFaces: true, role: 'pack', center: [0, 0, 0], radii: [1, 1, 1] });
     return node;
   }
   const pack = kit.backpack[0].parent;
