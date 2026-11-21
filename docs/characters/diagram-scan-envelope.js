@@ -519,10 +519,12 @@ export function coverArticularProcesses(parts, landmarks, rig) {
 // cutaneous vertices move; the outer layers share their original topology.
 export function coverAtlasContacts(parts, contacts, height) {
   if (!contacts.length) return;
-  const samples = new Map(), cell = height * .0009;
+  const samples = new Map();
   for (const point of contacts) {
-    const i=Math.round(point.x/cell), j=Math.round(point.y/cell), k=Math.round(point.z/cell);
-    samples.set((i*4096+j)*4096+k, point);
+    const key = point.x + '/' + point.y + '/' + point.z;
+    const sample = samples.get(key);
+    if (sample) sample.weight++;
+    else samples.set(key, {point, weight: 1});
   }
   const skin = parts.filter(
     (p) =>
@@ -537,7 +539,7 @@ export function coverAtlasContacts(parts, contacts, height) {
     const trees = new Map(),
       edits = new Map();
     let moved = false;
-    for (const p of contacts) {
+    for (const {point: p, weight} of samples.values()) {
       let best,
         dst,
         d = limit;
@@ -566,7 +568,7 @@ export function coverAtlasContacts(parts, contacts, height) {
       for (const id of best.surface.ids) {
         const prev = byVertex.get(id) || { sum: new Vector3(), max: 0 };
         const step = d + margin;
-        prev.sum.addScaledVector(direction, step * step);
+        prev.sum.addScaledVector(direction, step * step * weight);
         prev.max = Math.max(prev.max, step);
         byVertex.set(id, prev);
       }

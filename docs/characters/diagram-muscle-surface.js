@@ -248,6 +248,43 @@ function fitTissueFolds(geometry, fit, pinned, height) {
 // Correct each muscle section coherently before touching any remaining
 // superficial fibres. Deep bellies retain their original registered shape.
 // Retain the original atlas triangles everywhere the posed cover allows.
+// On a folded surface, opposing triangle normals can cancel at a shared
+// vertex. Use its largest surviving incident face for a stable shading normal.
+function restoreCancelledNormals(geometry) {
+  const normal = geometry.attributes.normal,
+    position = geometry.attributes.position;
+  const missing = new Map();
+  for (let i = 0; i < normal.count; i++) {
+    const lengthSq = normal.getX(i) ** 2 + normal.getY(i) ** 2 + normal.getZ(i) ** 2;
+    if (lengthSq < 1e-12) missing.set(i, 0);
+  }
+  if (!missing.size) return;
+  const index = geometry.index.array;
+  const a = new Vector3(),
+    b = new Vector3(),
+    c = new Vector3();
+  for (let i = 0; i < index.length; i += 3) {
+    const ia = index[i],
+      ib = index[i + 1],
+      ic = index[i + 2];
+    if (!missing.has(ia) && !missing.has(ib) && !missing.has(ic)) continue;
+    a.fromBufferAttribute(position, ia);
+    b.fromBufferAttribute(position, ib).sub(a);
+    c.fromBufferAttribute(position, ic).sub(a);
+    b.cross(c);
+    const areaSq = b.lengthSq();
+    if (areaSq === 0) continue;
+    b.normalize();
+    for (let j = i; j < i + 3; j++) {
+      const vertex = index[j];
+      if (areaSq > (missing.get(vertex) ?? Infinity)) {
+        missing.set(vertex, areaSq);
+        normal.setXYZ(vertex, b.x, b.y, b.z);
+      }
+    }
+  }
+}
+
 export function fitAtlasMuscles(parts, rig, landmarks, fit = muscleEnvelope(parts, rig.height)) {
   const p = new Vector3(),
     before = new Vector3();
@@ -273,7 +310,16 @@ export function fitAtlasMuscles(parts, rig, landmarks, fit = muscleEnvelope(part
       lengths[band] += length;
       touched++;
     }
-    if (!touched) continue;
+    if (!touched) {
+      // A broad adductor can bridge the groin with every original vertex
+      // safely inside each leg. Check its long, sparsely triangulated edge.
+      if (part.region !== 'adductor') continue;
+      fitMuscleFolds(g, fit, rig.height * 0.0016, contacts);
+      g.computeVertexNormals();
+      g.computeBoundingBox();
+      g.computeBoundingSphere();
+      continue;
+    }
     for (let j = 0; j < rows; j++) if (lengths[j]) moves[j].multiplyScalar(0.75 / lengths[j]);
     for (let i = 0; i < pos.count; i++) {
       const row = clamp(uv.getY(i) * (rows - 1), 0, rows - 1),
@@ -292,10 +338,14 @@ export function fitAtlasMuscles(parts, rig, landmarks, fit = muscleEnvelope(part
     // bend, particularly where their endpoints must stay pinned to cortex.
     // Only refine actual exterior chords; the ordinary tissue reserve should
     // never add triangles on an interior muscle.
-    fitMuscleFolds(g, fit, rig.height * 0.0033, contacts);
+    // The thin subcutaneous platysma wraps the underside of the jaw in a
+    // deep tuck; its overlap needs finer sampling than a rounded limb belly.
+    const pitch = rig.height * (/platysma/.test(part.muscleNode) ? 0.0011 : 0.0033);
+    fitMuscleFolds(g, fit, pitch, contacts);
     g.computeVertexNormals();
     g.computeBoundingBox();
     g.computeBoundingSphere();
   }
   coverAtlasContacts(parts, contacts, rig.height);
+  for (const part of parts) if (part.muscleNode) restoreCancelledNormals(part.mesh.geometry);
 }

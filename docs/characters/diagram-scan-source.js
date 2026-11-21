@@ -65,6 +65,7 @@ export function loadMuscleAtlas(tier, signal) {
 // Both characters share the pristine BP3D collection. Only Roma requests
 // separate female lower-limb surfaces. The merged Map never mutates that cache.
 export async function loadCharacterMuscles(name, tier, signal) {
+  if (name !== 'roma' && name !== 'sippy') throw new Error('Unknown human muscle selection');
   const base = loadMuscleAtlas(tier, signal);
   if (name !== 'roma') return base;
   const supplement = loadAtlas(

@@ -3,6 +3,8 @@ import { atlasCharts, atlasRegion } from './diagram-muscle-charts.js';
 import { corticalProjector, muscleSites, peripheralSites } from './diagram-muscle-insertions.js';
 import { muscleDisplayName } from './diagram-muscle-names.js';
 import { makeOrbitalAtlasFit } from './diagram-muscle-orbits.js';
+import { muscleEnvelope } from './diagram-fascia.js';
+import { deepThroat, throatChart } from './diagram-muscle-throat.js';
 import { prepareAtlasMuscle, fitAtlasMuscles } from './diagram-muscle-surface.js';
 
 const v = () => new Vector3();
@@ -94,6 +96,8 @@ export function addScanMuscles(rig, roma, parts, atlas, lm) {
   const project = corticalProjector(lm);
   const charts = atlasCharts(rig, roma, lm, project),
     orbital = makeOrbitalAtlasFit(rig, lm, atlas, parts);
+  const fit = muscleEnvelope(parts, rig.height),
+    oral = throatChart(charts.L.trunk, fit, lm, atlas);
   const material = new MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.3 });
   lm.scan.attachments = [];
   for (const [id, source] of atlas) {
@@ -102,9 +106,10 @@ export function addScanMuscles(rig, roma, parts, atlas, lm) {
       s = side === 'L' ? 1 : -1,
       frames = charts[side];
     const eye = orbital(id),
-      region = eye ? 'orbit' : atlasRegion(id, source);
+      region = eye ? 'orbit' : deepThroat.test(id) ? 'oral' : atlasRegion(id, source);
     let transform;
     if (eye) transform = eye;
+    else if (region === 'oral') transform = oral;
     else if (region === 'shoulder') transform = frames.cuff;
     else if (['gluteal', 'adductor', 'hip'].includes(region)) transform = (p) => frames.hipWarp(region, p);
     else transform = frames[region];
@@ -152,5 +157,5 @@ export function addScanMuscles(rig, roma, parts, atlas, lm) {
     for (const a of anchors)
       lm.scan.attachments.push({ muscle: id, bone: a.bone, point: a.target, index: a.index, role: a.role });
   }
-  fitAtlasMuscles(parts, rig, lm);
+  fitAtlasMuscles(parts, rig, lm, fit);
 }

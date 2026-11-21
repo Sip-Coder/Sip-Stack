@@ -184,6 +184,10 @@ export function muscleEnvelope(parts, height) {
     }
     return target ? p.copy(target) : p;
   }
+  fit.hasReserve = (p) => {
+    const interval = rangeAt(p.x, Math.floor((p.y - y0) / step), Math.floor((p.z - z0) / step));
+    return Boolean(interval && p.x > interval[0] && p.x < interval[1]);
+  };
   fit.inside = (p) => {
     const y = (p.y - y0) / step,
       z = (p.z - z0) / step;

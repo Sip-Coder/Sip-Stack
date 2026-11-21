@@ -23,11 +23,18 @@ if (process.env.THREE_ROOT) {
 }
 const T = await import('three');
 if (T.REVISION !== '170') throw Error('Expected three@0.170.0');
-const { createActor } = await import('../docs/characters/rig.js');
-const { createController, FIXED_DT } = await import('../docs/characters/motion.js');
-const { snapshotDiagramModel } = await import('../docs/characters/diagram-parts.js');
-const { setModelDetail } = await import('../docs/characters/model-tier.js');
-const { names, heights } = await import('../docs/characters/ui.js');
+// A clean baseline worktree can be sampled with the same camera, controller,
+// pose frames and rasterizer even when it predates the CT audit interface.
+const baseline = process.env.AXON_BASELINE_ROOT;
+const modules = baseline
+  ? pathToFileURL(resolve(baseline, 'docs/characters') + '/')
+  : new URL('../docs/characters/', import.meta.url);
+const characterModule = (file) => import(new URL(file + '.js', modules));
+const { createActor } = await characterModule('rig');
+const { createController, FIXED_DT } = await characterModule('motion');
+const { snapshotDiagramModel } = await characterModule('diagram-parts');
+const { setModelDetail } = await characterModule('model-tier');
+const { names, heights } = await characterModule('ui');
 const inch = 0.0254,
   angle = (a, b) => T.MathUtils.radToDeg(a.angleTo(b));
 const origin = (a, b) => a.clone().sub(b);
@@ -411,7 +418,7 @@ if (
   throw Error(
     'Use THREE_ROOT=/path/to/three node tools/check-axon-skeleton.mjs sippy|roma mobile|high [rest|walk|run|roll|leg-raise]',
   );
-const build = (await import(`../docs/characters/${name}.js`))[name === 'roma' ? 'buildRoma' : 'buildSippy'];
+const build = (await characterModule(name))[name === 'roma' ? 'buildRoma' : 'buildSippy'];
 let failures = 0;
 for (const state of args.slice(2).length ? args.slice(2) : defaultPoses) {
   const rig = createActor(name, heights[names.indexOf(name)]),
@@ -445,9 +452,9 @@ for (const state of args.slice(2).length ? args.slice(2) : defaultPoses) {
       record = l;
     });
     try {
-      const report = landmarks(snapshot, record),
+      const report = baseline ? {} : landmarks(snapshot, record),
         skin = coverage(snapshot.parts, rig.height, record.pelvis);
-      if (state === 'leg-raise') report.legRaise = raisedLegMeasures(rig, record.pelvis);
+      if (!baseline && state === 'leg-raise') report.legRaise = raisedLegMeasures(rig, record.pelvis);
       console.log(
         JSON.stringify({
           name,
@@ -459,6 +466,7 @@ for (const state of args.slice(2).length ? args.slice(2) : defaultPoses) {
           skin,
         }),
       );
+      if (baseline) continue;
       if (
         report.bones !== (name === 'roma' ? 143 : 142) ||
         report.invalidBoneNormals.length ||
