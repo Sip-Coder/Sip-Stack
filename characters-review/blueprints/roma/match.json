@@ -83,29 +83,29 @@
   },
   "silhouettes": {
     "front": {
-      "intersectionPx": 81079,
-      "unionPx": 87805,
-      "iou": 0.9233984397243893
+      "intersectionPx": 81078,
+      "unionPx": 87802,
+      "iou": 0.923418600943031
     },
     "back": {
-      "intersectionPx": 81076,
-      "unionPx": 87810,
-      "iou": 0.9233116957066393
+      "intersectionPx": 81075,
+      "unionPx": 87807,
+      "iou": 0.923331852813557
     },
     "left": {
-      "intersectionPx": 50980,
-      "unionPx": 55285,
-      "iou": 0.9221307768834223
+      "intersectionPx": 50986,
+      "unionPx": 55281,
+      "iou": 0.9223060364320472
     },
     "right": {
-      "intersectionPx": 50974,
-      "unionPx": 55282,
-      "iou": 0.9220722839260519
+      "intersectionPx": 50980,
+      "unionPx": 55277,
+      "iou": 0.922264232863578
     },
     "high-front": {
-      "intersectionPx": 75387,
+      "intersectionPx": 75393,
       "unionPx": 83463,
-      "iou": 0.9032385607993961
+      "iou": 0.9033104489414471
     },
     "rear-three-quarter": {
       "intersectionPx": 78075,
