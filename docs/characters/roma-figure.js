@@ -273,12 +273,17 @@ export function fitRomaFigure(rig, patterns, nodes, cuffs, jacket, buckle) {
         child.scale.z *= 1.02;
       }
     cuffs[side].scale.set(1, 1, 1);
-    for (const nail of rig['hand' + side].children)
+    const hand = rig['hand' + side];
+    const wrist = nodes.get(hand);
+    gradePoint(wrist.x, wrist.y, wrist.z, false, q, true);
+    for (const nail of hand.children)
       if (nail.name === 'Roma nail plate') {
-        nail.position.x *= 0.87 * f.torsoX;
-        nail.position.y *= 0.761;
-        nail.position.z *= f.torsoZ;
-        nail.scale.multiply(new T.Vector3(0.87 * f.torsoX, 0.86, f.torsoZ));
+        // The nail bed is part of the graded distal phalanx. Apply the same
+        // anatomical fit as the skin, then attach it in the new wrist frame.
+        p.copy(nail.position).add(wrist);
+        gradePoint(p.x, p.y, p.z, false, p, true, true);
+        nail.position.copy(p).sub(q);
+        nail.scale.multiply(new T.Vector3(0.73 * f.torsoX, 0.86, f.torsoZ));
       }
   }
 }

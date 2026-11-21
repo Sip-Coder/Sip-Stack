@@ -74,6 +74,7 @@ const palm = [
 
 const fingers = [];
 const nails = [];
+const armOutset = 0.014;
 for (let k = 0; k < 4; k++) {
   const beside = (k - 1.5) * 0.0102,
     length = [0.031, 0.036, 0.033, 0.026][k];
@@ -198,6 +199,16 @@ function sculpt(detail, coat = false, trousers = false) {
     if (detail > 1.5 && side > 0.084 && side <= 0.143) return 0.0054;
     return 0.0062 * detail;
   });
+  if (detail > 1.5 && !coat && !trousers) {
+    // The little fingertip extends past the dense arm band. Subdivide only
+    // those existing outer cells so it survives the Mobile isosurface.
+    for (let i = xs.length - 2; i >= 0; i--) {
+      const a = xs[i], b = xs[i + 1];
+      if (Math.abs((a + b) * 0.5) < 0.204 || Math.abs((a + b) * 0.5) > 0.223) continue;
+      const count = Math.ceil((b - a) / 0.0028);
+      for (let j = count - 1; j > 0; j--) xs.splice(i + 1, 0, T.MathUtils.lerp(a, b, j / count));
+    }
+  }
   const ys = axis(0.031, trousers ? 0.625 : 0.854, (y) => {
     if (y > 0.382 && y < 0.475) return 0.0024 * Math.min(detail, 1.17);
     if (y > 0.738 && y < 0.817) return 0.0034 * Math.min(detail, 1.35);
@@ -223,7 +234,7 @@ function sculpt(detail, coat = false, trousers = false) {
       lower = section(leg, y),
       hand = section(palm, y);
     const digits = fingers.map((rows) => section(rows, y));
-    const separation = 0.014 + 0.052 * (1 - smooth(y, 0.525, 0.677));
+    const separation = armOutset + 0.052 * (1 - smooth(y, 0.525, 0.677));
     const axilla = coat ? T.MathUtils.lerp(0.001, 0.03, smooth(y, 0.696, 0.749)) : y > 0.715 ? 0.02 : 0.001;
     for (let k = 0; k < nz; k++) {
       const z = zs[k],
@@ -424,15 +435,17 @@ export function makeRomaBody(rig, skin, nailMaterial) {
   for (const [side, hand] of [
     [1, rig.handL],
     [-1, rig.handR],
-  ])
+  ]) {
+    const wrist = rig.root.worldToLocal(hand.getWorldPosition(new T.Vector3()));
     for (const [x, y, z, w, l, pitch] of nails) {
       const nail = new T.Mesh(nailGeometry, nailMaterial);
       nail.name = 'Roma nail plate';
-      nail.position.set(side * (x - 0.13), y - 0.466, z);
+      nail.position.set(side * (x + armOutset), y, z).sub(wrist);
       nail.rotation.x = pitch;
       nail.scale.set(w * 0.5, l * 0.5, 0.0011);
       hand.add(nail);
     }
+  }
   return { mesh, regions };
 }
 

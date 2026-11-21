@@ -219,6 +219,17 @@ async function measure(onlyHero, { tier }) {
         testedVertices: 0,
         collisions: [],
       });
+      if (name === 'roma') {
+        const body = cache.get(surfaces.body[0]);
+        pose.nailBeds = {};
+        for (const side of ['L', 'R']) {
+          const plates = rig['hand' + side].children.filter((m) => m.name === 'Roma nail plate' && m.visible);
+          const crossings = plates.map((m) => compareSurfaces(posedSurface(m), body).crossings);
+          pose.nailBeds[side] = crossings;
+          if (crossings.length !== 5 || crossings.some((n) => n === 0))
+            failures.push(name + '/' + id + ': visible nail plate does not meet its fingertip on ' + side);
+        }
+      }
       if (name === 'sippy') {
         pose.crownPlies = {};
         pose.seatBounds = {};

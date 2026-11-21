@@ -42,17 +42,17 @@ function leatherCase(rows, exponent = 0.53, segments = 40) {
 function bevelPackExterior(meshes) {
   const smooth = T.MathUtils.smoothstep;
   function inset(y, z) {
-    const base = smooth(y, -0.090, -0.073) * (1 - smooth(y, -0.016, -0.001));
+    const base = smooth(y, -0.09, -0.073) * (1 - smooth(y, -0.016, -0.001));
     const flap = smooth(y, 0.068, 0.088) * (1 - smooth(y, 0.104, 0.115));
-    return 0.006 * base * (1 - smooth(z, -0.154, -0.127)) +
-      0.010 * flap * (1 - smooth(z, -0.119, -0.089));
+    return 0.006 * base * (1 - smooth(z, -0.154, -0.127)) + 0.01 * flap * (1 - smooth(z, -0.119, -0.089));
   }
   const normal = new T.Vector3();
   const step = 0.0001;
   for (const { geometry } of meshes) {
     const { position, normal: normals } = geometry.attributes;
     for (let i = 0; i < position.count; i++) {
-      const y = position.getY(i), z = position.getZ(i);
+      const y = position.getY(i),
+        z = position.getZ(i);
       const offset = inset(y, z);
       if (offset === 0) continue;
       position.setZ(i, z + offset);
@@ -158,42 +158,131 @@ function backpackPads(chest, leather) {
   return pads;
 }
 
-function bindBracelet(body, group) {
+// Fit the bangle to the true skin cross-section through the bead width. Skin
+// stations are interpolated on triangle edges, including wrists with few rings.
+function bindBracelet(body, groups) {
   const high = body.geometry,
-    wrist = group.parent,
+    wrist = groups[0].parent,
     point = new T.Vector3(),
-    xform = new T.Matrix4();
-  const samples = [high, body.userData.mobileGeometry ?? high].map((geometry) => {
+    matrix = new T.Matrix4();
+  const bottom = -0.013,
+    top = 0.005;
+  const tiers = [high, body.userData.mobileGeometry ?? high].map((geometry) => {
     body.geometry = geometry;
-    xform.copy(wrist.matrixWorld).invert().multiply(body.matrixWorld);
-    const ids = [],
-      joint = geometry.attributes.skinIndex,
-      weight = geometry.attributes.skinWeight;
-    const side = wrist.name.slice(-1);
-    const inWrist = body.skeleton.bones.map(
+    matrix.copy(wrist.matrixWorld).invert().multiply(body.matrixWorld);
+    const attr = geometry.attributes,
+      n = attr.position.count,
+      side = wrist.name.slice(-1);
+    const arm = body.skeleton.bones.map(
       (b) => b.name.startsWith('hand' + side) || b.name.startsWith('forearm' + side),
     );
-    for (let i = 0; i < geometry.attributes.position.count; i++) {
+    const local = new Float32Array(n),
+      valid = new Uint8Array(n);
+    for (let i = 0; i < n; i++) {
       let influence = 0;
-      for (let j = 0; j < 4; j++)
-        if (inWrist[joint.getComponent(i, j)]) influence += weight.getComponent(i, j);
-      if (influence < 0.7) continue;
-      body.getVertexPosition(i, point).applyMatrix4(xform);
-      if (point.y >= -0.045 && point.y <= 0.038 && point.x * point.x + point.z * point.z < 0.00145)
-        ids.push(i);
+      for (let k = 0; k < 4; k++)
+        if (arm[attr.skinIndex.getComponent(i, k)]) influence += attr.skinWeight.getComponent(i, k);
+      if (influence < 0.65) continue;
+      body.getVertexPosition(i, point).applyMatrix4(matrix);
+      if (point.x * point.x + point.z * point.z > 0.0025) continue;
+      local[i] = point.y;
+      valid[i] = 1;
     }
-    return Int32Array.from(ids);
+    const ids = [],
+      remap = new Map(),
+      segments = [],
+      seen = new Set();
+    function index(id) {
+      if (!remap.has(id)) {
+        remap.set(id, ids.length);
+        ids.push(id);
+      }
+      return remap.get(id);
+    }
+    const idx = geometry.index,
+      count = idx?.count ?? n;
+    for (let k = 0; k < count; k += 3) {
+      const a = idx?.getX(k) ?? k,
+        b = idx?.getX(k + 1) ?? k + 1,
+        c = idx?.getX(k + 2) ?? k + 2;
+      if (!valid[a] || !valid[b] || !valid[c]) continue;
+      if (
+        Math.max(local[a], local[b], local[c]) < bottom - 0.022 ||
+        Math.min(local[a], local[b], local[c]) > top + 0.023
+      )
+        continue;
+      for (const [i, j] of [
+        [a, b],
+        [b, c],
+        [c, a],
+      ]) {
+        const key = Math.min(i, j) * n + Math.max(i, j);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        segments.push(index(i), index(j));
+      }
+    }
+    return {
+      ids: Int32Array.from(ids),
+      segments: Int32Array.from(segments),
+      posed: new Float32Array(ids.length * 3),
+      cuts: new Float32Array(segments.length * 2),
+    };
   });
   body.geometry = high;
   return () => {
-    xform.copy(wrist.matrixWorld).invert().multiply(body.matrixWorld);
-    let extent = 1;
-    for (const i of samples[Number(body.geometry !== high)]) {
-      body.getVertexPosition(i, point).applyMatrix4(xform);
-      if (point.y < -0.015 || point.y > 0.008) continue;
-      extent = Math.max(extent, Math.hypot(point.x / 0.0209, point.z / 0.0155) + 0.035);
+    matrix.copy(wrist.matrixWorld).invert().multiply(body.matrixWorld);
+    const { ids, segments, posed, cuts } = tiers[Number(body.geometry !== high)];
+    for (let i = 0; i < ids.length; i++)
+      body
+        .getVertexPosition(ids[i], point)
+        .applyMatrix4(matrix)
+        .toArray(posed, i * 3);
+    for (const group of groups) {
+      const { bandY, bandX, bandZ } = group.userData;
+      const bottom = bandY - 0.0035,
+        top = bandY + 0.0035;
+      let used = 0;
+      for (let i = 0; i < segments.length; i += 2) {
+        const a = 3 * segments[i],
+          b = 3 * segments[i + 1],
+          ay = posed[a + 1],
+          by = posed[b + 1];
+        if (Math.max(ay, by) < bottom || Math.min(ay, by) > top) continue;
+        const dy = by - ay;
+        const enter = Math.abs(dy) > 1e-8 ? T.MathUtils.clamp(((dy > 0 ? bottom : top) - ay) / dy, 0, 1) : 0;
+        const leave = Math.abs(dy) > 1e-8 ? T.MathUtils.clamp(((dy > 0 ? top : bottom) - ay) / dy, 0, 1) : 1;
+        cuts[used++] = posed[a] + enter * (posed[b] - posed[a]);
+        cuts[used++] = posed[a + 2] + enter * (posed[b + 2] - posed[a + 2]);
+        cuts[used++] = posed[a] + leave * (posed[b] - posed[a]);
+        cuts[used++] = posed[a + 2] + leave * (posed[b + 2] - posed[a + 2]);
+      }
+      if (!used) continue;
+      let minX = Infinity,
+        maxX = -Infinity,
+        minZ = Infinity,
+        maxZ = -Infinity;
+      for (let i = 0; i < used; i += 2) {
+        minX = Math.min(minX, cuts[i]);
+        maxX = Math.max(maxX, cuts[i]);
+        minZ = Math.min(minZ, cuts[i + 1]);
+        maxZ = Math.max(maxZ, cuts[i + 1]);
+      }
+      const cx = (minX + maxX) / 2,
+        cz = (minZ + maxZ) / 2,
+        hx = (maxX - minX) / 2,
+        hz = (maxZ - minZ) / 2;
+      if (hx < 0.001 || hz < 0.001) continue;
+      let reach = 1;
+      for (let i = 0; i < used; i += 2)
+        reach = Math.max(
+          reach,
+          Math.cbrt(Math.abs((cuts[i] - cx) / hx) ** 3 + Math.abs((cuts[i + 1] - cz) / hz) ** 3),
+        );
+      group.position.x = cx;
+      group.position.z = cz;
+      group.scale.set((reach * hx + 0.0015) / (bandX - 0.0031), 1, (reach * hz + 0.0015) / (bandZ - 0.0031));
     }
-    group.scale.set(extent, 1, extent);
   };
 }
 
@@ -543,16 +632,41 @@ export function makeRomaFieldKit(rig, materials, tools) {
     [-1, rig.handR],
     [1, rig.handL],
   ]) {
-    const cuff = node(joint, 0, -0.012, 0);
-    cuff.name = 'Roma beaded bracelets ' + (side > 0 ? 'L' : 'R');
-    braceletGroups.push(cuff);
     // Oval strung beads follow the wrist taper and keep the palm free.
     const colors = side < 0 ? [green, brass, purple, leather] : [purple, brass, cream, green];
     const bands = side < 0 ? 3 : 2;
+
     for (let band = 0; band < bands; band++) {
       const wy = 0.003 + band * 0.0051,
         rx = 0.0245 - band * 0.00055,
         rz = 0.0195 - band * 0.00035;
+      const cuff = node(joint, 0, -0.012, 0);
+      cuff.name = 'Roma beaded bracelet ' + (side > 0 ? 'L' : 'R') + (band + 1);
+      cuff.userData.bandY = wy - 0.012;
+      cuff.userData.bandX = rx;
+      cuff.userData.bandZ = rz;
+      braceletGroups.push(cuff);
+      // Rounded wrist bands have a flatter inner face at the broad wrist bones.
+      const curveCoordinate = (u) => Math.sign(u) * Math.abs(u) ** (2 / 3);
+      // Two twisted leather plies pass through the drilled bead centres.
+      // They use the same fitted wrist frame as this band's beads.
+      for (const phase of [0, Math.PI]) {
+        const cord = [];
+        for (let i = 0; i < 112; i++) {
+          const angle = (TAU * i) / 112;
+          const twist = 14 * angle + phase;
+          const offset = 0.00048 * Math.cos(twist);
+          cord.push(
+            new T.Vector3(
+              (rx + offset) * curveCoordinate(Math.cos(angle)),
+              wy + 0.001 * Math.sin(angle) + 0.00048 * Math.sin(twist),
+              (rz + offset) * curveCoordinate(Math.sin(angle)),
+            ),
+          );
+        }
+        const path = new T.CatmullRomCurve3(cord, true);
+        add(cuff, new T.TubeGeometry(path, 112, 0.00069, 5, true), phase === 0 ? leather : strap);
+      }
       for (let i = 0; i < 14; i++) {
         const a = (TAU * (i + band * 0.36)) / 14,
           bead = (i + band) % 4 === 0 ? 0.0028 : 0.0031;
@@ -560,9 +674,9 @@ export function makeRomaFieldKit(rig, materials, tools) {
           cuff,
           beadShape,
           colors[(i + band) % colors.length],
-          rx * Math.cos(a),
+          rx * curveCoordinate(Math.cos(a)),
           wy + 0.001 * Math.sin(a),
-          rz * Math.sin(a),
+          rz * curveCoordinate(Math.sin(a)),
           bead,
           bead * 0.81,
           bead,
@@ -595,7 +709,13 @@ export function makeRomaFieldKit(rig, materials, tools) {
       packTravel = 0.015 * Math.max(fold, bank);
       pack.position.z = -0.005 - packTravel;
       pack.updateWorldMatrix(true, true);
-      if (!wristFit) wristFit = braceletGroups.map((g) => bindBracelet(torso[2], g));
+      if (!wristFit)
+        wristFit = [rig.handL, rig.handR].map((wrist) =>
+          bindBracelet(
+            torso[2],
+            braceletGroups.filter((b) => b.parent === wrist),
+          ),
+        );
       for (const fit of wristFit) fit();
       for (const pad of pads) {
         if (!pad.rail)
@@ -758,7 +878,7 @@ export function makeRomaFieldKit(rig, materials, tools) {
         backpack: [...caseMeshes, ...pads.map((p) => p.mesh)],
         packStraps: belts.map((b) => b.mesh),
         compass: layers([compass], [gold, brass, cream, green]),
-        bracelets: layers(braceletGroups, [leather, green, brass, purple, cream]),
+        bracelets: layers(braceletGroups, [leather, strap, green, brass, purple, cream]),
       };
     },
   };
