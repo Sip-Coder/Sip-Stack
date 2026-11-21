@@ -12,7 +12,7 @@ export const romaFigure = {
   torsoZ: 0.96,
 };
 
-function gradePoint(x, y, z, leg, out, arm = false, pattern = false) {
+function gradePoint(x, y, z, leg, out, arm = false, pattern = false, relaxedCut = true) {
   const f = romaFigure;
   let height;
   if (y >= 0.52) height = f.chest + (y - 0.64) * f.torsoY;
@@ -43,6 +43,9 @@ function gradePoint(x, y, z, leg, out, arm = false, pattern = false) {
     const calf = Math.exp(-(((y-.204)/.052)**2));
     out.z -= .010*knee + .075*z*calf;
     out.x -= .055*(x-Math.sign(x)*.065)*calf;
+    // Grade the flesh and the trouser pattern together through the upper thigh.
+    const upperThigh = T.MathUtils.smoothstep(y, .355, .422) * (1 - T.MathUtils.smoothstep(y, .480, .510));
+    out.z -= upperThigh * (.068 * out.z + .0012);
   }
   // Shape the jacket breast and its fitted bodice together above the waist.
   // Apply the same grade to every morph target as to the relaxed sculpture.
@@ -70,7 +73,29 @@ function gradePoint(x, y, z, leg, out, arm = false, pattern = false) {
     const inside=1-T.MathUtils.smoothstep(Math.abs(x),.112,.147);
     out.x+=Math.sign(x)*elbow*(.0035+.0055*inside);
   }
-  if(arm) out.x-=Math.sign(x)*.016*(1-T.MathUtils.smoothstep(y,.63,.77));
+  if (arm) {
+    const side = Math.sign(x);
+    out.x -= side*.016*(1-T.MathUtils.smoothstep(y,.63,.77));
+    // Narrow the relaxed palm around its own knuckle line, with a gentle
+    // transition through the wrist. The jacket shoulders keep their ease.
+    const wrist = 1-T.MathUtils.smoothstep(y,.444,.509);
+    out.x -= wrist*(side*.004 + .13*(x-side*.131));
+  }
+  if (!pattern || !relaxedCut) return out;
+  // Let the collarbones sweep outward into the sleeve instead of leaving a
+  // notch beside the crew neck. The lateral deltoid falls into a soft cap.
+  const ax=Math.abs(out.x), yFit=out.y;
+  const cap=T.MathUtils.smoothstep(ax,.09,.133)*Math.exp(-(((yFit-.746)/.030)**2));
+  out.x-=Math.sign(x)*.007*cap;
+  const clavicle=T.MathUtils.smoothstep(ax,.024,.043)*(1-T.MathUtils.smoothstep(ax,.075,.102))*
+    Math.exp(-(((yFit-.756)/.026)**2));
+  out.y+=.014*clavicle;
+  if(arm){
+    const inner=T.MathUtils.smoothstep(ax,.092,.108)*(1-T.MathUtils.smoothstep(ax,.115,.136))*
+      Math.exp(-(((yFit-.572)/.046)**2));
+    const outer=T.MathUtils.smoothstep(ax,.14,.159)*Math.exp(-(((yFit-.644)/.034)**2));
+    out.x-=Math.sign(x)*(.0095*inner+.0035*outer);
+  }
   return out;
 }
 
@@ -91,12 +116,22 @@ export function fitRomaFigure(rig, patterns, nodes, cuffs, jacket, buckle) {
         const leg = region === 3 || (isCargo && y < .554 && Math.abs(x) > .016);
         const arm = !isCargo && (region === undefined ? Math.abs(x) > 0.103 && y < 0.67 : region === 1 || region === 2);
         gradePoint(x, y, z, leg, p, arm, true);
-        for (const m of morphs) {
-          gradePoint(x + m.getX(i), y + m.getY(i), z + m.getZ(i), leg, q, arm, true);
+        const overheadMorph=g.userData.raisedSleeveMorph + (x<0?1:0);
+        for (let k=0;k<morphs.length;k++) {
+          const m=morphs[k];
+          // The deltoid rolls up over the clavicle on an overhead reach.
+          // Unfold the restful shoulder drape onto its elevated yoke frame.
+          const relaxedCut=k!==overheadMorph || y<.64;
+          gradePoint(x + m.getX(i), y + m.getY(i), z + m.getZ(i), leg, q, arm, true,relaxedCut);
           q.sub(p);
           m.setXYZ(i, q.x, q.y, q.z);
         }
         if (mesh === patterns[1] && !g.userData.chestAnchors?.has(i)) {
+          // The breast panels follow the hoodie at the rib cage above the sewn waist.
+          const breast = T.MathUtils.smoothstep(p.z,.019,.065) *
+            (1-T.MathUtils.smoothstep(Math.abs(p.x),.067,.102)) *
+            (1-T.MathUtils.smoothstep(p.y,.651,.713));
+          p.z -= .0045 * breast;
           // Round the inward wall of the underarm gusset. A straight offset
           // of the chest pattern cuts across the biceps at its narrowest.
           const medial = T.MathUtils.smoothstep(Math.abs(x),.080,.101) *
@@ -139,6 +174,16 @@ export function fitRomaFigure(rig, patterns, nodes, cuffs, jacket, buckle) {
           const ease = T.MathUtils.smoothstep(y,.117,.178)*(1-T.MathUtils.smoothstep(y,.35,.408));
           const flank = T.MathUtils.smoothstep(Math.abs(crossLeg),.004,.028);
           p.x += ease*flank*(.0044*Math.sign(crossLeg)-.0012*side);
+          const kneeToThigh = T.MathUtils.smoothstep(y,.193,.258)*(1-T.MathUtils.smoothstep(y,.402,.459));
+          p.x -= side*.0039*kneeToThigh*T.MathUtils.smoothstep(Math.abs(x),0,.025);
+          const upperHip = T.MathUtils.smoothstep(y,.430,.484)*(1-T.MathUtils.smoothstep(y,.519,.551));
+          p.x -= side*.012*upperHip*T.MathUtils.smoothstep(Math.abs(x),.073,.112);
+          const thigh = T.MathUtils.smoothstep(y,.29,.351)*(1-T.MathUtils.smoothstep(y,.405,.48));
+          const backward = T.MathUtils.smoothstep(y,.355,.42)*(1-T.MathUtils.smoothstep(y,.491,.526));
+          p.z += thigh*(.085*z-.0015) - .0045*backward;
+          // Leave a little extra cloth in the bend behind the patella.
+          const behindKnee = T.MathUtils.smoothstep(y, .230, .266) * (1 - T.MathUtils.smoothstep(y, .285, .330));
+          p.z -= behindKnee * (1 - T.MathUtils.smoothstep(z, -.014, .008)) * .0045;
         }
         base.setXYZ(i, p.x, p.y, p.z);
       }
@@ -195,10 +240,10 @@ export function fitRomaFigure(rig, patterns, nodes, cuffs, jacket, buckle) {
     cuffs[side].scale.set(1, 1, 1);
     for (const nail of rig['hand' + side].children)
       if (nail.name === 'Roma nail plate') {
-        nail.position.x *= f.torsoX;
+        nail.position.x *= .87*f.torsoX;
         nail.position.y *= 0.761;
         nail.position.z *= f.torsoZ;
-        nail.scale.multiply(new T.Vector3(f.torsoX, 0.86, f.torsoZ));
+        nail.scale.multiply(new T.Vector3(.87*f.torsoX, 0.86, f.torsoZ));
       }
   }
 }
