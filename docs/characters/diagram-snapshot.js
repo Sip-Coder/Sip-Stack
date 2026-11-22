@@ -243,8 +243,9 @@ export function snapshotResources() {
   }
   function dispose(parts) {
     const shapes = new Set();
-    for (const { mesh } of parts) {
+    for (const { mesh, sourceMatrix } of parts) {
       mesh.removeFromParent();
+      if (sourceMatrix) continue;
       shapes.add(mesh.geometry);
       for (const mat of [].concat(mesh.material)) materials.add(mat);
     }

@@ -16,6 +16,7 @@ stage = runpy.run_path(str(Path(__file__).with_name("check-characters.py")))
 HEROES = ("sippy", "roma", "hummin")
 TIERS = ("mobile", "high")
 LAYERS = ("skeleton", "muscles", "skin", "clothes")
+ROMA_TISSUE = ("breast", "gluteal-fat", "hip-fat")
 SECTION = "[data-axon]"
 
 
@@ -74,7 +75,8 @@ def inventory(section, name, tier):
     choices = section.locator("[data-part] option").evaluate_all(
         "opts => opts.filter(o => o.value !== '').map(o => [Number(o.value), o.textContent, o.parentElement.dataset.key])")
     assert sorted(choices) == [[i, part["name"], part["layer"]] for i, part in enumerate(parts)], (name, tier)
-    assert set(r["layer"] for r in parts) == set(LAYERS)
+    expected = (*LAYERS, *ROMA_TISSUE) if name == "roma" else LAYERS
+    assert set(r["layer"] for r in parts) == set(expected)
     rows = []
     for index, part in enumerate(parts):
         dims = part["sizeInches"]
@@ -96,40 +98,46 @@ def write_inventory(directory, rows):
             writer.writerows(row for row in rows if row[0] == hero)
 
 
-def check_layer_controls(page, section):
+def check_layer_controls(page, section, layers=LAYERS):
     set_spread(page, 1)
     canvas = section.locator("[data-axon-canvas]")
-    complete = stage["frame_digest"](canvas)
-    for layer in LAYERS:
+
+    def frame():
+        canvas.scroll_into_view_if_needed()
+        settle(page)
+        return stage["frame_digest"](canvas)
+
+    complete = frame()
+    count = section.locator("[data-part] optgroup").count()
+    for layer in layers:
         row = section.locator(f'[data-layer="{layer}"]')
         group = section.locator(f'[data-part] optgroup[data-key="{layer}"]')
         check = row.locator("[data-show]")
         check.uncheck()
         settle(page)
         assert group.get_attribute("disabled") is not None
-        assert stage["frame_digest"](canvas) != complete, layer
+        assert frame() != complete, layer
         check.check()
         isolate = row.locator("[data-isolate]")
         isolate.click()
         settle(page)
         assert isolate.get_attribute("aria-pressed") == "true"
-        assert section.locator("[data-part] optgroup:disabled").count() == len(LAYERS) - 1
-        assert stage["frame_digest"](canvas) != complete, layer
+        assert section.locator("[data-part] optgroup:disabled").count() == count - 1
+        assert frame() != complete, layer
         isolate.click()
         opacity = row.locator("[data-opacity]")
         opacity.press("Home")
         settle(page)
         assert opacity.input_value() == "0" and group.get_attribute("disabled") is not None
-        transparent = stage["frame_digest"](canvas)
+        transparent = frame()
         opacity.click()
         assert 0 < int(opacity.input_value()) < 100
         assert group.get_attribute("disabled") is None
         settle(page)
-        assert stage["frame_digest"](canvas) not in (transparent, complete), layer
+        assert frame() not in (transparent, complete), layer
         opacity.press("End")
         assert opacity.input_value() == "100"
-    settle(page)
-    assert stage["frame_digest"](canvas) == complete
+    assert frame() == complete
     print("Each layer hid, isolated, faded and restored its rendered geometry.", flush=True)
 
 
@@ -251,7 +259,7 @@ def hover_and_pin(page, section, canvas, layer):
     assert section.locator("[data-part]").input_value()
     part = section.locator("[data-measure]").inner_text()
     if layer == "muscles":
-        assert "BodyParts3D" in part or "Andreassen" in part, part
+        assert any(atlas in part for atlas in ("BodyParts3D", "Andreassen", "Z-Anatomy")), part
     section.locator("[data-part]").select_option("")
     isolate.click()
     canvas.scroll_into_view_if_needed()
@@ -411,6 +419,11 @@ def main():
                         set_spread(page, setting)
                     if hero != "hummin":
                         check_human_studio(page, section, hero, tier)
+                    if hero == "roma" and tier == "high":
+                        layout = section.locator("[data-axon-layout]")
+                        layout.select_option("side")
+                        check_layer_controls(page, section, ROMA_TISSUE)
+                        layout.select_option("axial")
                     print(tier, hero, len(values), "selectable parts", flush=True)
             check_layer_controls(page, section)
             check_pick(page, section)

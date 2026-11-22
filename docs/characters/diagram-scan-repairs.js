@@ -27,11 +27,11 @@ export function scanPartName(node) {
   return side ? side + word : word[0].toUpperCase() + word.slice(1);
 }
 
-function points(geometry, matrix) {
-  const data = geometry.attributes.position;
+function points(mesh, matrix) {
+  const data = mesh.geometry.attributes.position;
   const result = [];
   for (let i = 0; i < data.count; i++) {
-    const p = new Vector3().fromBufferAttribute(data, i);
+    const p = new Vector3().fromBufferAttribute(data, i).applyMatrix4(mesh.matrixWorld);
     result.push(matrix ? p.applyMatrix4(matrix) : p);
   }
   return result;
@@ -45,20 +45,7 @@ function sample(surface, score, count) {
   return patch.reduce((sum, { p }) => sum.add(p), new Vector3()).multiplyScalar(1 / patch.length);
 }
 
-function addCartilage(rig, fitted, thorax, part) {
-  function fit(point, falseRib) {
-    const q = thorax.chest.from(point);
-    const radius = Math.hypot(q.x, q.z);
-    // The false-rib costal margin folds into the abdominal wall during a
-    // tuck. Leave room for obliques over the flexible cartilage arc.
-    const reserve = falseRib && rig.name === 'sippy' ? 0.017 : 0.0055;
-    const capacity = thorax.gauge(q.y, Math.atan2(q.x, q.z)) - reserve;
-    if (capacity > 0.02 && radius > capacity) {
-      const scale = capacity / radius;
-      point.copy(thorax.chest.point(q.x * scale, q.y, q.z * scale));
-    }
-    return point;
-  }
+function addCartilage(rig, fitted, part) {
   const toChest = new Matrix4().copy(rig.chest.matrixWorld).invert();
   const world = (p) => p.clone().applyMatrix4(rig.chest.matrixWorld);
   const sternum = points(fitted.get('STERNUM'), toChest);
@@ -90,7 +77,7 @@ function addCartilage(rig, fitted, thorax, part) {
       bend.z += Math.min(0.002, root.distanceTo(end) * 0.06);
       previous = [root, bend, end];
       const radius = rib === 1 ? 0.0036 : rib > 7 ? 0.0024 : 0.003;
-      part((sign > 0 ? 'Left ' : 'Right ') + 'costal cartilage ' + rib, 'skeleton', ({ sweep, high }) => {
+      part((sign > 0 ? 'Left ' : 'Right ') + 'costal cartilage ' + rib + ' (reconstruction)', 'skeleton', ({ sweep, high }) => {
         sweep(
           previous.map(world),
           [
@@ -99,7 +86,7 @@ function addCartilage(rig, fitted, thorax, part) {
             [radius, radius * 0.72],
           ],
           cartilage,
-          { rows: high ? 10 : 7, sides: high ? 8 : 6, fit: (p) => fit(p, rib >= 8) },
+          { rows: high ? 10 : 7, sides: high ? 8 : 6 },
         );
       });
     }
@@ -249,11 +236,19 @@ function addElbow(rig, side, fitted, shoulder, part) {
     });
 }
 
-export function repairScanJoints(rig, roma, parts, fitted, landmarks, part) {
+export function repairScanJoints(rig, parts, fitted, part) {
   const first = parts.length;
-  addCartilage(rig, fitted, landmarks.thorax, part);
+  addCartilage(rig, fitted, part);
   for (const side of ['L', 'R']) {
-    addElbow(rig, side === 'L' ? 'LEFT' : 'RIGHT', fitted, landmarks.shoulders[side], part);
+    const sign = side === 'L' ? 1 : -1;
+    const fore = rig['forearm' + side];
+    addElbow(rig, side === 'L' ? 'LEFT' : 'RIGHT', fitted, {
+      s: sign,
+      fore,
+      elbow: fore.getWorldPosition(new Vector3()),
+      wrist: rig['hand' + side].getWorldPosition(new Vector3()),
+      headCenter: rig['upperArm' + side].getWorldPosition(new Vector3()),
+    }, part);
   }
   for (const entry of parts.slice(first)) entry.source = 'Procedural reconstruction';
 }

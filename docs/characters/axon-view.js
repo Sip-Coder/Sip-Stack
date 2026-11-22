@@ -6,9 +6,13 @@ import { names, labels } from './ui.js';
 const layers = [
   { key: 'skeleton', human: 'Skeleton', robot: 'Chassis' },
   { key: 'muscles', human: 'Muscles', robot: 'Actuators' },
+  { key: 'breast', human: 'Breast tissue and fat pad', only: 'roma' },
+  { key: 'gluteal-fat', human: 'Gluteal fat', only: 'roma' },
+  { key: 'hip-fat', human: 'Hip and thigh fat', only: 'roma' },
   { key: 'skin', human: 'Skin & hair', robot: 'Shell & visor' },
   { key: 'clothes', human: 'Clothes & accessories', robot: 'Clothes & accessories' },
 ];
+const ghostCovers = ['clothes', ...layers.filter((layer) => layer.only === 'roma').map((layer) => layer.key)];
 const stylesheet = document.createElement('link');
 stylesheet.rel = 'stylesheet';
 stylesheet.href = new URL('./axon-view.css', import.meta.url);
@@ -33,7 +37,7 @@ export function mountStudy(section, stage, chooseHero) {
     </div><aside class="ax-settings" aria-label="Diagram settings">
       <h4>Layers</h4><div class="ax-layers">${layers
         .map(
-          (l) => `<div class="ax-layer" data-layer="${l.key}">
+          (l) => `<div class="ax-layer" data-layer="${l.key}"${l.only ? ' hidden' : ''}>
         <label><input data-show type="checkbox" checked> <b data-layer-name>${l.human}</b></label>
         <button data-isolate type="button" aria-pressed="false">Isolate</button>
         <label class="ax-opacity">Opacity <input data-opacity type="range" min="0" max="100" value="100"></label></div>`,
@@ -44,7 +48,7 @@ export function mountStudy(section, stage, chooseHero) {
       <div data-measure aria-live="polite"></div>
     </aside></div>
     <details class="ax-help" data-human-setting data-scan-credit><summary>Skeleton and muscle credits · BoneHub, BodyParts3D, Visible Human Female and Z-Anatomy</summary></details>
-    <details class="ax-help"><summary>Diagram controls</summary><p>Click or tap a part to measure it. Ghost skin opens an assembled cutaway by hiding the clothes. Drag to orbit. Pinch or scroll to zoom. On the diagram, use the arrow keys to orbit, + or − to zoom and Home to reset.</p>
+    <details class="ax-help"><summary>Diagram controls</summary><p>Click or tap a part to measure it. Ghost skin reveals the anatomy below the skin, fat and clothes. Drag to orbit. Pinch or scroll to zoom. On the diagram, use the arrow keys to orbit, + or − to zoom and Home to reset.</p>
     <p>Gamepad: use the D-pad to move between controls and adjust values, A to activate, bumpers to change character, the right stick to orbit and triggers to zoom.</p></details>`;
   const get = (selector) => body.querySelector(selector);
   for (const id of ['human-skeleton-credit', 'human-muscle-credit', 'human-z-anatomy-credit']) {
@@ -69,16 +73,20 @@ export function mountStudy(section, stage, chooseHero) {
     loading,
     previewPaint,
     generation = 0;
-  let ghostOpen = false, restoreClothes = false;
+  let ghostOpen = false;
+  const restoreLayers = new Set();
   function applyGhost(enabled) {
-    const clothes = get('[data-layer="clothes"] [data-show]');
     if (enabled && !ghostOpen) {
-      restoreClothes = clothes.checked;
-      clothes.checked = false;
+      for (const key of ghostCovers) {
+        const control = get('[data-layer="' + key + '"] [data-show]');
+        if (control.checked) restoreLayers.add(key);
+        control.checked = false;
+      }
       get('[data-layer="skin"] [data-show]').checked = true;
       isolated = null;
-    } else if (!enabled && ghostOpen && restoreClothes) {
-      clothes.checked = true;
+    } else if (!enabled && ghostOpen) {
+      for (const key of restoreLayers) get('[data-layer="' + key + '"] [data-show]').checked = true;
+      restoreLayers.clear();
     }
     ghostOpen = enabled;
     view.setGhost(enabled);
@@ -97,14 +105,13 @@ export function mountStudy(section, stage, chooseHero) {
       // An opaque 2D context starts black. Reveal only after the first readback
       // has been copied, then keep that photograph through later replacements.
       if (canvas.style.visibility) canvas.style.visibility = '';
-      if (!model || stats.parts !== model.parts.length) return;
+      if (!model || stats.parts !== model.parts.length || !stats.ready) return;
       if (model.partial) {
-        section.dataset.progress = 'skeleton';
-        status.textContent = 'Fitting muscle layers…';
+        section.dataset.progress = 'available-layers';
+        status.textContent = 'Loading original female lower-limb muscles…';
         previewPaint?.();
         return;
       }
-      if (!stats.ready) return;
       delete section.dataset.progress;
       status.textContent = '';
       section.dataset.ready = key;
@@ -157,7 +164,7 @@ export function mountStudy(section, stage, chooseHero) {
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i],
         name = layers[i].key;
-      const visible = row.querySelector('[data-show]').checked && (!isolated || isolated === name);
+      const visible = !row.hidden && row.querySelector('[data-show]').checked && (!isolated || isolated === name);
       row.querySelector('[data-isolate]').setAttribute('aria-pressed', String(isolated === name));
       view.setLayer(name, { visible, opacity: Number(row.querySelector('[data-opacity]').value) / 100 });
       for (const group of partPicker.querySelectorAll('optgroup')) {
@@ -173,6 +180,7 @@ export function mountStudy(section, stage, chooseHero) {
   function fillParts() {
     partPicker.replaceChildren(new Option('Select a part', ''));
     for (const layer of layers) {
+      if (layer.only && layer.only !== hero) continue;
       const group = document.createElement('optgroup');
       group.label = layerName(layer.key);
       group.dataset.key = layer.key;
@@ -215,7 +223,7 @@ export function mountStudy(section, stage, chooseHero) {
       });
       fillParts();
       view.setModel(model, quality);
-      previous?.dispose();
+      if (previous?.dispose !== next.dispose) previous?.dispose();
       updateLayers();
       if (selected) {
         const part = model.parts.find((p) => p.id === selected);
@@ -223,10 +231,10 @@ export function mountStudy(section, stage, chooseHero) {
         inspect(part);
       }
     }
-    function presentSkeleton(next) {
+    function presentAvailableLayers(next) {
       if (request.signal.aborted) { next.dispose(); return; }
-      // The final worker message may arrive before the first GPU upload. Keep
-      // this real, selectable preview through its first successful paint.
+      // Keep the real, selectable preview through its first successful paint
+      // before loading the much larger original lower-limb surfaces.
       return new Promise((resolve) => {
         function painted() {
           request.signal.removeEventListener('abort', painted);
@@ -239,7 +247,7 @@ export function mountStudy(section, stage, chooseHero) {
       });
     }
     try {
-      present(await buildDiagramModel(name, quality, request.signal, presentSkeleton));
+      present(await buildDiagramModel(name, quality, request.signal, presentAvailableLayers));
     } catch (error) {
       if (!request.signal.aborted && id === generation) showError(error);
     } finally {
@@ -266,13 +274,16 @@ export function mountStudy(section, stage, chooseHero) {
       const human = name !== 'hummin';
       for (const setting of body.querySelectorAll('[data-human-setting]')) setting.hidden = !human;
       view.setLayout(human ? get('[data-axon-layout]').value : 'side');
-      applyGhost(human && get('[data-ghost]').checked);
       rows.forEach((row, i) => {
-        const label = layerName(layers[i].key);
+        const layer = layers[i];
+        row.hidden = !!layer.only && layer.only !== hero;
+        if (row.hidden && isolated === layer.key) isolated = null;
+        const label = row.hidden ? layer.human : layerName(layer.key);
         row.querySelector('[data-layer-name]').textContent = label;
         row.querySelector('[data-isolate]').setAttribute('aria-label', 'Isolate ' + label);
         row.querySelector('[data-opacity]').setAttribute('aria-label', label + ' opacity');
       });
+      applyGhost(human && get('[data-ghost]').checked);
       inspect(null);
       fillParts();
     }
@@ -314,13 +325,13 @@ export function mountStudy(section, stage, chooseHero) {
   for (const row of rows) {
     row.querySelector('[data-isolate]').onclick = () => {
       const name = row.dataset.layer;
-      if (ghostOpen && name === 'clothes') restoreClothes = false;
+      if (ghostOpen) restoreLayers.delete(name);
       isolated = isolated === name ? null : name;
       if (isolated) row.querySelector('[data-show]').checked = true;
       updateLayers();
     };
     row.querySelector('[data-show]').onchange = () => {
-      if (ghostOpen && row.dataset.layer === 'clothes') restoreClothes = false;
+      if (ghostOpen) restoreLayers.delete(row.dataset.layer);
       if (!row.querySelector('[data-show]').checked && isolated === row.dataset.layer) isolated = null;
       updateLayers();
     };

@@ -25,6 +25,7 @@ function quiffMotion(groups) {
 
 export function createSecondary(rig, { banks, tails, pack, drawcord }) {
   const followGroom = quiffMotion(banks);
+  const packY = pack.position.y;
   let lag = 0,
     lagV = 0,
     lastTime = -Infinity;
@@ -42,7 +43,7 @@ export function createSecondary(rig, { banks, tails, pack, drawcord }) {
     const pace = Math.min(1, f.speed / 4);
     pack.rotation.x = 0.18 * lag + 0.012 * pace * Math.sin(f.phase * 2);
     pack.rotation.z = 0.018 * Math.tanh(f.turn * 0.3);
-    pack.position.y = 0.072 + 0.0041 * pace * Math.sin(f.phase * 2 - 0.38);
+    pack.position.y = packY + 0.0041 * pace * Math.sin(f.phase * 2 - 0.38);
     drawcord.rotation.z = lag * 0.31 + 0.035 * pace * Math.sin(f.phase - 0.32);
     drawcord.rotation.x = -0.7 * lag;
     followGroom(f);

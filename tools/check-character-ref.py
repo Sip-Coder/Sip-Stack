@@ -162,7 +162,13 @@ def validate_content(section, records):
         for label in ("wireframe", "solid", "clay", "topology")
     ]
     assert len({r["digest"] for r in modes}) == 4
-    assert section.locator(PANEL + '[data-status="missing"]').count() > 0
+    hero = stats(section)["hero"]
+    if hero == "hummin":
+        assert section.locator(PANEL + '[data-status="missing"]').count() > 0
+    else:
+        expected = {"neutral", "smile", "curious", "surprised", "thinking", "wink", "laugh", "focused"}
+        expected.update({"excited", "confident"} if hero == "sippy" else {"determined"})
+        assert set(emotions) == {"expression-" + key for key in expected}, (hero, list(emotions))
 
 
 def press_refresh(page, section, hero, tier):

@@ -1,79 +1,41 @@
-# Axon View muscle atlas and skin
+# Axon View muscle sources and skin references
 
-BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International. The LSDB Archive license page dated February 27, 2025 grants redistribution and adaptation under CC BY 4.0. The 2013 OBJ headers retain the historical attribution and share-alike notice under CC BY-SA 2.1 Japan. The archive publishes the current terms. [Official license and credit](https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) · [Historical CC BY-SA 2.1 Japan](https://creativecommons.org/licenses/by-sa/2.1/jp/)
+## BodyParts3D
 
-## Source and adaptations
+BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International. The LSDB Archive license page dated February 27, 2025 grants redistribution and adaptation under CC BY 4.0. The 2013 OBJ headers retain the historical CC BY-SA 2.1 Japan notice. [Official license and credit](https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
-The anatomical source is the adult male BodyParts3D 4.0 muscular system. The supplied assets preserve 323 named anatomical surfaces from the muscular-system hierarchy in `isa_BP3D_4.0_obj_99.zip`. The source preparation converted axes and units, assigned English names from the atlas relationships, simplified the surfaces per tier, quantized the coordinates and applied meshopt compression. The Axon inspector registers the resulting surfaces to each character’s fitted skeleton and applies its own muscle and tendon rendering. Sip-Stack authors each character’s skin. [Archive download and concept data](https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html) · [Mitsuhashi et al., BodyParts3D](https://doi.org/10.1093/nar/gkn613)
+The standalone packages match the supplied GLBs byte for byte. Their original export converted axes and units, retained anatomical names from the BodyParts3D 4.0 archive and simplified and compressed each tier. They supply 323 muscles and 34 individually labeled parts of the deltoid, pectoralis major, trapezius, biceps, quadriceps and gastrocnemius. Sippy’s meshes use the original supplied geometry with rigid per-part pose and the same uniform character scale as the skeleton. Roma’s adapted upper-body surfaces derive from this male atlas and use a landmark-based deformation to her female skeletal and skin proportions. [Archive download and concept data](https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html) · [Mitsuhashi et al., BodyParts3D](https://doi.org/10.1093/nar/gkn613) · [Source file fingerprints](../review/source-true-anatomy/source-files.json)
 
-A second offline simplification fits each tier’s inspection budget. Both packages retain all 323 source meshes. Source and release hashes, triangle counts, surface deviations and connected-component counts are recorded in the measurements. [Surface measurements and SHA-256](../review/scan-skeleton/muscle-lod-surface.json)
+| Source pack | Mobile | High |
+|---|---|---|
+| 323 muscles | [Mobile GLB](bp3d-muscles-mobile-meshopt.glb) | [High GLB](bp3d-muscles-high-meshopt.glb) |
+| 34 additional muscle parts | [Mobile GLB](bp3d-missing-muscles-mobile-meshopt.glb) | [High GLB](bp3d-missing-muscles-high-meshopt.glb) |
 
+## Z-Anatomy
 
-Several input names describe a compartment. For the bilateral plantaris, popliteus, soleus, brachioradialis, extensor digitorum, palmaris longus and supinator, the part picker shows the specific muscle in the DBCLS element table. The underlying source IDs are preserved. [Official IS-A anatomical element table](https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/isa_element_parts.txt)
-
-| Packaged file | Source triangles | Shipped triangles | Shipped bytes |
-|---|---:|---:|---:|
-| [BodyParts3D Mobile](bp3d-muscles-mobile-meshopt.glb) | 101,144 | 76,558 | 601,264 |
-| [BodyParts3D High](bp3d-muscles-high-meshopt.glb) | 272,194 | 155,766 | 888,340 |
+Latissimus dorsi and rectus abdominis: Z-Anatomy (https://github.com/Z-Anatomy/Models-of-human-anatomy), CC BY-SA 4.0, derived from BodyParts3D. Share-alike applies to this pack. The four surfaces come from the bilateral latissimus dorsi and rectus abdominis in the muscular-system collection of Z-Anatomy’s `Startup.blend`. Sippy uses the byte-matched supplied GLBs and poses their surfaces rigidly. Roma’s landmark-adapted Z-Anatomy parts remain separate from BodyParts3D in their own CC BY-SA GLBs. [Z-Anatomy source](https://github.com/Z-Anatomy/Models-of-human-anatomy) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) · [Mobile source GLB](zanatomy-lats-rectus-mobile-meshopt.glb) · [High source GLB](zanatomy-lats-rectus-high-meshopt.glb)
 
 ## Visible Human Female lower limbs
 
-The Visible Human Female lower-limb data were segmented by Thor E. Andreassen, Donald R. Hume, Landon D. Hamilton, Karen E. Walker, Sean E. Higinbotham and Kevin B. Shelburne at the University of Denver. Their 2022 dataset, DOI 10.56902/COB.vh.2022.1, derives from the U.S. National Library of Medicine Visible Human Project and carries CC BY 4.0. Their 2023 paper describes the semi-automated segmentation of 76 individual muscles. [Original repository record](https://digitalcommons.du.edu/visiblehuman/1/) · [Paper](https://doi.org/10.1038/s41597-022-01905-2) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+The Visible Human Female lower-limb data were segmented by Thor E. Andreassen, Donald R. Hume, Landon D. Hamilton, Karen E. Walker, Sean E. Higinbotham and Kevin B. Shelburne at the University of Denver. Their dataset, DOI 10.56902/COB.vh.2022.1, derives from the U.S. National Library of Medicine Visible Human Project and carries CC BY 4.0. The 2023 paper describes their preparation of the final 3D models. [University of Denver dataset](https://digitalcommons.du.edu/visiblehuman/1/) · [Paper](https://doi.org/10.1038/s41597-022-01905-2) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
-Our input is the redistribution of these same muscles in `slorksmo/Human-Atlas` at commit `5bb5713aab18d7fe9380c3339eb09f173491ea06`. Its importer records the female donor, the source ZIP, the original `VHF_Left_*` and `VHF_Right_*` STL naming scheme, and the derivation of each `VHF:` concept. It welds and simplifies the surfaces and applies a uniform scale, axis rotation and translation to each regional group. Our build reads exclusively the 76 `donor-muscle` entries with matching female source IDs, from binary chunks 13 and 14. [Redistributor attribution](https://github.com/slorksmo/Human-Atlas/blob/5bb5713aab18d7fe9380c3339eb09f173491ea06/public/ATTRIBUTION.md#female-lower-limb-muscle) · [Redistributor import script](https://github.com/slorksmo/Human-Atlas/blob/5bb5713aab18d7fe9380c3339eb09f173491ea06/scripts/import-lower-limb.mjs)
+The laboratory mirror at the pinned `ingvilddevold/muscle-growth` revision identifies its `data/VHF_surfaces` folder as a copy of the publication surfaces. The 76 female muscle STLs in that folder are the GLB inputs. Sip-Stack preserves the published float32 coordinates and each oriented triangle. Packaging welds duplicate coordinates, losslessly reorders vertices and index lists for meshopt and adds smooth normals for shading. The single glTF scene root converts the millimetre axes to metres and places the donor origin against the corresponding BoneHub scan. Axon applies Roma’s uniform character scale and rigid part rotations and translations. [Pinned mirror, source and license statement](https://github.com/ingvilddevold/muscle-growth/tree/16b27795d6b8d1db06f7523f9d9eedea959935ae#realistic-muscle-geometries) · [Shared lower-limb source GLB](vhf-muscles-source-meshopt.glb) · [Per-STL SHA-256 and exact triangle verification](../review/source-true-anatomy/andreassen-stl-proof.json)
 
-Sip-Stack registers the left and right hip, thigh and shank separately in the common atlas coordinates using bounds of the pelvic bones, femoral epiphyses and tibial epiphyses. Each registration preserves the individual muscle’s proportions. The packages retain individual source concept IDs. Axon fits them to Roma’s posed CT skeleton, renders 60 female counterparts of supplied BodyParts3D structures, and adds the 16 donor muscles absent from that subset. These additions are the rectus femoris, three vasti, both biceps femoris heads and both gastrocnemius heads on each side. The remaining 263 muscles use the male atlas fitted to Roma, for 339 rendered muscles. [Node-by-node source and counterpart mapping](../review/scan-skeleton/female-muscle-mapping.json)
+The research mirror contains the 76 muscles and companion skeletal surfaces. The University of Denver’s dataset also lists intermuscular fat and fascia and outer fat, dermis and epidermis. Those two fat meshes were unavailable from the mirror, and the publisher’s archive download returned HTTP 403. [Published tissue inventory](https://doi.org/10.1038/s41597-022-01905-2)
 
-| Roma supplement | Muscles | Triangles | Bytes | SHA-256 |
-|---|---:|---:|---:|---|
-| [Female lower limbs, Mobile](vhf-muscles-mobile-meshopt.glb) | 76 | 12,178 | 119,324 | `8900dc7de1c03eaa806074a11b28deacb214d9d36d955887ec054f36f6b96220` |
-| [Female lower limbs, High](vhf-muscles-high-meshopt.glb) | 76 | 32,920 | 198,972 | `66ff431372f882d87bbc67f87839e5fcea069e022a5d830654ba792a9b24b254` |
+## Skin shape references
 
-Both female supplements preserve 76 connected surfaces. Measured against all registered donor surfaces, 99% of bidirectional vertex and triangle-centroid samples fall within 0.090 inches on Mobile and 0.043 inches on High. [Female donor surface measurements](../review/scan-skeleton/female-muscle-lod-surface.json)
+“3D Reference Organ for Skin, Male v1.4” by Kristen Browne and Heidi Schlehlein, HuBMAP Human Reference Atlas, CC BY 4.0, derived from the U.S. National Library of Medicine Visible Human Project. [Male reference, DOI 10.48539/HBM953.DCMN.563](https://doi.org/10.48539/HBM953.DCMN.563)
 
-## Additional superficial muscles
+“3D Reference Organ for Skin, Female v1.5” by Kristen Browne and Heidi Schlehlein, HuBMAP Human Reference Atlas, CC BY 4.0, derived from the U.S. National Library of Medicine Visible Human Project. Sip-Stack uses the silhouettes and body dimensions as references for the authored exterior. [Female reference, DOI 10.48539/HBM453.MVPL.398](https://doi.org/10.48539/HBM453.MVPL.398) · [HuBMAP source files](https://github.com/hubmapconsortium/hra-kg/tree/27d6d493cd53761abb10f087767ec4cc74acb051/digital-objects/ref-organ)
 
-**BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International.** The supplementary export recovers 34 part-level elements of the deltoid, pectoralis major, trapezius, biceps brachii, quadriceps and gastrocnemius in the official BodyParts3D 4.0 archive. The archived meshes retain their original FJ identifiers. The 2025 license applies to these elements and their fitted atlas surfaces. [Archive](https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html) · [Rights holder’s terms](https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html)
+## Reproduce the Visible Human Female package
 
-Sippy uses all 34 elements, including all four quadriceps heads and both gastrocnemius heads on each side. Roma uses the 22 upper-body elements, fitted to her female skeleton, along with the 76 Andreassen female lower-limb surfaces described above. Sip-Stack registers attachment landmarks, adapts the shapes to the posed rig and skin, supplies the surface finishes and compresses the derived geometry. [Mobile source pack](bp3d-missing-muscles-mobile-meshopt.glb) · [High source pack](bp3d-missing-muscles-high-meshopt.glb)
-
-**Latissimus dorsi and rectus abdominis: Z-Anatomy (https://github.com/Z-Anatomy/Models-of-human-anatomy), CC BY-SA 4.0, derived from BodyParts3D. Share-alike applies to this pack.** The four meshes come from the left and right latissimus dorsi and rectus abdominis in the muscular-system collection of Z-Anatomy’s `Startup.blend`. Each character has separate fitted Z-Anatomy GLBs at both tiers. Those adaptations carry CC BY-SA 4.0. Changes include segment registration to the character, attachment and envelope fitting, tendon and fibre shading attributes, and compression. [Z-Anatomy source](https://github.com/Z-Anatomy/Models-of-human-anatomy) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) · [Mobile source pack](zanatomy-lats-rectus-mobile-meshopt.glb) · [High source pack](zanatomy-lats-rectus-high-meshopt.glb)
-
-## Fitted Axon View files
-
-Each first-open pair below contains a posed character inspection model and its separately licensed Z-Anatomy surfaces. The base file contains the credited anatomical components and Sip-Stack’s stylized skin, hair, clothes and accessories. Each Z-Anatomy file contains only the bilateral lats and rectus abdominis, fitted to that character and distributed under CC BY-SA 4.0. The unposed input files above remain available for the missing-file fallback. [BoneHub skeleton credits](SKELETON-LICENSE.md) · [CC BY-SA 4.0 terms](https://creativecommons.org/licenses/by-sa/4.0/)
-
-| Character and tier | Fitted base | Fitted Z-Anatomy adaptation |
-|---|---|---|
-| Sippy Mobile | [Base GLB](axon-sippy-mobile.glb) | [CC BY-SA GLB](axon-sippy-mobile-sa.glb) |
-| Sippy High | [Base GLB](axon-sippy-high.glb) | [CC BY-SA GLB](axon-sippy-high-sa.glb) |
-| Roma Mobile | [Base GLB](axon-roma-mobile.glb) | [CC BY-SA GLB](axon-roma-mobile-sa.glb) |
-| Roma High | [Base GLB](axon-roma-high.glb) | [CC BY-SA GLB](axon-roma-high-sa.glb) |
-
-## Reproduce the packages
-
-To build the eight fitted GLBs from the versioned inputs, run the following from the repository root with Node.js 24. The baker uses the same rig, inspection pose, cortical landmarks and tissue fit as the Worker. It validates the resulting character and license groups before writing each file. The Worker bundle is built from that fitter separately. [Baker](../../../tools/bake-axon-packs.mjs) · [Worker build](../../../tools/build-axon-worker.mjs)
+The builder verifies every decoded vertex and counts all original oriented triangles, including duplicates, before writing the pack. Install meshoptimizer 1.3.0 for Node.js and check out the mirror at its pinned revision. [Pack builder](../../../tools/pack-andreassen-source.mjs)
 
 ```sh
-npm install --prefix /tmp/axon-tools three@0.170.0 meshoptimizer@1.3.0 esbuild@0.25.12
-export THREE_ROOT=/tmp/axon-tools/node_modules/three
-export MESHOPT_ROOT=/tmp/axon-tools/node_modules/meshoptimizer
-node tools/bake-axon-packs.mjs
-NODE_PATH=/tmp/axon-tools/node_modules node tools/build-axon-worker.mjs
+git clone --filter=blob:none --no-checkout https://github.com/ingvilddevold/muscle-growth.git /tmp/muscle-growth
+git -C /tmp/muscle-growth checkout 16b27795d6b8d1db06f7523f9d9eedea959935ae -- data/VHF_surfaces
+npm install --prefix /tmp/axon-tools meshoptimizer@1.3.0
+MESHOPT_ROOT=/tmp/axon-tools/node_modules/meshoptimizer node tools/pack-andreassen-source.mjs /tmp/muscle-growth/data/VHF_surfaces /tmp/vhf-muscles-source-meshopt.glb /tmp/andreassen-stl-proof.json
 ```
-
-### Earlier source preparation
-
-Copy both [BodyParts3D preparation](../../../tools/prepare-muscle-lod.mjs) and [female lower-limb preparation](../../../tools/prepare-female-muscles.mjs) into a scratch directory. Place the two originally supplied BodyParts3D GLBs inside an `original/` subdirectory. Run the following in that scratch directory.
-
-```sh
-npm install @gltf-transform/core@4.5.1 @gltf-transform/functions@4.5.1 @gltf-transform/extensions@4.5.1 meshoptimizer@1.3.0 three@0.170.0 three-mesh-bvh@0.8.3
-mkdir -p output
-node prepare-muscle-lod.mjs original/bp3d-muscles-mobile-meshopt.glb output/bp3d-muscles-mobile-meshopt.glb
-node prepare-muscle-lod.mjs original/bp3d-muscles-high-meshopt.glb output/bp3d-muscles-high-meshopt.glb
-git clone --filter=blob:none --no-checkout https://github.com/slorksmo/Human-Atlas.git
-git -C Human-Atlas checkout 5bb5713aab18d7fe9380c3339eb09f173491ea06 -- public/models/atlas.json public/models/atlas-female.json public/models/female-{10,11,13,14}.bin public/models/body-{11,12,13}.bin
-node prepare-female-muscles.mjs Human-Atlas/public/models original/bp3d-muscles-high-meshopt.glb output output/female-muscle-mapping.json aligned-vhf.glb
-```
-
-The final argument writes the unsimplified, pre-aligned donor to scratch for comparison. Run the [surface checker](../../../tools/check-inspection-lod.mjs) against that file and each packaged female GLB to reproduce the review measurements.

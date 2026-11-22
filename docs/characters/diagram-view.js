@@ -9,9 +9,10 @@ const isoYaw = Math.PI / 4,
   isoPitch = Math.asin(1 / Math.sqrt(3));
 const clamp = T.MathUtils.clamp;
 
-function ranges(parts) {
+function ranges(parts, start) {
   const batches = new Map();
-  for (const [number, part] of parts.entries()) {
+  for (let number = start; number < parts.length; number++) {
+    const part = parts[number];
     const { geometry, material, renderOrder } = part.mesh;
     const pos = geometry.attributes.position;
     const total = geometry.index?.count ?? pos.count;
@@ -29,7 +30,10 @@ function ranges(parts) {
       // Preserve indexing (including UV seams), instead of expanding triangles.
       let lo = first,
         hi = last - 1;
-      if (geometry.index) {
+      if (part.sourceMatrix && first === 0 && last === total) {
+        lo = 0;
+        hi = pos.count - 1;
+      } else if (geometry.index) {
         lo = Infinity;
         hi = -1;
         const ix = geometry.index.array;
@@ -38,10 +42,34 @@ function ranges(parts) {
           hi = Math.max(hi, ix[j]);
         }
       }
-      batches.get(key).spans.push({ geometry, number, first, last, lo, hi });
+      batches.get(key).spans.push({ geometry, number, first, last, lo, hi, matrix: part.sourceMatrix });
     }
   }
   return batches.values();
+}
+
+function copySpatial(array, output, offset, lo, hi, matrix, bounds) {
+  const e = matrix?.elements;
+  const scale = e && !bounds ? 1 / Math.hypot(e[0], e[1], e[2]) : 1;
+  const tx = bounds && e ? e[12] : 0,
+    ty = bounds && e ? e[13] : 0,
+    tz = bounds && e ? e[14] : 0;
+  const ax = e ? e[0] * scale : 1, bx = e ? e[4] * scale : 0, cx = e ? e[8] * scale : 0;
+  const ay = e ? e[1] * scale : 0, by = e ? e[5] * scale : 1, cy = e ? e[9] * scale : 0;
+  const az = e ? e[2] * scale : 0, bz = e ? e[6] * scale : 0, cz = e ? e[10] * scale : 1;
+  for (let i = lo * 3, end = (hi + 1) * 3; i < end; i += 3, offset += 3) {
+    const x = array[i], y = array[i + 1], z = array[i + 2];
+    const a = output[offset] = ax * x + bx * y + cx * z + tx;
+    const b = output[offset + 1] = ay * x + by * y + cy * z + ty;
+    const c = output[offset + 2] = az * x + bz * y + cz * z + tz;
+    if (!bounds) continue;
+    bounds.min.x = Math.min(bounds.min.x, a);
+    bounds.min.y = Math.min(bounds.min.y, b);
+    bounds.min.z = Math.min(bounds.min.z, c);
+    bounds.max.x = Math.max(bounds.max.x, a);
+    bounds.max.y = Math.max(bounds.max.y, b);
+    bounds.max.z = Math.max(bounds.max.z, c);
+  }
 }
 
 function bake(spans) {
@@ -50,6 +78,7 @@ function bake(spans) {
   const indices = vertexCount > 65535 ? new Uint32Array(indexCount) : new Uint16Array(indexCount);
   const partIds = new Float32Array(vertexCount);
   const geometry = new T.BufferGeometry();
+  const bounds = new T.Box3();
   const attrs = new Map();
   for (const { geometry: source } of spans)
     for (const [name, attr] of Object.entries(source.attributes))
@@ -61,12 +90,15 @@ function bake(spans) {
   }
   let v = 0,
     i = 0;
-  for (const { geometry: source, lo, hi, first, last, number } of spans) {
+  for (const { geometry: source, lo, hi, first, last, number, matrix } of spans) {
     const n = hi - lo + 1;
     for (const [name, size] of attrs) {
       const attr = source.getAttribute(name);
-      if (attr)
-        geometry.attributes[name].array.set(attr.array.subarray(lo * size, (hi + 1) * size), v * size);
+      if (!attr) continue;
+      const target = geometry.attributes[name].array;
+      if (name === 'position') copySpatial(attr.array, target, v * size, lo, hi, matrix, bounds);
+      else if (matrix && name === 'normal') copySpatial(attr.array, target, v * size, lo, hi, matrix);
+      else target.set(attr.array.subarray(lo * size, (hi + 1) * size), v * size);
     }
     partIds.fill(number, v, v + n);
     const ix = source.index?.array;
@@ -75,32 +107,25 @@ function bake(spans) {
   }
   geometry.setIndex(new T.BufferAttribute(indices, 1));
   geometry.setAttribute('axonPart', new T.BufferAttribute(partIds, 1));
-  geometry.computeBoundingBox();
-  geometry.computeBoundingSphere();
+  geometry.boundingBox = bounds;
+  geometry.boundingSphere = bounds.getBoundingSphere(new T.Sphere());
   return geometry;
 }
 
-// Baked GLBs already group geometry by layer and material. The display owns
-// its picker IDs and any exploded positions. Keep the decoded pack in its
-// neutral pose so a later view can use it again.
-function fromBakedBatches(model) {
-  const numbers = new Map(model.parts.map((part, number) => [part.id, number]));
-  return model.batches.map((batch) => {
-    const source = batch.geometry;
-    const geometry = new T.BufferGeometry();
-    for (const [key, attribute] of Object.entries(source.attributes)) geometry.setAttribute(key, attribute);
-    geometry.setIndex(source.index);
-    geometry.boundingBox = source.boundingBox.clone();
-    geometry.boundingSphere = geometry.boundingBox.getBoundingSphere(new T.Sphere());
-
-    const ids = new Float32Array(source.attributes.position.count);
-    const spans = batch.spans.map(({ partId, lo, hi }) => {
-      const number = numbers.get(partId);
-      if (number === undefined) throw new Error('Unregistered baked part ' + partId);
-      ids.fill(number, lo, hi + 1);
-      return { geometry: source, number, lo, hi };
+// Flatten only the draw copies. Preserve source-relative index ranges for
+// proof and picking, and retain the posed positions for exploded views.
+export function buildDisplayBatches(parts, start = 0) {
+  return Array.from(ranges(parts, start), (batch) => {
+    const geometry = bake(batch.spans), position = geometry.attributes.position;
+    let start = 0, indexStart = 0;
+    const spans = batch.spans.map(({ number, lo, hi, first: sourceFirst, last: sourceLast }) => {
+      const first = start;
+      start += hi - lo + 1;
+      const indexCount = sourceLast - sourceFirst;
+      const span = { position, number, lo: first, hi: start - 1, indexStart, indexCount };
+      indexStart += indexCount;
+      return span;
     });
-    geometry.setAttribute('axonPart', new T.BufferAttribute(ids, 1));
     return { ...batch, geometry, spans };
   });
 }
@@ -193,6 +218,7 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
   const corner = new T.Vector3(),
     shift = new T.Vector3(),
     projected = new T.Vector3();
+  const baseBounds = new T.Box3();
   const raycaster = new T.Raycaster(),
     pointer = new T.Vector2(),
     hits = [];
@@ -282,7 +308,7 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
       return;
     }
     stats.studio = human;
-    stats.ambientOcclusion = human ? (tier === 'high' ? 'screen-space' : 'baked vertices') : 'none';
+    stats.ambientOcclusion = human ? 'screen-space' : 'none';
     stats.ghost = human && !!ghost.value;
     originalLights.visible = !human;
     scene.background = human ? null : originalBackground;
@@ -296,25 +322,29 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     sequence++;
     stats.ready = false;
     chosen.value = hovered.value = -1;
-    clearMeshes();
+    const resume = model?.partial && next && !next.partial && next.dispose === model.dispose && stats.tier === tier;
+    const first = resume ? model.parts.length : 0;
+    if (!resume) {
+      clearMeshes();
+      baseBounds.makeEmpty();
+    }
     model = next;
     offsets = null;
-    lastDisplacement = 0;
+    lastDisplacement = resume && lastDisplacement !== 0 ? -1 : 0;
     stats.tier = tier;
     stats.parts = next?.parts.length ?? 0;
     stats.batches = 0;
     if (model) {
       const ids = new Set(model.parts.map((p) => p.layer));
       for (const id of [...new Set([...layerOrder, ...ids])].filter((id) => ids.has(id))) {
+        if (layers.has(id)) continue;
         const group = new T.Group();
         group.name = id;
         scene.add(group);
         layers.set(id, { group, index: layers.size, box: new T.Box3() });
       }
-      const all = new T.Box3();
-      const batches = model.batches ? fromBakedBatches(model) : ranges(model.parts);
-      for (const b of batches) {
-        const geometry = b.geometry ?? bake(b.spans);
+      for (const b of buildDisplayBatches(model.parts, first)) {
+        const { geometry } = b;
         const tissue = human ? { shade: studioModule.shadeTissue, layer: b.layer, ghost } : null;
         const mesh = new T.Mesh(geometry, studyMaterial(b.finish, chosen, hovered, tissue));
         mesh.renderOrder = b.renderOrder;
@@ -324,10 +354,10 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
         const layer = layers.get(b.layer);
         layer.group.add(mesh);
         layer.box.union(geometry.boundingBox);
-        all.union(geometry.boundingBox);
+        baseBounds.union(geometry.boundingBox);
       }
-      if (model.name !== 'hummin') offsets = axialOffsets(model.parts, all);
-      spacing = 0.58 * (all.max.y - all.min.y || 1.8);
+      if (model.name !== 'hummin') offsets = axialOffsets(model.parts, baseBounds);
+      spacing = 0.58 * (baseBounds.max.y - baseBounds.min.y || 1.8);
       for (const id of layers.keys()) syncLayer(id);
       stats.batches = meshes.length;
     }

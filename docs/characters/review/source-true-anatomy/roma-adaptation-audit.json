@@ -1,0 +1,61 @@
+{
+  "method": "Independent GLTFLoader decode of published Roma adaptation GLBs. Each selected actual vertex is compared with the nearest triangle on the named decoded female BoneHub bone in the upright bind frame. Estimated oriented-triangle volumes use the published atlas centroid. As some meshes have open boundaries, volumes are estimates.",
+  "summary": [
+    {
+      "tier": "mobile",
+      "packs": [
+        {
+          "file": "roma-adapted-bp3d-mobile-meshopt.glb",
+          "bytes": 1417864,
+          "sha256": "c5bcf5d3a11e8b09fe0e68f19210ea7bbacd20bd213b22bab73fd33bf5306dbd",
+          "parts": 251
+        },
+        {
+          "file": "roma-adapted-zanatomy-mobile-meshopt.glb",
+          "bytes": 269904,
+          "sha256": "1c07a6067ebf5116d61c1963dbe16c18c138e7d5cbab630c1235a8382316cbe2",
+          "parts": 4
+        }
+      ],
+      "meshes": 255,
+      "attachments": 526,
+      "namedAttachments": 192,
+      "maxCorticalOffsetIn": 0.00015990502119196998,
+      "maxCorticalOffsetNode": "left_latissimus_dorsi",
+      "maxNamedCorticalOffsetIn": 0.00015990502119196998,
+      "maxReportedTargetOffsetIn": 0.00019619161539765262,
+      "maxVolumeEstimateDifferenceIn3": 0.00046183891014628387,
+      "maxVolumeEstimateDifferenceNode": "right_external_oblique",
+      "measuredBeforeIn3": 500.7047557553928,
+      "measuredAfterIn3": 365.38574691181896
+    },
+    {
+      "tier": "high",
+      "packs": [
+        {
+          "file": "roma-adapted-bp3d-high-meshopt.glb",
+          "bytes": 2533904,
+          "sha256": "f1cbfc866dcf5acf7e37556184a24a3bb19908689294afd32a5f267f0e37a2f2",
+          "parts": 251
+        },
+        {
+          "file": "roma-adapted-zanatomy-high-meshopt.glb",
+          "bytes": 439240,
+          "sha256": "e20d621318c2a955e9e35e2c3051849ce8ffd8d93eb365fa89dc074b3d988009",
+          "parts": 4
+        }
+      ],
+      "meshes": 255,
+      "attachments": 526,
+      "namedAttachments": 192,
+      "maxCorticalOffsetIn": 0.0001548479339882617,
+      "maxCorticalOffsetNode": "left_external_oblique",
+      "maxNamedCorticalOffsetIn": 0.0001548479339882617,
+      "maxReportedTargetOffsetIn": 0.0001927449155920617,
+      "maxVolumeEstimateDifferenceIn3": 0.0004935908010716972,
+      "maxVolumeEstimateDifferenceNode": "left_longissimus_thoracis",
+      "measuredBeforeIn3": 510.8639868831873,
+      "measuredAfterIn3": 374.2191952645182
+    }
+  ]
+}

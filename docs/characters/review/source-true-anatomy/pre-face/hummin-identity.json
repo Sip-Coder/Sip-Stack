@@ -1,0 +1,20 @@
+{
+  "baseline": "80e1cdfdde41ac91e7e8eb0c5538e03ce11bf00e",
+  "candidate": "2fc3102917a0755e770b0d9eee3a83778d1b6791",
+  "rows": [
+    {
+      "tier": "mobile",
+      "parts": 135,
+      "triangles": 94740,
+      "baselineSha256": "5364ad7b221fb80d5edfe61326cc928f689cbbfc2253da5caa2dc4ad0831e2b5",
+      "candidateSha256": "5364ad7b221fb80d5edfe61326cc928f689cbbfc2253da5caa2dc4ad0831e2b5"
+    },
+    {
+      "tier": "high",
+      "parts": 135,
+      "triangles": 142444,
+      "baselineSha256": "c036ce3efcb348d5e1dfda4ca2da3d5b51f78bcec3a255e687248c1b7e33111a",
+      "candidateSha256": "c036ce3efcb348d5e1dfda4ca2da3d5b51f78bcec3a255e687248c1b7e33111a"
+    }
+  ]
+}

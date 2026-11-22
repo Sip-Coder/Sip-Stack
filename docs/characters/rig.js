@@ -1,16 +1,24 @@
-// Joint offsets are fractions of standing height. Articulating either limb
-// therefore preserves the same joint centres on all three character designs.
+// Actor meshes use units of standing height. Human joint offsets come from
+// the canonical BoneHub rig. Hummin's articulated chassis is authored here.
 import * as T from 'three';
+import { createSourceRig } from './source-rig.js';
 
 export function createActor(name, height) {
   const root = new T.Group();
   root.name = name;
   root.scale.setScalar(height);
+  const anatomy = createSourceRig(name);
   const rig = { name, height, root, joints: [] };
+  if (anatomy) rig.anatomy = anatomy;
   function joint(key, parent, x, y, z = 0) {
     const node = new T.Group();
     node.name = key;
-    node.position.set(x, y, z);
+    if (anatomy) {
+      node.position.copy(anatomy.joints[key]);
+      if (parent !== root) node.position.sub(anatomy.joints[parent.name]);
+    } else {
+      node.position.set(x, y, z);
+    }
     parent.add(node);
     rig[key] = node;
     rig.joints.push(node);

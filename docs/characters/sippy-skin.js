@@ -38,7 +38,8 @@ export function articulatedSleeve(upper, lower, leg) {
   const bones = levels.map((y) => {
     const bone = new T.Bone();
     upper.add(bone);
-    bone.position.y = y;
+    const center = Math.min(1, y / pivot);
+    bone.position.set(lower.position.x * center, y, lower.position.z * center);
     return bone;
   });
   const down = new T.Vector3(0, -1, 0), direction = new T.Vector3(), cross = new T.Vector3();
@@ -64,11 +65,14 @@ export function articulatedSleeve(upper, lower, leg) {
         const y = levels[i], b = bones[i];
         const t = T.MathUtils.clamp((pivot + blend - y) / (2 * blend), 0, 1);
         b.quaternion.identity().slerp(swing, t).multiply(axial.identity().slerp(twist, t));
+        const center = Math.min(1, y / pivot);
         if (t === 1) b.position.copy(direction).multiplyScalar(pivot - y).y += pivot;
         else if (t > 0) {
           b.position.copy(cross).multiplyScalar(r * (1 - Math.cos(angle * t)));
           b.position.y = pivot + blend - r * Math.sin(angle * t);
         } else b.position.set(0, y, 0);
+        b.position.x += lower.position.x * center;
+        b.position.z += lower.position.z * center;
       }
     },
   };

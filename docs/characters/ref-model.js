@@ -16,20 +16,35 @@ const builders = {
 };
 const still = { x: 0, z: 0, run: false, jump: false, roll: false, emote: false };
 const humanCues = {
-  neutral: {},
-  smile: { state: 'walk', speed: 1.15 },
-  laugh: { state: 'run', speed: 3.4 },
-  curious: { emote: 0.22 },
-  thinking: { emote: 0.56 },
-  surprised: { state: 'jump', vy: 2.4 },
-  wink: { emote: 0.86 },
+  sippy: {
+    neutral: {},
+    smile: { faceCue: { smile: 0.78, squint: 0.64, browLift: 0.18 } },
+    laugh: { faceCue: { smile: 1, squint: 0.91, browLift: 0.29 } },
+    excited: { faceCue: { smile: 0.99, surprise: 0.16, browLift: 0.82, gazeY: 0.1 } },
+    curious: { faceCue: { smile: 0.17, browLift: 0.56, gazeX: 0.32, asymmetry: 0.43 } },
+    thinking: { emote: 0.56, faceCue: { focus: 0.42, squint: 0.28, gazeX: -0.46, gazeY: -0.43, asymmetry: -0.5 } },
+    surprised: { faceCue: { surprise: 1, browLift: 1, gazeY: 0.16 } },
+    focused: { faceCue: { focus: 0.96, squint: 0.45, gazeY: -0.18 } },
+    wink: { faceCue: { smile: 0.65, wink: 1, squint: 0.18, asymmetry: 0.33 } },
+    confident: { faceCue: { smile: 0.37, squint: 0.15, browLift: 0.21, gazeX: -0.23, asymmetry: 0.72 } },
+  },
+  roma: {
+    neutral: {},
+    smile: { faceCue: { smile: 0.91, squint: 0.61, browLift: 0.24 } },
+    curious: { faceCue: { smile: 0.19, surprise: 0.16, browLift: 0.69, gazeX: 0.27, gazeY: 0.3, asymmetry: 0.58 } },
+    surprised: { faceCue: { surprise: 0.92, browLift: 1, gazeY: 0.2 } },
+    thinking: { emote: 0.44, faceCue: { focus: 0.33, squint: 0.17, browLift: 0.42, gazeX: 0.56, gazeY: 0.38, asymmetry: -0.46 } },
+    wink: { faceCue: { smile: 0.7, wink: 1, squint: 0.13, asymmetry: 0.35 } },
+    laugh: { faceCue: { smile: 1, squint: 0.91, browLift: 0.54, gazeY: 0.09 } },
+    focused: { faceCue: { focus: 0.89, squint: 0.4, gazeY: -0.13, asymmetry: 0.24 } },
+    determined: { faceCue: { smile: 0.10, focus: 0.9, squint: 0.18, browLift: 0.16, gazeX: -0.16, asymmetry: 0.49 } },
+  },
 };
 function humanCue(name, key) {
-  if (name === 'roma' && key === 'smile') return { state: 'idle', emote: 0.36 };
-  if (name === 'roma' && key === 'wink') return { state: 'idle', emote: 0.57 };
-  if (!Object.hasOwn(humanCues, key) || (name === 'roma' && key !== 'neutral'))
+  const cues = humanCues[name];
+  if (!cues || !Object.hasOwn(cues, key))
     throw new Error('Unknown expression for ' + name + ': ' + key);
-  return humanCues[key];
+  return cues[key];
 }
 
 const neutralTime = 12 * FIXED_DT;

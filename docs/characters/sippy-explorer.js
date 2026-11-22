@@ -1,7 +1,8 @@
 // The explorer's field kit. All pattern coordinates are local standing-height units.
 import * as T from 'three';
 import { rearGrid } from './sippy-hips.js';
-import { shell, torsoPoint } from './sippy-tailoring.js';
+import { shell } from './sippy-tailoring.js';
+import { sneakerRoom } from './human-exterior.js';
 
 const tau = Math.PI * 2;
 const mix = T.MathUtils.lerp;
@@ -37,7 +38,7 @@ export function quiltFinish(material) {
 export function outfitExplorer(rig, tailoring, m, h) {
   const { group, mesh, ellipsoid, rings, stroke, vec } = h;
   const chest = rig.chest,
-    surfaces = tailoring.surfaces;
+    { surfaces, torsoPoint, torsoY, neckPoint } = tailoring;
   const add = (id, obj) => {
     obj.userData.patternPiece = true;
     (surfaces[id] ??= []).push(obj);
@@ -96,7 +97,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
     );
   }
   // The zipper tapes and two drawcords stay clearly legible through the open fronts.
-  const drawcord = group(chest, 0, 0.135, 0.084);
+  const drawcord = group(chest, ...torsoPoint(0.135, 0, 1, 0.01));
   drawcord.name = 'Sippy hood drawcords';
   for (const side of [-1, 1]) {
     const sx = side * 0.012;
@@ -117,12 +118,13 @@ export function outfitExplorer(rig, tailoring, m, h) {
   const hoodShape = addShell('hood', chest, m.waistcoat, 8, 32, (v, u, inner) => {
     const a = mix(0.3, tau - 0.3, u),
       cs = Math.cos(a);
-    const y = mix(0.163 + 0.001 * cs - 0.007 * Math.max(0, -cs), 0.178 + 0.001 * cs, v);
-    return torsoPoint(y, a, 1.13, (inner ? 0.004 : 0.006) + 0.0035 * Math.sin(v * Math.PI));
+    const y = mix(-0.009 + 0.002 * cs - 0.009 * Math.max(0, -cs), 0.012 + 0.006 * cs, v);
+    return neckPoint(a, y, 0.051 + (1 - v) * 0.01, 0.040 + (1 - v) * 0.02,
+      (inner ? 0.001 : 0.003) + 0.0045 * Math.sin(v * Math.PI));
   });
   hoodShape.name = 'Sippy folded burgundy hood';
   // Band curves behind the neck and forward at either end to the padded earcups.
-  const headphones = group(chest, 0, 0.122, 0.082);
+  const headphones = group(chest, ...torsoPoint(0.122, 0, 1, 0.012));
   headphones.scale.z = 0.81;
   headphones.name = 'Sippy burgundy studio headphones';
   const band = h.sweep(
@@ -175,7 +177,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
     );
   }
   // A domed vegetable-tanned leather pack: broad enough for a field notebook.
-  const pack = group(chest, 0, 0.062, -0.078);
+  const pack = group(chest, 0, torsoY(0.062), -0.078);
   pack.name = 'Sippy explorer backpack';
   const packEnvelope = rings(
     [
@@ -305,7 +307,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
       [sign * 0.088, 0.065, 0.079],
       [sign * 0.08, 0.019, 0.091],
     ];
-    const curve = new T.CatmullRomCurve3(points.map((p) => vec(...p)));
+    const curve = new T.CatmullRomCurve3(points.map(([x, y, z]) => vec(x * 0.86, torsoY(y), z)));
     const rows = 28,
       cols = 8,
       join = 0.64;
@@ -422,7 +424,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
       foot = rig['foot' + side];
     // The sleeve uses the same grape drawing as the headphone enamel,
     // worked in low relief across the cylinder of the sleeve.
-    const badge = group(upper, s * .042, -.093, .003);
+    const badge = group(upper, ...tailoring.limbs['arm' + side].place([s * 0.042, -0.093, 0.017], 0.0105));
     badge.name = 'Embroidered sleeve vine';
     badge.rotation.y = s * (Math.PI / 2 - .32);
     const berryCenters = [[-.009,.002], [.0005,.0025], [.008,.003], [-.006,-.004],
@@ -449,8 +451,9 @@ export function outfitExplorer(rig, tailoring, m, h) {
       [[.001,.012],[.009,.015],[.014,.012],[.008,.008],[.001,.012]],
     ]) path(badge,m.gold,points.map(([x,y])=>[x,y,relief(x)+.0009]),.0008);
     // Construct trainers from continuous foot profiles. The outsole stays at the same tread plane as the controller.
-    const trainer = group(foot, 0, 0.002, -0.006);
-    trainer.scale.set(1.13, 1.045, 1.2);
+    const room = sneakerRoom(rig, side, { x: 1.13, z: 1.2, halfWidth: 0.038, toe: 0.088 });
+    const trainer = group(foot, 0, room.floor + 0.047 * 1.045, 0.003);
+    trainer.scale.set(room.x, 1.045, room.z);
     mesh(
       trainer,
       rings(
@@ -545,7 +548,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
       item.geometry.computeVertexNormals();
     }
     // A rib-knit cuff continues the burgundy sleeve into the wrist.
-    mesh(
+    const cuff = mesh(
       fore,
       rings(
         [
@@ -558,6 +561,8 @@ export function outfitExplorer(rig, tailoring, m, h) {
       ),
       m.knit,
     );
+    const wristY = rig['hand' + side].position.y;
+    cuff.position.y = wristY + 0.143;
     for (const y of [-0.14, -0.133, -0.123])
       mesh(
         fore,
@@ -568,10 +573,10 @@ export function outfitExplorer(rig, tailoring, m, h) {
           ],
           28,
         ),
-        m.waistcoat,
+        m.waistcoat, 0, wristY + 0.143,
       );
     if (side === 'L') {
-      const watch = group(fore, 0, -0.143, 0);
+      const watch = group(fore, 0, wristY, 0);
       watch.rotation.y = 0.61;
       const strap = shell(
         3,
