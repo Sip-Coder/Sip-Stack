@@ -1,18 +1,9 @@
 import {
   Bone, BufferAttribute, BufferGeometry, Group, Matrix4, Mesh, MeshPhysicalMaterial,
-  ShaderChunk, Skeleton, SkinnedMesh,
+  ShaderChunk, Skeleton, SkinnedMesh, Vector2,
 } from 'three';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
-const hair = new MeshPhysicalMaterial({
-  vertexColors: true,
-  color: 0xffffff,
-  roughness: 0.45,
-  specularIntensity: 0.38,
-  anisotropy: 0.69,
-});
-hair.name = 'Chocolate hair';
-hair.userData.blueprintId = 'hair';
 // A faint shifted fiber highlight complements the physical tangent lobe.
 // The glTF tangent points from the dark root toward the lighter tip.
 const fiberLighting = ShaderChunk.lights_physical_pars_fragment.replace(
@@ -24,28 +15,59 @@ const fiberLighting = ShaderChunk.lights_physical_pars_fragment.replace(
     float grazing = sqrt(max(0.0, 1.0 - fiberDot * fiberDot));
     float facing = smoothstep(-0.5, 0.12, fiberDot);
     reflectedLight.directSpecular += irradiance * material.diffuseColor *
-      (0.105 * facing * pow(grazing, 32.0));
+      (0.092 * facing * pow(grazing, 36.0));
   #endif
   reflectedLight.directDiffuse += irradiance * BRDF_Lambert( material.diffuseColor );`,
 );
-hair.onBeforeCompile = shader => {
-  shader.fragmentShader = shader.fragmentShader
-    .replace('#include <lights_physical_pars_fragment>', fiberLighting)
-    .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
-      #ifdef USE_ANISOTROPY
-        // U follows the guide. Fine V grooves remain curved around the lock.
-        // At a distance, fade the frequencies before they cross a pixel.
-        float drift = sin(10.8 * vUv.x + 16.3 * vUv.y);
-        float seam = vUv.y + 0.011 * drift;
-        vec2 pitch = vec2(23.0, 56.0);
-        vec2 clarity = 1.0 - smoothstep(vec2(0.22), vec2(0.58), pitch * fwidth(seam));
-        vec2 fibers = sin(6.2831853 * seam * pitch + vec2(0.0, 0.45 * drift));
-        float relief = dot(clarity * fibers, vec2(0.22, 0.10));
-        normal = normalize(normal + tbn[1] * relief);
-        float valley = smoothstep(0.18, 0.93, fibers.x) * clarity.x;
-        diffuseColor.rgb *= 1.0 - 0.18 * valley + 0.055 * clarity.y * fibers.y;
-        roughnessFactor *= 1.0 + 0.12 * valley;
-      #endif`);
+function strandFinish(across, detail) {
+  const material = new MeshPhysicalMaterial({
+    vertexColors: true,
+    roughness: 0.46,
+    specularIntensity: 0.38,
+    anisotropy: 0.72,
+  });
+  material.name = 'Chocolate hair';
+  material.userData.blueprintId = 'hair';
+  const pitch = { value: new Vector2(across, detail) };
+  material.onBeforeCompile = shader => {
+    shader.uniforms.strandPitch = pitch;
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nuniform vec2 strandPitch;')
+      .replace('#include <lights_physical_pars_fragment>', fiberLighting)
+      .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
+        #ifdef USE_ANISOTROPY
+          // U runs with each strand. V unrolls the section across the guide.
+          // Small coherent offsets stagger neighbors without breaking their flow.
+          float along = vUv.x;
+          float across = vUv.y;
+          float drift = sin(6.2831853 * (1.3 * along + 3.0 * across));
+          float grain = across + 0.0035 * drift + 0.0018 * sin(6.2831853 * (2.1 * along + 7.0 * across));
+          vec2 lane = strandPitch * grain;
+          vec2 visible = 1.0 - smoothstep(vec2(0.18), vec2(0.53), fwidth(lane));
+          vec2 phase = 6.2831853 * lane + vec2(0.0, 0.53 * drift);
+          vec2 ridge = cos(phase);
+          float variation = 0.86 + 0.14 * sin(6.2831853 * (2.0 * across + 0.32 * along));
+          float slope = variation * dot(visible * sin(phase), vec2(0.125, 0.063));
+          normal = normalize(normal + tbn[1] * slope);
+          float valley = smoothstep(0.0, 0.91, -ridge.x) * visible.x;
+          float gleam = smoothstep(0.46, 0.97, ridge.x) * visible.x;
+          diffuseColor.rgb *= 1.0 - 0.19 * valley + 0.07 * gleam * variation + 0.035 * visible.y * ridge.y;
+          roughnessFactor *= 1.0 + 0.12 * valley - 0.07 * gleam;
+        #endif`)
+      .replace('#include <opaque_fragment>', `#ifdef USE_ANISOTROPY
+        float edge = 1.0 - max(0.0, dot(normalize(vViewPosition), nonPerturbedNormal));
+        outgoingLight += 0.08 * diffuseColor.rgb * edge * edge * edge;
+      #endif
+      #include <opaque_fragment>`);
+  };
+  return material;
+}
+
+// Sippy maps each small lock separately. Roma stretches the visible face of
+// each wave over most of V so the surface carries about sixteen fine strands.
+const hair = {
+  sippy: strandFinish(11, 32),
+  roma: strandFinish(18, 47),
 };
 
 const schema = {
@@ -111,7 +133,7 @@ export async function decodeHair(buffer, name, tier) {
         g.setAttribute(name, attr);
       }
       g.setIndex(attribute(indices));
-      let finish = hair;
+      let finish = hair[name];
       if (node.extras.hairPart === 'headband') {
         const properties = gltf.materials[material].pbrMetallicRoughness;
         finish = new MeshPhysicalMaterial({ vertexColors: true, roughness: properties.roughnessFactor ?? 1 });

@@ -1,6 +1,6 @@
 import { NodeIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS, EXTMeshoptCompression } from '@gltf-transform/extensions';
-import { quantize, reorder } from '@gltf-transform/functions';
+import { quantize } from '@gltf-transform/functions';
 import { MeshoptDecoder, MeshoptEncoder } from 'meshoptimizer';
 import { basename } from 'node:path';
 import { writeFile } from 'node:fs/promises';
@@ -102,10 +102,11 @@ for (const { node, primitive, hairChain } of rigged) {
 }
 
 if (!triangles || !rigged.length) throw new Error('The groom needs indexed surfaces and strategic chains');
-await doc.transform(
-  quantize({ quantizePosition: 11, quantizeNormal: 8, quantizeTexcoord: 8, quantizeColor: 8 }),
-  reorder({ encoder: MeshoptEncoder, target: 'size' }),
-);
+// Blender lays each strand out in consecutive rings. Keeping that order gives
+// meshopt and the gzip envelope smaller deltas than draw-cache reordering.
+await doc.transform(quantize({
+  quantizePosition: 11, quantizeNormal: 8, quantizeTexcoord: 8, quantizeColor: 8,
+}));
 doc.createExtension(EXTMeshoptCompression).setRequired(true)
   .setEncoderOptions({ method: EXTMeshoptCompression.EncoderMethod.FILTER });
 const glb = await io.writeBinary(doc), wire = gzipSync(glb, { level: 9 });

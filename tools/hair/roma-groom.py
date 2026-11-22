@@ -233,13 +233,16 @@ def frames(samples, outward):
     return [(radial, tangent.cross(radial).normalized()) for tangent, radial in zip(tangents, axes)]
 
 
-def sweep(surface, guide, samples, sides):
+def sweep(surface, guide, samples, sides, arc=None):
     """Sweep a flattened, fluted profile with a closed, pointed tip."""
     start = len(surface.vertices)
     rows = len(samples) - 1
+    if arc is None:
+        arc = tuple(i / rows for i in range(rows + 1))
     roots, tips = linear('291914'), linear('643a2a')
     for j, (point, (radial, cross)) in enumerate(zip(samples, frames(samples, guide.outward))):
         t = j / rows
+        u, prev_u = arc[j], arc[j - 1]
         twist = guide.turn * sin(pi * (1.14 * t + 0.12))
         root = 0.28 + 0.72 * ramp(t, 0.025, 0.27)
         tip = 1 - 0.88 * ramp(t, 0.62, 1.0)
@@ -257,16 +260,117 @@ def sweep(surface, guide, samples, sides):
             if j:
                 prev, now = start + (j - 1) * sides, start + j * sides
                 ii = (i + 1) % sides
-                u = i / sides
-                v = (i + 1) / sides
-                surface.face((prev + i, prev + ii, now + ii, now + i), ((t - 1 / rows, u), (t - 1 / rows, v), (t, v), (t, u)))
+                v, next_v = i / sides, (i + 1) / sides
+                surface.face((prev + i, prev + ii, now + ii, now + i),
+                             ((prev_u, v), (prev_u, next_v), (u, next_v), (u, v)))
     end = start + rows * sides
     def cap_uv(center, j):
         # Tangents need an area in UV space, but the cap still binds to its endpoint joint.
         return center + 0.0015 * cos(TAU * j / sides), 0.5 + 0.48 * sin(TAU * j / sides)
     for i in range(1, sides - 1):
-        surface.face((start, start + i + 1, start + i), tuple(cap_uv(0.002, j) for j in (0, i + 1, i)))
-        surface.face((end, end + i, end + i + 1), tuple(cap_uv(0.998, j) for j in (0, i, i + 1)))
+        surface.face((start, start + i + 1, start + i),
+                     tuple(cap_uv(arc[0] + .002, j) for j in (0, i + 1, i)))
+        surface.face((end, end + i, end + i + 1),
+                     tuple(cap_uv(arc[-1] - .002, j) for j in (0, i, i + 1)))
+
+
+def bundle_frames(guide, samples):
+    for j, (point, (radial, cross)) in enumerate(zip(samples, frames(samples, guide.outward))):
+        t = j / (len(samples) - 1)
+        twist = guide.turn * sin(pi * (1.14 * t + .12))
+        cross_axis = cross * cos(twist) + radial * sin(twist)
+        depth_axis = radial * cos(twist) - cross * sin(twist)
+        width = guide.width * (.28 + .72 * ramp(t, .025, .27))
+        width *= (1 - .90 * ramp(t, .62, 1.)) * (1. - .10 * t)
+        yield point, cross_axis, depth_axis, width
+
+
+def curve_stations(carriers, rows):
+    """Spend section rings on the S-bends and on rotating silhouette edges."""
+    envelope = [(point, point + across * width, point - across * width)
+                for point, across, _, width in carriers]
+    last = len(envelope) - 1
+    selected = [0, last]
+    while len(selected) < rows + 1:
+        error, pick = -1., 1
+        for a, b in zip(selected[:-1], selected[1:]):
+            for i in range(a + 1, b):
+                u = (i - a) / (b - a)
+                drift = max((p - x.lerp(y, u)).length_squared
+                            for p, x, y in zip(envelope[i], envelope[a], envelope[b]))
+                if drift > error:
+                    error, pick = drift, i
+        selected.append(pick)
+        selected.sort()
+    return [(i / last, carriers[i]) for i in selected]
+
+
+def comb_bundle(surface, guide, carriers, rows):
+    """Sweep three separate tendrils through the original wave envelope."""
+    sides = 3
+    roots, tips = linear('281713'), linear('633925')
+    phase = guide.turn * 5.2 + guide.tint * 9.1
+    length = len(carriers) - 1
+    lanes = ((-.66, .34, .75), (-.016, .35, 1.0), (.65, .34, .86))
+    for lane, (offset, breadth, brow) in enumerate(lanes):
+        stop = length if lane == 1 else length - 3 - round(4 * (.5 + .5 * sin(phase + lane * 2.2)))
+        end_u = stop / length
+        start = len(surface.vertices)
+        edge = .06 + lane * .296
+        uv_lanes = (edge, edge + .14, edge + .28)
+        previous = 0.
+        for j, (progress, (point, across, depth, width)) in enumerate(
+                curve_stations(carriers[:stop + 1], rows)):
+            t = progress * end_u
+            drift = .065 * sin(phase + t * 9.1 + lane * 1.9) * sin(pi * t)
+            spread = (1. + .17 * ramp(t, .54, .87)) * (.91 + .09 * ramp(t, .07, .42))
+            centre = offset * spread + drift
+            size = breadth * width * (1. - .75 * ramp(progress, .73, 1.))
+            lip = .095 * sin(phase + lane * 1.6 + 5 * t)
+            rise = brow * (1. + .10 * cos(phase + 8 * t + lane * 2.3))
+            cross_section = ((-1., -.22 + lip), (.13 * sin(phase + 6. * t), rise),
+                             (1., -.28 - lip))
+            for i, (side, h) in enumerate(cross_section):
+                p = point + across * (centre * width + side * size)
+                p += depth * (width * guide.depth * h)
+                light = (.96 + .17 * sin(phase + lane * 2.1 + t * 4.)) * (1.08 if i == 1 else .78)
+                surface.vertex(under_band(p), pigment(roots, tips, .21 + .63 * ramp(t, .04, .96),
+                                                      light * guide.tint))
+                if j:
+                    prev, now = start + (j - 1) * sides, start + j * sides
+                    k = (i + 1) % sides
+                    v0, v1 = uv_lanes[i], uv_lanes[k] if k else uv_lanes[2] + .008
+                    surface.face((prev + i, prev + k, now + k, now + i),
+                                 ((previous, v0), (previous, v1), (t, v1), (t, v0)))
+            previous = t
+        tip = start + rows * sides
+        middle = uv_lanes[1]
+        surface.face((start, start + 2, start + 1),
+                     ((.002, edge), (.002, uv_lanes[2]), (.0006, middle)))
+        surface.face((tip, tip + 1, tip + 2),
+                     ((end_u - .002, edge), (end_u - .0006, middle), (end_u - .002, uv_lanes[2])))
+
+
+def loose_filament(surface, guide, carriers, side, high, short=False):
+    """Grow a fine tapered offshoot within the outer envelope of a parent wave."""
+    phase = guide.turn * 12.4 + guide.tint * 9.8
+    first = (3 if short else 18) + int(8 * (.5 + .5 * sin(phase + side)))
+    last = (30 if short else 62) - int(8 * (.5 + .5 * cos(phase * 1.24 + side)))
+    frames_by_arc = carriers[first:last + 1]
+    stations = curve_stations(frames_by_arc, 8 if high and not short else 5)
+    points = []
+    for fraction, (point, across, depth, width) in stations:
+        lift = .0012 * sin(pi * fraction) + .00115 * ramp(fraction, .45, 1.)
+        drift = .0027 * sin(pi * fraction) + .0018 * ramp(fraction, .56, 1.)
+        p = point + across * side * ((.79 if short else .64) * width + drift)
+        p += depth * (width * guide.depth * (.32 if short else .62) + lift)
+        points.append(p)
+    thread = Guide('Loose filament', (), guide.outward, guide.width / (24 if short else 16),
+                   .56, side * .09, guide.tint * (1.13 + .1 * sin(phase)))
+    # Keep the UV root-to-tip weights at their parent arc distances even
+    # where the stations bunch around an especially tight bend.
+    fractions = tuple(lerp(first, last, u) / (len(carriers) - 1) for u, _ in stations)
+    sweep(surface, thread, points, 4, fractions)
 
 
 def scalp_underlay(high):
@@ -358,16 +462,6 @@ def forelocks():
         side = -1 if i < 2 else 1
         region = 'front' if i % 2 == 0 else ''
         yield Guide(name, path, (side * 0.25, 0.46, 1.), width, 0.32, side * 0.14, 1 + 0.09 * (i % 2), region)
-        # Parallel, shorter accents comb along the broad curves, leaving natural gaps at the tips.
-        for f in range(1):
-            lean = [-1, 1][f]
-            line = []
-            for j, (x, y, z) in enumerate(path[:-1]):
-                arc = sin(pi * j / (len(path) - 2))
-                line.append((x + lean * 0.006 * arc, y + (f + 1) * 0.0036 * arc, z + .0023 + 0.004 * arc))
-            yield Guide(name + f' · fine sweep {f + 1}', tuple(line), (side * 0.25, 0.46, 1.), width * (0.25 + 0.05 * f), 0.29,
-                        side * 0.19, 1.13)
-
     # Short combed fibers feather the seated line where the forehead meets the part.
     for side in (-1, 1):
         for i in range(3):
@@ -443,15 +537,6 @@ def waves():
             name = ('Right' if side < 0 else 'Left') + f' wave {i + 1:02d}'
             yield Guide(name, tuple(path), outward, width * (0.88 + 0.060 * sin(phase)), .40 - .048 * sin(phase),
                         side * (.29 + .16 * sin(phase)), 1.03 + 0.24 * sin(phase * 1.73), region)
-            if i in (2, 6, 12, 17):
-                is_short = i % 4 == 0
-                length = 8 if is_short else 10
-                lift = .0049 + .0013 * sin(i)
-                points = tuple((x + outward[0] * lift + side * .0032 * sin(pi * j / length),
-                                y + .005 * sin(pi * j / length), z + outward[2] * lift + .0026 * sin(3 * j / length))
-                               for j, (x, y, z) in enumerate(path[:length]))
-                yield Guide(name + ' · surface comb', points, outward, width * .27, .23,
-                            side * .25, 1.23 + .06 * cos(i), detail=True)
 
 
 def crown_whorl():
@@ -493,6 +578,15 @@ def crown_whorl():
     for i, path in enumerate(layers):
         yield Guide(f'Nape underneath center {i + 1}', path, (.03, .10, -1.), .015 + .002 * i,
                     .31, .18 - .32 * i, .85 + .08 * i)
+    # A short darker bed covers the nape behind the gaps in the fine outer
+    # tendrils. The tapered ends stay well inside the old shoulder envelope.
+    for side in (-1, 1):
+        path = tuple((side * x, y, z) for x, y, z in (
+            (.023, .091, -.064), (.030, .067, -.066), (.039, .040, -.070),
+            (.029, .017, -.069), (.035, -.007, -.066),
+        ))
+        yield Guide(f'Nape underneath thread bed {side:+d}', path, (side * .17, .13, -1.),
+                    .0105, .30, side * .21, .76)
 
 
 
@@ -544,14 +638,20 @@ def export(destination, high, keep_blend):
         crest = guide.name.startswith(('Swept forehead', 'Outer frame', 'Part root', 'Whorl'))
         surface = Surface() if guide.region else static_crown if crest else static_waves
         if compact:
-            rows, sides = 10, 6 if high else 5
-        elif guide.detail:
-            rows, sides = 12, 5
-        elif high:
-            rows, sides = (22, 7) if guide.region or crest else (19, 6)
+            sweep(surface, guide, sample_guide(spline, 10), sides=5)
         else:
-            rows, sides = (16, 7) if guide.region else (13, 6)
-        sweep(surface, guide, sample_guide(spline, rows), sides=sides)
+            rows = 17 if high else 12
+            if crest or guide.region:
+                rows += 2
+            carriers = list(bundle_frames(guide, sample_guide(spline, 64)))
+            comb_bundle(surface, guide, carriers, rows)
+            side = -1 if guide.outward[0] < 0 else 1
+            if high or crest or guide.region:
+                loose_filament(surface, guide, carriers, side, high)
+            if high and (crest or guide.region):
+                loose_filament(surface, guide, carriers, -side, high)
+            if high and (crest or guide.region == 'temple'):
+                loose_filament(surface, guide, carriers, side, high, short=True)
         if guide.region:
             obj = surface.create('Roma ' + guide.name, chocolate, 'crown' if crest else 'waves')
             controls = [seat_crown(under_band(p.copy())) for p in sample_guide(spline, 30)]

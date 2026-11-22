@@ -14,6 +14,16 @@ An editable Blender guide scene can be saved from either authoring script. The n
 
 The exported polygons carry root-to-tip tangents and pigment. Short hemisphere rays baked in Blender darken sheltered vertices along overlaps and in recessed grooves. The opaque physical hair material turns the cross-clump coordinate into fine, curved normal grooves and fades sub-pixel frequencies to limit shimmer. The physical anisotropic highlight and the shifted fiber lobe follow the same flow. [Scheuermann’s shifted highlights](https://history.siggraph.org/wp-content/uploads/2022/12/2004-Talks-Scheuermann_Practical-Real-Time-Hair-Rendering-and-Shading.pdf) · [Three.js physical material](https://threejs.org/docs/#api/en/materials/MeshPhysicalMaterial)
 
+## Finer strands
+
+Sippy’s Blender sections increased from 62 to 217 on Mobile and 88 to 319 on High. A typical physical section is now about a third of its previous width. Each section’s outward face carries about five to six shaded fibers. Taken together, the new geometry and shading put the nominal visible fiber width near one sixteenth of the previous lock.
+
+Roma’s 26 main waves split into 78 separately tapered sections. Each parent wave spans about 16 shaded fibers across its exposed faces. Mobile adds 10 individually modeled edge strands and High adds 42. Most use one sixteenth of the parent width. Six High strands use one twenty-fourth. Shorter, darker sections sit behind the staggered ends and retain depth as the silhouette breaks into finer tips.
+
+The packed exports retain the parting, root placement, and curl guides. Against the preceding PR #26 build, the widest changes in the projected hair silhouette were 0.78% for Sippy and 2.02% for Roma. Neutral hair-only projection overlap was at least 98.0% for Sippy and 93.2% for Roma, including the narrower open spaces between Roma’s sections. [Four-angle silhouette measurements](strand-silhouettes.json)
+
+HAELE 3D informed loose tip separation, the moving highlight band, and the response to abrupt stops and a backward tilt. The models, curves, and materials are original Blender work and follow Jonathan’s character sheets. [HAELE 3D motion reference](https://x.com/haele3d/status/2110397355623358674)
+
 ## Rebuild the assets
 
 Run the commands from the repository root with Blender 4.3 or newer and Node. Install `@gltf-transform/core@4.5.1`, `@gltf-transform/extensions@4.5.1`, `@gltf-transform/functions@4.5.1` and `meshoptimizer@1.3.0` where Node can resolve the packer’s imports.
@@ -31,4 +41,4 @@ for hero in sippy roma; do
 done
 ```
 
-The packer writes standard indexed, skinned glTF with quantized vertex attributes and meshopt-compressed buffer views. The gzip envelope keeps the binary transfer small on a static host. Unzip it with any gzip reader to inspect the GLB in a general-purpose glTF tool. The floor, Axon View and Character Ref use the same meshes. Only the selected hero and quality tier are needed for the initial floor frame. [Blender glTF exporter](https://docs.blender.org/manual/en/latest/addons/scene_gltf2.html) · [Khronos meshopt extension](https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Vendor/EXT_meshopt_compression)
+The packer writes standard indexed, skinned glTF with quantized vertex attributes and meshopt-compressed buffer views. Keeping the rings in Blender’s export order improves compression for these strands. The gzip envelope keeps the binary transfer small on a static host. Unzip it with any gzip reader to inspect the GLB in a general-purpose glTF tool. The floor, Axon View and Character Ref use the same meshes. Only the selected hero and quality tier are needed for the initial floor frame. [Blender glTF exporter](https://docs.blender.org/manual/en/latest/addons/scene_gltf2.html) · [Khronos meshopt extension](https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Vendor/EXT_meshopt_compression)
