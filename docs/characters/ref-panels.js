@@ -38,11 +38,11 @@ const profiles = {
   },
 };
 
-const expressions = {
-  sippy: ['neutral', 'smile', 'laugh', 'curious', 'thinking', 'surprised', 'wink'],
-  roma: ['neutral', 'smile', 'wink'],
-  hummin: robotExpressions,
-};
+const romaExpressions = [
+  ['neutral', 'Neutral'], ['smile', 'Happy'], ['curious', 'Curious'],
+  ['surprised', 'Surprised'], ['thinking', 'Thinking'], ['wink', 'Wink'],
+  ['laugh', 'Laugh'], ['focused', 'Focused'], ['determined', 'Determined'],
+];
 
 const views = [
   ['front', 'Front'],
@@ -151,13 +151,15 @@ const palettes = {
 };
 
 function expressionPanels(name) {
-  const built = expressions[name];
-  const requested = standardExpressions.map(([id, label]) =>
-    panel('expression-' + id, label, 'face', { expression: id, available: built.includes(id) }),
+  const entries = name === 'roma' ? romaExpressions : standardExpressions;
+  const requested = entries.map(([id, label]) =>
+    panel('expression-' + id, label, 'face', { expression: id, available: name !== 'hummin' || robotExpressions.includes(id) }),
   );
-  for (const id of built) {
-    if (Object.hasOwn(displayLabels, id))
-      requested.push(panel('expression-' + id, displayLabels[id], 'face', { expression: id }));
+  if (name === 'hummin') {
+    for (const id of robotExpressions) {
+      if (Object.hasOwn(displayLabels, id))
+        requested.push(panel('expression-' + id, displayLabels[id], 'face', { expression: id }));
+    }
   }
   return requested;
 }
