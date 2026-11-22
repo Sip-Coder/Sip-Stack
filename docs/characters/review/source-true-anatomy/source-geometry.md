@@ -20,3 +20,14 @@ With Node.js 24 and Three.js 0.170.0 installed, set `THREE_ROOT` to the director
 ```sh
 THREE_ROOT=/path/to/three node tools/check-source-anatomy.mjs /tmp/source-geometry-proof.json
 ```
+
+## Roma’s adapted upper-body muscles
+
+The separate Roma check loads the released meshopt GLBs through Three’s standard GLTFLoader, places them in the production rig’s upright bind frame and measures actual decoded anchor vertices against the named BoneHub triangles. The 255 adapted surfaces per tier include 251 BodyParts3D meshes and four Z-Anatomy meshes. Each of the separate license packs and each mesh carries its adaptation label. [Audit results](roma-adaptation-audit.json) · [Audit tool](../../../../tools/check-roma-adaptation.mjs)
+
+| Tier | Anchors | Named landmarks | Largest cortical anchor gap | Male atlas volume estimate | Adapted volume estimate |
+|---|---:|---:|---:|---:|---:|
+| Mobile | 526 | 192 | 0.000160 in | 500.70 in³ | 365.39 in³ |
+| High | 526 | 192 | 0.000155 in | 510.86 in³ | 374.22 in³ |
+
+The maximum difference between any independently decoded muscle volume and its reported estimate was 0.000494 in³. Some source surfaces have open boundaries, so summed oriented-triangle volumes are comparative estimates. The cortical distances describe the bind frame. [Mobile adaptation report](roma-muscle-adaptation-mobile.json) · [High adaptation report](roma-muscle-adaptation-high.json)
