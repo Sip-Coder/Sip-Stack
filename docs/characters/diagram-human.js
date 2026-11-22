@@ -176,7 +176,7 @@ function coveredSkin(rig, roma, part) {
 }
 
 // Each origin, insertion and joint surface is reconstructed from this pose.
-export function addHumanInterior(rig, name, tier, parts, scan, atlas) {
+export function addHumanInterior(rig, name, tier, parts, scan, atlas, onSkeleton) {
   const roma = name === 'roma';
   const part = fabricator(tier, rig.height, parts);
   coveredSkin(rig, roma, part);
@@ -188,6 +188,7 @@ export function addHumanInterior(rig, name, tier, parts, scan, atlas) {
   const shoulders = shoulderLandmarks(rig, roma, thorax, parts);
   const landmarks = { head, thorax, pelvis, shoulders };
   addScanSkeleton(rig, roma, parts, scan, landmarks, part, tier);
+  if (onSkeleton) onSkeleton(parts.filter((part) => part.layer === 'skeleton'));
   restoreThighVolume(parts, rig, pelvis);
   coverArticularProcesses(parts, landmarks, rig);
   addScanMuscles(rig, roma, parts, atlas, landmarks);

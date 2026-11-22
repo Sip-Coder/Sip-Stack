@@ -5,10 +5,11 @@ import { Vector3 } from 'three';
 export function axialOffsets(parts, body) {
   const center = body.getCenter(new Vector3());
   const height = body.max.y - body.min.y;
-  return parts.map(({ layer, mesh }) => {
+  return parts.map((part) => {
+    const { layer } = part;
     const offset = new Vector3();
     if (layer === 'skeleton') return offset;
-    const point = mesh.geometry.boundingBox.getCenter(new Vector3());
+    const point = (part.bounds ?? part.mesh.geometry.boundingBox).getCenter(new Vector3());
     const lateral = (point.x - center.x) / height;
     const front = (point.z - center.z) / height;
     const level = (point.y - body.min.y) / height;
@@ -39,10 +40,16 @@ export function axialOffsets(parts, body) {
 // AO and the rendered triangles in the same frame. The skeleton is stationary.
 export function displaceBatch(mesh, offsets, amount) {
   const geometry = mesh.geometry;
+  // A baked batch can draw its incoming buffer directly at rest. Allocate
+  // mutable positions only when it first moves away from that rest pose.
+  const spans = mesh.userData.sourceSpans;
+  if (geometry.attributes.position === spans[0].geometry.attributes.position) {
+    geometry.setAttribute('position', geometry.attributes.position.clone());
+  }
   const destination = geometry.attributes.position;
   const target = destination.array;
   let j = 0;
-  for (const { geometry: source, number, lo, hi } of mesh.userData.sourceSpans) {
+  for (const { geometry: source, number, lo, hi } of spans) {
     const positions = source.attributes.position.array;
     const offset = offsets[number];
     const dx = offset.x * amount,

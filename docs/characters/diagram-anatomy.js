@@ -10,5 +10,5 @@ export async function prepareInnerLayers(name, tier, signal) {
       Promise.all([loadSkeletonScan(name, tier, signal), loadCharacterMuscles(name, tier, signal)]),
     ),
   ]);
-  return (rig, parts) => addHumanInterior(rig, name, tier, parts, scan, atlas);
+  return (rig, parts, onSkeleton) => addHumanInterior(rig, name, tier, parts, scan, atlas, onSkeleton);
 }

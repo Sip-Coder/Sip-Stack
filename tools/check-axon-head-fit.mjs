@@ -27,7 +27,7 @@ const T = await import('three');
 if (T.REVISION !== '170') throw Error('Expected three@0.170.0');
 const { createActor } = await import('../docs/characters/rig.js');
 const { createController, FIXED_DT } = await import('../docs/characters/motion.js');
-const { snapshotDiagramModel } = await import('../docs/characters/diagram-parts.js');
+const { snapshotDiagramModel } = await import('../docs/characters/diagram-fit-model.js');
 const { setModelDetail } = await import('../docs/characters/model-tier.js');
 const { names, heights } = await import('../docs/characters/ui.js');
 const { posedSurface, compareSurfaces } = await import('./characters-surfaces.mjs');

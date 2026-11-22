@@ -6,6 +6,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import runpy
 import statistics
 import subprocess
 import sys
@@ -18,6 +19,7 @@ TOOLS = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location("heros_benchmark", TOOLS / "benchmark-heros.py")
 bench = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bench)
+Wire = runpy.run_path(str(TOOLS / "benchmark-route-load.py"))["Wire"]
 
 RECORD_PAINT = """
 window.axonMeasure = {images:0};
@@ -26,9 +28,14 @@ CanvasRenderingContext2D.prototype.putImageData = function(image,...args){
   const result = copy.call(this,image,...args);
   if (this.canvas.matches('[data-axon-canvas]')) {
     const q=window.axonMeasure; q.images++;
-    if (!q.firstPostPaint){
-      q.copied=performance.now();
-      requestAnimationFrame(()=>{q.firstPostPaint??=performance.now();});
+    if (!q.firstPostPaint) {
+      const copied = performance.now();
+      requestAnimationFrame(()=>{
+        const el = document.querySelector('[data-axon]');
+        if (el.dataset.ready !== q.key || q.firstPostPaint || !el.axonInspector.stats().ready) return;
+        q.copied = copied;
+        q.firstPostPaint = performance.now();
+      });
     }
   }
   return result;
@@ -36,7 +43,42 @@ CanvasRenderingContext2D.prototype.putImageData = function(image,...args){
 """
 
 
-def measure(browser, origin, tier, hero, expected_assets=()):
+PROFILE = """
+const q=window.axonMeasure;
+q.events=[];
+q.mark = (name, phase, detail) => {
+  if(q.opened && !q.firstPostPaint)
+    q.events.push({name,phase,ms:performance.now()-q.opened,detail});
+};
+new PerformanceObserver(entries=>{
+  for(const e of entries.getEntries()) if(q.opened && e.startTime>=q.opened &&
+     (!q.firstPostPaint || e.startTime < q.firstPostPaint))
+    q.events.push({name:'Main-thread task',ms:e.startTime-q.opened,duration:e.duration});
+}).observe({type:'longtask'});
+for (const key of ['compileShader','linkProgram']) {
+  const proto=WebGL2RenderingContext.prototype, native=proto[key];
+  proto[key]=function(...args){
+    q.mark(key,'start');try{return native.apply(this,args);}finally{q.mark(key,'end');}
+  };
+}
+q.profileRenderer = renderer => {
+  for (const method of ['compile','compileAsync','render','readRenderTargetPixelsAsync']) {
+    const native=renderer[method];
+    renderer[method]=function(...args) {
+      const name=args[0]?.name||'';
+      q.mark(method,'start',name);
+      try {
+        const result=native.apply(this,args);
+        if(result?.then) result.then(()=>q.mark(method,'resolved',name),()=>q.mark(method,'rejected',name));
+        return result;
+      } finally {q.mark(method,'returned',name);}
+    };
+  }
+};
+"""
+
+
+def measure(browser, origin, tier, hero, expected_assets=(), baked=False, profile=False):
     ctx = browser.new_context(
         viewport={"width": 800, "height": 680},
         device_scale_factor=1,
@@ -46,9 +88,12 @@ def measure(browser, origin, tier, hero, expected_assets=()):
     try:
         page = ctx.new_page()
         requested = []
+        workers = []
+        page.on("worker", lambda worker: workers.append(urlsplit(worker.url).path))
         page.on("request", lambda req: requested.append(urlsplit(req.url).path))
-        page.add_init_script(script=RECORD_PAINT)
+        page.add_init_script(script=RECORD_PAINT + (PROFILE if profile else ""))
         cdp = ctx.new_cdp_session(page)
+        wire = Wire(cdp)
         cdp.send("Network.enable")
         cdp.send("Network.setCacheDisabled", {"cacheDisabled": True})
         page.goto(origin + "/#heros", wait_until="commit")
@@ -69,6 +114,7 @@ def measure(browser, origin, tier, hero, expected_assets=()):
             let shadow=0;scene.traverse(node=>{if(node.isDirectionalLight && node.castShadow)shadow=node.shadow.mapSize.x});
             if(shadow!==(tier==='mobile'?512:1024))return;
             axonMeasure.renderedActor={name:n.name,shadowMapWidth:shadow};
+            axonMeasure.profileRenderer?.(renderer);
             T.Mesh.prototype.onAfterRender=old;
           };
           const q=document.querySelector('[data-setting=tier]');q.value=tier;q.dispatchEvent(new Event('change',{bubbles:true}));
@@ -83,12 +129,13 @@ def measure(browser, origin, tier, hero, expected_assets=()):
         # GPU readback, 2D blit and next browser presentation opportunity.
         cdp.send("Network.emulateNetworkConditions", bench.NETWORK)
         cdp.send("Emulation.setCPUThrottlingRate", {"rate": 4})
-        page.evaluate(r"""()=>{
+        page.evaluate(r"""key=>{
+          axonMeasure.key=key;
           const urls=performance.getEntriesByType('resource').map(r=>new URL(r.name).pathname);
           if(urls.some(p=>/\/(diagram-|axon-view)|\.glb$|meshopt.decoder/i.test(p)))throw Error('Inspector was prefetched');
           axonMeasure.opened=performance.now();
           document.querySelector('[data-axon] [data-study-body]').scrollIntoView({block:'end',behavior:'instant'});
-        }""")
+        }""", hero + "-" + tier)
         page.wait_for_function(
             """key=>document.querySelector('[data-axon]').dataset.ready===key &&
                   axonMeasure.firstPostPaint""",
@@ -97,6 +144,9 @@ def measure(browser, origin, tier, hero, expected_assets=()):
         )
         result = page.evaluate("""()=>{
           const q=axonMeasure, el=document.querySelector('[data-axon]'), api=el.axonInspector;
+          const surface=el.querySelector('[data-axon-canvas]'), box=surface.getBoundingClientRect();
+          if(getComputedStyle(surface).visibility!=='visible' || box.bottom<=0 || box.top>=innerHeight)
+            throw Error('The populated inspection canvas is hidden or outside the viewport');
           const time=q.firstPostPaint;
           const resources=performance.getEntriesByType('resource').filter(r=>r.startTime>=q.opened&&r.responseEnd<=time);
           const list=resources.filter(r=>new URL(r.name).pathname.endsWith('.js'));
@@ -104,7 +154,14 @@ def measure(browser, origin, tier, hero, expected_assets=()):
           const inventory=api.inventory(), bones=inventory.filter(p=>p.layer==='skeleton');
           const muscles=inventory.filter(p=>p.layer==='muscles');
           const s=api.stats();
-          return {presentedMs:time-q.opened,firstBlitMs:q.copied-q.opened,floor:q.renderedActor,
+          return {...(q.events?{profile:q.events,requests:resources.map(r=>({
+              path:new URL(r.name).pathname,startMs:r.startTime-q.opened,finishMs:r.responseEnd-q.opened}))}:{}),
+            start:performance.timeOrigin+q.opened,end:performance.timeOrigin+time,
+            fitPath:s.fitPath ?? null,partial:s.partial ?? false,
+            presentedMs:time-q.opened,firstBlitMs:q.copied-q.opened,floor:q.renderedActor,
+            lastDeferredResponseMs:Math.max(0,...resources.map(r=>r.responseEnd-q.opened)),
+            assetWaterfall:assets.map(r=>({path:new URL(r.name).pathname,startMs:r.startTime-q.opened,
+              responseMs:r.responseStart-q.opened,finishMs:r.responseEnd-q.opened})),
             bones:bones.length,triangles:bones.reduce((n,b)=>n+b.triangles,0),allDraws:s.draws,allTriangles:s.triangles,
             compositeDraws:s.postDraws??0,muscles:muscles.length,
             muscleTriangles:muscles.reduce((n,p)=>n+p.triangles,0),
@@ -119,6 +176,12 @@ def measure(browser, origin, tier, hero, expected_assets=()):
             arg=[result["triangles"], tier],
             timeout=30000,
         )
+        traffic = wire.until(result.pop("end"), since=result.pop("start"))
+        result.update(transferBytes=traffic["transferBytes"], resources=traffic["resources"],
+                      workerPaths=workers)
+        assert not wire.redirects, wire.redirects
+        assert all(r["origin"] == origin for r in wire.requests.values())
+        assert all(r["status"] is None or r["status"] < 400 for r in traffic["resources"]), traffic
         solo = el.evaluate("e=>e.axonInspector.stats()")
         result.update(skeletonDraws=solo["draws"], renderedSkeletonTriangles=solo["triangles"])
         result["rawJs"] = sum(m["raw"] for m in result["scripts"])
@@ -135,6 +198,16 @@ def measure(browser, origin, tier, hero, expected_assets=()):
         result["femaleSupplementBytes"] = sum(
             a["bodyBytes"] for a in wanted if "/vhf-muscles-" in a["path"]
         )
+        if baked:
+            assert result["fitPath"] == "baked" and not result["partial"], result
+            assert not workers, f"Normal inspection started workers: {workers}"
+            raw_modules = ("/diagram-human.", "/diagram-fit-model.", "/diagram-fit-worker.",
+                           "/diagram-worker-client.", "/diagram-scan-fit.", "/diagram-muscle-charts.")
+            assert not any(fragment in p for p in requested for fragment in raw_modules), requested
+            assert result["muscles"] == (361 if hero == "sippy" else 365)
+        else:
+            assert not workers, workers
+            result["fitPath"] = "runtime fit" if result["scanBytes"] else "procedural"
         if result["muscleBytes"]:
             assert result["muscles"] == (339 if result["femaleSupplementBytes"] else 323) and result["muscleTriangles"] > 0, result["muscles"]
         assert any("/diagram-" in m["path"] for m in result["scripts"])
@@ -158,9 +231,17 @@ def main():
     ap.add_argument(
         "--baseline", type=Path, help="Check all four skeleton triangle ceilings against this report"
     )
+    ap.add_argument("--time-baseline", type=Path,
+                    help="Check first-frame medians against the 1.5× pre-scan main budget.")
     ap.add_argument("--chrome", default=os.getenv("CHROME", "/usr/bin/chromium"))
     ap.add_argument("--output", type=Path, required=True)
+    ap.add_argument("--tiers", choices=["mobile", "high"], nargs="+", default=["mobile", "high"])
+    ap.add_argument("--heroes", choices=["sippy", "roma"], nargs="+", default=["sippy", "roma"])
+    ap.add_argument("--profile", action="store_true", help="Record diagnostic timings for actual WebGL/Three.js methods and main-thread tasks.")
     a = ap.parse_args()
+    if a.time_baseline and (a.rounds < 3 or set(a.heroes) != {"sippy", "roma"} or
+                            set(a.tiers) != {"mobile", "high"} or a.profile):
+        ap.error("The time budget requires three or more unprofiled visits for every character and tier.")
     repo = a.repo.resolve()
     server = bench.server(repo, a.three.resolve())
     report = {
@@ -171,13 +252,13 @@ def main():
         "cpu": 4,
         "viewport": "800x680@1",
         "renderer": "ANGLE Vulkan SwiftShader",
-        "note": "Fresh Chromium process/profile per visit; HTTP cache disabled. Native 2D blit of selected hero at actual tier, plus one RAF. All first scroll JS response bodies (gzip level 6).",
+        "note": "Fresh Chromium process and profile per visit, with HTTP cache disabled. Real scroll to a fully populated native 2D blit of the selected hero at the requested tier, plus one RAF. The CDP ledger includes headers. JS responses use gzip level 6. GLB files use meshopt.",
         "rows": [],
     }
     try:
         with sync_playwright() as pw:
             for i in range(a.rounds):
-                cases = [(tier, hero) for tier in ("mobile", "high") for hero in ("sippy", "roma")]
+                cases = [(tier, hero) for tier in a.tiers for hero in a.heroes]
                 for tier, hero in (reversed(cases) if i % 2 else cases):
                     browser = pw.chromium.launch(
                         executable_path=a.chrome,
@@ -197,8 +278,12 @@ def main():
                                   directory / f"bp3d-muscles-{tier}-meshopt.glb"]
                         if hero == "roma":
                             assets.append(directory / f"vhf-muscles-{tier}-meshopt.glb")
+                        baked = (directory / f"axon-{hero}-{tier}.glb").is_file()
+                        if baked:
+                            assets = [directory / f"axon-{hero}-{tier}{suffix}.glb" for suffix in ("","-sa")]
+                            assert all(asset.is_file() for asset in assets)
                         row = measure(browser, f"http://127.0.0.1:{server.server_port}", tier, hero,
-                                      [asset for asset in assets if asset.is_file()])
+                                      [asset for asset in assets if asset.is_file()], baked=baked, profile=a.profile)
                     finally:
                         browser.close()
                     row.update(round=i + 1, tier=tier, hero=hero)
@@ -235,6 +320,7 @@ def main():
                                 "gzipJs",
                                 "rawJs",
                                 "scanBytes",
+                                "transferBytes",
                                 "boneBytes",
                                 "muscleBytes",
                                 "femaleSupplementBytes",
@@ -271,6 +357,23 @@ def main():
             )
             if measured["triangles"] > ceiling:
                 raise SystemExit(f"{tag}: exceeds 1.40× main")
+
+    if a.time_baseline:
+        old = json.loads(a.time_baseline.read_text())
+        for key in ("browser", "network", "cpu", "viewport", "renderer"):
+            if report[key] != old[key]:
+                raise ValueError(f"Incompatible comparison setting: {key}")
+        by_case = {(r["tier"], r["hero"]): r["presentedMs"] for r in old["summary"]}
+        failures = []
+        for measured in report["summary"]:
+            tag = measured["tier"], measured["hero"]
+            ceiling_ms = 1.5 * by_case[tag]
+            observed_ms = measured["presentedMs"]
+            print(f"{tag}: median first populated frame {observed_ms:.0f} ms, cap {ceiling_ms:.0f} ms")
+            if measured["visits"] < 3 or observed_ms > ceiling_ms:
+                failures.append(tag)
+        if failures:
+            raise SystemExit(f"Insufficient visits or latency above the 1.5× time cap: {failures}")
 
 
 if __name__ == "__main__":

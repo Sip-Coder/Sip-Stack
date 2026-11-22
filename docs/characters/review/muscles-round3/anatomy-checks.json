@@ -1,0 +1,1229 @@
+{
+  "baseline": "1eab056",
+  "angles": [
+    "front",
+    "back",
+    "left profile",
+    "right profile",
+    "anterior three-quarter",
+    "posterior three-quarter"
+  ],
+  "rasterSizePx": 448,
+  "depthToleranceIn": 0.01968503937007874,
+  "cases": [
+    {
+      "hero": "sippy",
+      "tier": "mobile",
+      "pickerIds": 636,
+      "muscles": 361,
+      "sources": {
+        "BodyParts3D \u00b7 DBCLS": 357,
+        "Z-Anatomy \u00b7 CC BY-SA 4.0": 4
+      },
+      "namedSurfacesVerified": 38,
+      "identityMismatches": 0,
+      "broadSheetTints": {
+        "left_pectoralis_major_clavicular_part": {
+          "darkBellyFraction": 0.6652,
+          "paleBandFraction": 0.2873
+        },
+        "left_pectoralis_major_sternocostal_part": {
+          "darkBellyFraction": 0.8993,
+          "paleBandFraction": 0.0743
+        },
+        "left_pectoralis_major_abdominal_part": {
+          "darkBellyFraction": 0.7876,
+          "paleBandFraction": 0.1632
+        },
+        "left_trapezius_descending_part": {
+          "darkBellyFraction": 0.683,
+          "paleBandFraction": 0.2866
+        },
+        "left_trapezius_transverse_part": {
+          "darkBellyFraction": 0.4708,
+          "paleBandFraction": 0.4798
+        },
+        "left_trapezius_ascending_part": {
+          "darkBellyFraction": 0.624,
+          "paleBandFraction": 0.352
+        },
+        "left_latissimus_dorsi": {
+          "darkBellyFraction": 0.6378,
+          "paleBandFraction": 0.3396
+        },
+        "left_rectus_abdominis": {
+          "darkBellyFraction": 0.851,
+          "paleBandFraction": 0.1114,
+          "centralInscriptionWidthsIn": [
+            0.31,
+            0.47,
+            0.63
+          ]
+        },
+        "right_pectoralis_major_clavicular_part": {
+          "darkBellyFraction": 0.6587,
+          "paleBandFraction": 0.2916
+        },
+        "right_pectoralis_major_sternocostal_part": {
+          "darkBellyFraction": 0.8999,
+          "paleBandFraction": 0.0742
+        },
+        "right_pectoralis_major_abdominal_part": {
+          "darkBellyFraction": 0.7902,
+          "paleBandFraction": 0.1606
+        },
+        "right_trapezius_descending_part": {
+          "darkBellyFraction": 0.6858,
+          "paleBandFraction": 0.2843
+        },
+        "right_trapezius_transverse_part": {
+          "darkBellyFraction": 0.4712,
+          "paleBandFraction": 0.4802
+        },
+        "right_trapezius_ascending_part": {
+          "darkBellyFraction": 0.6227,
+          "paleBandFraction": 0.3537
+        },
+        "right_latissimus_dorsi": {
+          "darkBellyFraction": 0.6377,
+          "paleBandFraction": 0.3388
+        },
+        "right_rectus_abdominis": {
+          "darkBellyFraction": 0.8533,
+          "paleBandFraction": 0.11,
+          "centralInscriptionWidthsIn": [
+            0.31,
+            0.31,
+            0.63
+          ]
+        }
+      },
+      "verticesWithBonePin": 743,
+      "maxFittedCorticalGapIn": 2.1777235771954277e-06,
+      "maxCorticalVertexToTargetIn": 0.001533,
+      "zeroNormalsOnMuscleFaces": 0,
+      "poseResults": [
+        {
+          "pose": "rest",
+          "frame": 0,
+          "sampledPixels": 84659,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "walk",
+          "frame": 28,
+          "sampledPixels": 87134,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "walk",
+          "frame": 45,
+          "sampledPixels": 88252,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "walk",
+          "frame": 65,
+          "sampledPixels": 87674,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "run",
+          "frame": 28,
+          "sampledPixels": 79821,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "run",
+          "frame": 45,
+          "sampledPixels": 82315,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "run",
+          "frame": 65,
+          "sampledPixels": 81769,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "roll",
+          "frame": 4,
+          "sampledPixels": 88189,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "roll",
+          "frame": 17,
+          "sampledPixels": 68243,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "roll",
+          "frame": 30,
+          "sampledPixels": 72035,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "leg-raise",
+          "frame": 18,
+          "sampledPixels": 84272,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        }
+      ],
+      "bake": {
+        "interiorTriangles": 275016,
+        "corticalSites": 743,
+        "maxVertexDriftIn": 0.001709,
+        "maxCorticalSiteDriftIn": 0.001533,
+        "minNormalCosine": 0.999771,
+        "maxColorDistance": 0.003316,
+        "maxUVDifference": 0.000252,
+        "distinctNewSurfacesVisible": 38,
+        "addedParts": 38,
+        "skin": {
+          "sampled": 84649,
+          "exposedFemurByRegion": {},
+          "exposed": 0,
+          "maximumRayDepthInches": 0,
+          "parts": {}
+        },
+        "views": [
+          {
+            "beforeExposedBonePx": 6012,
+            "newSurfacePx": 8471,
+            "formerlyBonePx": 2733,
+            "formerlyEmptyPx": 1276,
+            "superficialPixels": {
+              "gastrocnemius": 320,
+              "quadriceps": 2553,
+              "rectus_abdominis": 2050,
+              "biceps_brachii": 589,
+              "pectoralis_major": 2340,
+              "deltoid": 364,
+              "latissimus_dorsi": 81,
+              "trapezius": 174
+            },
+            "rawBakedSilhouetteIoU": 0.999888
+          },
+          {
+            "beforeExposedBonePx": 5386,
+            "newSurfacePx": 8860,
+            "formerlyBonePx": 2349,
+            "formerlyEmptyPx": 1276,
+            "superficialPixels": {
+              "gastrocnemius": 1487,
+              "quadriceps": 1592,
+              "latissimus_dorsi": 3191,
+              "biceps_brachii": 80,
+              "pectoralis_major": 53,
+              "deltoid": 615,
+              "trapezius": 1842
+            },
+            "rawBakedSilhouetteIoU": 0.999888
+          },
+          {
+            "beforeExposedBonePx": 3359,
+            "newSurfacePx": 3043,
+            "formerlyBonePx": 966,
+            "formerlyEmptyPx": 913,
+            "superficialPixels": {
+              "gastrocnemius": 128,
+              "quadriceps": 941,
+              "rectus_abdominis": 193,
+              "latissimus_dorsi": 543,
+              "biceps_brachii": 173,
+              "pectoralis_major": 390,
+              "deltoid": 317,
+              "trapezius": 358
+            },
+            "rawBakedSilhouetteIoU": 0.999765
+          },
+          {
+            "beforeExposedBonePx": 3315,
+            "newSurfacePx": 3064,
+            "formerlyBonePx": 939,
+            "formerlyEmptyPx": 913,
+            "superficialPixels": {
+              "gastrocnemius": 160,
+              "quadriceps": 935,
+              "rectus_abdominis": 207,
+              "latissimus_dorsi": 508,
+              "biceps_brachii": 183,
+              "pectoralis_major": 382,
+              "deltoid": 325,
+              "trapezius": 364
+            },
+            "rawBakedSilhouetteIoU": 0.999765
+          },
+          {
+            "beforeExposedBonePx": 5729,
+            "newSurfacePx": 7064,
+            "formerlyBonePx": 2281,
+            "formerlyEmptyPx": 1389,
+            "superficialPixels": {
+              "gastrocnemius": 367,
+              "quadriceps": 2230,
+              "rectus_abdominis": 1450,
+              "biceps_brachii": 479,
+              "latissimus_dorsi": 96,
+              "pectoralis_major": 1788,
+              "deltoid": 392,
+              "trapezius": 262
+            },
+            "rawBakedSilhouetteIoU": 0.99975
+          },
+          {
+            "beforeExposedBonePx": 5094,
+            "newSurfacePx": 7153,
+            "formerlyBonePx": 1901,
+            "formerlyEmptyPx": 1428,
+            "superficialPixels": {
+              "gastrocnemius": 1215,
+              "quadriceps": 1474,
+              "rectus_abdominis": 44,
+              "latissimus_dorsi": 2376,
+              "biceps_brachii": 131,
+              "deltoid": 549,
+              "pectoralis_major": 89,
+              "trapezius": 1275
+            },
+            "rawBakedSilhouetteIoU": 0.99975
+          }
+        ]
+      }
+    },
+    {
+      "hero": "sippy",
+      "tier": "high",
+      "pickerIds": 636,
+      "muscles": 361,
+      "sources": {
+        "BodyParts3D \u00b7 DBCLS": 357,
+        "Z-Anatomy \u00b7 CC BY-SA 4.0": 4
+      },
+      "namedSurfacesVerified": 38,
+      "identityMismatches": 0,
+      "broadSheetTints": {
+        "left_pectoralis_major_clavicular_part": {
+          "darkBellyFraction": 0.657,
+          "paleBandFraction": 0.2962
+        },
+        "left_pectoralis_major_sternocostal_part": {
+          "darkBellyFraction": 0.8882,
+          "paleBandFraction": 0.0834
+        },
+        "left_pectoralis_major_abdominal_part": {
+          "darkBellyFraction": 0.7951,
+          "paleBandFraction": 0.1667
+        },
+        "left_trapezius_descending_part": {
+          "darkBellyFraction": 0.6702,
+          "paleBandFraction": 0.297
+        },
+        "left_trapezius_transverse_part": {
+          "darkBellyFraction": 0.456,
+          "paleBandFraction": 0.4966
+        },
+        "left_trapezius_ascending_part": {
+          "darkBellyFraction": 0.6102,
+          "paleBandFraction": 0.3646
+        },
+        "left_latissimus_dorsi": {
+          "darkBellyFraction": 0.6327,
+          "paleBandFraction": 0.3438
+        },
+        "left_rectus_abdominis": {
+          "darkBellyFraction": 0.852,
+          "paleBandFraction": 0.1104,
+          "centralInscriptionWidthsIn": [
+            0.31,
+            0.47,
+            0.63
+          ]
+        },
+        "right_pectoralis_major_clavicular_part": {
+          "darkBellyFraction": 0.657,
+          "paleBandFraction": 0.2962
+        },
+        "right_pectoralis_major_sternocostal_part": {
+          "darkBellyFraction": 0.8882,
+          "paleBandFraction": 0.0834
+        },
+        "right_pectoralis_major_abdominal_part": {
+          "darkBellyFraction": 0.792,
+          "paleBandFraction": 0.1697
+        },
+        "right_trapezius_descending_part": {
+          "darkBellyFraction": 0.6741,
+          "paleBandFraction": 0.2938
+        },
+        "right_trapezius_transverse_part": {
+          "darkBellyFraction": 0.4549,
+          "paleBandFraction": 0.4976
+        },
+        "right_trapezius_ascending_part": {
+          "darkBellyFraction": 0.6095,
+          "paleBandFraction": 0.3655
+        },
+        "right_latissimus_dorsi": {
+          "darkBellyFraction": 0.6322,
+          "paleBandFraction": 0.3441
+        },
+        "right_rectus_abdominis": {
+          "darkBellyFraction": 0.8532,
+          "paleBandFraction": 0.1098,
+          "centralInscriptionWidthsIn": [
+            0.31,
+            0.47,
+            0.63
+          ]
+        }
+      },
+      "verticesWithBonePin": 746,
+      "maxFittedCorticalGapIn": 2.2187278488418803e-06,
+      "maxCorticalVertexToTargetIn": 0.001536,
+      "zeroNormalsOnMuscleFaces": 0,
+      "poseResults": [
+        {
+          "pose": "rest",
+          "frame": 0,
+          "sampledPixels": 84779,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "walk",
+          "frame": 28,
+          "sampledPixels": 87505,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "walk",
+          "frame": 45,
+          "sampledPixels": 88870,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "walk",
+          "frame": 65,
+          "sampledPixels": 88121,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "run",
+          "frame": 28,
+          "sampledPixels": 80238,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "run",
+          "frame": 45,
+          "sampledPixels": 82759,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "run",
+          "frame": 65,
+          "sampledPixels": 82297,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "roll",
+          "frame": 4,
+          "sampledPixels": 88714,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "roll",
+          "frame": 17,
+          "sampledPixels": 68802,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "roll",
+          "frame": 30,
+          "sampledPixels": 72669,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "leg-raise",
+          "frame": 18,
+          "sampledPixels": 84929,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        }
+      ],
+      "bake": {
+        "interiorTriangles": 476826,
+        "corticalSites": 746,
+        "maxVertexDriftIn": 0.001709,
+        "maxCorticalSiteDriftIn": 0.001536,
+        "minNormalCosine": 0.999785,
+        "maxColorDistance": 0.003315,
+        "maxUVDifference": 0.000252,
+        "distinctNewSurfacesVisible": 38,
+        "addedParts": 38,
+        "skin": {
+          "sampled": 84780,
+          "exposedFemurByRegion": {},
+          "exposed": 0,
+          "maximumRayDepthInches": 0,
+          "parts": {}
+        },
+        "views": [
+          {
+            "beforeExposedBonePx": 5765,
+            "newSurfacePx": 8494,
+            "formerlyBonePx": 2592,
+            "formerlyEmptyPx": 1324,
+            "superficialPixels": {
+              "gastrocnemius": 372,
+              "quadriceps": 2557,
+              "rectus_abdominis": 2077,
+              "biceps_brachii": 585,
+              "pectoralis_major": 2305,
+              "deltoid": 360,
+              "latissimus_dorsi": 51,
+              "trapezius": 187
+            },
+            "rawBakedSilhouetteIoU": 0.999833
+          },
+          {
+            "beforeExposedBonePx": 5292,
+            "newSurfacePx": 8971,
+            "formerlyBonePx": 2340,
+            "formerlyEmptyPx": 1327,
+            "superficialPixels": {
+              "gastrocnemius": 1473,
+              "quadriceps": 1575,
+              "latissimus_dorsi": 3280,
+              "biceps_brachii": 122,
+              "pectoralis_major": 52,
+              "deltoid": 642,
+              "trapezius": 1827
+            },
+            "rawBakedSilhouetteIoU": 0.999889
+          },
+          {
+            "beforeExposedBonePx": 3270,
+            "newSurfacePx": 2976,
+            "formerlyBonePx": 901,
+            "formerlyEmptyPx": 880,
+            "superficialPixels": {
+              "gastrocnemius": 129,
+              "quadriceps": 891,
+              "rectus_abdominis": 214,
+              "latissimus_dorsi": 546,
+              "biceps_brachii": 143,
+              "pectoralis_major": 379,
+              "deltoid": 336,
+              "trapezius": 338
+            },
+            "rawBakedSilhouetteIoU": 0.999765
+          },
+          {
+            "beforeExposedBonePx": 3252,
+            "newSurfacePx": 3010,
+            "formerlyBonePx": 911,
+            "formerlyEmptyPx": 880,
+            "superficialPixels": {
+              "gastrocnemius": 161,
+              "quadriceps": 888,
+              "rectus_abdominis": 221,
+              "latissimus_dorsi": 507,
+              "biceps_brachii": 149,
+              "pectoralis_major": 384,
+              "deltoid": 339,
+              "trapezius": 361
+            },
+            "rawBakedSilhouetteIoU": 0.999765
+          },
+          {
+            "beforeExposedBonePx": 5559,
+            "newSurfacePx": 7052,
+            "formerlyBonePx": 2150,
+            "formerlyEmptyPx": 1366,
+            "superficialPixels": {
+              "gastrocnemius": 385,
+              "quadriceps": 2213,
+              "rectus_abdominis": 1475,
+              "biceps_brachii": 473,
+              "latissimus_dorsi": 74,
+              "pectoralis_major": 1773,
+              "deltoid": 392,
+              "trapezius": 267
+            },
+            "rawBakedSilhouetteIoU": 0.999376
+          },
+          {
+            "beforeExposedBonePx": 5012,
+            "newSurfacePx": 7193,
+            "formerlyBonePx": 1893,
+            "formerlyEmptyPx": 1412,
+            "superficialPixels": {
+              "gastrocnemius": 1201,
+              "quadriceps": 1446,
+              "rectus_abdominis": 45,
+              "latissimus_dorsi": 2465,
+              "biceps_brachii": 125,
+              "deltoid": 549,
+              "pectoralis_major": 89,
+              "trapezius": 1273
+            },
+            "rawBakedSilhouetteIoU": 1
+          }
+        ]
+      }
+    },
+    {
+      "hero": "roma",
+      "tier": "mobile",
+      "pickerIds": 621,
+      "muscles": 365,
+      "sources": {
+        "BodyParts3D \u00b7 DBCLS": 285,
+        "Andreassen et al. \u00b7 Visible Human Female": 76,
+        "Z-Anatomy \u00b7 CC BY-SA 4.0": 4
+      },
+      "namedSurfacesVerified": 38,
+      "identityMismatches": 0,
+      "broadSheetTints": {
+        "left_pectoralis_major_clavicular_part": {
+          "darkBellyFraction": 0.6652,
+          "paleBandFraction": 0.2873
+        },
+        "left_pectoralis_major_sternocostal_part": {
+          "darkBellyFraction": 0.8993,
+          "paleBandFraction": 0.0743
+        },
+        "left_pectoralis_major_abdominal_part": {
+          "darkBellyFraction": 0.7876,
+          "paleBandFraction": 0.1632
+        },
+        "left_trapezius_descending_part": {
+          "darkBellyFraction": 0.683,
+          "paleBandFraction": 0.2866
+        },
+        "left_trapezius_transverse_part": {
+          "darkBellyFraction": 0.4708,
+          "paleBandFraction": 0.4798
+        },
+        "left_trapezius_ascending_part": {
+          "darkBellyFraction": 0.624,
+          "paleBandFraction": 0.352
+        },
+        "left_latissimus_dorsi": {
+          "darkBellyFraction": 0.6378,
+          "paleBandFraction": 0.3396
+        },
+        "left_rectus_abdominis": {
+          "darkBellyFraction": 0.851,
+          "paleBandFraction": 0.1114,
+          "centralInscriptionWidthsIn": [
+            0.31,
+            0.47,
+            0.63
+          ]
+        },
+        "right_pectoralis_major_clavicular_part": {
+          "darkBellyFraction": 0.6587,
+          "paleBandFraction": 0.2916
+        },
+        "right_pectoralis_major_sternocostal_part": {
+          "darkBellyFraction": 0.8999,
+          "paleBandFraction": 0.0742
+        },
+        "right_pectoralis_major_abdominal_part": {
+          "darkBellyFraction": 0.7902,
+          "paleBandFraction": 0.1606
+        },
+        "right_trapezius_descending_part": {
+          "darkBellyFraction": 0.6858,
+          "paleBandFraction": 0.2843
+        },
+        "right_trapezius_transverse_part": {
+          "darkBellyFraction": 0.4712,
+          "paleBandFraction": 0.4802
+        },
+        "right_trapezius_ascending_part": {
+          "darkBellyFraction": 0.6227,
+          "paleBandFraction": 0.3537
+        },
+        "right_latissimus_dorsi": {
+          "darkBellyFraction": 0.6377,
+          "paleBandFraction": 0.3388
+        },
+        "right_rectus_abdominis": {
+          "darkBellyFraction": 0.8533,
+          "paleBandFraction": 0.11,
+          "centralInscriptionWidthsIn": [
+            0.31,
+            0.31,
+            0.63
+          ]
+        }
+      },
+      "verticesWithBonePin": 741,
+      "maxFittedCorticalGapIn": 2.1785576985977586e-06,
+      "maxCorticalVertexToTargetIn": 0.001467,
+      "zeroNormalsOnMuscleFaces": 0,
+      "poseResults": [
+        {
+          "pose": "rest",
+          "frame": 0,
+          "sampledPixels": 99915,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "walk",
+          "frame": 28,
+          "sampledPixels": 101412,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "walk",
+          "frame": 45,
+          "sampledPixels": 105845,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "walk",
+          "frame": 65,
+          "sampledPixels": 103076,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "run",
+          "frame": 28,
+          "sampledPixels": 97039,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "run",
+          "frame": 45,
+          "sampledPixels": 99842,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "run",
+          "frame": 65,
+          "sampledPixels": 100282,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "roll",
+          "frame": 4,
+          "sampledPixels": 101385,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "roll",
+          "frame": 17,
+          "sampledPixels": 85548,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "roll",
+          "frame": 30,
+          "sampledPixels": 86352,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "leg-raise",
+          "frame": 18,
+          "sampledPixels": 99608,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        }
+      ],
+      "bake": {
+        "interiorTriangles": 242664,
+        "corticalSites": 741,
+        "maxVertexDriftIn": 0.001636,
+        "maxCorticalSiteDriftIn": 0.001467,
+        "minNormalCosine": 0.999766,
+        "maxColorDistance": 0.003316,
+        "maxUVDifference": 0.000252,
+        "distinctNewSurfacesVisible": 26,
+        "addedParts": 26,
+        "skin": {
+          "sampled": 99921,
+          "exposedFemurByRegion": {},
+          "exposed": 0,
+          "maximumRayDepthInches": 0,
+          "parts": {}
+        },
+        "views": [
+          {
+            "beforeExposedBonePx": 5703,
+            "newSurfacePx": 7402,
+            "formerlyBonePx": 1453,
+            "formerlyEmptyPx": 763,
+            "superficialPixels": {
+              "gastrocnemius": 128,
+              "quadriceps": 2262,
+              "rectus_abdominis": 3550,
+              "biceps_brachii": 651,
+              "pectoralis_major": 2630,
+              "latissimus_dorsi": 28,
+              "deltoid": 432,
+              "trapezius": 111
+            },
+            "rawBakedSilhouetteIoU": 0.999418
+          },
+          {
+            "beforeExposedBonePx": 5457,
+            "newSurfacePx": 7353,
+            "formerlyBonePx": 1927,
+            "formerlyEmptyPx": 763,
+            "superficialPixels": {
+              "gastrocnemius": 870,
+              "quadriceps": 685,
+              "latissimus_dorsi": 4321,
+              "biceps_brachii": 156,
+              "trapezius": 2193,
+              "pectoralis_major": 94,
+              "deltoid": 589
+            },
+            "rawBakedSilhouetteIoU": 0.999418
+          },
+          {
+            "beforeExposedBonePx": 3436,
+            "newSurfacePx": 2471,
+            "formerlyBonePx": 661,
+            "formerlyEmptyPx": 846,
+            "superficialPixels": {
+              "gastrocnemius": 275,
+              "quadriceps": 1151,
+              "rectus_abdominis": 393,
+              "latissimus_dorsi": 869,
+              "biceps_brachii": 220,
+              "trapezius": 240,
+              "pectoralis_major": 483,
+              "deltoid": 266
+            },
+            "rawBakedSilhouetteIoU": 0.999616
+          },
+          {
+            "beforeExposedBonePx": 3365,
+            "newSurfacePx": 2504,
+            "formerlyBonePx": 648,
+            "formerlyEmptyPx": 846,
+            "superficialPixels": {
+              "gastrocnemius": 274,
+              "quadriceps": 1254,
+              "rectus_abdominis": 390,
+              "latissimus_dorsi": 862,
+              "biceps_brachii": 185,
+              "trapezius": 301,
+              "pectoralis_major": 501,
+              "deltoid": 265
+            },
+            "rawBakedSilhouetteIoU": 0.999616
+          },
+          {
+            "beforeExposedBonePx": 5749,
+            "newSurfacePx": 5798,
+            "formerlyBonePx": 1266,
+            "formerlyEmptyPx": 872,
+            "superficialPixels": {
+              "gastrocnemius": 271,
+              "quadriceps": 2107,
+              "rectus_abdominis": 2557,
+              "latissimus_dorsi": 117,
+              "biceps_brachii": 548,
+              "pectoralis_major": 1945,
+              "deltoid": 420,
+              "trapezius": 211
+            },
+            "rawBakedSilhouetteIoU": 0.999842
+          },
+          {
+            "beforeExposedBonePx": 5138,
+            "newSurfacePx": 5639,
+            "formerlyBonePx": 1437,
+            "formerlyEmptyPx": 902,
+            "superficialPixels": {
+              "gastrocnemius": 896,
+              "quadriceps": 1084,
+              "rectus_abdominis": 85,
+              "latissimus_dorsi": 3224,
+              "biceps_brachii": 223,
+              "trapezius": 1482,
+              "pectoralis_major": 140,
+              "deltoid": 485
+            },
+            "rawBakedSilhouetteIoU": 0.999684
+          }
+        ]
+      }
+    },
+    {
+      "hero": "roma",
+      "tier": "high",
+      "pickerIds": 621,
+      "muscles": 365,
+      "sources": {
+        "BodyParts3D \u00b7 DBCLS": 285,
+        "Andreassen et al. \u00b7 Visible Human Female": 76,
+        "Z-Anatomy \u00b7 CC BY-SA 4.0": 4
+      },
+      "namedSurfacesVerified": 38,
+      "identityMismatches": 0,
+      "broadSheetTints": {
+        "left_pectoralis_major_clavicular_part": {
+          "darkBellyFraction": 0.657,
+          "paleBandFraction": 0.2962
+        },
+        "left_pectoralis_major_sternocostal_part": {
+          "darkBellyFraction": 0.8882,
+          "paleBandFraction": 0.0834
+        },
+        "left_pectoralis_major_abdominal_part": {
+          "darkBellyFraction": 0.7951,
+          "paleBandFraction": 0.1667
+        },
+        "left_trapezius_descending_part": {
+          "darkBellyFraction": 0.6702,
+          "paleBandFraction": 0.297
+        },
+        "left_trapezius_transverse_part": {
+          "darkBellyFraction": 0.456,
+          "paleBandFraction": 0.4966
+        },
+        "left_trapezius_ascending_part": {
+          "darkBellyFraction": 0.6102,
+          "paleBandFraction": 0.3646
+        },
+        "left_latissimus_dorsi": {
+          "darkBellyFraction": 0.6327,
+          "paleBandFraction": 0.3438
+        },
+        "left_rectus_abdominis": {
+          "darkBellyFraction": 0.852,
+          "paleBandFraction": 0.1104,
+          "centralInscriptionWidthsIn": [
+            0.31,
+            0.47,
+            0.63
+          ]
+        },
+        "right_pectoralis_major_clavicular_part": {
+          "darkBellyFraction": 0.657,
+          "paleBandFraction": 0.2962
+        },
+        "right_pectoralis_major_sternocostal_part": {
+          "darkBellyFraction": 0.8882,
+          "paleBandFraction": 0.0834
+        },
+        "right_pectoralis_major_abdominal_part": {
+          "darkBellyFraction": 0.792,
+          "paleBandFraction": 0.1697
+        },
+        "right_trapezius_descending_part": {
+          "darkBellyFraction": 0.6741,
+          "paleBandFraction": 0.2938
+        },
+        "right_trapezius_transverse_part": {
+          "darkBellyFraction": 0.4549,
+          "paleBandFraction": 0.4976
+        },
+        "right_trapezius_ascending_part": {
+          "darkBellyFraction": 0.6095,
+          "paleBandFraction": 0.3655
+        },
+        "right_latissimus_dorsi": {
+          "darkBellyFraction": 0.6322,
+          "paleBandFraction": 0.3441
+        },
+        "right_rectus_abdominis": {
+          "darkBellyFraction": 0.8532,
+          "paleBandFraction": 0.1098,
+          "centralInscriptionWidthsIn": [
+            0.31,
+            0.47,
+            0.63
+          ]
+        }
+      },
+      "verticesWithBonePin": 745,
+      "maxFittedCorticalGapIn": 2.3205300563690885e-06,
+      "maxCorticalVertexToTargetIn": 0.001447,
+      "zeroNormalsOnMuscleFaces": 0,
+      "poseResults": [
+        {
+          "pose": "rest",
+          "frame": 0,
+          "sampledPixels": 100476,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "walk",
+          "frame": 28,
+          "sampledPixels": 101900,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "walk",
+          "frame": 45,
+          "sampledPixels": 106429,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "walk",
+          "frame": 65,
+          "sampledPixels": 103726,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "run",
+          "frame": 28,
+          "sampledPixels": 97392,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "run",
+          "frame": 45,
+          "sampledPixels": 100428,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "run",
+          "frame": 65,
+          "sampledPixels": 100907,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "roll",
+          "frame": 4,
+          "sampledPixels": 101780,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "roll",
+          "frame": 17,
+          "sampledPixels": 85737,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "roll",
+          "frame": 30,
+          "sampledPixels": 86836,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        },
+        {
+          "pose": "leg-raise",
+          "frame": 18,
+          "sampledPixels": 100260,
+          "exposedPixels": 0,
+          "exposedParts": {},
+          "maxDepthIn": 0
+        }
+      ],
+      "bake": {
+        "interiorTriangles": 440324,
+        "corticalSites": 745,
+        "maxVertexDriftIn": 0.001638,
+        "maxCorticalSiteDriftIn": 0.001447,
+        "minNormalCosine": 0.999781,
+        "maxColorDistance": 0.003315,
+        "maxUVDifference": 0.000252,
+        "distinctNewSurfacesVisible": 26,
+        "addedParts": 26,
+        "skin": {
+          "sampled": 100469,
+          "exposedFemurByRegion": {},
+          "exposed": 0,
+          "maximumRayDepthInches": 0,
+          "parts": {}
+        },
+        "views": [
+          {
+            "beforeExposedBonePx": 5771,
+            "newSurfacePx": 7399,
+            "formerlyBonePx": 1483,
+            "formerlyEmptyPx": 776,
+            "superficialPixels": {
+              "gastrocnemius": 151,
+              "quadriceps": 2189,
+              "rectus_abdominis": 3561,
+              "biceps_brachii": 657,
+              "pectoralis_major": 2610,
+              "latissimus_dorsi": 45,
+              "deltoid": 405,
+              "trapezius": 121
+            },
+            "rawBakedSilhouetteIoU": 0.999952
+          },
+          {
+            "beforeExposedBonePx": 5313,
+            "newSurfacePx": 7377,
+            "formerlyBonePx": 1884,
+            "formerlyEmptyPx": 776,
+            "superficialPixels": {
+              "gastrocnemius": 910,
+              "quadriceps": 705,
+              "latissimus_dorsi": 4386,
+              "biceps_brachii": 156,
+              "trapezius": 2128,
+              "pectoralis_major": 106,
+              "deltoid": 601
+            },
+            "rawBakedSilhouetteIoU": 0.999952
+          },
+          {
+            "beforeExposedBonePx": 3441,
+            "newSurfacePx": 2468,
+            "formerlyBonePx": 665,
+            "formerlyEmptyPx": 822,
+            "superficialPixels": {
+              "gastrocnemius": 274,
+              "quadriceps": 1132,
+              "rectus_abdominis": 395,
+              "latissimus_dorsi": 860,
+              "biceps_brachii": 201,
+              "pectoralis_major": 491,
+              "trapezius": 253,
+              "deltoid": 268
+            },
+            "rawBakedSilhouetteIoU": 0.999808
+          },
+          {
+            "beforeExposedBonePx": 3365,
+            "newSurfacePx": 2463,
+            "formerlyBonePx": 665,
+            "formerlyEmptyPx": 822,
+            "superficialPixels": {
+              "gastrocnemius": 243,
+              "quadriceps": 1238,
+              "rectus_abdominis": 392,
+              "latissimus_dorsi": 885,
+              "biceps_brachii": 155,
+              "pectoralis_major": 506,
+              "trapezius": 256,
+              "deltoid": 269
+            },
+            "rawBakedSilhouetteIoU": 0.999808
+          },
+          {
+            "beforeExposedBonePx": 5781,
+            "newSurfacePx": 5791,
+            "formerlyBonePx": 1290,
+            "formerlyEmptyPx": 831,
+            "superficialPixels": {
+              "gastrocnemius": 370,
+              "quadriceps": 2034,
+              "rectus_abdominis": 2571,
+              "latissimus_dorsi": 117,
+              "biceps_brachii": 553,
+              "pectoralis_major": 1939,
+              "deltoid": 405,
+              "trapezius": 206
+            },
+            "rawBakedSilhouetteIoU": 0.999843
+          },
+          {
+            "beforeExposedBonePx": 5077,
+            "newSurfacePx": 5583,
+            "formerlyBonePx": 1431,
+            "formerlyEmptyPx": 832,
+            "superficialPixels": {
+              "gastrocnemius": 844,
+              "quadriceps": 1051,
+              "rectus_abdominis": 80,
+              "latissimus_dorsi": 3293,
+              "biceps_brachii": 187,
+              "trapezius": 1402,
+              "pectoralis_major": 141,
+              "deltoid": 480
+            },
+            "rawBakedSilhouetteIoU": 0.999738
+          }
+        ]
+      }
+    }
+  ]
+}

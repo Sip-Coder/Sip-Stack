@@ -1,0 +1,75 @@
+{
+  "scanDemand": {
+    "firstHuman": "roma-mobile",
+    "requests": [
+      "/characters/assets/axon-roma-mobile.glb",
+      "/characters/assets/axon-roma-mobile-sa.glb",
+      "/characters/assets/axon-sippy-mobile.glb",
+      "/characters/assets/axon-sippy-mobile-sa.glb"
+    ],
+    "decoderModules": [
+      "/__three/examples/jsm/libs/meshopt_decoder.module.js"
+    ],
+    "superseded": "sippy-mobile",
+    "final": "hummin-mobile"
+  },
+  "recoveries": [
+    {
+      "file": "axon-sippy-mobile.glb",
+      "fitPath": "baked",
+      "documents": 2,
+      "attempts": 4,
+      "restored": "sippy-mobile"
+    },
+    {
+      "file": "axon-roma-mobile-sa.glb",
+      "fitPath": "baked",
+      "documents": 2,
+      "attempts": 4,
+      "restored": "roma-mobile"
+    },
+    {
+      "file": "bp3d-missing-muscles-mobile-meshopt.glb",
+      "fitPath": "worker",
+      "documents": 2,
+      "attempts": 4,
+      "restored": "sippy-mobile"
+    }
+  ],
+  "workerFallback": [
+    {
+      "missing": "axon-sippy-mobile.glb",
+      "workers": 1,
+      "preview": {
+        "ready": true,
+        "partial": true,
+        "fit": "worker",
+        "kinds": [
+          "skeleton"
+        ],
+        "bones": 170,
+        "selected": "Left calcaneus"
+      },
+      "completedParts": 636
+    },
+    {
+      "missing": "axon-roma-mobile-sa.glb",
+      "workers": 1,
+      "preview": {
+        "ready": true,
+        "partial": true,
+        "fit": "worker",
+        "kinds": [
+          "skeleton"
+        ],
+        "bones": 170,
+        "selected": "Left calcaneus"
+      },
+      "completedParts": 621
+    }
+  ],
+  "workerCancellation": {
+    "terminatedWorkers": 1,
+    "final": "hummin-mobile"
+  }
+}

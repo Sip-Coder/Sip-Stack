@@ -5,7 +5,7 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 // Both atlases quantize positions and store a transform on each named node.
 // Fitters need their common scene space, including translation and scale.
-async function parseAtlas(buffer) {
+async function parseAtlas(buffer, sourceAtlas) {
   const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
   const { scene, parser } = await loader.parseAsync(buffer, '');
   scene.updateMatrixWorld(true);
@@ -15,7 +15,11 @@ async function parseAtlas(buffer) {
     if (!mesh.isMesh) return;
     const association = parser.associations.get(mesh);
     const sourceMesh = parser.json.meshes[association.meshes];
-    const name = parser.json.nodes[association.nodes].name;
+    const originalName = parser.json.nodes[association.nodes].name;
+    const name = sourceAtlas === 'Z-Anatomy · CC BY-SA 4.0'
+      ? originalName.replace(/^(Latissimus_dorsi|Rectus_abdominis)_muscle_(left|right)$/,
+          (_, muscle, side) => side + '_' + muscle.toLowerCase())
+      : originalName;
     if (parts.has(name)) throw new Error('Duplicate scan mesh ' + name);
     const source = mesh.geometry;
     const attribute = source.getAttribute('position');
@@ -30,7 +34,8 @@ async function parseAtlas(buffer) {
     geometry.setIndex(source.index);
     geometry.computeVertexNormals();
     geometry.computeBoundingBox();
-    geometry.userData.sourcePart = sourceMesh.extras?.name || name;
+    geometry.userData.sourcePart = sourceMesh.extras?.name || originalName;
+    if (sourceAtlas) geometry.userData.sourceAtlas = sourceAtlas;
     if (sourceMesh.extras?.name?.startsWith('VHF:')) {
       geometry.userData.sourceAtlas = 'Andreassen et al. · Visible Human Female';
       geometry.userData.atlasCounterpart = sourceMesh.extras.atlasCounterpart;
@@ -62,25 +67,25 @@ export function loadMuscleAtlas(tier, signal) {
   return loadAtlas('muscles-' + tier, 'bp3d-muscles-' + tier + '-meshopt.glb', 323, signal);
 }
 
-// Both characters share the pristine BP3D collection. Only Roma requests
-// separate female lower-limb surfaces. The merged Map never mutates that cache.
+// Roma's subject-matched donors take precedence by anatomical name. This
+// also deduplicates the twelve BP3D quadriceps and gastrocnemius surfaces.
 export async function loadCharacterMuscles(name, tier, signal) {
   if (name !== 'roma' && name !== 'sippy') throw new Error('Unknown human muscle selection');
-  const base = loadMuscleAtlas(tier, signal);
-  if (name !== 'roma') return base;
-  const supplement = loadAtlas(
-    'female-muscles-' + tier,
-    'vhf-muscles-' + tier + '-meshopt.glb',
-    76,
-    signal,
-  );
-  const [male, female] = await Promise.all([base, supplement]);
-  const atlas = new Map(male);
-  for (const [node, geometry] of female) atlas.set(node, geometry);
+  const file = (stem) => stem + '-' + tier + '-meshopt.glb';
+  const packs = [
+    loadMuscleAtlas(tier, signal),
+    loadAtlas('missing-' + tier, file('bp3d-missing-muscles'), 34, signal),
+    loadAtlas('zanatomy-' + tier, file('zanatomy-lats-rectus'), 4, signal, 'Z-Anatomy · CC BY-SA 4.0'),
+  ];
+  if (name === 'roma') packs.push(loadAtlas('female-' + tier, file('vhf-muscles'), 76, signal));
+  const atlas = new Map();
+  for (const pack of await Promise.all(packs)) {
+    for (const [node, geometry] of pack) atlas.set(node, geometry);
+  }
   return atlas;
 }
 
-function loadAtlas(slot, file, count, signal) {
+function loadAtlas(slot, file, count, signal, sourceAtlas) {
   signal?.throwIfAborted();
   const cached = sources.get(slot);
   if (cached?.file === file && !cached.signal?.aborted) return cached.pending;
@@ -89,7 +94,7 @@ function loadAtlas(slot, file, count, signal) {
   entry.pending = readAsset(new URL('./assets/' + file, import.meta.url), signal)
     .then((buffer) => {
       signal?.throwIfAborted();
-      return parseAtlas(buffer);
+      return parseAtlas(buffer, sourceAtlas);
     })
     .then((parts) => {
       if (parts.size !== count) throw new Error('Incomplete anatomical atlas ' + file);
@@ -113,7 +118,10 @@ async function readAsset(url, signal) {
     return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
   }
   const response = await fetch(url, { signal });
-  if (!response.ok)
-    throw new Error('Could not load ' + url.pathname + ' (HTTP ' + response.status + ')');
+  if (!response.ok) {
+    const error = new Error('Could not load ' + url.pathname + ' (HTTP ' + response.status + ')');
+    error.assetURL = url.href;
+    throw error;
+  }
   return response.arrayBuffer();
 }

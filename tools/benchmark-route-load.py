@@ -78,11 +78,12 @@ class Wire:
         if r is not None:
             r.update(end=event["timestamp"], total=event["encodedDataLength"])
 
-    def until(self, when):
+    def until(self, when, since=None):
+        start = since / 1000 - self.origin_offset if since is not None else -math.inf
         cutoff = when / 1000 - self.origin_offset
         resources = []
         for r in self.requests.values():
-            if r["at"] > cutoff:
+            if not start <= r["at"] <= cutoff:
                 continue
             complete = r.get("end", float("inf")) <= cutoff
             wire = (
@@ -244,6 +245,11 @@ def trial(browser, url, route, tier, probe, verify):
         origin = page.evaluate("performance.timeOrigin")
         wire = ledger.until(origin + p["interactiveMs"])
         assert wire["resources"][0]["path"] == "/" and wire["resources"][0]["wire"] > 0
+        inspector_paths = [r["path"] for r in wire["resources"] if
+                           r["path"].startswith(("/characters/diagram-", "/characters/axon-",
+                                                "/characters/ref-", "/characters/character-ref"))
+                           or r["path"].endswith(".glb") or "meshopt_decoder" in r["path"]]
+        assert not inspector_paths, f"Cold {route} opened an inspector dependency: {inspector_paths}"
         assert p["proof"]["tier"].lower() == tier and p["proof"]["names"]
         assert p["presentedMs"] <= p["inputMs"] <= p["interactiveMs"]
         dx, _, dz = (b - a for a, b in zip(p["positionBefore"], p["positionAfter"]))

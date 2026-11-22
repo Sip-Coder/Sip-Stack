@@ -17,7 +17,7 @@ function frame(origin, q) {
 
 // Intersect the actual posed torso at horizontal stations. A nearest positive
 // radial crossing ignores the arm beyond the intervening gap on Sippy.
-function skinGauge(parts, chest, low, high) {
+export function skinGauge(parts, chest, low, high, rings = 29, rays = 24) {
   const p = parts.find(
     (p) => p.name === 'Continuous body, limbs and hands' || p.name === 'Covered torso and hips',
   );
@@ -28,9 +28,7 @@ function skinGauge(parts, chest, low, high) {
   const pos = new Float32Array(3 * a.count),
     point = v();
   for (let i = 0; i < a.count; i++) chest.from(point.fromBufferAttribute(a, i)).toArray(pos, 3 * i);
-  const rings = 29,
-    rays = 24,
-    rows = Array.from({ length: rings }, () => new Float32Array(rays).fill(Infinity));
+  const rows = Array.from({ length: rings }, () => new Float32Array(rays).fill(Infinity));
   const ss = Array.from({ length: rays }, (_, i) => Math.sin((i * tau) / rays)),
     cs = ss.map((_, i) => Math.cos((i * tau) / rays));
   const step = (high - low) / (rings - 1),

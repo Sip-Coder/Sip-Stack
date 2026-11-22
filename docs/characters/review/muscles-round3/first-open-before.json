@@ -1,0 +1,6215 @@
+{
+  "revision": "1eab0562a3943bb698ecf23b27cc796dea966dc7",
+  "network": {
+    "offline": false,
+    "latency": 60,
+    "downloadThroughput": 1125000.0,
+    "uploadThroughput": 187500.0,
+    "connectionType": "cellular4g"
+  },
+  "cpu": 4,
+  "viewport": "800x680@1",
+  "renderer": "ANGLE Vulkan SwiftShader",
+  "note": "Fresh Chromium process and profile per visit, with HTTP cache disabled. Real scroll to a fully populated native 2D blit of the selected hero at the requested tier, plus one RAF. The CDP ledger includes headers. JS responses use gzip level 6. GLB files use meshopt.",
+  "rows": [
+    {
+      "fitPath": "runtime fit",
+      "partial": false,
+      "presentedMs": 23495.70000001788,
+      "firstBlitMs": 23474.40000000596,
+      "floor": {
+        "name": "sippy",
+        "shadowMapWidth": 512
+      },
+      "lastDeferredResponseMs": 21145.70000001788,
+      "assetWaterfall": [
+        {
+          "path": "/characters/assets/skeleton-male-mobile.glb",
+          "startMs": 1488.6000000238419,
+          "responseMs": 1545.7000000178814,
+          "finishMs": 2247.300000011921
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "startMs": 1489,
+          "responseMs": 1548.300000011921,
+          "finishMs": 2472.600000023842
+        }
+      ],
+      "bones": 170,
+      "triangles": 65066,
+      "allDraws": 32,
+      "allTriangles": 208892,
+      "compositeDraws": 1,
+      "muscles": 323,
+      "muscleTriangles": 77354,
+      "scanAssets": [
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "bodyBytes": 601264
+        },
+        {
+          "path": "/characters/assets/skeleton-male-mobile.glb",
+          "bodyBytes": 368888
+        }
+      ],
+      "scripts": [
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "raw": 24850,
+          "gzip": 6445
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "raw": 110273,
+          "gzip": 23657
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "raw": 31768,
+          "gzip": 6912
+        },
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 15025,
+          "gzip": 4911
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 685,
+          "gzip": 345
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "raw": 2643,
+          "gzip": 1191
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 4561,
+          "gzip": 1767
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 14028,
+          "gzip": 4582
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7299,
+          "gzip": 2284
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "raw": 13497,
+          "gzip": 4835
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "raw": 15451,
+          "gzip": 5244
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "raw": 668,
+          "gzip": 426
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "raw": 5115,
+          "gzip": 2100
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "raw": 13252,
+          "gzip": 4405
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "raw": 3641,
+          "gzip": 1578
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 8274,
+          "gzip": 2827
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3655,
+          "gzip": 1432
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 6900,
+          "gzip": 2470
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "raw": 3996,
+          "gzip": 1373
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "raw": 1474,
+          "gzip": 771
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "raw": 1596,
+          "gzip": 776
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "raw": 3275,
+          "gzip": 1305
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "raw": 24039,
+          "gzip": 7699
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "raw": 10647,
+          "gzip": 3924
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "raw": 16627,
+          "gzip": 5837
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "raw": 6128,
+          "gzip": 2409
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "raw": 10586,
+          "gzip": 3747
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "raw": 4227,
+          "gzip": 1611
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "raw": 4858,
+          "gzip": 1933
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 11207,
+          "gzip": 4100
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 1990,
+          "gzip": 965
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "raw": 10594,
+          "gzip": 4006
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "raw": 16053,
+          "gzip": 4967
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 15800,
+          "gzip": 5679
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 26400,
+          "gzip": 8320
+        }
+      ],
+      "transferBytes": 1122993,
+      "resources": [
+        {
+          "path": "/characters/axon-view.js",
+          "wire": 5106,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "wire": 1627,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "wire": 8515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "wire": 3407,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "wire": 3022,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "wire": 1386,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/axon-view.css",
+          "wire": 1399,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "wire": 539,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "wire": 2479,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "wire": 2128,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "wire": 23853,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "wire": 6640,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "wire": 1962,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "wire": 4295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "wire": 2665,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "wire": 5874,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "wire": 1159,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "wire": 2480,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "wire": 2604,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "wire": 7894,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "wire": 6032,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "wire": 4119,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "wire": 5162,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "wire": 1551,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "wire": 7107,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "wire": 5030,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "wire": 5439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "wire": 620,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "wire": 2295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "wire": 4777,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "wire": 1773,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "wire": 4600,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "wire": 3942,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "wire": 970,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "wire": 1500,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "wire": 1806,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "wire": 965,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "wire": 1568,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/skeleton-male-mobile.glb",
+          "wire": 369063,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "wire": 601439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "wire": 4201,
+          "complete": true,
+          "status": 200
+        }
+      ],
+      "workerPaths": [],
+      "skeletonDraws": 2,
+      "renderedSkeletonTriangles": 65066,
+      "rawJs": 469721,
+      "gzipJs": 143686,
+      "scanBytes": 970152,
+      "boneBytes": 368888,
+      "muscleBytes": 601264,
+      "femaleSupplementBytes": 0,
+      "round": 1,
+      "tier": "mobile",
+      "hero": "sippy"
+    },
+    {
+      "fitPath": "runtime fit",
+      "partial": false,
+      "presentedMs": 18066.59999999404,
+      "firstBlitMs": 18048,
+      "floor": {
+        "name": "roma",
+        "shadowMapWidth": 512
+      },
+      "lastDeferredResponseMs": 16394.899999976158,
+      "assetWaterfall": [
+        {
+          "path": "/characters/assets/skeleton-female-mobile.glb",
+          "startMs": 1409.0999999940395,
+          "responseMs": 1468,
+          "finishMs": 2292.199999988079
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "startMs": 1409.3999999761581,
+          "responseMs": 1464.7999999821186,
+          "finishMs": 2504.2999999821186
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-mobile-meshopt.glb",
+          "startMs": 1412.7999999821186,
+          "responseMs": 1491,
+          "finishMs": 1856.8999999761581
+        }
+      ],
+      "bones": 170,
+      "triangles": 66610,
+      "allDraws": 8,
+      "allTriangles": 186472,
+      "compositeDraws": 1,
+      "muscles": 339,
+      "muscleTriangles": 80300,
+      "scanAssets": [
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "bodyBytes": 601264
+        },
+        {
+          "path": "/characters/assets/skeleton-female-mobile.glb",
+          "bodyBytes": 375040
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-mobile-meshopt.glb",
+          "bodyBytes": 119324
+        }
+      ],
+      "scripts": [
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "raw": 24850,
+          "gzip": 6445
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "raw": 110273,
+          "gzip": 23657
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "raw": 31768,
+          "gzip": 6912
+        },
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 15025,
+          "gzip": 4911
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 685,
+          "gzip": 345
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "raw": 2643,
+          "gzip": 1191
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 4561,
+          "gzip": 1767
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 14028,
+          "gzip": 4582
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7299,
+          "gzip": 2284
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "raw": 13497,
+          "gzip": 4835
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "raw": 15451,
+          "gzip": 5244
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "raw": 668,
+          "gzip": 426
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "raw": 5115,
+          "gzip": 2100
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "raw": 13252,
+          "gzip": 4405
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "raw": 3641,
+          "gzip": 1578
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 8274,
+          "gzip": 2827
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3655,
+          "gzip": 1432
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 6900,
+          "gzip": 2470
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "raw": 3996,
+          "gzip": 1373
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "raw": 1474,
+          "gzip": 771
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "raw": 1596,
+          "gzip": 776
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "raw": 3275,
+          "gzip": 1305
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "raw": 24039,
+          "gzip": 7699
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "raw": 10647,
+          "gzip": 3924
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "raw": 16627,
+          "gzip": 5837
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "raw": 6128,
+          "gzip": 2409
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "raw": 10586,
+          "gzip": 3747
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "raw": 4227,
+          "gzip": 1611
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "raw": 4858,
+          "gzip": 1933
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 11207,
+          "gzip": 4100
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 1990,
+          "gzip": 965
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "raw": 10594,
+          "gzip": 4006
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "raw": 16053,
+          "gzip": 4967
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 15800,
+          "gzip": 5679
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 26400,
+          "gzip": 8320
+        }
+      ],
+      "transferBytes": 1248644,
+      "resources": [
+        {
+          "path": "/characters/axon-view.js",
+          "wire": 5106,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "wire": 1627,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "wire": 8515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "wire": 1386,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "wire": 3407,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "wire": 3022,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/axon-view.css",
+          "wire": 1399,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "wire": 539,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "wire": 2479,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "wire": 2128,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "wire": 23853,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "wire": 6640,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "wire": 1962,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "wire": 4295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "wire": 2665,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "wire": 5874,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "wire": 1159,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "wire": 2480,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "wire": 2604,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "wire": 7894,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "wire": 6032,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "wire": 4119,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "wire": 5162,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "wire": 1551,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "wire": 7107,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "wire": 5030,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "wire": 5439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "wire": 620,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "wire": 2295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "wire": 4777,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "wire": 1773,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "wire": 4600,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "wire": 3942,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "wire": 970,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "wire": 1500,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "wire": 1806,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "wire": 965,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "wire": 1568,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/skeleton-female-mobile.glb",
+          "wire": 375215,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "wire": 601439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-mobile-meshopt.glb",
+          "wire": 119499,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "wire": 4201,
+          "complete": true,
+          "status": 200
+        }
+      ],
+      "workerPaths": [],
+      "skeletonDraws": 2,
+      "renderedSkeletonTriangles": 66610,
+      "rawJs": 469721,
+      "gzipJs": 143686,
+      "scanBytes": 1095628,
+      "boneBytes": 375040,
+      "muscleBytes": 601264,
+      "femaleSupplementBytes": 119324,
+      "round": 1,
+      "tier": "mobile",
+      "hero": "roma"
+    },
+    {
+      "fitPath": "runtime fit",
+      "partial": false,
+      "presentedMs": 28457.79999998212,
+      "firstBlitMs": 28448.29999998212,
+      "floor": {
+        "name": "sippy",
+        "shadowMapWidth": 1024
+      },
+      "lastDeferredResponseMs": 25674.79999998212,
+      "assetWaterfall": [
+        {
+          "path": "/characters/assets/skeleton-male-high.glb",
+          "startMs": 1769.8999999761581,
+          "responseMs": 1844,
+          "finishMs": 2889.0999999940395
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "startMs": 1771.699999988079,
+          "responseMs": 1844,
+          "finishMs": 3210.399999976158
+        }
+      ],
+      "bones": 170,
+      "triangles": 115198,
+      "allDraws": 32,
+      "allTriangles": 359486,
+      "compositeDraws": 1,
+      "muscles": 323,
+      "muscleTriangles": 156336,
+      "scanAssets": [
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "bodyBytes": 888340
+        },
+        {
+          "path": "/characters/assets/skeleton-male-high.glb",
+          "bodyBytes": 543948
+        }
+      ],
+      "scripts": [
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "raw": 24850,
+          "gzip": 6445
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "raw": 110273,
+          "gzip": 23657
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "raw": 31768,
+          "gzip": 6912
+        },
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 15025,
+          "gzip": 4911
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 685,
+          "gzip": 345
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "raw": 2643,
+          "gzip": 1191
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 4561,
+          "gzip": 1767
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 14028,
+          "gzip": 4582
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7299,
+          "gzip": 2284
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "raw": 13497,
+          "gzip": 4835
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "raw": 15451,
+          "gzip": 5244
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "raw": 668,
+          "gzip": 426
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "raw": 5115,
+          "gzip": 2100
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "raw": 13252,
+          "gzip": 4405
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "raw": 3641,
+          "gzip": 1578
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 8274,
+          "gzip": 2827
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3655,
+          "gzip": 1432
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 6900,
+          "gzip": 2470
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "raw": 3996,
+          "gzip": 1373
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "raw": 1474,
+          "gzip": 771
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "raw": 1596,
+          "gzip": 776
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "raw": 3275,
+          "gzip": 1305
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "raw": 24039,
+          "gzip": 7699
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "raw": 10647,
+          "gzip": 3924
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "raw": 16627,
+          "gzip": 5837
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "raw": 6128,
+          "gzip": 2409
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "raw": 10586,
+          "gzip": 3747
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "raw": 4227,
+          "gzip": 1611
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "raw": 4858,
+          "gzip": 1933
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 11207,
+          "gzip": 4100
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 1990,
+          "gzip": 965
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "raw": 10594,
+          "gzip": 4006
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "raw": 16053,
+          "gzip": 4967
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 15800,
+          "gzip": 5679
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 26400,
+          "gzip": 8320
+        }
+      ],
+      "transferBytes": 1585129,
+      "resources": [
+        {
+          "path": "/characters/axon-view.js",
+          "wire": 5106,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "wire": 1627,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "wire": 8515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "wire": 3407,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "wire": 3022,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "wire": 1386,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/axon-view.css",
+          "wire": 1399,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "wire": 539,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "wire": 2479,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "wire": 2128,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "wire": 23853,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "wire": 6640,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "wire": 1962,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "wire": 4295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "wire": 2665,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "wire": 5874,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "wire": 1159,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "wire": 2480,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "wire": 2604,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "wire": 7894,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "wire": 6032,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "wire": 4119,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "wire": 5162,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "wire": 1551,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "wire": 7107,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "wire": 5030,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "wire": 5439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "wire": 620,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "wire": 2295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "wire": 4777,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "wire": 1773,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "wire": 4600,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "wire": 3942,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "wire": 970,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "wire": 1500,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "wire": 1806,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "wire": 965,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "wire": 1568,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/skeleton-male-high.glb",
+          "wire": 544123,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "wire": 888515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "wire": 4201,
+          "complete": true,
+          "status": 200
+        }
+      ],
+      "workerPaths": [],
+      "skeletonDraws": 2,
+      "renderedSkeletonTriangles": 115198,
+      "rawJs": 469721,
+      "gzipJs": 143686,
+      "scanBytes": 1432288,
+      "boneBytes": 543948,
+      "muscleBytes": 888340,
+      "femaleSupplementBytes": 0,
+      "round": 1,
+      "tier": "high",
+      "hero": "sippy"
+    },
+    {
+      "fitPath": "runtime fit",
+      "partial": false,
+      "presentedMs": 25098.29999998212,
+      "firstBlitMs": 25080.40000000596,
+      "floor": {
+        "name": "roma",
+        "shadowMapWidth": 1024
+      },
+      "lastDeferredResponseMs": 22715.59999999404,
+      "assetWaterfall": [
+        {
+          "path": "/characters/assets/skeleton-female-high.glb",
+          "startMs": 1451.9000000059605,
+          "responseMs": 1525.5,
+          "finishMs": 2737.5999999940395
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "startMs": 1454.5999999940395,
+          "responseMs": 1522.4000000059605,
+          "finishMs": 3068.9000000059605
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-high-meshopt.glb",
+          "startMs": 1455.0999999940395,
+          "responseMs": 1554.7999999821186,
+          "finishMs": 2140.4000000059605
+        }
+      ],
+      "bones": 170,
+      "triangles": 114420,
+      "allDraws": 8,
+      "allTriangles": 325968,
+      "compositeDraws": 1,
+      "muscles": 339,
+      "muscleTriangles": 169042,
+      "scanAssets": [
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "bodyBytes": 888340
+        },
+        {
+          "path": "/characters/assets/skeleton-female-high.glb",
+          "bodyBytes": 544572
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-high-meshopt.glb",
+          "bodyBytes": 198972
+        }
+      ],
+      "scripts": [
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "raw": 24850,
+          "gzip": 6445
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "raw": 110273,
+          "gzip": 23657
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "raw": 31768,
+          "gzip": 6912
+        },
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 15025,
+          "gzip": 4911
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 685,
+          "gzip": 345
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "raw": 2643,
+          "gzip": 1191
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 4561,
+          "gzip": 1767
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 14028,
+          "gzip": 4582
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7299,
+          "gzip": 2284
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "raw": 13497,
+          "gzip": 4835
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "raw": 15451,
+          "gzip": 5244
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "raw": 668,
+          "gzip": 426
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "raw": 5115,
+          "gzip": 2100
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "raw": 13252,
+          "gzip": 4405
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "raw": 3641,
+          "gzip": 1578
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 8274,
+          "gzip": 2827
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3655,
+          "gzip": 1432
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 6900,
+          "gzip": 2470
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "raw": 3996,
+          "gzip": 1373
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "raw": 1474,
+          "gzip": 771
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "raw": 1596,
+          "gzip": 776
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "raw": 3275,
+          "gzip": 1305
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "raw": 24039,
+          "gzip": 7699
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "raw": 10647,
+          "gzip": 3924
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "raw": 16627,
+          "gzip": 5837
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "raw": 6128,
+          "gzip": 2409
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "raw": 10586,
+          "gzip": 3747
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "raw": 4227,
+          "gzip": 1611
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "raw": 4858,
+          "gzip": 1933
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 11207,
+          "gzip": 4100
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 1990,
+          "gzip": 965
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "raw": 10594,
+          "gzip": 4006
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "raw": 16053,
+          "gzip": 4967
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 15800,
+          "gzip": 5679
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 26400,
+          "gzip": 8320
+        }
+      ],
+      "transferBytes": 1784900,
+      "resources": [
+        {
+          "path": "/characters/axon-view.js",
+          "wire": 5106,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "wire": 1627,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "wire": 8515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "wire": 3407,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "wire": 3022,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "wire": 1386,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/axon-view.css",
+          "wire": 1399,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "wire": 539,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "wire": 2479,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "wire": 2128,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "wire": 23853,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "wire": 6640,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "wire": 1962,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "wire": 4295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "wire": 2665,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "wire": 5874,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "wire": 1159,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "wire": 2480,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "wire": 2604,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "wire": 7894,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "wire": 6032,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "wire": 4119,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "wire": 5162,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "wire": 1551,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "wire": 7107,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "wire": 5030,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "wire": 5439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "wire": 620,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "wire": 2295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "wire": 4777,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "wire": 1773,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "wire": 4600,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "wire": 3942,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "wire": 970,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "wire": 1500,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "wire": 1806,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "wire": 965,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "wire": 1568,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/skeleton-female-high.glb",
+          "wire": 544747,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "wire": 888515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-high-meshopt.glb",
+          "wire": 199147,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "wire": 4201,
+          "complete": true,
+          "status": 200
+        }
+      ],
+      "workerPaths": [],
+      "skeletonDraws": 2,
+      "renderedSkeletonTriangles": 114420,
+      "rawJs": 469721,
+      "gzipJs": 143686,
+      "scanBytes": 1631884,
+      "boneBytes": 544572,
+      "muscleBytes": 888340,
+      "femaleSupplementBytes": 198972,
+      "round": 1,
+      "tier": "high",
+      "hero": "roma"
+    },
+    {
+      "fitPath": "runtime fit",
+      "partial": false,
+      "presentedMs": 20935,
+      "firstBlitMs": 20923.20000001788,
+      "floor": {
+        "name": "roma",
+        "shadowMapWidth": 1024
+      },
+      "lastDeferredResponseMs": 19284.30000001192,
+      "assetWaterfall": [
+        {
+          "path": "/characters/assets/skeleton-female-high.glb",
+          "startMs": 929.2000000178814,
+          "responseMs": 933.1000000238419,
+          "finishMs": 2152.300000011921
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "startMs": 932.9000000059605,
+          "responseMs": 939.8000000119209,
+          "finishMs": 2506.7000000178814
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-high-meshopt.glb",
+          "startMs": 933.7000000178814,
+          "responseMs": 936.2000000178814,
+          "finishMs": 1529.4000000059605
+        }
+      ],
+      "bones": 170,
+      "triangles": 114420,
+      "allDraws": 8,
+      "allTriangles": 325968,
+      "compositeDraws": 1,
+      "muscles": 339,
+      "muscleTriangles": 169042,
+      "scanAssets": [
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "bodyBytes": 888340
+        },
+        {
+          "path": "/characters/assets/skeleton-female-high.glb",
+          "bodyBytes": 544572
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-high-meshopt.glb",
+          "bodyBytes": 198972
+        }
+      ],
+      "scripts": [
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "raw": 24850,
+          "gzip": 6445
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "raw": 110273,
+          "gzip": 23657
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "raw": 31768,
+          "gzip": 6912
+        },
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 15025,
+          "gzip": 4911
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 685,
+          "gzip": 345
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "raw": 2643,
+          "gzip": 1191
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 4561,
+          "gzip": 1767
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 14028,
+          "gzip": 4582
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7299,
+          "gzip": 2284
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "raw": 13497,
+          "gzip": 4835
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "raw": 15451,
+          "gzip": 5244
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "raw": 668,
+          "gzip": 426
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "raw": 5115,
+          "gzip": 2100
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "raw": 13252,
+          "gzip": 4405
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "raw": 3641,
+          "gzip": 1578
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 8274,
+          "gzip": 2827
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3655,
+          "gzip": 1432
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 6900,
+          "gzip": 2470
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "raw": 3996,
+          "gzip": 1373
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "raw": 1474,
+          "gzip": 771
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "raw": 1596,
+          "gzip": 776
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "raw": 3275,
+          "gzip": 1305
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "raw": 24039,
+          "gzip": 7699
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "raw": 10647,
+          "gzip": 3924
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "raw": 16627,
+          "gzip": 5837
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "raw": 6128,
+          "gzip": 2409
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "raw": 10586,
+          "gzip": 3747
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "raw": 4227,
+          "gzip": 1611
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "raw": 4858,
+          "gzip": 1933
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 11207,
+          "gzip": 4100
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 1990,
+          "gzip": 965
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "raw": 10594,
+          "gzip": 4006
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "raw": 16053,
+          "gzip": 4967
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 15800,
+          "gzip": 5679
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 26400,
+          "gzip": 8320
+        }
+      ],
+      "transferBytes": 1784900,
+      "resources": [
+        {
+          "path": "/characters/axon-view.js",
+          "wire": 5106,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "wire": 1627,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "wire": 8515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "wire": 3407,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "wire": 3022,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "wire": 1386,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/axon-view.css",
+          "wire": 1399,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "wire": 539,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "wire": 2479,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "wire": 2128,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "wire": 1962,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "wire": 4295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "wire": 2665,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "wire": 5874,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "wire": 1159,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "wire": 2480,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "wire": 2604,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "wire": 7894,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "wire": 6032,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "wire": 4119,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "wire": 5162,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "wire": 23853,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "wire": 6640,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "wire": 1551,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "wire": 5030,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "wire": 5439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "wire": 620,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "wire": 2295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "wire": 4777,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "wire": 1773,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "wire": 4600,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "wire": 3942,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "wire": 970,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "wire": 1500,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "wire": 1806,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "wire": 965,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "wire": 1568,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "wire": 7107,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/skeleton-female-high.glb",
+          "wire": 544747,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "wire": 888515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-high-meshopt.glb",
+          "wire": 199147,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "wire": 4201,
+          "complete": true,
+          "status": 200
+        }
+      ],
+      "workerPaths": [],
+      "skeletonDraws": 2,
+      "renderedSkeletonTriangles": 114420,
+      "rawJs": 469721,
+      "gzipJs": 143686,
+      "scanBytes": 1631884,
+      "boneBytes": 544572,
+      "muscleBytes": 888340,
+      "femaleSupplementBytes": 198972,
+      "round": 2,
+      "tier": "high",
+      "hero": "roma"
+    },
+    {
+      "fitPath": "runtime fit",
+      "partial": false,
+      "presentedMs": 21561.09999999404,
+      "firstBlitMs": 21531.80000001192,
+      "floor": {
+        "name": "sippy",
+        "shadowMapWidth": 1024
+      },
+      "lastDeferredResponseMs": 18340.80000001192,
+      "assetWaterfall": [
+        {
+          "path": "/characters/assets/skeleton-male-high.glb",
+          "startMs": 1794.5999999940395,
+          "responseMs": 1799.2000000178814,
+          "finishMs": 2826.7000000178814
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "startMs": 1794.9000000059605,
+          "responseMs": 1799.0999999940395,
+          "finishMs": 3135.9000000059605
+        }
+      ],
+      "bones": 170,
+      "triangles": 115198,
+      "allDraws": 32,
+      "allTriangles": 359486,
+      "compositeDraws": 1,
+      "muscles": 323,
+      "muscleTriangles": 156336,
+      "scanAssets": [
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "bodyBytes": 888340
+        },
+        {
+          "path": "/characters/assets/skeleton-male-high.glb",
+          "bodyBytes": 543948
+        }
+      ],
+      "scripts": [
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "raw": 24850,
+          "gzip": 6445
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "raw": 110273,
+          "gzip": 23657
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "raw": 31768,
+          "gzip": 6912
+        },
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 15025,
+          "gzip": 4911
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 685,
+          "gzip": 345
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "raw": 2643,
+          "gzip": 1191
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 4561,
+          "gzip": 1767
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 14028,
+          "gzip": 4582
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7299,
+          "gzip": 2284
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "raw": 13497,
+          "gzip": 4835
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "raw": 15451,
+          "gzip": 5244
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "raw": 668,
+          "gzip": 426
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "raw": 5115,
+          "gzip": 2100
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "raw": 13252,
+          "gzip": 4405
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "raw": 3641,
+          "gzip": 1578
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 8274,
+          "gzip": 2827
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3655,
+          "gzip": 1432
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 6900,
+          "gzip": 2470
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "raw": 3996,
+          "gzip": 1373
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "raw": 1474,
+          "gzip": 771
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "raw": 1596,
+          "gzip": 776
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "raw": 3275,
+          "gzip": 1305
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "raw": 24039,
+          "gzip": 7699
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "raw": 10647,
+          "gzip": 3924
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "raw": 16627,
+          "gzip": 5837
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "raw": 6128,
+          "gzip": 2409
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "raw": 10586,
+          "gzip": 3747
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "raw": 4227,
+          "gzip": 1611
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "raw": 4858,
+          "gzip": 1933
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 11207,
+          "gzip": 4100
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 1990,
+          "gzip": 965
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "raw": 10594,
+          "gzip": 4006
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "raw": 16053,
+          "gzip": 4967
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 15800,
+          "gzip": 5679
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 26400,
+          "gzip": 8320
+        }
+      ],
+      "transferBytes": 1585129,
+      "resources": [
+        {
+          "path": "/characters/axon-view.js",
+          "wire": 5106,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "wire": 1627,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "wire": 8515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "wire": 3407,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "wire": 3022,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "wire": 1386,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/axon-view.css",
+          "wire": 1399,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "wire": 539,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "wire": 2479,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "wire": 2128,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "wire": 1962,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "wire": 4295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "wire": 2665,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "wire": 5874,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "wire": 1159,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "wire": 2480,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "wire": 2604,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "wire": 7894,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "wire": 6032,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "wire": 4119,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "wire": 5162,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "wire": 23853,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "wire": 6640,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "wire": 1551,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "wire": 5030,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "wire": 5439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "wire": 620,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "wire": 2295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "wire": 4777,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "wire": 1773,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "wire": 4600,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "wire": 3942,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "wire": 970,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "wire": 1500,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "wire": 1806,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "wire": 965,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "wire": 1568,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "wire": 7107,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/skeleton-male-high.glb",
+          "wire": 544123,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "wire": 888515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "wire": 4201,
+          "complete": true,
+          "status": 200
+        }
+      ],
+      "workerPaths": [],
+      "skeletonDraws": 2,
+      "renderedSkeletonTriangles": 115198,
+      "rawJs": 469721,
+      "gzipJs": 143686,
+      "scanBytes": 1432288,
+      "boneBytes": 543948,
+      "muscleBytes": 888340,
+      "femaleSupplementBytes": 0,
+      "round": 2,
+      "tier": "high",
+      "hero": "sippy"
+    },
+    {
+      "fitPath": "runtime fit",
+      "partial": false,
+      "presentedMs": 18690.80000001192,
+      "firstBlitMs": 18675.30000001192,
+      "floor": {
+        "name": "roma",
+        "shadowMapWidth": 512
+      },
+      "lastDeferredResponseMs": 17400.80000001192,
+      "assetWaterfall": [
+        {
+          "path": "/characters/assets/skeleton-female-mobile.glb",
+          "startMs": 1221.6000000238419,
+          "responseMs": 1306.800000011921,
+          "finishMs": 2136.800000011921
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "startMs": 1221.800000011921,
+          "responseMs": 1304.9000000059605,
+          "finishMs": 2376.100000023842
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-mobile-meshopt.glb",
+          "startMs": 1224,
+          "responseMs": 1342.800000011921,
+          "finishMs": 1728.4000000059605
+        }
+      ],
+      "bones": 170,
+      "triangles": 66610,
+      "allDraws": 8,
+      "allTriangles": 186472,
+      "compositeDraws": 1,
+      "muscles": 339,
+      "muscleTriangles": 80300,
+      "scanAssets": [
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "bodyBytes": 601264
+        },
+        {
+          "path": "/characters/assets/skeleton-female-mobile.glb",
+          "bodyBytes": 375040
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-mobile-meshopt.glb",
+          "bodyBytes": 119324
+        }
+      ],
+      "scripts": [
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "raw": 24850,
+          "gzip": 6445
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "raw": 110273,
+          "gzip": 23657
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "raw": 31768,
+          "gzip": 6912
+        },
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 15025,
+          "gzip": 4911
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 685,
+          "gzip": 345
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "raw": 2643,
+          "gzip": 1191
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 4561,
+          "gzip": 1767
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 14028,
+          "gzip": 4582
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7299,
+          "gzip": 2284
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "raw": 13497,
+          "gzip": 4835
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "raw": 15451,
+          "gzip": 5244
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "raw": 668,
+          "gzip": 426
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "raw": 5115,
+          "gzip": 2100
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "raw": 13252,
+          "gzip": 4405
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "raw": 3641,
+          "gzip": 1578
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 8274,
+          "gzip": 2827
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3655,
+          "gzip": 1432
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 6900,
+          "gzip": 2470
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "raw": 3996,
+          "gzip": 1373
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "raw": 1474,
+          "gzip": 771
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "raw": 1596,
+          "gzip": 776
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "raw": 3275,
+          "gzip": 1305
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "raw": 24039,
+          "gzip": 7699
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "raw": 10647,
+          "gzip": 3924
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "raw": 16627,
+          "gzip": 5837
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "raw": 6128,
+          "gzip": 2409
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "raw": 10586,
+          "gzip": 3747
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "raw": 4227,
+          "gzip": 1611
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "raw": 4858,
+          "gzip": 1933
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 11207,
+          "gzip": 4100
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 1990,
+          "gzip": 965
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "raw": 10594,
+          "gzip": 4006
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "raw": 16053,
+          "gzip": 4967
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 15800,
+          "gzip": 5679
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 26400,
+          "gzip": 8320
+        }
+      ],
+      "transferBytes": 1248644,
+      "resources": [
+        {
+          "path": "/characters/axon-view.js",
+          "wire": 5106,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "wire": 1627,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "wire": 8515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "wire": 3407,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "wire": 3022,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "wire": 1386,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/axon-view.css",
+          "wire": 1399,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "wire": 539,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "wire": 2479,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "wire": 2128,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "wire": 23853,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "wire": 6640,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "wire": 1962,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "wire": 4295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "wire": 2665,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "wire": 5874,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "wire": 1159,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "wire": 2480,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "wire": 2604,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "wire": 7894,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "wire": 6032,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "wire": 4119,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "wire": 5162,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "wire": 1551,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "wire": 7107,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "wire": 5030,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "wire": 5439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "wire": 620,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "wire": 2295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "wire": 4777,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "wire": 1773,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "wire": 4600,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "wire": 3942,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "wire": 970,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "wire": 1500,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "wire": 1806,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "wire": 965,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "wire": 1568,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/skeleton-female-mobile.glb",
+          "wire": 375215,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "wire": 601439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-mobile-meshopt.glb",
+          "wire": 119499,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "wire": 4201,
+          "complete": true,
+          "status": 200
+        }
+      ],
+      "workerPaths": [],
+      "skeletonDraws": 2,
+      "renderedSkeletonTriangles": 66610,
+      "rawJs": 469721,
+      "gzipJs": 143686,
+      "scanBytes": 1095628,
+      "boneBytes": 375040,
+      "muscleBytes": 601264,
+      "femaleSupplementBytes": 119324,
+      "round": 2,
+      "tier": "mobile",
+      "hero": "roma"
+    },
+    {
+      "fitPath": "runtime fit",
+      "partial": false,
+      "presentedMs": 29391.5,
+      "firstBlitMs": 29359.59999999404,
+      "floor": {
+        "name": "sippy",
+        "shadowMapWidth": 512
+      },
+      "lastDeferredResponseMs": 26845.90000000596,
+      "assetWaterfall": [
+        {
+          "path": "/characters/assets/skeleton-male-mobile.glb",
+          "startMs": 2308.4000000059605,
+          "responseMs": 2312.5999999940395,
+          "finishMs": 3090.5999999940395
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "startMs": 2311.300000011921,
+          "responseMs": 2312.699999988079,
+          "finishMs": 3303
+        }
+      ],
+      "bones": 170,
+      "triangles": 65066,
+      "allDraws": 32,
+      "allTriangles": 208892,
+      "compositeDraws": 1,
+      "muscles": 323,
+      "muscleTriangles": 77354,
+      "scanAssets": [
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "bodyBytes": 601264
+        },
+        {
+          "path": "/characters/assets/skeleton-male-mobile.glb",
+          "bodyBytes": 368888
+        }
+      ],
+      "scripts": [
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "raw": 24850,
+          "gzip": 6445
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "raw": 110273,
+          "gzip": 23657
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "raw": 31768,
+          "gzip": 6912
+        },
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 15025,
+          "gzip": 4911
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 685,
+          "gzip": 345
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "raw": 2643,
+          "gzip": 1191
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 4561,
+          "gzip": 1767
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 14028,
+          "gzip": 4582
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7299,
+          "gzip": 2284
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "raw": 13497,
+          "gzip": 4835
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "raw": 15451,
+          "gzip": 5244
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "raw": 668,
+          "gzip": 426
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "raw": 5115,
+          "gzip": 2100
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "raw": 13252,
+          "gzip": 4405
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "raw": 3641,
+          "gzip": 1578
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 8274,
+          "gzip": 2827
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3655,
+          "gzip": 1432
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 6900,
+          "gzip": 2470
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "raw": 3996,
+          "gzip": 1373
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "raw": 1474,
+          "gzip": 771
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "raw": 1596,
+          "gzip": 776
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "raw": 3275,
+          "gzip": 1305
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "raw": 24039,
+          "gzip": 7699
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "raw": 10647,
+          "gzip": 3924
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "raw": 16627,
+          "gzip": 5837
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "raw": 6128,
+          "gzip": 2409
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "raw": 10586,
+          "gzip": 3747
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "raw": 4227,
+          "gzip": 1611
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "raw": 4858,
+          "gzip": 1933
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 11207,
+          "gzip": 4100
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 1990,
+          "gzip": 965
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "raw": 10594,
+          "gzip": 4006
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "raw": 16053,
+          "gzip": 4967
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 15800,
+          "gzip": 5679
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 26400,
+          "gzip": 8320
+        }
+      ],
+      "transferBytes": 1122993,
+      "resources": [
+        {
+          "path": "/characters/axon-view.js",
+          "wire": 5106,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "wire": 1627,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "wire": 8515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "wire": 3407,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "wire": 3022,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "wire": 1386,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/axon-view.css",
+          "wire": 1399,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "wire": 539,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "wire": 2479,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "wire": 2128,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "wire": 1962,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "wire": 4295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "wire": 2665,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "wire": 5874,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "wire": 1159,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "wire": 2480,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "wire": 2604,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "wire": 7894,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "wire": 6032,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "wire": 4119,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "wire": 5162,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "wire": 23853,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "wire": 6640,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "wire": 1551,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "wire": 5030,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "wire": 5439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "wire": 620,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "wire": 2295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "wire": 4777,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "wire": 1773,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "wire": 4600,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "wire": 3942,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "wire": 970,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "wire": 1500,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "wire": 1806,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "wire": 965,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "wire": 1568,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "wire": 7107,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/skeleton-male-mobile.glb",
+          "wire": 369063,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "wire": 601439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "wire": 4201,
+          "complete": true,
+          "status": 200
+        }
+      ],
+      "workerPaths": [],
+      "skeletonDraws": 2,
+      "renderedSkeletonTriangles": 65066,
+      "rawJs": 469721,
+      "gzipJs": 143686,
+      "scanBytes": 970152,
+      "boneBytes": 368888,
+      "muscleBytes": 601264,
+      "femaleSupplementBytes": 0,
+      "round": 2,
+      "tier": "mobile",
+      "hero": "sippy"
+    },
+    {
+      "fitPath": "runtime fit",
+      "partial": false,
+      "presentedMs": 22558.59999999404,
+      "firstBlitMs": 22535.40000000596,
+      "floor": {
+        "name": "sippy",
+        "shadowMapWidth": 512
+      },
+      "lastDeferredResponseMs": 20162.90000000596,
+      "assetWaterfall": [
+        {
+          "path": "/characters/assets/skeleton-male-mobile.glb",
+          "startMs": 1833.9000000059605,
+          "responseMs": 1836.199999988079,
+          "finishMs": 2577.0999999940395
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "startMs": 1835.5999999940395,
+          "responseMs": 1838.5,
+          "finishMs": 2791.7999999821186
+        }
+      ],
+      "bones": 170,
+      "triangles": 65066,
+      "allDraws": 32,
+      "allTriangles": 208892,
+      "compositeDraws": 1,
+      "muscles": 323,
+      "muscleTriangles": 77354,
+      "scanAssets": [
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "bodyBytes": 601264
+        },
+        {
+          "path": "/characters/assets/skeleton-male-mobile.glb",
+          "bodyBytes": 368888
+        }
+      ],
+      "scripts": [
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "raw": 24850,
+          "gzip": 6445
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "raw": 110273,
+          "gzip": 23657
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "raw": 31768,
+          "gzip": 6912
+        },
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 15025,
+          "gzip": 4911
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 685,
+          "gzip": 345
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "raw": 2643,
+          "gzip": 1191
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 4561,
+          "gzip": 1767
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 14028,
+          "gzip": 4582
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7299,
+          "gzip": 2284
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "raw": 13497,
+          "gzip": 4835
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "raw": 15451,
+          "gzip": 5244
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "raw": 668,
+          "gzip": 426
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "raw": 5115,
+          "gzip": 2100
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "raw": 13252,
+          "gzip": 4405
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "raw": 3641,
+          "gzip": 1578
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 8274,
+          "gzip": 2827
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3655,
+          "gzip": 1432
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 6900,
+          "gzip": 2470
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "raw": 3996,
+          "gzip": 1373
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "raw": 1474,
+          "gzip": 771
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "raw": 1596,
+          "gzip": 776
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "raw": 3275,
+          "gzip": 1305
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "raw": 24039,
+          "gzip": 7699
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "raw": 10647,
+          "gzip": 3924
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "raw": 16627,
+          "gzip": 5837
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "raw": 6128,
+          "gzip": 2409
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "raw": 10586,
+          "gzip": 3747
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "raw": 4227,
+          "gzip": 1611
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "raw": 4858,
+          "gzip": 1933
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 11207,
+          "gzip": 4100
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 1990,
+          "gzip": 965
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "raw": 10594,
+          "gzip": 4006
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "raw": 16053,
+          "gzip": 4967
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 15800,
+          "gzip": 5679
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 26400,
+          "gzip": 8320
+        }
+      ],
+      "transferBytes": 1122993,
+      "resources": [
+        {
+          "path": "/characters/axon-view.js",
+          "wire": 5106,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "wire": 1627,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "wire": 8515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "wire": 3407,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "wire": 3022,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "wire": 1386,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/axon-view.css",
+          "wire": 1399,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "wire": 539,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "wire": 2479,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "wire": 2128,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "wire": 1962,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "wire": 4295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "wire": 2665,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "wire": 5874,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "wire": 1159,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "wire": 2480,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "wire": 2604,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "wire": 7894,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "wire": 6032,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "wire": 4119,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "wire": 5162,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "wire": 23853,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "wire": 6640,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "wire": 1551,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "wire": 5030,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "wire": 5439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "wire": 620,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "wire": 2295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "wire": 4777,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "wire": 1773,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "wire": 4600,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "wire": 3942,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "wire": 970,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "wire": 1500,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "wire": 1806,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "wire": 965,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "wire": 1568,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "wire": 7107,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/skeleton-male-mobile.glb",
+          "wire": 369063,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "wire": 601439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "wire": 4201,
+          "complete": true,
+          "status": 200
+        }
+      ],
+      "workerPaths": [],
+      "skeletonDraws": 2,
+      "renderedSkeletonTriangles": 65066,
+      "rawJs": 469721,
+      "gzipJs": 143686,
+      "scanBytes": 970152,
+      "boneBytes": 368888,
+      "muscleBytes": 601264,
+      "femaleSupplementBytes": 0,
+      "round": 3,
+      "tier": "mobile",
+      "hero": "sippy"
+    },
+    {
+      "fitPath": "runtime fit",
+      "partial": false,
+      "presentedMs": 10076.5,
+      "firstBlitMs": 10067.5,
+      "floor": {
+        "name": "roma",
+        "shadowMapWidth": 512
+      },
+      "lastDeferredResponseMs": 8817,
+      "assetWaterfall": [
+        {
+          "path": "/characters/assets/skeleton-female-mobile.glb",
+          "startMs": 768.5,
+          "responseMs": 813.0999999940395,
+          "finishMs": 1653
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "startMs": 770.4000000059605,
+          "responseMs": 813.0999999940395,
+          "finishMs": 1854.5999999940395
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-mobile-meshopt.glb",
+          "startMs": 771.5999999940395,
+          "responseMs": 840.5999999940395,
+          "finishMs": 1228
+        }
+      ],
+      "bones": 170,
+      "triangles": 66610,
+      "allDraws": 8,
+      "allTriangles": 186472,
+      "compositeDraws": 1,
+      "muscles": 339,
+      "muscleTriangles": 80300,
+      "scanAssets": [
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "bodyBytes": 601264
+        },
+        {
+          "path": "/characters/assets/skeleton-female-mobile.glb",
+          "bodyBytes": 375040
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-mobile-meshopt.glb",
+          "bodyBytes": 119324
+        }
+      ],
+      "scripts": [
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "raw": 24850,
+          "gzip": 6445
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "raw": 110273,
+          "gzip": 23657
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "raw": 31768,
+          "gzip": 6912
+        },
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 15025,
+          "gzip": 4911
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 685,
+          "gzip": 345
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "raw": 2643,
+          "gzip": 1191
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 4561,
+          "gzip": 1767
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 14028,
+          "gzip": 4582
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7299,
+          "gzip": 2284
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "raw": 13497,
+          "gzip": 4835
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "raw": 15451,
+          "gzip": 5244
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "raw": 668,
+          "gzip": 426
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "raw": 5115,
+          "gzip": 2100
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "raw": 13252,
+          "gzip": 4405
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "raw": 3641,
+          "gzip": 1578
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 8274,
+          "gzip": 2827
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3655,
+          "gzip": 1432
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 6900,
+          "gzip": 2470
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "raw": 3996,
+          "gzip": 1373
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "raw": 1474,
+          "gzip": 771
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "raw": 1596,
+          "gzip": 776
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "raw": 3275,
+          "gzip": 1305
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "raw": 24039,
+          "gzip": 7699
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "raw": 10647,
+          "gzip": 3924
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "raw": 16627,
+          "gzip": 5837
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "raw": 6128,
+          "gzip": 2409
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "raw": 10586,
+          "gzip": 3747
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "raw": 4227,
+          "gzip": 1611
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "raw": 4858,
+          "gzip": 1933
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 11207,
+          "gzip": 4100
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 1990,
+          "gzip": 965
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "raw": 10594,
+          "gzip": 4006
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "raw": 16053,
+          "gzip": 4967
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 15800,
+          "gzip": 5679
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 26400,
+          "gzip": 8320
+        }
+      ],
+      "transferBytes": 1248644,
+      "resources": [
+        {
+          "path": "/characters/axon-view.js",
+          "wire": 5106,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "wire": 1627,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "wire": 8515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "wire": 3407,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "wire": 3022,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "wire": 1386,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/axon-view.css",
+          "wire": 1399,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "wire": 539,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "wire": 2479,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "wire": 2128,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "wire": 23853,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "wire": 6640,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "wire": 1962,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "wire": 4295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "wire": 2665,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "wire": 5874,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "wire": 1159,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "wire": 2480,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "wire": 2604,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "wire": 7894,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "wire": 6032,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "wire": 4119,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "wire": 5162,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "wire": 1551,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "wire": 7107,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "wire": 5030,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "wire": 5439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "wire": 620,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "wire": 2295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "wire": 4777,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "wire": 1773,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "wire": 4600,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "wire": 3942,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "wire": 970,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "wire": 1500,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "wire": 1806,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "wire": 965,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "wire": 1568,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/skeleton-female-mobile.glb",
+          "wire": 375215,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+          "wire": 601439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-mobile-meshopt.glb",
+          "wire": 119499,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "wire": 4201,
+          "complete": true,
+          "status": 200
+        }
+      ],
+      "workerPaths": [],
+      "skeletonDraws": 2,
+      "renderedSkeletonTriangles": 66610,
+      "rawJs": 469721,
+      "gzipJs": 143686,
+      "scanBytes": 1095628,
+      "boneBytes": 375040,
+      "muscleBytes": 601264,
+      "femaleSupplementBytes": 119324,
+      "round": 3,
+      "tier": "mobile",
+      "hero": "roma"
+    },
+    {
+      "fitPath": "runtime fit",
+      "partial": false,
+      "presentedMs": 20512.5,
+      "firstBlitMs": 20509.09999999404,
+      "floor": {
+        "name": "sippy",
+        "shadowMapWidth": 1024
+      },
+      "lastDeferredResponseMs": 17337.30000001192,
+      "assetWaterfall": [
+        {
+          "path": "/characters/assets/skeleton-male-high.glb",
+          "startMs": 1777.699999988079,
+          "responseMs": 1781.0999999940395,
+          "finishMs": 2806.5999999940395
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "startMs": 1783.699999988079,
+          "responseMs": 1785.699999988079,
+          "finishMs": 3117.199999988079
+        }
+      ],
+      "bones": 170,
+      "triangles": 115198,
+      "allDraws": 32,
+      "allTriangles": 359486,
+      "compositeDraws": 1,
+      "muscles": 323,
+      "muscleTriangles": 156336,
+      "scanAssets": [
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "bodyBytes": 888340
+        },
+        {
+          "path": "/characters/assets/skeleton-male-high.glb",
+          "bodyBytes": 543948
+        }
+      ],
+      "scripts": [
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "raw": 24850,
+          "gzip": 6445
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "raw": 110273,
+          "gzip": 23657
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "raw": 31768,
+          "gzip": 6912
+        },
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 15025,
+          "gzip": 4911
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 685,
+          "gzip": 345
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "raw": 2643,
+          "gzip": 1191
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 4561,
+          "gzip": 1767
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 14028,
+          "gzip": 4582
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7299,
+          "gzip": 2284
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "raw": 13497,
+          "gzip": 4835
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "raw": 15451,
+          "gzip": 5244
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "raw": 668,
+          "gzip": 426
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "raw": 5115,
+          "gzip": 2100
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "raw": 13252,
+          "gzip": 4405
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "raw": 3641,
+          "gzip": 1578
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 8274,
+          "gzip": 2827
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3655,
+          "gzip": 1432
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 6900,
+          "gzip": 2470
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "raw": 3996,
+          "gzip": 1373
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "raw": 1474,
+          "gzip": 771
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "raw": 1596,
+          "gzip": 776
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "raw": 3275,
+          "gzip": 1305
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "raw": 24039,
+          "gzip": 7699
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "raw": 10647,
+          "gzip": 3924
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "raw": 16627,
+          "gzip": 5837
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "raw": 6128,
+          "gzip": 2409
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "raw": 10586,
+          "gzip": 3747
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "raw": 4227,
+          "gzip": 1611
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "raw": 4858,
+          "gzip": 1933
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 11207,
+          "gzip": 4100
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 1990,
+          "gzip": 965
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "raw": 10594,
+          "gzip": 4006
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "raw": 16053,
+          "gzip": 4967
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 15800,
+          "gzip": 5679
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 26400,
+          "gzip": 8320
+        }
+      ],
+      "transferBytes": 1585129,
+      "resources": [
+        {
+          "path": "/characters/axon-view.js",
+          "wire": 5106,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "wire": 1627,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "wire": 8515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "wire": 3407,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "wire": 3022,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "wire": 1386,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/axon-view.css",
+          "wire": 1399,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "wire": 539,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "wire": 2479,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "wire": 2128,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "wire": 1962,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "wire": 4295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "wire": 2665,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "wire": 5874,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "wire": 1159,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "wire": 2480,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "wire": 2604,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "wire": 7894,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "wire": 6032,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "wire": 4119,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "wire": 5162,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "wire": 23853,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "wire": 6640,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "wire": 1551,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "wire": 5030,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "wire": 5439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "wire": 620,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "wire": 2295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "wire": 4777,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "wire": 1773,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "wire": 4600,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "wire": 3942,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "wire": 970,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "wire": 1500,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "wire": 1806,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "wire": 965,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "wire": 1568,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "wire": 7107,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/skeleton-male-high.glb",
+          "wire": 544123,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "wire": 888515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "wire": 4201,
+          "complete": true,
+          "status": 200
+        }
+      ],
+      "workerPaths": [],
+      "skeletonDraws": 2,
+      "renderedSkeletonTriangles": 115198,
+      "rawJs": 469721,
+      "gzipJs": 143686,
+      "scanBytes": 1432288,
+      "boneBytes": 543948,
+      "muscleBytes": 888340,
+      "femaleSupplementBytes": 0,
+      "round": 3,
+      "tier": "high",
+      "hero": "sippy"
+    },
+    {
+      "fitPath": "runtime fit",
+      "partial": false,
+      "presentedMs": 20540.69999998808,
+      "firstBlitMs": 20527.79999998212,
+      "floor": {
+        "name": "roma",
+        "shadowMapWidth": 1024
+      },
+      "lastDeferredResponseMs": 18544,
+      "assetWaterfall": [
+        {
+          "path": "/characters/assets/skeleton-female-high.glb",
+          "startMs": 1612.5,
+          "responseMs": 1684.7999999821186,
+          "finishMs": 2923.899999976158
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "startMs": 1616.5,
+          "responseMs": 1691.2999999821186,
+          "finishMs": 3231.7999999821186
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-high-meshopt.glb",
+          "startMs": 1616.699999988079,
+          "responseMs": 1716.199999988079,
+          "finishMs": 2312.0999999940395
+        }
+      ],
+      "bones": 170,
+      "triangles": 114420,
+      "allDraws": 8,
+      "allTriangles": 325968,
+      "compositeDraws": 1,
+      "muscles": 339,
+      "muscleTriangles": 169042,
+      "scanAssets": [
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "bodyBytes": 888340
+        },
+        {
+          "path": "/characters/assets/skeleton-female-high.glb",
+          "bodyBytes": 544572
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-high-meshopt.glb",
+          "bodyBytes": 198972
+        }
+      ],
+      "scripts": [
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "raw": 24850,
+          "gzip": 6445
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "raw": 110273,
+          "gzip": 23657
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "raw": 31768,
+          "gzip": 6912
+        },
+        {
+          "path": "/characters/axon-view.js",
+          "raw": 15025,
+          "gzip": 4911
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "raw": 685,
+          "gzip": 345
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "raw": 2643,
+          "gzip": 1191
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "raw": 4561,
+          "gzip": 1767
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "raw": 14028,
+          "gzip": 4582
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "raw": 5796,
+          "gzip": 2285
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "raw": 7299,
+          "gzip": 2284
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "raw": 3187,
+          "gzip": 1356
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "raw": 13497,
+          "gzip": 4835
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "raw": 15451,
+          "gzip": 5244
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "raw": 668,
+          "gzip": 426
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "raw": 5115,
+          "gzip": 2100
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "raw": 13252,
+          "gzip": 4405
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "raw": 3641,
+          "gzip": 1578
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "raw": 8274,
+          "gzip": 2827
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "raw": 3655,
+          "gzip": 1432
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "raw": 6900,
+          "gzip": 2470
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "raw": 3996,
+          "gzip": 1373
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "raw": 1474,
+          "gzip": 771
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "raw": 1596,
+          "gzip": 776
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "raw": 3275,
+          "gzip": 1305
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "raw": 24039,
+          "gzip": 7699
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "raw": 10647,
+          "gzip": 3924
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "raw": 16627,
+          "gzip": 5837
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "raw": 6128,
+          "gzip": 2409
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "raw": 10586,
+          "gzip": 3747
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "raw": 4227,
+          "gzip": 1611
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "raw": 4858,
+          "gzip": 1933
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "raw": 11207,
+          "gzip": 4100
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "raw": 1990,
+          "gzip": 965
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "raw": 9656,
+          "gzip": 3212
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "raw": 10594,
+          "gzip": 4006
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "raw": 16053,
+          "gzip": 4967
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "raw": 15800,
+          "gzip": 5679
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "raw": 26400,
+          "gzip": 8320
+        }
+      ],
+      "transferBytes": 1784900,
+      "resources": [
+        {
+          "path": "/characters/axon-view.js",
+          "wire": 5106,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-parts.js",
+          "wire": 1627,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-view.js",
+          "wire": 8515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-snapshot.js",
+          "wire": 3407,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-outer-parts.js",
+          "wire": 3022,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-explode.js",
+          "wire": 1386,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/axon-view.css",
+          "wire": 1399,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-anatomy.js",
+          "wire": 539,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-human.js",
+          "wire": 2479,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-source.js",
+          "wire": 2128,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/loaders/GLTFLoader.js",
+          "wire": 23853,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "wire": 6640,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fabricator.js",
+          "wire": 1962,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-shoulder.js",
+          "wire": 4295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-pelvis.js",
+          "wire": 2665,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thorax.js",
+          "wire": 5874,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-skull.js",
+          "wire": 1159,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-hair-roots.js",
+          "wire": 2480,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-muscles.js",
+          "wire": 2604,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-envelope.js",
+          "wire": 7894,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-fit.js",
+          "wire": 6032,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-extremities.js",
+          "wire": 4119,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-thigh-skin.js",
+          "wire": 5162,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-leg-fit.js",
+          "wire": 1551,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+          "wire": 7107,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-charts.js",
+          "wire": 5030,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-insertions.js",
+          "wire": 5439,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-names.js",
+          "wire": 620,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-orbits.js",
+          "wire": 2295,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-fascia.js",
+          "wire": 4777,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-throat.js",
+          "wire": 1773,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-muscle-surface.js",
+          "wire": 4600,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-repairs.js",
+          "wire": 3942,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-cranium.js",
+          "wire": 970,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-curved-fit.js",
+          "wire": 1500,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-seats.js",
+          "wire": 1806,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-column.js",
+          "wire": 965,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-scan-ao.js",
+          "wire": 1568,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/skeleton-female-high.glb",
+          "wire": 544747,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+          "wire": 888515,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/assets/vhf-muscles-high-meshopt.glb",
+          "wire": 199147,
+          "complete": true,
+          "status": 200
+        },
+        {
+          "path": "/characters/diagram-studio.js",
+          "wire": 4201,
+          "complete": true,
+          "status": 200
+        }
+      ],
+      "workerPaths": [],
+      "skeletonDraws": 2,
+      "renderedSkeletonTriangles": 114420,
+      "rawJs": 469721,
+      "gzipJs": 143686,
+      "scanBytes": 1631884,
+      "boneBytes": 544572,
+      "muscleBytes": 888340,
+      "femaleSupplementBytes": 198972,
+      "round": 3,
+      "tier": "high",
+      "hero": "roma"
+    }
+  ],
+  "browser": "155.0.8059.79",
+  "sourceSha256": {
+    "/": "689e4197b2971133767ff929c17bd3339fbcf1a5c66be0c522b21e060367fa1e",
+    "/__three/build/three.module.js": "ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb",
+    "/__three/examples/jsm/libs/meshopt_decoder.module.js": "01f48524f4bac6141eaba07e94cc36e7ee56f311796fa6117c159842941b0468",
+    "/__three/examples/jsm/loaders/GLTFLoader.js": "45139faddd5aaf48ed2d62203d976e5cbd703db1a592de40527f9f6cf58abd44",
+    "/__three/examples/jsm/utils/BufferGeometryUtils.js": "c25b7930e570e9ec56173cd3b866ec8d2e10016630db3937efb439daf1cedbf6",
+    "/assets/sip-app.js": "c80d5bcfad97e9dfba3d0ebc4d80309b5937998fa6f8a28ff2e95b13eeba2193",
+    "/assets/sip-stack.css": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
+    "/assets/sip-warm.js": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
+    "/characters/assets/bp3d-muscles-high-meshopt.glb": "570f770a4293e1796c3c5f4293597490ec6756bab4399f949fcbe721aaa1ec00",
+    "/characters/assets/bp3d-muscles-mobile-meshopt.glb": "72302083e48bd80ae21d78622391304b7f4ba3618094e0e12a662efbe84f95ab",
+    "/characters/assets/skeleton-female-high.glb": "c7b9075053e6c89513359bbdcc569d0c38e807b8ad093ef0b76d47be9f1788b0",
+    "/characters/assets/skeleton-female-mobile.glb": "b67070cc447765b6243dd5d9e2f7ad3bf14cb4e462418b3532db4d5008ef0d70",
+    "/characters/assets/skeleton-male-high.glb": "eb65d0720d94fc1586af7d9b559f087f55749eb52c88dbc0f480bf73b210a9bc",
+    "/characters/assets/skeleton-male-mobile.glb": "941073b12b6f1ce289f73b65778587b7433d343ba6fb811f6ba8807ced10038d",
+    "/characters/assets/vhf-muscles-high-meshopt.glb": "66ff431372f882d87bbc67f87839e5fcea069e022a5d830654ba792a9b24b254",
+    "/characters/assets/vhf-muscles-mobile-meshopt.glb": "8900dc7de1c03eaa806074a11b28deacb214d9d36d955887ec054f36f6b96220",
+    "/characters/axon-view.css": "a1462c79925355218a1ce3c04de4f0e46f782902ebf416ced013d80a310bf66b",
+    "/characters/axon-view.js": "ccdaa791c30e9e627b38a73bd434a1bb5d94d189983b52712333d1ae6bdf8d0f",
+    "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
+    "/characters/diagram-anatomy.js": "be4f12060416cfeee9d7138088849d984d047ff1455247f85954ea0791a3f226",
+    "/characters/diagram-explode.js": "5662635e668012a00e04b7e341fe8347be37cbb27064000ce8fd34a5fe4b33d1",
+    "/characters/diagram-fabricator.js": "fead460ff6e0de27e0892249e5c99b8bd286fd433654f19a95188c987e811aba",
+    "/characters/diagram-fascia.js": "dae9ec180cc99fc592f9bdb76cc3b04d28f81dc3ecef5a86c22fa4bc71119748",
+    "/characters/diagram-hair-roots.js": "b1d193201eebe13336167160187a6921a7d84ed21943e6eff590edeba9e6405e",
+    "/characters/diagram-human.js": "9b48c1984ee3ef2dd0f0e51eae06e6bccdd6590b478675a58d880cc25c70662a",
+    "/characters/diagram-leg-fit.js": "b17df683d935eeb534861053e348fe83b4d0b8349b064617ecdaaec79674bac9",
+    "/characters/diagram-muscle-charts.js": "ca0319ff124f3d33fb550929b16ef578e90c20bdffd3e29ab5bfe36351f1b0f5",
+    "/characters/diagram-muscle-insertions.js": "ec26eaf5e94be1f1602bb946c940375d346ffd8a37619ee92860090a9573413f",
+    "/characters/diagram-muscle-names.js": "9f85c9b6894bc702cdd6ad3b104405f251d13411c7cadba4928b580286925836",
+    "/characters/diagram-muscle-orbits.js": "42154dfea6d5b5d635a689e6260a1d2f21daa8f1594aff2435dd602020cb7cc0",
+    "/characters/diagram-muscle-surface.js": "17efa26b306ec24e6a90782207b1ccf93376e5034ea7a5cfd48783ff1a3cac0b",
+    "/characters/diagram-muscle-throat.js": "ca16367ac40a920f9d3463242d26ae2e037b6579d47651b61a5b4bfdeab15747",
+    "/characters/diagram-outer-parts.js": "2b13338c395ee6d9392ac39516a8400835718f41f221d3f7b199e96a4456f8a8",
+    "/characters/diagram-parts.js": "bff8a6db7241f0c8e7fea8e20b6b2da7dc09b30d004a6e6eba5dbd8c32bb8db4",
+    "/characters/diagram-pelvis.js": "e42837f081b8114a3d65d57a2c647402095e4edffacdd30adac8d9cf475eeed4",
+    "/characters/diagram-scan-ao.js": "affaf4cc845f9da0081ee3b92554f8cecf2f94e25195f1a449c03e109da8c8af",
+    "/characters/diagram-scan-column.js": "91c817f1db48634e633303fd79bd3059742f195ebd227fc210814006fe804b69",
+    "/characters/diagram-scan-cranium.js": "bd060f558e6bbb361f8e305a4d2c993ab1f8977ca1e6179f14a6e16a666b2129",
+    "/characters/diagram-scan-curved-fit.js": "3211902637ea0a137e6e0e79c25269c8bf76ced8716c274c1eaa113aa12d746b",
+    "/characters/diagram-scan-envelope.js": "463410ad22b09c6ba90fb40eaab05b53625b0129be17bf6cec1eef12e05afd4c",
+    "/characters/diagram-scan-extremities.js": "9154665912a440a9b1eb782d96de11487c1e81ae1e0f59ae3fe96f0e0d8c1ad6",
+    "/characters/diagram-scan-fit.js": "ac2e27486759455f96f12b3916db71fad5adf661e0e41628dcc18f64097ff2b4",
+    "/characters/diagram-scan-muscles.js": "ff55e2f84aaa58c535a020487ba15e7cb38850825fe53413fafa20d5bad7144a",
+    "/characters/diagram-scan-repairs.js": "089d84c269dda123851c1f20285a789e863f44b117cc09933d9adbf3eebebe82",
+    "/characters/diagram-scan-seats.js": "eb47e68b77f0ba39d573e6b3e2e8687cedccb9ffa5e1b376578f22c5ed25e851",
+    "/characters/diagram-scan-source.js": "2fb44ff249eac4008c511838fab30b3f885e484586cff8e1f3a6d559f7f76c37",
+    "/characters/diagram-shoulder.js": "62d85172825e86b742ed020e56df24a3fe9a276c1df55c1ba861c8c6a6066a20",
+    "/characters/diagram-skull.js": "b9aa1a8b0aafcfe27de3eeba4924ec6ec51dfbcae6f438c9356effac62643926",
+    "/characters/diagram-snapshot.js": "072370c7c1fe88c4f871ed2d64892af9bf9453c8c860025c49070f4a872b86bf",
+    "/characters/diagram-studio.js": "44302125b47c6ad3028a4136762ba1d0e4930dd355d743c59ecb4ae125cad388",
+    "/characters/diagram-thigh-skin.js": "5cf18a295cae02dc06839f06e98c5d537ffd5b83902a27e9b2f73784f4607f58",
+    "/characters/diagram-thorax.js": "21bedc801b9a37845b7b928266cd871a8d8aa3e91f47c048cb23bde245e6b8c2",
+    "/characters/diagram-view.js": "868da10710f218c82a13a5f80e191a533860dc7d22cde8f65af02bb74cdc83f0",
+    "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
+    "/characters/main.js": "3fea4f0da88e7330c1512861213aac9e3bcdfd82a57c134ce7aef2e03ef7fb3d",
+    "/characters/model-tier.js": "f1c83eb8d91b243948aea6d45c04fcb19e4340a52fc63bb40c960885aa1e11a9",
+    "/characters/motion.js": "88132184dde77d7b3ccb2d9b370a212a6da4811cee6072fd865dc2a55eaf98b2",
+    "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
+    "/characters/rig.js": "fc0c1d81f2695004894aa0dd4e12f9886d5ea6f5d375bce4dadc71026537bb5c",
+    "/characters/roma-forms.js": "b7c27e14d407728c661dbd79c75a001941ae1d14aaaf1992907be868dad581ec",
+    "/characters/roma-light-groom.js": "b76a5f82ecd48cab4dccdab3d4da5c78197e765603eda0a35411f008be87dccd",
+    "/characters/roma.js": "db55e1e5155eefa3a4e8a1e286473b0a93cc630bf6c47dfd9c84284e9ebebe34",
+    "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+    "/characters/secondary.js": "80ed341ab1b5bdc86164c46e3585f724c919c6fcb5a90a3b59f2a681bf47e24d",
+    "/characters/sippy-body.js": "2d5690035f0fbd2bd648d908db99524e3878357e1973d673655623ef6fc2ee8b",
+    "/characters/sippy-explorer.js": "99a3d325033ddb551220398462bb28f92317ecea5b35dc02262906e70f38f172",
+    "/characters/sippy-expression.js": "5ad54467f42692d2bbd42a3abbdba2038e9dc9cae67a1c35bcd675eb88591e46",
+    "/characters/sippy-hips.js": "dde1e1080e348fdf994266e99515ef4af91c110333905746925f59d1ec894eb9",
+    "/characters/sippy-shoulders.js": "178d942fab123c16eabcd0ef8a3d948e9a121e68fe568364d0eaacbb14423b6e",
+    "/characters/sippy-skin.js": "a40f2bf5b900c4be94e6b9ced5a0c7a640ce27c2c2bddf96e0cac95cebe90a0f",
+    "/characters/sippy-tailoring.js": "a3e917d000cc04c0f78f5e0956617669cba914067a6ba5ff084861c02b1ed1dc",
+    "/characters/sippy.js": "ab4fc809a7b73b6ec5d100dfaf8436b5db4a7d752ab208f5c4d1203dee4c4305",
+    "/characters/stage.js": "d206cbd7a4cfb063c1f86c41cbe345e133023021ef9a940650dc05a80fc4d112",
+    "/characters/ui.js": "145b3db0740fcfd83535c2250edc0e52dcda7843c41ed62b2a394d5df934a7cd"
+  },
+  "summary": [
+    {
+      "tier": "mobile",
+      "hero": "sippy",
+      "visits": 3,
+      "presentedMs": 23495.70000001788,
+      "firstBlitMs": 23474.40000000596,
+      "skeletonDraws": 2,
+      "triangles": 65066,
+      "bones": 170,
+      "allDraws": 32,
+      "gzipJs": 143686,
+      "rawJs": 469721,
+      "scanBytes": 970152,
+      "transferBytes": 1122993,
+      "boneBytes": 368888,
+      "muscleBytes": 601264,
+      "femaleSupplementBytes": 0,
+      "muscles": 323,
+      "muscleTriangles": 77354,
+      "compositeDraws": 1
+    },
+    {
+      "tier": "mobile",
+      "hero": "roma",
+      "visits": 3,
+      "presentedMs": 18066.59999999404,
+      "firstBlitMs": 18048,
+      "skeletonDraws": 2,
+      "triangles": 66610,
+      "bones": 170,
+      "allDraws": 8,
+      "gzipJs": 143686,
+      "rawJs": 469721,
+      "scanBytes": 1095628,
+      "transferBytes": 1248644,
+      "boneBytes": 375040,
+      "muscleBytes": 601264,
+      "femaleSupplementBytes": 119324,
+      "muscles": 339,
+      "muscleTriangles": 80300,
+      "compositeDraws": 1
+    },
+    {
+      "tier": "high",
+      "hero": "sippy",
+      "visits": 3,
+      "presentedMs": 21561.09999999404,
+      "firstBlitMs": 21531.80000001192,
+      "skeletonDraws": 2,
+      "triangles": 115198,
+      "bones": 170,
+      "allDraws": 32,
+      "gzipJs": 143686,
+      "rawJs": 469721,
+      "scanBytes": 1432288,
+      "transferBytes": 1585129,
+      "boneBytes": 543948,
+      "muscleBytes": 888340,
+      "femaleSupplementBytes": 0,
+      "muscles": 323,
+      "muscleTriangles": 156336,
+      "compositeDraws": 1
+    },
+    {
+      "tier": "high",
+      "hero": "roma",
+      "visits": 3,
+      "presentedMs": 20935,
+      "firstBlitMs": 20923.20000001788,
+      "skeletonDraws": 2,
+      "triangles": 114420,
+      "bones": 170,
+      "allDraws": 8,
+      "gzipJs": 143686,
+      "rawJs": 469721,
+      "scanBytes": 1631884,
+      "transferBytes": 1784900,
+      "boneBytes": 544572,
+      "muscleBytes": 888340,
+      "femaleSupplementBytes": 198972,
+      "muscles": 339,
+      "muscleTriangles": 169042,
+      "compositeDraws": 1
+    }
+  ]
+}

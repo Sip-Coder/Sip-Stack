@@ -28,7 +28,7 @@ export function mountStudy(section, stage, chooseHero) {
       <label class="ax-spread"><span>Explode <output data-spread-value>0%</output></span>
         <input data-explode type="range" min="0" max="1" step="0.01" value="0"></label></div>
     <div class="ax-layout"><div class="ax-figure">
-      <canvas data-axon-canvas tabindex="0" aria-label="Character layer diagram. Drag to orbit, pinch or use plus and minus to zoom. Use arrow keys to orbit and Home to reset."></canvas>
+      <canvas data-axon-canvas style="visibility:hidden" tabindex="0" aria-label="Character layer diagram. Drag to orbit, pinch or use plus and minus to zoom. Use arrow keys to orbit and Home to reset."></canvas>
       <p class="ax-status" role="status"></p><button type="button" class="ax-reset">Reset view</button>
     </div><aside class="ax-settings" aria-label="Diagram settings">
       <h4>Layers</h4><div class="ax-layers">${layers
@@ -43,11 +43,11 @@ export function mountStudy(section, stage, chooseHero) {
       <label class="ax-part-label">Inspect part <select data-part><option value="">Select a part</option></select></label>
       <div data-measure aria-live="polite"></div>
     </aside></div>
-    <details class="ax-help" data-human-setting data-scan-credit><summary>Skeleton and muscle credits · BoneHub, BodyParts3D and Visible Human Female</summary></details>
+    <details class="ax-help" data-human-setting data-scan-credit><summary>Skeleton and muscle credits · BoneHub, BodyParts3D, Visible Human Female and Z-Anatomy</summary></details>
     <details class="ax-help"><summary>Diagram controls</summary><p>Click or tap a part to measure it. Ghost skin opens an assembled cutaway by hiding the clothes. Drag to orbit. Pinch or scroll to zoom. On the diagram, use the arrow keys to orbit, + or − to zoom and Home to reset.</p>
     <p>Gamepad: use the D-pad to move between controls and adjust values, A to activate, bumpers to change character, the right stick to orbit and triggers to zoom.</p></details>`;
   const get = (selector) => body.querySelector(selector);
-  for (const id of ['human-skeleton-credit', 'human-muscle-credit']) {
+  for (const id of ['human-skeleton-credit', 'human-muscle-credit', 'human-z-anatomy-credit']) {
     const credit = document.getElementById(id).cloneNode(true);
     credit.removeAttribute('id');
     get('[data-scan-credit]').append(credit);
@@ -67,6 +67,7 @@ export function mountStudy(section, stage, chooseHero) {
     records = [],
     isolated,
     loading,
+    previewPaint,
     generation = 0;
   let ghostOpen = false, restoreClothes = false;
   function applyGhost(enabled) {
@@ -93,19 +94,33 @@ export function mountStudy(section, stage, chooseHero) {
       describePart(part ?? selected);
     },
     onPaint(stats) {
+      // An opaque 2D context starts black. Reveal only after the first readback
+      // has been copied, then keep that photograph through later replacements.
+      if (canvas.style.visibility) canvas.style.visibility = '';
+      if (!model || stats.parts !== model.parts.length) return;
+      if (model.partial) {
+        section.dataset.progress = 'skeleton';
+        status.textContent = 'Fitting muscle layers…';
+        previewPaint?.();
+        return;
+      }
       if (!stats.ready) return;
+      delete section.dataset.progress;
       status.textContent = '';
       section.dataset.ready = key;
     },
     onError: showError,
   });
   async function showError(error) {
+    const id = generation;
+    previewPaint?.();
     if (
       await import('../assets/sip-recover.js')
-        .then((m) => m.recover('Axon View', error))
+        .then((m) => id === generation && active ? m.recover('Axon View', error, error.assetURL ? [error.assetURL] : []) : false)
         .catch(() => false)
     )
       return;
+    if (id !== generation || !active) return;
     status.textContent = 'The diagram could not load.';
     open.hidden = false;
     open.textContent = 'Retry';
@@ -172,28 +187,59 @@ export function mountStudy(section, stage, chooseHero) {
     loading?.abort();
     const request = new AbortController();
     loading = request;
-    try {
-      const next = await buildDiagramModel(name, quality, request.signal);
-      if (id !== generation || !active) {
+    // Fetch the studio during the GLB transfer. setModel handles import errors
+    // along its normal retry path when it actually needs to light a human.
+    if (name !== 'hummin') import('./diagram-studio.js').catch(() => {});
+    function present(next) {
+      if (id !== generation || !active || request.signal.aborted) {
         next.dispose();
         return;
       }
+      const previous = model;
+      const selected = partPicker.value === '' ? null : previous?.parts[Number(partPicker.value)]?.id;
       model = next;
-      records = model.parts.map(({ name, layer, mesh }) => {
-        const g = mesh.geometry;
-        g.computeBoundingBox();
-        const b = g.boundingBox;
-        const count = g.index?.count ?? g.attributes.position.count;
+      records = model.parts.map((part) => {
+        let bounds = part.bounds, triangles = part.triangles;
+        if (!bounds || triangles === undefined) {
+          const geometry = part.mesh.geometry;
+          if (!geometry.boundingBox) geometry.computeBoundingBox();
+          bounds = geometry.boundingBox;
+          triangles = (geometry.index?.count ?? geometry.attributes.position.count) / 3;
+        }
         return {
-          name,
-          layer,
-          triangles: count / 3,
-          sizeInches: ['x', 'y', 'z'].map((k) => (b.max[k] - b.min[k]) / 0.0254),
+          name: part.name,
+          layer: part.layer,
+          triangles,
+          sizeInches: ['x', 'y', 'z'].map((k) => (bounds.max[k] - bounds.min[k]) / 0.0254),
         };
       });
       fillParts();
       view.setModel(model, quality);
+      previous?.dispose();
       updateLayers();
+      if (selected) {
+        const part = model.parts.find((p) => p.id === selected);
+        view.select(part);
+        inspect(part);
+      }
+    }
+    function presentSkeleton(next) {
+      if (request.signal.aborted) { next.dispose(); return; }
+      // The final worker message may arrive before the first GPU upload. Keep
+      // this real, selectable preview through its first successful paint.
+      return new Promise((resolve) => {
+        function painted() {
+          request.signal.removeEventListener('abort', painted);
+          if (previewPaint === painted) previewPaint = undefined;
+          resolve();
+        }
+        previewPaint = painted;
+        request.signal.addEventListener('abort', painted, { once: true });
+        present(next);
+      });
+    }
+    try {
+      present(await buildDiagramModel(name, quality, request.signal, presentSkeleton));
     } catch (error) {
       if (!request.signal.aborted && id === generation) showError(error);
     } finally {
@@ -214,6 +260,8 @@ export function mountStudy(section, stage, chooseHero) {
       model = null;
       records = [];
       delete section.dataset.ready;
+      delete section.dataset.progress;
+      open.hidden = true;
       heroPicker.value = name;
       const human = name !== 'hummin';
       for (const setting of body.querySelectorAll('[data-human-setting]')) setting.hidden = !human;
@@ -237,7 +285,8 @@ export function mountStudy(section, stage, chooseHero) {
       padFrame = 0;
       pressed = [];
     } else {
-      if (!model) {
+      if (!model || model.partial) {
+        open.hidden = true;
         status.textContent = 'Preparing ' + labels[names.indexOf(hero)] + '…';
         load(++generation, hero, tier);
       }
@@ -368,6 +417,9 @@ export function mountStudy(section, stage, chooseHero) {
     startPad();
   }
   window.addEventListener('gamepadconnected', startPad);
-  section.axonInspector = { inventory: () => records, stats: () => view.stats };
+  section.axonInspector = {
+    inventory: () => records,
+    stats: () => ({ ...view.stats, fitPath: model?.fitPath ?? (model ? 'procedural' : null), partial: !!model?.partial }),
+  };
   return { sync };
 }

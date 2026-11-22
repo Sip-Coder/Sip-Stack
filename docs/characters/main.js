@@ -58,7 +58,7 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
     lineupButton = find('[data-action=lineup]'),
     slowCheck = find('[data-setting=slow]');
   const studies = [];
-  function observeStudy(section, load) {
+  function observeStudy(section, load, enterFromBelow = 0) {
     let inView = false, pending, block, failed = false;
     const open = section.querySelector('[data-open-study]');
     const syncStudy = () => {
@@ -66,6 +66,7 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
       block?.sync(names[selected], actualTier, active);
       if (!active || pending || failed || block) return;
       pending = load().then(module => {
+        if (!inView || !visible || lost || document.hidden) return;
         block = module.mountStudy(section, stage, name => choose(names.indexOf(name)));
         syncStudy();
       }).catch(async error => {
@@ -76,9 +77,15 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
       }).finally(() => { pending = null; });
     };
     new IntersectionObserver(([entry]) => {
-      inView = entry.isIntersecting;
+      // Centering the first Character Ref portrait can expose the very bottom
+      // of the empty inspector. Expanding Axon above it would scroll that
+      // portrait away. Wait for entry into the inspector itself from below.
+      const rect = entry.boundingClientRect;
+      inView = entry.isIntersecting && (!!block || rect.top >= 0 ||
+        entry.intersectionRatio >= enterFromBelow ||
+        entry.intersectionRect.height >= (entry.rootBounds?.height ?? innerHeight) / 2);
       syncStudy();
-    }).observe(section.querySelector('[data-study-body]'));
+    }, { threshold: enterFromBelow ? [0, enterFromBelow] : 0 }).observe(section.querySelector('[data-study-body]'));
     open.addEventListener('click', () => {
       failed = false;
       section.querySelector('[data-study-body]').scrollIntoView({ block: 'center' });
@@ -86,7 +93,23 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
     });
     studies.push(syncStudy);
   }
-  observeStudy(find('[data-axon]'), () => import('./axon-view.js'));
+  observeStudy(find('[data-axon]'), () => {
+    // The observer has already established that Axon is visible. Start the
+    // selected pair while the inspector's module graph is on the wire.
+    const name = names[selected];
+    if (name !== 'hummin' && actualTier) {
+      for (const suffix of ['', '-sa']) {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'fetch';
+        link.crossOrigin = 'anonymous';
+        link.href = new URL('./assets/axon-' + name + '-' + actualTier + suffix + '.glb', import.meta.url);
+        link.onload = link.onerror = () => link.remove();
+        document.head.append(link);
+      }
+    }
+    return import('./axon-view.js');
+  }, 0.5);
   observeStudy(find('[data-ref]'), () => import('./character-ref.js'));
   function updateHUD() {
     const f = cast[selected]?.ctrl.frame;

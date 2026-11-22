@@ -80,6 +80,31 @@ function bake(spans) {
   return geometry;
 }
 
+// Baked GLBs already group geometry by layer and material. The display owns
+// its picker IDs and any exploded positions. Keep the decoded pack in its
+// neutral pose so a later view can use it again.
+function fromBakedBatches(model) {
+  const numbers = new Map(model.parts.map((part, number) => [part.id, number]));
+  return model.batches.map((batch) => {
+    const source = batch.geometry;
+    const geometry = new T.BufferGeometry();
+    for (const [key, attribute] of Object.entries(source.attributes)) geometry.setAttribute(key, attribute);
+    geometry.setIndex(source.index);
+    geometry.boundingBox = source.boundingBox.clone();
+    geometry.boundingSphere = geometry.boundingBox.getBoundingSphere(new T.Sphere());
+
+    const ids = new Float32Array(source.attributes.position.count);
+    const spans = batch.spans.map(({ partId, lo, hi }) => {
+      const number = numbers.get(partId);
+      if (number === undefined) throw new Error('Unregistered baked part ' + partId);
+      ids.fill(number, lo, hi + 1);
+      return { geometry: source, number, lo, hi };
+    });
+    geometry.setAttribute('axonPart', new T.BufferAttribute(ids, 1));
+    return { ...batch, geometry, spans };
+  });
+}
+
 function studyMaterial(source, chosen, hovered, tissue) {
   const material = source.clone(),
     compile = source.onBeforeCompile;
@@ -287,8 +312,9 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
         layers.set(id, { group, index: layers.size, box: new T.Box3() });
       }
       const all = new T.Box3();
-      for (const b of ranges(model.parts)) {
-        const geometry = bake(b.spans);
+      const batches = model.batches ? fromBakedBatches(model) : ranges(model.parts);
+      for (const b of batches) {
+        const geometry = b.geometry ?? bake(b.spans);
         const tissue = human ? { shade: studioModule.shadeTissue, layer: b.layer, ghost } : null;
         const mesh = new T.Mesh(geometry, studyMaterial(b.finish, chosen, hovered, tissue));
         mesh.renderOrder = b.renderOrder;
@@ -598,9 +624,8 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
   function project(part) {
     const layer = layers.get(part?.layer);
     if (!layer || !layer.group.visible) return null;
-    const g = part.mesh.geometry;
-    if (!g.boundingBox) g.computeBoundingBox();
-    g.boundingBox.getCenter(projected).add(layer.group.position);
+    const bounds = part.bounds ?? part.mesh.geometry.boundingBox;
+    bounds.getCenter(projected).add(layer.group.position);
     if (lastDisplacement) projected.addScaledVector(offsets[model.parts.indexOf(part)], lastDisplacement);
     projected.project(camera);
     return {

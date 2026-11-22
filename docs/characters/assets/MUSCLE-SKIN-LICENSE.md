@@ -31,7 +31,38 @@ Sip-Stack registers the left and right hip, thigh and shank separately in the co
 
 Both female supplements preserve 76 connected surfaces. Measured against all registered donor surfaces, 99% of bidirectional vertex and triangle-centroid samples fall within 0.090 inches on Mobile and 0.043 inches on High. [Female donor surface measurements](../review/scan-skeleton/female-muscle-lod-surface.json)
 
+## Additional superficial muscles
+
+**BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International.** The supplementary export recovers 34 part-level elements of the deltoid, pectoralis major, trapezius, biceps brachii, quadriceps and gastrocnemius in the official BodyParts3D 4.0 archive. The archived meshes retain their original FJ identifiers. The 2025 license applies to these elements and their fitted atlas surfaces. [Archive](https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html) · [Rights holder’s terms](https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html)
+
+Sippy uses all 34 elements, including all four quadriceps heads and both gastrocnemius heads on each side. Roma uses the 22 upper-body elements, fitted to her female skeleton, along with the 76 Andreassen female lower-limb surfaces described above. Sip-Stack registers attachment landmarks, adapts the shapes to the posed rig and skin, supplies the surface finishes and compresses the derived geometry. [Mobile source pack](bp3d-missing-muscles-mobile-meshopt.glb) · [High source pack](bp3d-missing-muscles-high-meshopt.glb)
+
+**Latissimus dorsi and rectus abdominis: Z-Anatomy (https://github.com/Z-Anatomy/Models-of-human-anatomy), CC BY-SA 4.0, derived from BodyParts3D. Share-alike applies to this pack.** The four meshes come from the left and right latissimus dorsi and rectus abdominis in the muscular-system collection of Z-Anatomy’s `Startup.blend`. Each character has separate fitted Z-Anatomy GLBs at both tiers. Those adaptations carry CC BY-SA 4.0. Changes include segment registration to the character, attachment and envelope fitting, tendon and fibre shading attributes, and compression. [Z-Anatomy source](https://github.com/Z-Anatomy/Models-of-human-anatomy) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) · [Mobile source pack](zanatomy-lats-rectus-mobile-meshopt.glb) · [High source pack](zanatomy-lats-rectus-high-meshopt.glb)
+
+## Fitted Axon View files
+
+Each first-open pair below contains a posed character inspection model and its separately licensed Z-Anatomy surfaces. The base file contains the credited anatomical components and Sip-Stack’s stylized skin, hair, clothes and accessories. Each Z-Anatomy file contains only the bilateral lats and rectus abdominis, fitted to that character and distributed under CC BY-SA 4.0. The unposed input files above remain available for the missing-file fallback. [BoneHub skeleton credits](SKELETON-LICENSE.md) · [CC BY-SA 4.0 terms](https://creativecommons.org/licenses/by-sa/4.0/)
+
+| Character and tier | Fitted base | Fitted Z-Anatomy adaptation |
+|---|---|---|
+| Sippy Mobile | [Base GLB](axon-sippy-mobile.glb) | [CC BY-SA GLB](axon-sippy-mobile-sa.glb) |
+| Sippy High | [Base GLB](axon-sippy-high.glb) | [CC BY-SA GLB](axon-sippy-high-sa.glb) |
+| Roma Mobile | [Base GLB](axon-roma-mobile.glb) | [CC BY-SA GLB](axon-roma-mobile-sa.glb) |
+| Roma High | [Base GLB](axon-roma-high.glb) | [CC BY-SA GLB](axon-roma-high-sa.glb) |
+
 ## Reproduce the packages
+
+To build the eight fitted GLBs from the versioned inputs, run the following from the repository root with Node.js 24. The baker uses the same rig, inspection pose, cortical landmarks and tissue fit as the Worker. It validates the resulting character and license groups before writing each file. The Worker bundle is built from that fitter separately. [Baker](../../../tools/bake-axon-packs.mjs) · [Worker build](../../../tools/build-axon-worker.mjs)
+
+```sh
+npm install --prefix /tmp/axon-tools three@0.170.0 meshoptimizer@1.3.0 esbuild@0.25.12
+export THREE_ROOT=/tmp/axon-tools/node_modules/three
+export MESHOPT_ROOT=/tmp/axon-tools/node_modules/meshoptimizer
+node tools/bake-axon-packs.mjs
+NODE_PATH=/tmp/axon-tools/node_modules node tools/build-axon-worker.mjs
+```
+
+### Earlier source preparation
 
 Copy both [BodyParts3D preparation](../../../tools/prepare-muscle-lod.mjs) and [female lower-limb preparation](../../../tools/prepare-female-muscles.mjs) into a scratch directory. Place the two originally supplied BodyParts3D GLBs inside an `original/` subdirectory. Run the following in that scratch directory.
 

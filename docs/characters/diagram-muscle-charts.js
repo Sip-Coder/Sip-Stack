@@ -291,8 +291,20 @@ export function atlasCharts(rig, roma, lm, project) {
     const blade = fittedBlade
       .multiply(new Matrix4().makeScale(1, 1, roma ? 0.65 : 0.7))
       .multiply(rawBlade.invert());
+    // Superficial sheets span independently moving skeletal segments. The
+    // cap follows the humerus distally, the scapular spine posteriorly, and
+    // the clavicle at its anterior lip. Axial fans join the humeral insertion
+    // only near the axilla; their broad spinal and costal roots stay axial.
+    const axillary = (p) => trunk(p).lerp(upper(p), smooth(0.113, 0.177, s * p.x) * smooth(1.237, 1.328, p.y));
+    const deltoid = (p) => {
+      const root = trunk(p).lerp(p.clone().applyMatrix4(blade), 1 - smooth(-0.054, -0.008, p.z));
+      const cap = smooth(0.117, 0.207, s * p.x) * 0.75
+        + (1 - smooth(1.305, 1.426, p.y)) * 0.72;
+      return root.lerp(upper(p), Math.min(1, cap));
+    };
     out[key] = {
-      arm,
+      arm, deltoid, axillary,
+      trapezius: (p) => trunk(p).lerp(p.clone().applyMatrix4(blade), smooth(0.023, 0.14, s * p.x)),
       thumb: (p) => (p.y >= 0.91 ? arm(p) : thumbChart(p).lerp(arm(p), smooth(0.88, 0.91, p.y))),
       leg,
       flexHallux: tendonFoot(1, true),
@@ -314,6 +326,11 @@ export function atlasCharts(rig, roma, lm, project) {
 
 export function atlasRegion(id, geometry) {
   const p = center(geometry);
+  if (/deltoid_/.test(id)) return 'deltoid';
+  if (/latissimus_dorsi|pectoralis_major/.test(id)) return 'axillary';
+  if (/trapezius_/.test(id)) return 'trapezius';
+  if (/biceps_brachii/.test(id)) return 'arm';
+  if (/rectus_abdominis/.test(id)) return 'trunk';
   if (/pectoralis_minor/.test(id)) return 'pecMinor';
   if (/flexor_hallucis_longus/.test(id)) return 'flexHallux';
   if (/extensor_hallucis_longus/.test(id)) return 'extendHallux';
