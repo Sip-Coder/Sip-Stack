@@ -32,8 +32,13 @@ export async function buildDiagramModel(name, tier, signal, onPartial) {
       prepareInterior(name, tier, signal, { upperOnly: staged }),
       builders[name]().then((build) => {
         signal?.throwIfAborted();
-        const pose = build(rig), ctrl = createController(rig);
+        const pose = build(rig);
         setModelDetail(rig.root, tier);
+        // The human shell and clothes are authored around the donor bind
+        // stance. Inspect that actual stance; do not settle the independent
+        // walk controller into a flexed weight-bearing pose first.
+        if (name !== 'hummin') return;
+        const ctrl = createController(rig);
         const neutral = { x: 0, z: 0, run: false, roll: false, jump: false, emote: false };
         for (let i = 0; i < 12; i++) {
           pose(ctrl.step(FIXED_DT, neutral));
