@@ -26,16 +26,19 @@ export function describeRoma(rig, mesh, c) {
     { index: i, color, objectCenter: p } = c;
   const side = sideName(anatomicalX(rig, c.worldCenter));
   if (id.startsWith('eye ')) {
-    const labels = ['sclera', 'iris rim', 'iris', 'pupil', 'catchlights', 'catchlights', 'upper eyelash'];
-    const eyeSide = sideName(Number(id.split(' ')[1]));
+    const labels = id.startsWith('eye iris ')
+      ? ['iris', 'pupil', 'catchlights', 'catchlights']
+      : ['sclera', 'upper eyelash', 'lower eyelid', 'upper eyelid'];
+    const eyeSide = sideName(Number(id.split(' ').at(-1)));
     return skin(eyeSide + ' ' + labels[i]);
   }
   if (id.startsWith('brow ')) return skin(side + ' eyebrow');
+  if (id.startsWith('closed eyelid ')) return skin(sideName(Number(id.split(' ').at(-1))) + ' closed eyelid');
   if (id === 'smile') return skin(['Mouth opening', 'Teeth', 'Lower lip', 'Upper lip'][i]);
   if (id === 'face and band') {
     if (c.material.metalness > 0.1) return kit(side + ' hoop earring');
-    if (color === 'b94442' || color === 'e5bf8b') return kit('Embroidered headband');
-    if (color === '572d32') return skin('Nostrils');
+    if (color === 'b94442' || color === '8f2831' || color === 'e5bf8b') return kit('Embroidered headband');
+    if (color === '713f34') return skin('Nostrils');
     return skin(Math.abs(p.x) > 0.05 ? side + ' ear' : 'Face');
   }
   if (id.includes('waves')) return skin(side + ' ' + id.split(' ')[0] + ' waves');

@@ -7,6 +7,7 @@ const materials = new Map();
 const swatches = new Map();
 const cache = new Map();
 function paint(hex) {
+  if (hex?.isColor) return hex;
   let color = swatches.get(hex);
   if (!color) swatches.set(hex, (color = new T.Color(hex)));
   return color;
