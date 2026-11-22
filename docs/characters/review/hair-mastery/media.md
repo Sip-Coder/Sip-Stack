@@ -1,14 +1,20 @@
 # Sippy and Roma hair review
 
-The turnaround plates compare the live Character Ref render on PR #25 at `654d73b` with the hair rebuild. Each pair uses the same neutral pose, orthographic projection, studio lights and frame size. The rear and crown views show the nape, coverage around the crown and the direction of the guides.
+The turnarounds use the same neutral pose, orthographic camera and Character Ref studio lights on PR #25, the first PR #26 pass at `c2604a7`, and the finer-strand pass.
 
-| Character | Mobile | High | Detail |
+| Character | Mobile | High | Close-ups and calibrated macro |
 | --- | --- | --- | --- |
 | Sippy | [Turnaround](sippy-mobile-turnaround.jpg) | [Turnaround](sippy-high-turnaround.jpg) | [Part, crown whorl and nape](sippy-hair-close-ups.jpg) |
-| Roma | [Turnaround](roma-mobile-turnaround.jpg) | [Turnaround](roma-high-turnaround.jpg) | [Band, shoulder cascade and wave close-up](roma-hair-close-ups.jpg) |
+| Roma | [Turnaround](roma-mobile-turnaround.jpg) | [Turnaround](roma-high-turnaround.jpg) | [Band, shoulder cascade and curl bend](roma-hair-close-ups.jpg) |
 
-Jonathan’s attached sheets set the targets called out beside the photographs. The source crops named in the brief were unavailable in the workspace. The plates compare PR #25 with the rebuild and leave direct, paired character-sheet images open.
+Jonathan’s character sheets set the design targets called out on each plate. The official crop files remain unavailable. The close-ups pair the first PR #26 pass with the refined Mobile and High grooms. In the macro rows, each ¼ in scale bar represents the same projected scene distance. The width target for an individual visible strand is about one-sixteenth of a former lock. [Annotated guide layout](guide-layout.jpg) · [Blender authoring](authoring.md)
 
-The character sheets show finer highlights and more variation in the width of individual locks. The close-up plates keep the original Character Ref color rendering and zoom in on the clump geometry. Sippy’s key checks are the sweep from the side part, the changing directions in the crown whorl, and the close side and nape taper. Roma’s are the layered drop to the shoulders, the separate patterned band, and the darker gaps between flowing ridges. [Annotated guide layout](guide-layout.jpg) · [Blender authoring](authoring.md)
+The matched neutral-pose hair masks overlap by 95.1–97.9% across Sippy’s six cameras and both tiers. His projected crown height is unchanged at capture resolution. Roma’s hair masks overlap by 89.6–95.0%, and each view’s width, crown and lowest edge shifts by less than 0.30 in. These masks count visible hair in the full character render and exclude Roma’s headband. [Capture ledger](capture.json)
 
-The 20.6-second film uses fixed ticks on the real simulator. The emote turns the head, then the camera follows the walking actor through rear and profile views. Roma starts at 0:09. The final cut starts at 0:18 and drives the same walk with reduced motion enabled and keeps the hair still relative to the head as the body moves. The ledger records the source hashes, frame hashes, camera placement in inches, and peak local chain motion. [Motion film](hair-motion.mp4) · [Capture ledger](capture.json)
+## Motion
+
+The 20.6-second simulator film shows idle sway, a head turn, walking and settling at High quality. Roma starts at 0:09.35. The final cut at 0:18.70 shows the same walking input with reduced motion and fixed hair relative to the head. [Simulator motion film](hair-motion.mp4)
+
+Each 5.30-second study pairs the same fixed-tick head input and stop, followed by a held back tilt and release, with excerpts from HAELE 3D’s hair physics demonstration. The shake uses source time 0:00.00–0:02.80. The tilt uses 0:21.65–0:24.15. HAELE 3D footage is a reference for strand fineness and movement. [Sippy physics comparison](sippy-hair-physics.mp4) · [Roma physics comparison](roma-hair-physics.mp4) · [HAELE 3D reference](https://x.com/haele3d/status/2110397355623358674)
+
+The motion audit measured three rebounds for the selected Sippy forelock and Roma wave. They reached near rest 1.23 s and 1.80 s after the stop, respectively. On the held back tilt, four of Roma’s rear guides reached the padded collar’s contact neighborhood while the rendered tips cleared it. [Motion audit](motion-check.json)
