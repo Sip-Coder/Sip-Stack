@@ -369,7 +369,8 @@ export function fitLimb(suit, side, leg, mats) {
     beneath(key, 'body');
   } else {
     const sh = 'shirtsleeve-' + side;
-    tube(sh, mats.white, 0.808, -0.317, 0.01, 0.00125, 18, 16);
+    // Keep the three wrist bands as a cuff facing tucked under the sleeve.
+    tube(sh, mats.white, 0.808, -0.317, -0.2625, 0.00125, 3, 16);
     beneath(sh, 'body');
     tube(key, mats.waistcoat, 1, -0.312, 0.042, 0.00145, 28, 20);
     const { x, y, z } = joint.position, sign = side === 'L' ? 1 : -1;
