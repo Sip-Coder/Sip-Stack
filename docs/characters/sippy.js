@@ -966,8 +966,12 @@ export function buildSippy(rig) {
   // Reducing the groom's height moves the cap onto wider sections of the
   // stationary skull. Reseat the high cap under the locks at its new height.
   const seatedCap = scalpCap.geometry.attributes.position;
+  let crown = -Infinity;
+  for (let i = 0; i < seatedCap.count; i++) crown = Math.max(crown, seatedCap.getY(i));
+  const apex = cheekRows.at(-1)[0] + 0.002;
   for (let i = 0; i < seatedCap.count; i++) {
-    const y = seatedCap.getY(i);
+    const original = seatedCap.getY(i);
+    const y = original + Math.max(0, apex - crown) * T.MathUtils.smoothstep(original, 0.106, crown);
     const pad = 0.0035 * T.MathUtils.smoothstep(y, 0.093, 0.108);
     if (pad) seatedCap.setXYZ(i, ...fitSkull([seatedCap.getX(i), y, seatedCap.getZ(i)], pad));
   }
