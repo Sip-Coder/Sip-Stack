@@ -1,4 +1,4 @@
-// THREE_ROOT=/path/to/three@0.170.0 node tools/check-source-rig.mjs
+// THREE_ROOT=/path/to/three@0.170.0 node tools/check-source-rig.mjs [--dressed]
 import assert from 'node:assert/strict';
 import { registerHooks } from 'node:module';
 import { resolve } from 'node:path';
@@ -16,6 +16,7 @@ const { createController, FIXED_DT } = await import('../docs/characters/motion.j
 const { names, heights } = await import('../docs/characters/ui.js');
 const rest = { x: 0, z: 0, run: false, jump: false, roll: false, emote: false };
 const leg = ['thigh', 'shin', 'foot'], arm = ['upperArm', 'forearm', 'hand'];
+const dressed = process.argv.includes('--dressed');
 const same = (a, b) => assert.ok(Math.abs(a - b) < 1e-8, [a, b].join(' differs from '));
 const inch = value => +(value / 0.0254).toFixed(2);
 
@@ -32,6 +33,13 @@ for (const [i, name] of names.entries()) {
     assert.deepEqual(rig.shinL.position.toArray(), [0, -0.245, 0]);
     assert.deepEqual(rig.forearmR.position.toArray(), [0, -0.176, 0]);
     continue;
+  }
+  let animate;
+  if (dressed) {
+    const module = await import('../docs/characters/' + name + '.js');
+    const build = name === 'sippy' ? module.buildSippy : module.buildRoma;
+    animate = build(rig);
+    await rig.loadSecondary();
   }
   const { original, joints, restPose, donor, height, normalization } = rig.anatomy;
   const scale = rig.height / height;
@@ -74,6 +82,7 @@ for (const [i, name] of names.entries()) {
   const states = new Set();
   for (const [count, movement] of timeline) for (let f = 0; f < count; f++) {
     const frame = controller.step(FIXED_DT, { ...rest, ...movement });
+    animate?.(frame);
     controller.finishPose();
     rig.root.updateMatrixWorld(true);
     states.add(frame.state);
@@ -91,6 +100,7 @@ for (const [i, name] of names.entries()) {
   const dimensions = (box) => box.getSize(new Vector3()).toArray().map(value => inch(value * rig.height));
   console.log(JSON.stringify({
     name,
+    dressed,
     uniformScale: +scale.toFixed(8),
     skeletalHeightIn: inch(new Vector3(0, donor.crown, 0).applyMatrix4(normalization).y * rig.height),
     shoulderHeightIn: ['L', 'R'].map(side => inch(joints['upperArm' + side].y * rig.height)),
