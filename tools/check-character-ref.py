@@ -273,6 +273,9 @@ def check_context_recovery(page, section):
         arg=original["renderer"]["renders"],
     )
     assert face.locator("canvas").evaluate("c=>c.width>0 && c.height>0")
+    assert page.locator(".ct-stage canvas").evaluate(
+        "c => { const gl = c.getContext('webgl2'); return gl.getError() === gl.NO_ERROR; }"
+    )
     print(
         "After driver loss every photo retained its pixels; the restored renderer made a fresh photo.",
         flush=True,

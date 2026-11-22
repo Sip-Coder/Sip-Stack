@@ -38,6 +38,7 @@ The browser charges the full archived response, including headers. The streamed 
 - Holding Roma’s first hair response preserved every pixel of the preceding frame. The delayed selection left World visible. Selecting Hummin issued zero hair requests, and the simulator used one WebGL context.
 - An injected 404 for each hero’s hair archive triggered one `sip-recover` reload, then the correct hero painted.
 - Forced context loss recovered on Mobile and High with `gl.getError()` returning zero. The Mobile run rejected one shader warm and still drew the preserved target.
+- With Character Ref and Axon View active, Roma’s High portrait retained identical pixels through context loss and the Mobile portrait repainted. The browser recorded zero invalid resource deletes and zero GL errors. The follow-up changed only the lazy study renderers. Every file in the cold ledgers retained its measured SHA-256. [Guardrail log](guardrails.txt)
 - Across 20 four-tab cycles on Mobile, Chromium sampled 571 visible frames, 0 black frames and 0 default-framebuffer clears. [Guardrail log](guardrails.txt)
 - Across 5 four-tab cycles on High, Chromium sampled 137 visible frames, 0 black frames and 0 default-framebuffer clears. [Guardrail log](guardrails.txt)
 - Sippy’s sampled walking hair-bone sweep changed from 4.97° to 0.00° when reduced motion was enabled live.

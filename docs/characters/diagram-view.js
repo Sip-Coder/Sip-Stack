@@ -283,11 +283,14 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
   function schedule() {
     if (dirty && drawable() && !raf && !reading && compiling !== sequence) raf = requestAnimationFrame(paint);
   }
-  function clearMeshes() {
+  function releaseDrawResources() {
     for (const mesh of meshes) {
       mesh.geometry.dispose();
       mesh.material.dispose();
     }
+  }
+  function clearMeshes() {
+    releaseDrawResources();
     for (const layer of layers.values()) scene.remove(layer.group);
     meshes = [];
     layers.clear();
@@ -762,6 +765,7 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
       lost = true;
       sequence++;
       stats.ready = false;
+      releaseDrawResources();
       target.dispose();
       studio?.releaseTarget();
       dirty = true;

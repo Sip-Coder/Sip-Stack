@@ -26,3 +26,10 @@ mobile completed 20
 20 four-tab cycles {"tier": "mobile", "contexts": 2, "clears": 0, "black": 0, "frames": 571, "byTab": {"heros": 327, "village": 244}}
 high completed 5
 5 four-tab cycles {"tier": "high", "contexts": 2, "clears": 0, "black": 0, "frames": 137, "byTab": {"heros": 77, "village": 60}}
+
+Open Character Ref and Axon View with Roma selected
+High portrait pixels retained during context loss
+Five GL error checks before loss: 0, 0, 0, 0, 0
+Five GL error checks after High restoration: 0, 0, 0, 0, 0
+Five GL error checks after Mobile repaint: 0, 0, 0, 0, 0
+Invalid WebGL resource deletes: 0

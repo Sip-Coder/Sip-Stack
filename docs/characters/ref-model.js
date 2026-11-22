@@ -182,18 +182,22 @@ function ownDrawResources(root) {
     mesh.material = Array.isArray(mesh.material) ? mesh.material.map(material) : material(mesh.material);
     if (mesh.skeleton) skeletons.add(mesh.skeleton);
   });
-  return () => {
-    root.removeFromParent();
-    root.clear();
+  function releaseGPU() {
     for (const s of skeletons) s.dispose();
     for (const g of geometries.values()) g.dispose();
     for (const m of materials.values()) m.dispose();
     for (const t of textures.values()) t.dispose();
+  }
+  function dispose() {
+    root.removeFromParent();
+    root.clear();
+    releaseGPU();
     skeletons.clear();
     geometries.clear();
     materials.clear();
     textures.clear();
-  };
+  }
+  return { releaseGPU, dispose };
 }
 // Weight the authored dye by rendered triangle area: narrow, densely tessellated
 // embroidery should not outweigh the much larger cloth underneath it.
@@ -275,7 +279,7 @@ export async function buildRefModel(name, tier, alive = () => true) {
   const robot = human ? null : await import('./ref-robot.js');
   const describeRobot = human ? null : (await import('./diagram-hummin.js')).describeHummin;
   const rig = createActor(name, heights[names.indexOf(name)]);
-  let release,
+  let drawResources,
     disposed = false;
   try {
     await yieldForInput(alive);
@@ -400,7 +404,7 @@ export async function buildRefModel(name, tier, alive = () => true) {
     for (const [mesh, geometry] of tierSources) if (!mesh.parent) mesh.geometry = geometry;
     tierSources.clear();
     await yieldForInput(alive);
-    release = ownDrawResources(root);
+    drawResources = ownDrawResources(root);
     const crops = new Map();
     function isolate(target) {
       const key = current + '/' + JSON.stringify(target);
@@ -547,6 +551,10 @@ export async function buildRefModel(name, tier, alive = () => true) {
       }
       return hash.toString(36);
     }
+    function releaseCrops() {
+      for (const crop of crops.values()) crop.dispose();
+      crops.clear();
+    }
     return {
       root,
       pose,
@@ -555,12 +563,15 @@ export async function buildRefModel(name, tier, alive = () => true) {
       isolate,
       triangles,
       palette,
+      releaseGPU() {
+        releaseCrops();
+        drawResources.releaseGPU();
+      },
       dispose() {
         if (disposed) return;
         disposed = true;
-        for (const crop of crops.values()) crop.dispose();
-        crops.clear();
-        release();
+        releaseCrops();
+        drawResources.dispose();
         parts.clear();
         boundsCache.clear();
         frames.clear();
@@ -568,7 +579,7 @@ export async function buildRefModel(name, tier, alive = () => true) {
       },
     };
   } catch (error) {
-    release?.();
+    drawResources?.dispose();
     rig.root.clear();
     throw error;
   }

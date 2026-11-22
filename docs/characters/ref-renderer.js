@@ -432,10 +432,13 @@ export function createRefRenderer(stage) {
       epoch++;
       lost = true;
       stats.contextLosses++;
-      warmed.clear();
-      for (const rows of groups.values())
-        for (const { mesh } of rows)
-          if (mesh.userData.hairPart) mesh.skeleton?.dispose();
+      // Drop the old context's listeners before the live sheet can retire
+      // its cloned models. Finished photographs belong to the DOM.
+      apply('color');
+      current?.releaseGPU();
+      dropModel();
+      for (const m of Object.values(studio)) m.dispose();
+      print.dispose();
       beauty.dispose();
       photo.dispose();
     },
