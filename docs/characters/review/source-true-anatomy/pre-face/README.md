@@ -21,3 +21,7 @@ Roma’s preview paints the available anatomy as the inspector prepares the down
 Cold Heros beat Village on all five measured metrics at both tiers. The cold visits transfer zero anatomy GLBs or decoder modules. [PR #24 routes](../routes-before.json) · [Source anatomy routes](cold-routes.json)
 
 Character Ref and Hummin opened without scan requests. A held Sippy scan was superseded by Hummin. Injected HTTP 503s of Sippy’s skeleton and Roma’s adapted Z-Anatomy file each caused one recovery reload followed by successful local Retry. All 135 Hummin parts per tier matched PR #24 by a digest of the part transforms, attributes, topology, materials and textures. [Lazy loading and recovery](loading-recovery.json) · [Hummin identity](hummin-identity.json)
+
+Twenty World, Outline, Village and Heros cycles sampled 589 frames across Heros and Village, with zero black frames and zero Heros default-framebuffer clears. Both detail tiers recovered after simulated driver loss and rewarmed their shaders. An injected shader warm-up rejection restored a painted stage. [Tab cycles and recovery](guardrails.txt)
+
+Axon presented 46 native images on the existing WebGL context. During 92 offscreen simulator draws, Axon made zero geometry draws, finishing passes or canvas copies. The 250 ms stall test recorded one geometry pass and one finishing pass for the next picture. [Native renderer measurements](native-render.json)
