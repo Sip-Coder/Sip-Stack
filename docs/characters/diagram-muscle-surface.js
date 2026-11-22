@@ -64,6 +64,61 @@ function attachmentSites(positions, samples) {
   return sites;
 }
 
+// These broad sheets expose long aponeuroses and narrow terminal tendons.
+// Locate them in the shared donor frame. The cortical registration sites
+// include points inside those sheets and are unsuitable as pigment masks.
+function sheetTendon(node) {
+  const band = (d, core, edge) => 1 - smooth(Math.abs(d), core, edge);
+  if (node.includes('pectoralis_major')) {
+    const clavicular = node.includes('clavicular'), abdominal = node.includes('abdominal');
+    return (x, y) => {
+      const humeral = smooth(x, 0.156, 0.180) * smooth(y, 1.280, 1.327);
+      let medial;
+      if (clavicular) medial = band(y - (1.375 + 0.34 * x), 0.0012, 0.007) * (1 - smooth(x, 0.062, 0.101));
+      else if (abdominal) medial = band(y - (1.178 + 0.55 * (x - 0.05)), 0.0015, 0.008) * (1 - smooth(x, 0.070, 0.101));
+      else medial = 1 - smooth(x, 0.005, 0.013);
+      return Math.max(0.48 * medial, 0.86 * humeral);
+    };
+  }
+  if (node.includes('latissimus_dorsi')) {
+    return (x, y) => {
+      // The thoracolumbar fascia broadens toward the posterior iliac crest.
+      // Its oblique border converges on the lower thoracic spinous line.
+      const lumbar = 1 - smooth(y, 0.950, 1.243);
+      const fasciaWidth = 0.005 + 0.075 * lumbar;
+      const fascia = 1 - smooth(x, fasciaWidth * 0.56, fasciaWidth);
+      const humeral = smooth(x, 0.152, 0.179) * smooth(y, 1.259, 1.323);
+      return Math.max((0.35 + 0.40 * lumbar) * fascia, 0.87 * humeral);
+    };
+  }
+  if (node.includes('trapezius')) {
+    const ascending = node.includes('ascending'), descending = node.includes('descending');
+    return (x, y) => {
+      // A thin midline raphe widens gradually at the cervicothoracic origin.
+      const width = 0.004 + 0.010 * band(y - 1.445, 0.002, 0.065);
+      const raphe = (1 - smooth(x, width * 0.25, width)) * 0.62;
+      const blade = ascending
+        ? band(y - (1.372 + 0.26 * (x - 0.071)), 0.0018, 0.006) * smooth(x, 0.065, 0.104)
+        : smooth(x, descending ? 0.105 : 0.135, descending ? 0.133 : 0.161);
+      return Math.max(raphe, 0.76 * blade);
+    };
+  }
+  if (node.includes('rectus_abdominis')) {
+    return (x, y) => {
+      // The three relief grooves on the donor's anterior wall slope gently
+      // across the paired bellies. The uppermost inscription is incomplete.
+      const lower = band(y - (1.020 - 0.055 * (x - 0.035)), 0.0012, 0.0045);
+      const middle = band(y - (1.079 - 0.11 * (x - 0.035)), 0.0014, 0.0048);
+      const upper = band(y - (1.147 - 0.19 * (x - 0.035)), 0.0010, 0.0042) * (1 - smooth(x, 0.038, 0.056));
+      const inscribed = Math.max(lower, middle, upper) * smooth(x, 0.005, 0.013) * (1 - smooth(x, 0.047, 0.070));
+      const pubic = 1 - smooth(y, 0.853, 0.886);
+      const costal = smooth(y, 1.225, 1.248);
+      return Math.max(0.52 * inscribed, 0.75 * pubic, 0.48 * costal);
+    };
+  }
+  return null;
+}
+
 export function prepareAtlasMuscle(sourceGeometry, fittedGeometry, nodeName, attachmentSamples) {
   const positions = sourceGeometry.attributes.position,
     count = positions.count;
@@ -139,6 +194,7 @@ export function prepareAtlasMuscle(sourceGeometry, fittedGeometry, nodeName, att
   const uv = new Float32Array(count * 2),
     colors = new Float32Array(count * 3);
   const tint = new Color();
+  const sheet = sheetTendon(nodeName);
   for (let i = 0; i < count; i++) {
     const t = clamp((along[i] - lo) / length, 0, 1),
       row = t * (bins - 1),
@@ -149,10 +205,12 @@ export function prepareAtlasMuscle(sourceGeometry, fittedGeometry, nodeName, att
     uv[2 * i] = 0.5 + (across[i] - rowCenter) / (rowWidth * 0.72 + width * 0.28);
     uv[2 * i + 1] = t;
     q.fromBufferAttribute(positions, i);
-    let pale = 0;
-    for (const site of sites) {
-      const radius = length * (site.insertion ? (longTendon ? 0.28 : 0.16) : fan ? 0.15 : 0.095);
-      pale = Math.max(pale, 1 - smooth(q.distanceTo(site.p) / radius, 0.2, 1));
+    let pale = sheet ? sheet(Math.abs(q.x), q.y) : 0;
+    if (!sheet) {
+      for (const site of sites) {
+        const radius = length * (site.insertion ? (longTendon ? 0.28 : 0.16) : fan ? 0.15 : 0.095);
+        pale = Math.max(pale, 1 - smooth(q.distanceTo(site.p) / radius, 0.2, 1));
+      }
     }
     // The broad central tendon lies on the superior dome of the diaphragm.
     if (nodeName === 'diaphragm')
