@@ -161,6 +161,19 @@ function snapJoint(bones, flag) {
   };
 }
 
+// Model-space estimate of the three anatomical measurements used for the
+// clinical Q angle. Choose anterior points in the superior iliac and
+// proximal tibial search regions before reading either subject's angle.
+function qAngleLandmarks(bones, side, pelvis, hip, knee) {
+  const sign = side === '_LEFT' ? 1 : -1;
+  const front = (points) => points.reduce((a, b) => a?.z >= b.z ? a : b, null);
+  const asis = front(bones.get('HIP' + side).filter(p => sign * (p.x - pelvis.x) > 0.08 && p.y > hip.y + 0.045));
+  const patella = center(bones.get('PATELLA' + side));
+  const tibialTuberosity = front(bones.get('TIBIA' + side).filter(
+    p => p.y <= knee.y - 0.020 && p.y >= knee.y - 0.068));
+  return [coords(asis), coords(patella), coords(tibialTuberosity)];
+}
+
 async function measure(sex) {
   const bones = await pickBones(sex);
   const left = snapJoint(bones, '_LEFT'), right = snapJoint(bones, '_RIGHT');
@@ -187,6 +200,10 @@ async function measure(sex) {
       key, { palm: coords(side.palm), radial: coords(side.thumbDirection), clavicle: side.clavicle },
     ])),
     feet: { L: left.footPlane, R: right.footPlane },
+    qAngle: {
+      L: qAngleLandmarks(bones, '_LEFT', hips, left.hip, left.knee),
+      R: qAngleLandmarks(bones, '_RIGHT', hips, right.hip, right.knee),
+    },
   };
 }
 

@@ -53,6 +53,19 @@ for (const [i, name] of names.entries()) {
     lengths[a.replace('upperArm', 'humerus').replace('forearm', 'radiusUlna')
       .replace('thigh', 'femur').replace('shin', 'tibia')] = inch(sourceLength * scale);
   }
+  const angle = ([asis, patella, tibialTuberosity]) => {
+    const a = asis.clone().sub(patella).setZ(0);
+    const b = patella.clone().sub(tibialTuberosity).setZ(0);
+    return +(180 / Math.PI * a.angleTo(b)).toFixed(2);
+  };
+  const qAngleDeg = Object.fromEntries(['L', 'R'].map((side) => {
+    const points = donor.qAngle[side].map(values => new Vector3().fromArray(values));
+    const stood = points.map((p, i) => {
+      const key = ['hips', 'thigh' + side, 'shin' + side][i];
+      return p.clone().applyMatrix4(restPose[key]).applyMatrix4(rig[key].matrixWorld);
+    });
+    return [side, { source: angle(points), upright: angle(stood) }];
+  }));
   const controller = createController(rig);
   const timeline = [
     [20, {}], [80, { z: 1 }], [80, { x: 0.35, z: 0.8, run: true }],
@@ -87,6 +100,7 @@ for (const [i, name] of names.entries()) {
     pelvisIn: dimensions(rig.anatomy.pelvisBounds),
     thoraxIn: dimensions(rig.anatomy.thoraxBounds),
     sourceRigLengthsIn: lengths,
+    qAngleDeg,
     sampledFrames: timeline.reduce((sum, [count]) => sum + count, 0),
     states: [...states],
   }));

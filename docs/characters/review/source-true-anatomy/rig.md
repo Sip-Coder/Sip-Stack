@@ -20,5 +20,8 @@ All measurements below describe the skeletons in inches at the chosen staging he
 | Forearm, left / right | 10.69 / 10.98 | 9.42 / 9.35 |
 | Thigh, left / right | 17.69 / 17.77 | 15.59 / 15.73 |
 | Shank, left / right | 15.33 / 15.34 | 13.32 / 13.51 |
+| Coronal Q-angle estimate, left / right | 1.4° / 5.2° | 11.3° / 22.8° |
+
+The Q-angle estimate uses the most anterior superior iliac vertex in a lateral search region, the patellar bounds center, and the most anterior point in a proximal tibial band. The acquired source estimates were 1.8° and 5.6° for Sippy and 10.6° and 23.4° for Roma. These values describe the two donor meshes and depend on the stance and cortical feature extraction. Clinical Q-angle studies vary in their estimates of population differences and the contribution of height and pelvic width. [Horton and Hall](https://pubmed.ncbi.nlm.nih.gov/2813517/) · [Grelsamer et al.](https://pubmed.ncbi.nlm.nih.gov/16260666/)
 
 The source-to-view scales were 0.98684021 for Sippy and 1.01587548 for Roma. The rig checker verifies every pivot lands on its corresponding reference center and each transform uses the same scale. It repeats length and transform checks over 317 controller frames per hero covering idle, walk, run, jump, land and roll. [Rig verification](../../../../tools/check-source-rig.mjs)
