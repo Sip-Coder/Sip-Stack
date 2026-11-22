@@ -225,11 +225,15 @@ def measure(browser, origin, tier, hero, expected_assets=(), mode="legacy", prof
             if mode == "baked":
                 assert result["muscles"] == (361 if hero == "sippy" else 365)
             else:
-                assert result["bones"] >= 142 and result["muscles"] >= 320
-                assert result["layers"] == ["clothes", "muscles", "skeleton", "skin"], result
+                muscles, layers = (
+                    (331, ["breast", "clothes", "gluteal-fat", "hip-fat", "muscles", "skeleton", "skin"]) if hero == "roma"
+                    else (361, ["clothes", "muscles", "skeleton", "skin"])
+                )
+                assert result["bones"] >= 142 and result["muscles"] == muscles, result
+                assert result["layers"] == layers, result
                 assert result["allTriangles"] >= result["triangles"] + result["muscleTriangles"], result
                 if hero == "roma":
-                    assert result["preview"]["stage"] == "available-layers"
+                    assert result["preview"] and result["preview"]["stage"] == "available-layers", result
                     assert "skeleton" in result["preview"]["layers"] and result["preview"]["triangles"] > 0
                     assert 0 < result["preview"]["presentedMs"] < result["presentedMs"]
                 else:
@@ -305,21 +309,26 @@ def main():
                         report["browser"] = browser.version
                         sex = "male" if hero == "sippy" else "female"
                         directory = repo / "docs/characters/assets"
-                        assets = [directory / f"skeleton-{sex}-{tier}.glb",
-                                  directory / f"bp3d-muscles-{tier}-meshopt.glb"]
-                        if hero == "roma":
-                            female = "vhf-muscles-source-meshopt.glb" if a.source_geometry else f"vhf-muscles-{tier}-meshopt.glb"
-                            assets.append(directory / female)
                         mode = "legacy"
                         if a.source_geometry:
                             mode = "source geometry"
-                            assets.extend(directory / f"{name}-{tier}-meshopt.glb" for name in
-                                          ("bp3d-missing-muscles", "zanatomy-lats-rectus"))
+                            assets = [directory / f"skeleton-{sex}-{tier}.glb"]
+                            if hero == "roma":
+                                stems = ("roma-adapted-bp3d", "roma-adapted-zanatomy")
+                                assets.append(directory / "vhf-muscles-source-meshopt.glb")
+                            else:
+                                stems = ("bp3d-muscles", "bp3d-missing-muscles", "zanatomy-lats-rectus")
+                            assets.extend(directory / f"{name}-{tier}-meshopt.glb" for name in stems)
                             assert all(asset.is_file() for asset in assets)
                         elif (directory / f"axon-{hero}-{tier}.glb").is_file():
                             mode = "baked"
                             assets = [directory / f"axon-{hero}-{tier}{suffix}.glb" for suffix in ("","-sa")]
                             assert all(asset.is_file() for asset in assets)
+                        else:
+                            assets = [directory / f"skeleton-{sex}-{tier}.glb",
+                                      directory / f"bp3d-muscles-{tier}-meshopt.glb"]
+                            if hero == "roma":
+                                assets.append(directory / f"vhf-muscles-{tier}-meshopt.glb")
                         row = measure(browser, f"http://127.0.0.1:{server.server_port}", tier, hero,
                                       [asset for asset in assets if asset.is_file()], mode=mode, profile=a.profile)
                     finally:

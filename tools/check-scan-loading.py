@@ -19,13 +19,19 @@ ASSETS = "/characters/assets/"
 
 
 def asset_names(hero, tier):
-    sex = "male" if hero == "sippy" else "female"
-    names = [f"skeleton-{sex}-{tier}.glb"]
-    packs = ["bp3d-muscles", "bp3d-missing-muscles", "zanatomy-lats-rectus"]
-    names.extend(f"{name}-{tier}-meshopt.glb" for name in packs)
     if hero == "roma":
-        names.append("vhf-muscles-source-meshopt.glb")
-    return names
+        return [
+            f"skeleton-female-{tier}.glb",
+            f"roma-adapted-bp3d-{tier}-meshopt.glb",
+            f"roma-adapted-zanatomy-{tier}-meshopt.glb",
+            "vhf-muscles-source-meshopt.glb",
+        ]
+    return [
+        f"skeleton-male-{tier}.glb",
+        f"bp3d-muscles-{tier}-meshopt.glb",
+        f"bp3d-missing-muscles-{tier}-meshopt.glb",
+        f"zanatomy-lats-rectus-{tier}-meshopt.glb",
+    ]
 
 
 def show(page, selector=TARGET):
@@ -92,7 +98,9 @@ def verify_demand(browser, url, three, fonts):
         assert sorted(glbs()) == sorted(first_files), glbs()
         assert model["fitPath"] == "source geometry" and not model["partial"] and not workers, model
         parts = page.locator(SECTION).evaluate("e=>e.axonInspector.inventory()")
-        assert {part["layer"] for part in parts} == {"skeleton", "muscles", "skin", "clothes"}
+        assert {part["layer"] for part in parts} == {
+            "skeleton", "muscles", "breast", "gluteal-fat", "hip-fat", "skin", "clothes",
+        }
         assert sum("meshopt_decoder" in p for p in decode_modules()) == 1, decode_modules()
         page.evaluate("scrollTo({top:0,behavior:'instant'})")
         page.wait_for_function("!document.querySelector('[data-axon]').axonInspector.stats().visible")
@@ -198,7 +206,7 @@ if __name__ == "__main__":
                     verify_recovery(browser, args.url, three, args.system_fonts, hero, filename)
                     for hero, filename in [
                         ("sippy", "skeleton-male-mobile.glb"),
-                        ("roma", "zanatomy-lats-rectus-mobile-meshopt.glb"),
+                        ("roma", "roma-adapted-zanatomy-mobile-meshopt.glb"),
                     ]
                 ],
             }
