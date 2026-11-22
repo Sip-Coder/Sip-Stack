@@ -32,9 +32,16 @@ CanvasRenderingContext2D.prototype.putImageData = function(image,...args){
       const copied = performance.now();
       requestAnimationFrame(()=>{
         const el = document.querySelector('[data-axon]');
-        if (el.dataset.ready !== q.key || q.firstPostPaint || !el.axonInspector.stats().ready) return;
-        q.copied = copied;
-        q.firstPostPaint = performance.now();
+        const stats = el.axonInspector.stats();
+        if (el.dataset.progress === 'available-layers' && stats.partial && !q.preview) {
+          q.preview = {copied, presented:performance.now(), stage:el.dataset.progress,
+            layers:[...new Set(el.axonInspector.inventory().map(part=>part.layer))].sort(),
+            triangles:stats.triangles};
+        }
+        if (el.dataset.ready === q.key && !q.firstPostPaint && stats.ready && !stats.partial) {
+          q.copied = copied;
+          q.firstPostPaint = performance.now();
+        }
       });
     }
   }
@@ -78,7 +85,7 @@ q.profileRenderer = renderer => {
 """
 
 
-def measure(browser, origin, tier, hero, expected_assets=(), baked=False, profile=False):
+def measure(browser, origin, tier, hero, expected_assets=(), mode="legacy", profile=False):
     ctx = browser.new_context(
         viewport={"width": 800, "height": 680},
         device_scale_factor=1,
@@ -157,26 +164,37 @@ def measure(browser, origin, tier, hero, expected_assets=(), baked=False, profil
           return {...(q.events?{profile:q.events,requests:resources.map(r=>({
               path:new URL(r.name).pathname,startMs:r.startTime-q.opened,finishMs:r.responseEnd-q.opened}))}:{}),
             start:performance.timeOrigin+q.opened,end:performance.timeOrigin+time,
+            preview:q.preview ? {...q.preview, presentedMs:q.preview.presented-q.opened,
+                firstBlitMs:q.preview.copied-q.opened, end:performance.timeOrigin+q.preview.presented} : null,
             fitPath:s.fitPath ?? null,partial:s.partial ?? false,
             presentedMs:time-q.opened,firstBlitMs:q.copied-q.opened,floor:q.renderedActor,
             lastDeferredResponseMs:Math.max(0,...resources.map(r=>r.responseEnd-q.opened)),
             assetWaterfall:assets.map(r=>({path:new URL(r.name).pathname,startMs:r.startTime-q.opened,
               responseMs:r.responseStart-q.opened,finishMs:r.responseEnd-q.opened})),
+            layers:[...new Set(inventory.map(p=>p.layer))].sort(),
             bones:bones.length,triangles:bones.reduce((n,b)=>n+b.triangles,0),allDraws:s.draws,allTriangles:s.triangles,
             compositeDraws:s.postDraws??0,muscles:muscles.length,
             muscleTriangles:muscles.reduce((n,p)=>n+p.triangles,0),
             scanAssets:assets.map(r=>({path:new URL(r.name).pathname,bodyBytes:r.encodedBodySize})).sort((a,b)=>a.path.localeCompare(b.path)),
             scripts:list.map(r=>({path:new URL(r.name).pathname,raw:r.decodedBodySize,gzip:r.encodedBodySize})).sort((a,b)=>a.path.localeCompare(b.path))};
         }""")
+        images = page.evaluate("axonMeasure.images")
         page.locator("[data-layer=skeleton] [data-isolate]").evaluate("b=>b.click()")
-        page.wait_for_function("axonMeasure.images>=2", timeout=30000)
+        page.wait_for_function("n=>axonMeasure.images>n", arg=images, timeout=30000)
         el = page.locator("[data-axon]")
         page.wait_for_function(
             "([s,t])=>s===document.querySelector('[data-axon]').axonInspector.stats().triangles",
             arg=[result["triangles"], tier],
             timeout=30000,
         )
-        traffic = wire.until(result.pop("end"), since=result.pop("start"))
+        start = result.pop("start")
+        traffic = wire.until(result.pop("end"), since=start)
+        if result["preview"]:
+            preview = result["preview"]
+            preview_wire = wire.until(preview.pop("end"), since=start)
+            preview["transferBytes"] = preview_wire["transferBytes"]
+            for key in ("copied", "presented"):
+                preview.pop(key)
         result.update(transferBytes=traffic["transferBytes"], resources=traffic["resources"],
                       workerPaths=workers)
         assert not wire.redirects, wire.redirects
@@ -198,18 +216,29 @@ def measure(browser, origin, tier, hero, expected_assets=(), baked=False, profil
         result["femaleSupplementBytes"] = sum(
             a["bodyBytes"] for a in wanted if "/vhf-muscles-" in a["path"]
         )
-        if baked:
-            assert result["fitPath"] == "baked" and not result["partial"], result
+        if mode in ("baked", "source geometry"):
+            assert result["fitPath"] == mode and not result["partial"], result
             assert not workers, f"Normal inspection started workers: {workers}"
-            raw_modules = ("/diagram-human.", "/diagram-fit-model.", "/diagram-fit-worker.",
+            fit_modules = ("/diagram-human.", "/diagram-fit-model.", "/diagram-fit-worker.",
                            "/diagram-worker-client.", "/diagram-scan-fit.", "/diagram-muscle-charts.")
-            assert not any(fragment in p for p in requested for fragment in raw_modules), requested
-            assert result["muscles"] == (361 if hero == "sippy" else 365)
+            assert not any(fragment in p for p in requested for fragment in fit_modules), requested
+            if mode == "baked":
+                assert result["muscles"] == (361 if hero == "sippy" else 365)
+            else:
+                assert result["bones"] >= 142 and result["muscles"] >= 320
+                assert result["layers"] == ["clothes", "muscles", "skeleton", "skin"], result
+                assert result["allTriangles"] >= result["triangles"] + result["muscleTriangles"], result
+                if hero == "roma":
+                    assert result["preview"]["stage"] == "available-layers"
+                    assert "skeleton" in result["preview"]["layers"] and result["preview"]["triangles"] > 0
+                    assert 0 < result["preview"]["presentedMs"] < result["presentedMs"]
+                else:
+                    assert result["preview"] is None
         else:
             assert not workers, workers
             result["fitPath"] = "runtime fit" if result["scanBytes"] else "procedural"
-        if result["muscleBytes"]:
-            assert result["muscles"] == (339 if result["femaleSupplementBytes"] else 323) and result["muscleTriangles"] > 0, result["muscles"]
+            if result["muscleBytes"]:
+                assert result["muscles"] == (339 if result["femaleSupplementBytes"] else 323) and result["muscleTriangles"] > 0, result["muscles"]
         assert any("/diagram-" in m["path"] for m in result["scripts"])
         assert not any(
             "/ref-" in m["path"] or "/character-ref" in m["path"] for m in result["scripts"]
@@ -232,7 +261,9 @@ def main():
         "--baseline", type=Path, help="Check all four skeleton triangle ceilings against this report"
     )
     ap.add_argument("--time-baseline", type=Path,
-                    help="Check first-frame medians against the 1.5× pre-scan main budget.")
+                    help="Check first-frame medians against 1.5× this baseline.")
+    ap.add_argument("--source-geometry", action="store_true",
+                    help="Expect the unmodified source assets and rigid-transform renderer.")
     ap.add_argument("--chrome", default=os.getenv("CHROME", "/usr/bin/chromium"))
     ap.add_argument("--output", type=Path, required=True)
     ap.add_argument("--tiers", choices=["mobile", "high"], nargs="+", default=["mobile", "high"])
@@ -277,13 +308,20 @@ def main():
                         assets = [directory / f"skeleton-{sex}-{tier}.glb",
                                   directory / f"bp3d-muscles-{tier}-meshopt.glb"]
                         if hero == "roma":
-                            assets.append(directory / f"vhf-muscles-{tier}-meshopt.glb")
-                        baked = (directory / f"axon-{hero}-{tier}.glb").is_file()
-                        if baked:
+                            female = "vhf-muscles-source-meshopt.glb" if a.source_geometry else f"vhf-muscles-{tier}-meshopt.glb"
+                            assets.append(directory / female)
+                        mode = "legacy"
+                        if a.source_geometry:
+                            mode = "source geometry"
+                            assets.extend(directory / f"{name}-{tier}-meshopt.glb" for name in
+                                          ("bp3d-missing-muscles", "zanatomy-lats-rectus"))
+                            assert all(asset.is_file() for asset in assets)
+                        elif (directory / f"axon-{hero}-{tier}.glb").is_file():
+                            mode = "baked"
                             assets = [directory / f"axon-{hero}-{tier}{suffix}.glb" for suffix in ("","-sa")]
                             assert all(asset.is_file() for asset in assets)
                         row = measure(browser, f"http://127.0.0.1:{server.server_port}", tier, hero,
-                                      [asset for asset in assets if asset.is_file()], baked=baked, profile=a.profile)
+                                      [asset for asset in assets if asset.is_file()], mode=mode, profile=a.profile)
                     finally:
                         browser.close()
                     row.update(round=i + 1, tier=tier, hero=hero)
@@ -328,12 +366,16 @@ def main():
                                 "muscleTriangles",
                                 "compositeDraws",
                             )
+                            preview = [r["preview"] for r in rs if r["preview"]]
                             report["summary"].append(
                                 {
                                     "tier": tag[0],
                                     "hero": tag[1],
                                     "visits": len(rs),
                                     **{k: statistics.median(r[k] for r in rs) for k in keys},
+                                    **({"previewPresentedMs": statistics.median(r["presentedMs"] for r in preview),
+                                        "previewTransferBytes": statistics.median(r["transferBytes"] for r in preview)}
+                                       if preview else {}),
                                 }
                             )
                     a.output.parent.mkdir(parents=True, exist_ok=True)
