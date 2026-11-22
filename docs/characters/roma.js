@@ -5,7 +5,6 @@ import * as T from 'three';
 import { secondaryMotion } from './secondary.js';
 import { romaForms } from './roma-forms.js';
 import { buildRomaFace, poseRomaFace } from './roma-face.js';
-import { buildRomaHair } from './roma-light-groom.js';
 import { addExteriorShell, attachExteriorProfile, coverExterior, explorerLimb, explorerTorso, sampleExterior, seatExplorerHead, shapeExplorerCrown, sneakerRoom, torsoStation } from './human-exterior.js';
 import { romaExterior } from './roma-exterior-data.js';
 import { addRomaFat } from './roma-soft-tissue.js';
@@ -28,13 +27,6 @@ const c = {
   brass: '#b18e53',
   gold: '#dbb05b',
 };
-const hairMaterial = new T.MeshStandardMaterial({
-  color: '#3f2821',
-  vertexColors: true,
-  roughness: 0.43,
-  side: T.DoubleSide,
-});
-
 function clothes(rig, h) {
   const { loft, face: surface, thread, oval, ring, group } = h;
   const { chest, hips } = rig;
@@ -520,7 +512,7 @@ function fieldKit(rig, h) {
   return bag;
 }
 
-export function buildRoma(rig) {
+export function buildRoma(rig, attachGroom) {
   attachExteriorProfile(rig, romaExterior);
   const chestPoint = rig.anatomy.joints.chest;
   rig.chest.userData.resolvePattern = ([x, y, z]) => {
@@ -541,15 +533,16 @@ export function buildRoma(rig) {
   seatExplorerHead(rig, head, { width: 0.138, depth: 0.115, baseWidth: 0.134,
     baseDepth: 0.112, height: 0.148, middle: 0.076, front: 0.003 });
   const facial = buildRomaFace(head, forms, c);
-  const waves = buildRomaHair(head, hairMaterial);
   clothes(rig, forms);
   const bag = fieldKit(rig, forms);
   bag.rotation.x = 0.035;
   forms.finish();
   shapeExplorerCrown(rig, head);
+  const groom = attachGroom?.(head);
+  rig.groom = groom;
   addExteriorShell(rig, c.skin);
   addRomaFat(rig);
-  const secondary = secondaryMotion(rig, './roma-secondary.js', { waves, bag });
+  const secondary = secondaryMotion(rig, './roma-secondary.js', { groom, bag });
   return function poseRoma(f) {
     const emote = f.emote;
     const lift = emote < 0 ? 0 : Math.sin(Math.PI * emote);

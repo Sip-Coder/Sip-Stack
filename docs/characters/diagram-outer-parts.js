@@ -16,6 +16,10 @@ function anatomicalX(rig, point) {
 }
 
 export function describeRoma(rig, mesh, c) {
+  if (mesh.userData.hairPart === 'headband') return kit('Embroidered headband');
+  if (mesh.userData.hairPart === 'crown') return skin('Parted crown and fringe');
+  if (mesh.userData.hairPart === 'waves')
+    return skin(sideName(anatomicalX(rig, c.worldCenter)) + ' ' + (mesh.userData.hairRegion ?? 'cascade') + ' waves');
   const fat = mesh.userData.anatomicalFat;
   if (fat) {
     const layer = /breast/i.test(fat) ? 'breast' : /gluteal/i.test(fat) ? 'gluteal-fat' : 'hip-fat';
@@ -37,12 +41,9 @@ export function describeRoma(rig, mesh, c) {
   if (id === 'smile') return skin(['Mouth opening', 'Teeth', 'Lower lip', 'Upper lip'][i]);
   if (id === 'face and band') {
     if (c.material.metalness > 0.1) return kit(side + ' hoop earring');
-    if (color === 'b94442' || color === '8f2831' || color === 'e5bf8b') return kit('Embroidered headband');
     if (color === '713f34') return skin('Nostrils');
     return skin(Math.abs(p.x) > 0.05 ? side + ' ear' : 'Face');
   }
-  if (id.includes('waves')) return skin(side + ' ' + id.split(' ')[0] + ' waves');
-  if (id.includes('crown')) return skin('Parted crown and fringe');
   if (id.startsWith('hand'))
     return color === 'd5956e' ? skin(side + ' hand') : kit(side + ' beaded bracelet');
   if (id.startsWith('upperArm')) return kit(side + ' sleeve embroidery');
@@ -91,6 +92,9 @@ export function sippyCatalog(rig) {
     hood: 'Folded hood',
   };
   return (_rig, mesh, c) => {
+    if (mesh.userData.hairPart === 'crown') return skin('Scalp and crest');
+    if (mesh.userData.hairPart)
+      return skin(mesh.userData.hairLabel ?? 'Swept forelock');
     if (mesh.userData.anatomicalSkin) return skin(mesh.userData.anatomicalSkin);
     const id = surfaces.get(mesh),
       mat = c.material.userData.blueprintId,
@@ -108,15 +112,6 @@ export function sippyCatalog(rig) {
       // Its local lateral coordinate identifies the eye independently of pose.
       const side = sideName(rig.head.worldToLocal(p.clone()).x);
       if (path.includes('sippy-brow')) return skin(side + ' eyebrow');
-      if (path.includes('sippy-quiff-')) {
-        const no = Number(/sippy-quiff-(\d+)/.exec(path)[1]);
-        return skin('Quiff lock ' + (no + 1));
-      }
-      if (path.includes('sippy-taper-')) {
-        const [, s, i] = /sippy-taper-(-?1)-(\d+)/.exec(path);
-        return skin(sideName(Number(s)) + ' tapered lock ' + (Number(i) + 1));
-      }
-      if (/sippy-face-[LR]/.test(path)) return skin(side + ' forelock');
       if (mat === 'hair') return skin(Math.abs(x) > 0.1 ? side + ' sideburn' : 'Scalp and crest');
       if (mat === 'sclera')
         return skin(c.material.userData.blueprintSamples ? side + ' cornea and iris' : 'Teeth');

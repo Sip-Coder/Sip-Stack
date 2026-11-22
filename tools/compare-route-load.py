@@ -29,6 +29,8 @@ def compare(before, after):
     for setting in ("browser", "network", "cpu", "viewport", "probeSha256"):
         if before[setting] != after[setting]:
             raise ValueError(f"Incompatible before/after setting: {setting}")
+    if before.get("hero", "sippy") != after.get("hero", "sippy"):
+        raise ValueError("The Heros actor changed between the before and after runs")
     failed = []
     print("| Tier | Route | Revision | " + " | ".join(metric[1] for metric in METRICS) + " |")
     print("|---|---|---|" + "---:|" * len(METRICS))

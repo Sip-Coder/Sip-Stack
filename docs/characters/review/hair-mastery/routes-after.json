@@ -1,0 +1,3055 @@
+{
+  "revision": "3884cb281a2c871fdc1ef0e6b0ee3fe8965a68dd",
+  "origin": "http://127.0.0.1:35109",
+  "network": {
+    "offline": false,
+    "latency": 60,
+    "downloadThroughput": 1125000.0,
+    "uploadThroughput": 187500.0,
+    "connectionType": "cellular4g"
+  },
+  "cpu": 4,
+  "viewport": [
+    800,
+    680
+  ],
+  "hero": "sippy",
+  "probeSha256": "7fac6f4ead9a0f7539411df2cd92d58ba601db0c2551101540c021dd4e326f26",
+  "note": "Gzip level 6 HTML/CSS/JS, pinned local three 0.170.0 mirror, system font fallback, HTTP/1.1, Chromium SwiftShader. Each visit uses a new Chromium process and profile, HTTP cache and GPU shader disk cache disabled.",
+  "rows": [
+    {
+      "route": "heros",
+      "tier": "mobile",
+      "presentedMs": 4029.2999999821186,
+      "interactiveMs": 5345.4000000059605,
+      "inputAtMs": 4050.699999988079,
+      "firstProof": {
+        "names": [
+          "sippy"
+        ],
+        "width": 497,
+        "height": 449,
+        "tier": "mobile",
+        "groomMeshes": 4,
+        "groomTriangles": 8578
+      },
+      "positionBefore": [
+        0,
+        0,
+        0
+      ],
+      "positionAfter": [
+        -0.00040976587473801296,
+        0,
+        0.003600087931791048
+      ],
+      "requests": 35,
+      "modules": 30,
+      "transferBytes": 465801,
+      "round": 1,
+      "requestLedger": "5d49fe8a6403aef2",
+      "tierAndGeometry": {
+        "shadowMapWidth": 512,
+        "actor": "sippy",
+        "renderedMesh": "Sippy Part-side temple",
+        "meshVertices": 188,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "heros",
+      "tier": "high",
+      "presentedMs": 4546.800000011921,
+      "interactiveMs": 6514.199999988079,
+      "inputAtMs": 4585.300000011921,
+      "firstProof": {
+        "names": [
+          "sippy"
+        ],
+        "width": 497,
+        "height": 449,
+        "tier": "high",
+        "groomMeshes": 4,
+        "groomTriangles": 15848
+      },
+      "positionBefore": [
+        0,
+        0,
+        0
+      ],
+      "positionAfter": [
+        -0.0018816565231339587,
+        0,
+        0.009982130842979914
+      ],
+      "requests": 35,
+      "modules": 30,
+      "transferBytes": 507698,
+      "round": 1,
+      "requestLedger": "5a53f66b568c7bdc",
+      "tierAndGeometry": {
+        "shadowMapWidth": 1024,
+        "actor": "sippy",
+        "renderedMesh": "Sippy Part-side temple",
+        "meshVertices": 285,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "heros",
+      "tier": "mobile",
+      "presentedMs": 4245.799999982119,
+      "interactiveMs": 5833.4000000059605,
+      "inputAtMs": 4294.4000000059605,
+      "firstProof": {
+        "names": [
+          "sippy"
+        ],
+        "width": 497,
+        "height": 449,
+        "tier": "mobile",
+        "groomMeshes": 4,
+        "groomTriangles": 8578
+      },
+      "positionBefore": [
+        0,
+        0,
+        0
+      ],
+      "positionAfter": [
+        -0.0018816565231339587,
+        0,
+        0.009982130842979914
+      ],
+      "requests": 35,
+      "modules": 30,
+      "transferBytes": 465801,
+      "round": 2,
+      "requestLedger": "5d49fe8a6403aef2",
+      "tierAndGeometry": {
+        "shadowMapWidth": 512,
+        "actor": "sippy",
+        "renderedMesh": "Sippy Part-side temple",
+        "meshVertices": 188,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "heros",
+      "tier": "high",
+      "presentedMs": 4450,
+      "interactiveMs": 6501.199999988079,
+      "inputAtMs": 4494,
+      "firstProof": {
+        "names": [
+          "sippy"
+        ],
+        "width": 497,
+        "height": 449,
+        "tier": "high",
+        "groomMeshes": 4,
+        "groomTriangles": 15848
+      },
+      "positionBefore": [
+        0,
+        0,
+        0
+      ],
+      "positionAfter": [
+        -0.0018816565231339587,
+        0,
+        0.009982130842979914
+      ],
+      "requests": 35,
+      "modules": 30,
+      "transferBytes": 507698,
+      "round": 2,
+      "requestLedger": "a6c72b2e01e65666",
+      "tierAndGeometry": {
+        "shadowMapWidth": 1024,
+        "actor": "sippy",
+        "renderedMesh": "Sippy Part-side temple",
+        "meshVertices": 285,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "heros",
+      "tier": "mobile",
+      "presentedMs": 3847.9000000059605,
+      "interactiveMs": 5388.800000011921,
+      "inputAtMs": 3894.7000000178814,
+      "firstProof": {
+        "names": [
+          "sippy"
+        ],
+        "width": 497,
+        "height": 449,
+        "tier": "mobile",
+        "groomMeshes": 4,
+        "groomTriangles": 8578
+      },
+      "positionBefore": [
+        0,
+        0,
+        0
+      ],
+      "positionAfter": [
+        -0.0018816565231339587,
+        0,
+        0.009982130842979914
+      ],
+      "requests": 35,
+      "modules": 30,
+      "transferBytes": 465801,
+      "round": 3,
+      "requestLedger": "5d49fe8a6403aef2",
+      "tierAndGeometry": {
+        "shadowMapWidth": 512,
+        "actor": "sippy",
+        "renderedMesh": "Sippy Part-side temple",
+        "meshVertices": 188,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "heros",
+      "tier": "high",
+      "presentedMs": 4033,
+      "interactiveMs": 6087.399999976158,
+      "inputAtMs": 4079.5999999940395,
+      "firstProof": {
+        "names": [
+          "sippy"
+        ],
+        "width": 497,
+        "height": 449,
+        "tier": "high",
+        "groomMeshes": 4,
+        "groomTriangles": 15848
+      },
+      "positionBefore": [
+        0,
+        0,
+        0
+      ],
+      "positionAfter": [
+        -0.0018816565231339587,
+        0,
+        0.009982130842979914
+      ],
+      "requests": 35,
+      "modules": 30,
+      "transferBytes": 507698,
+      "round": 3,
+      "requestLedger": "5a53f66b568c7bdc",
+      "tierAndGeometry": {
+        "shadowMapWidth": 1024,
+        "actor": "sippy",
+        "renderedMesh": "Sippy Part-side temple",
+        "meshVertices": 285,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "heros",
+      "tier": "mobile",
+      "presentedMs": 4088.399999976158,
+      "interactiveMs": 5591.399999976158,
+      "inputAtMs": 4131.399999976158,
+      "firstProof": {
+        "names": [
+          "sippy"
+        ],
+        "width": 497,
+        "height": 449,
+        "tier": "mobile",
+        "groomMeshes": 4,
+        "groomTriangles": 8578
+      },
+      "positionBefore": [
+        0,
+        0,
+        0
+      ],
+      "positionAfter": [
+        -0.0018816565231339587,
+        0,
+        0.009982130842979914
+      ],
+      "requests": 35,
+      "modules": 30,
+      "transferBytes": 465801,
+      "round": 4,
+      "requestLedger": "a1a4b3b386cdc592",
+      "tierAndGeometry": {
+        "shadowMapWidth": 512,
+        "actor": "sippy",
+        "renderedMesh": "Sippy Part-side temple",
+        "meshVertices": 188,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "heros",
+      "tier": "high",
+      "presentedMs": 3891.199999988079,
+      "interactiveMs": 5998.699999988079,
+      "inputAtMs": 3936.4000000059605,
+      "firstProof": {
+        "names": [
+          "sippy"
+        ],
+        "width": 497,
+        "height": 449,
+        "tier": "high",
+        "groomMeshes": 4,
+        "groomTriangles": 15848
+      },
+      "positionBefore": [
+        0,
+        0,
+        0
+      ],
+      "positionAfter": [
+        -0.0018816565231339587,
+        0,
+        0.009982130842979914
+      ],
+      "requests": 35,
+      "modules": 30,
+      "transferBytes": 507698,
+      "round": 4,
+      "requestLedger": "5a53f66b568c7bdc",
+      "tierAndGeometry": {
+        "shadowMapWidth": 1024,
+        "actor": "sippy",
+        "renderedMesh": "Sippy Part-side temple",
+        "meshVertices": 285,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "heros",
+      "tier": "mobile",
+      "presentedMs": 3800.899999976158,
+      "interactiveMs": 5208.0999999940395,
+      "inputAtMs": 3840.899999976158,
+      "firstProof": {
+        "names": [
+          "sippy"
+        ],
+        "width": 497,
+        "height": 449,
+        "tier": "mobile",
+        "groomMeshes": 4,
+        "groomTriangles": 8578
+      },
+      "positionBefore": [
+        0,
+        0,
+        0
+      ],
+      "positionAfter": [
+        -0.0018816565231339587,
+        0,
+        0.009982130842979914
+      ],
+      "requests": 35,
+      "modules": 30,
+      "transferBytes": 465801,
+      "round": 5,
+      "requestLedger": "5d49fe8a6403aef2",
+      "tierAndGeometry": {
+        "shadowMapWidth": 512,
+        "actor": "sippy",
+        "renderedMesh": "Sippy Part-side temple",
+        "meshVertices": 188,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "heros",
+      "tier": "high",
+      "presentedMs": 3798.199999988079,
+      "interactiveMs": 5838.799999982119,
+      "inputAtMs": 3835.0999999940395,
+      "firstProof": {
+        "names": [
+          "sippy"
+        ],
+        "width": 497,
+        "height": 449,
+        "tier": "high",
+        "groomMeshes": 4,
+        "groomTriangles": 15848
+      },
+      "positionBefore": [
+        0,
+        0,
+        0
+      ],
+      "positionAfter": [
+        -0.0018816565231339587,
+        0,
+        0.009982130842979914
+      ],
+      "requests": 35,
+      "modules": 30,
+      "transferBytes": 507698,
+      "round": 5,
+      "requestLedger": "a6c72b2e01e65666",
+      "tierAndGeometry": {
+        "shadowMapWidth": 1024,
+        "actor": "sippy",
+        "renderedMesh": "Sippy Part-side temple",
+        "meshVertices": 285,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "village",
+      "tier": "mobile",
+      "presentedMs": 7984.800000011921,
+      "interactiveMs": 13256.5,
+      "inputAtMs": 8007.100000023842,
+      "firstProof": {
+        "names": [
+          "Cantina guest",
+          "Cellar worker",
+          "Harvester",
+          "Oarsman",
+          "Porter",
+          "Stair walker",
+          "Taster"
+        ],
+        "width": 716,
+        "height": 447,
+        "tier": "Mobile"
+      },
+      "positionBefore": [
+        16.781108222324153,
+        20.184568065961635,
+        25.958068924600653
+      ],
+      "positionAfter": [
+        20.522191414612745,
+        20.184568065961635,
+        23.398656209687584
+      ],
+      "requests": 62,
+      "modules": 56,
+      "transferBytes": 516509,
+      "round": 1,
+      "requestLedger": "4b54cfe9c18ab036",
+      "tierAndGeometry": {
+        "shadowMapWidth": 512,
+        "actor": "Porter",
+        "renderedMesh": "Worker LOD 2",
+        "meshVertices": 1164,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "village",
+      "tier": "high",
+      "presentedMs": 14273.5,
+      "interactiveMs": 22848.30000001192,
+      "inputAtMs": 14373.199999988079,
+      "firstProof": {
+        "names": [
+          "Cantina guest",
+          "Cellar worker",
+          "Harvester",
+          "Oarsman",
+          "Porter",
+          "Stair walker",
+          "Taster"
+        ],
+        "width": 716,
+        "height": 447,
+        "tier": "High"
+      },
+      "positionBefore": [
+        16.781108222324153,
+        20.184568065961635,
+        25.958068924600653
+      ],
+      "positionAfter": [
+        20.522191414612745,
+        20.184568065961635,
+        23.398656209687584
+      ],
+      "requests": 62,
+      "modules": 56,
+      "transferBytes": 516509,
+      "round": 1,
+      "requestLedger": "4b54cfe9c18ab036",
+      "tierAndGeometry": {
+        "shadowMapWidth": 2048,
+        "actor": "Porter",
+        "renderedMesh": "Worker LOD 2",
+        "meshVertices": 1164,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "village",
+      "tier": "mobile",
+      "presentedMs": 14280.59999999404,
+      "interactiveMs": 20168.90000000596,
+      "inputAtMs": 14329.90000000596,
+      "firstProof": {
+        "names": [
+          "Cantina guest",
+          "Cellar worker",
+          "Harvester",
+          "Oarsman",
+          "Porter",
+          "Stair walker",
+          "Taster"
+        ],
+        "width": 716,
+        "height": 447,
+        "tier": "Mobile"
+      },
+      "positionBefore": [
+        16.781108222324153,
+        20.184568065961635,
+        25.958068924600653
+      ],
+      "positionAfter": [
+        20.522191414612745,
+        20.184568065961635,
+        23.398656209687584
+      ],
+      "requests": 62,
+      "modules": 56,
+      "transferBytes": 516509,
+      "round": 2,
+      "requestLedger": "4b54cfe9c18ab036",
+      "tierAndGeometry": {
+        "shadowMapWidth": 512,
+        "actor": "Porter",
+        "renderedMesh": "Worker LOD 2",
+        "meshVertices": 1164,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "village",
+      "tier": "high",
+      "presentedMs": 15524.300000011921,
+      "interactiveMs": 20007.600000023842,
+      "inputAtMs": 15544,
+      "firstProof": {
+        "names": [
+          "Cantina guest",
+          "Cellar worker",
+          "Harvester",
+          "Oarsman",
+          "Porter",
+          "Stair walker",
+          "Taster"
+        ],
+        "width": 716,
+        "height": 447,
+        "tier": "High"
+      },
+      "positionBefore": [
+        16.781108222324153,
+        20.184568065961635,
+        25.958068924600653
+      ],
+      "positionAfter": [
+        20.522191414612745,
+        20.184568065961635,
+        23.398656209687584
+      ],
+      "requests": 62,
+      "modules": 56,
+      "transferBytes": 516509,
+      "round": 2,
+      "requestLedger": "4b54cfe9c18ab036",
+      "tierAndGeometry": {
+        "shadowMapWidth": 2048,
+        "actor": "Porter",
+        "renderedMesh": "Worker LOD 2",
+        "meshVertices": 1164,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "village",
+      "tier": "mobile",
+      "presentedMs": 6451.0999999940395,
+      "interactiveMs": 12324,
+      "inputAtMs": 6465.399999976158,
+      "firstProof": {
+        "names": [
+          "Cantina guest",
+          "Cellar worker",
+          "Harvester",
+          "Oarsman",
+          "Porter",
+          "Stair walker",
+          "Taster"
+        ],
+        "width": 716,
+        "height": 447,
+        "tier": "Mobile"
+      },
+      "positionBefore": [
+        16.781108222324153,
+        20.184568065961635,
+        25.958068924600653
+      ],
+      "positionAfter": [
+        20.522191414612745,
+        20.184568065961635,
+        23.398656209687584
+      ],
+      "requests": 62,
+      "modules": 56,
+      "transferBytes": 516509,
+      "round": 3,
+      "requestLedger": "4b54cfe9c18ab036",
+      "tierAndGeometry": {
+        "shadowMapWidth": 512,
+        "actor": "Porter",
+        "renderedMesh": "Worker LOD 2",
+        "meshVertices": 1164,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "village",
+      "tier": "high",
+      "presentedMs": 14015.5,
+      "interactiveMs": 18568.09999999404,
+      "inputAtMs": 14065.300000011921,
+      "firstProof": {
+        "names": [
+          "Cantina guest",
+          "Cellar worker",
+          "Harvester",
+          "Oarsman",
+          "Porter",
+          "Stair walker",
+          "Taster"
+        ],
+        "width": 716,
+        "height": 447,
+        "tier": "High"
+      },
+      "positionBefore": [
+        16.781108222324153,
+        20.184568065961635,
+        25.958068924600653
+      ],
+      "positionAfter": [
+        20.522191414612745,
+        20.184568065961635,
+        23.398656209687584
+      ],
+      "requests": 62,
+      "modules": 56,
+      "transferBytes": 516509,
+      "round": 3,
+      "requestLedger": "4b54cfe9c18ab036",
+      "tierAndGeometry": {
+        "shadowMapWidth": 2048,
+        "actor": "Porter",
+        "renderedMesh": "Worker LOD 2",
+        "meshVertices": 1164,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "village",
+      "tier": "mobile",
+      "presentedMs": 10085.300000011921,
+      "interactiveMs": 14185.40000000596,
+      "inputAtMs": 10103.199999988079,
+      "firstProof": {
+        "names": [
+          "Cantina guest",
+          "Cellar worker",
+          "Harvester",
+          "Oarsman",
+          "Porter",
+          "Stair walker",
+          "Taster"
+        ],
+        "width": 716,
+        "height": 447,
+        "tier": "Mobile"
+      },
+      "positionBefore": [
+        16.781108222324153,
+        20.184568065961635,
+        25.958068924600653
+      ],
+      "positionAfter": [
+        20.522191414612745,
+        20.184568065961635,
+        23.398656209687584
+      ],
+      "requests": 62,
+      "modules": 56,
+      "transferBytes": 516509,
+      "round": 4,
+      "requestLedger": "4b54cfe9c18ab036",
+      "tierAndGeometry": {
+        "shadowMapWidth": 512,
+        "actor": "Porter",
+        "renderedMesh": "Worker LOD 2",
+        "meshVertices": 1164,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "village",
+      "tier": "high",
+      "presentedMs": 9954.5,
+      "interactiveMs": 12874.199999988079,
+      "inputAtMs": 9975.09999999404,
+      "firstProof": {
+        "names": [
+          "Cantina guest",
+          "Cellar worker",
+          "Harvester",
+          "Oarsman",
+          "Porter",
+          "Stair walker",
+          "Taster"
+        ],
+        "width": 716,
+        "height": 447,
+        "tier": "High"
+      },
+      "positionBefore": [
+        16.781108222324153,
+        20.184568065961635,
+        25.958068924600653
+      ],
+      "positionAfter": [
+        20.522191414612745,
+        20.184568065961635,
+        23.398656209687584
+      ],
+      "requests": 62,
+      "modules": 56,
+      "transferBytes": 516509,
+      "round": 4,
+      "requestLedger": "4b54cfe9c18ab036",
+      "tierAndGeometry": {
+        "shadowMapWidth": 2048,
+        "actor": "Porter",
+        "renderedMesh": "Worker LOD 2",
+        "meshVertices": 1164,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "village",
+      "tier": "mobile",
+      "presentedMs": 6727.800000011921,
+      "interactiveMs": 13615.199999988079,
+      "inputAtMs": 6750.4000000059605,
+      "firstProof": {
+        "names": [
+          "Cantina guest",
+          "Cellar worker",
+          "Harvester",
+          "Oarsman",
+          "Porter",
+          "Stair walker",
+          "Taster"
+        ],
+        "width": 716,
+        "height": 447,
+        "tier": "Mobile"
+      },
+      "positionBefore": [
+        16.781108222324153,
+        20.184568065961635,
+        25.958068924600653
+      ],
+      "positionAfter": [
+        20.522191414612745,
+        20.184568065961635,
+        23.398656209687584
+      ],
+      "requests": 62,
+      "modules": 56,
+      "transferBytes": 516509,
+      "round": 5,
+      "requestLedger": "4b54cfe9c18ab036",
+      "tierAndGeometry": {
+        "shadowMapWidth": 512,
+        "actor": "Porter",
+        "renderedMesh": "Worker LOD 2",
+        "meshVertices": 1164,
+        "actualReducedMotion": true
+      }
+    },
+    {
+      "route": "village",
+      "tier": "high",
+      "presentedMs": 18269.5,
+      "interactiveMs": 25015.30000001192,
+      "inputAtMs": 18322.40000000596,
+      "firstProof": {
+        "names": [
+          "Cantina guest",
+          "Cellar worker",
+          "Harvester",
+          "Oarsman",
+          "Porter",
+          "Stair walker",
+          "Taster"
+        ],
+        "width": 716,
+        "height": 447,
+        "tier": "High"
+      },
+      "positionBefore": [
+        16.781108222324153,
+        20.184568065961635,
+        25.958068924600653
+      ],
+      "positionAfter": [
+        20.522191414612745,
+        20.184568065961635,
+        23.398656209687584
+      ],
+      "requests": 62,
+      "modules": 56,
+      "transferBytes": 516509,
+      "round": 5,
+      "requestLedger": "4b54cfe9c18ab036",
+      "tierAndGeometry": {
+        "shadowMapWidth": 2048,
+        "actor": "Porter",
+        "renderedMesh": "Worker LOD 2",
+        "meshVertices": 1164,
+        "actualReducedMotion": true
+      }
+    }
+  ],
+  "summary": [
+    {
+      "route": "heros",
+      "tier": "mobile",
+      "samples": 5,
+      "presentedMs": 4029.2999999821186,
+      "interactiveMs": 5388.800000011921,
+      "transferBytes": 465801,
+      "requests": 35,
+      "modules": 30
+    },
+    {
+      "route": "heros",
+      "tier": "high",
+      "samples": 5,
+      "presentedMs": 4033,
+      "interactiveMs": 6087.399999976158,
+      "transferBytes": 507698,
+      "requests": 35,
+      "modules": 30
+    },
+    {
+      "route": "village",
+      "tier": "mobile",
+      "samples": 5,
+      "presentedMs": 7984.800000011921,
+      "interactiveMs": 13615.199999988079,
+      "transferBytes": 516509,
+      "requests": 62,
+      "modules": 56
+    },
+    {
+      "route": "village",
+      "tier": "high",
+      "samples": 5,
+      "presentedMs": 14273.5,
+      "interactiveMs": 20007.600000023842,
+      "transferBytes": 516509,
+      "requests": 62,
+      "modules": 56
+    }
+  ],
+  "browser": "155.0.8059.79",
+  "sourceSha256": {
+    "/": "86bddd4109dd52f9840f07f954c616e41c619c5aae36472cfc0ab2d2fe985a81",
+    "/__three/build/three.module.js": "ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb",
+    "/__three/examples/jsm/libs/meshopt_decoder.module.js": "01f48524f4bac6141eaba07e94cc36e7ee56f311796fa6117c159842941b0468",
+    "/assets/sip-app.js": "c80d5bcfad97e9dfba3d0ebc4d80309b5937998fa6f8a28ff2e95b13eeba2193",
+    "/assets/sip-stack.css": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
+    "/assets/sip-warm.js": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
+    "/characters/assets/hair/sippy-high.glb.gz": "c95b8c930c8b3041354c8cc348c4628caca7988ae4de537e56c1ea03dc088cd4",
+    "/characters/assets/hair/sippy-mobile.glb.gz": "309c62556c73c2fe4a20b39c4247dd57ea5175ab2743362ca28ffcfbf3dd6868",
+    "/characters/avatar-builder.js": "7ea387b09b7a0564952641e0179a9c0a5cd562b230c17089eb7c27e04253e3fd",
+    "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
+    "/characters/hair-groom.js": "245b3357c31c801d51fe2e4849ff6bdecd68f3f4832d32ada60d9c1a084f0a72",
+    "/characters/hair-motion.js": "b1ec2a52fb7abcac46f67ef36eaa7402a2d42261a9754f2f34cbc851033483c6",
+    "/characters/human-exterior.js": "7a87b86caacd33c943b0bf331c0acf3a539434deb6b68eb81501954801b4cb20",
+    "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
+    "/characters/main.js": "bf9946cdca21a4ca6dc694df38915fa0dfa1bea6bbb363de14d92cbcd9505fd9",
+    "/characters/model-tier.js": "f1c83eb8d91b243948aea6d45c04fcb19e4340a52fc63bb40c960885aa1e11a9",
+    "/characters/motion.js": "089200089c705e4b589653561215ee10807234f4e3a188c777ebf7fcd6188968",
+    "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
+    "/characters/rig.js": "3e8373a52c7e6a5b2049b4da5b6fbc0a9c13fa0291f6b84b6f6f38252edea20c",
+    "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+    "/characters/secondary.js": "80ed341ab1b5bdc86164c46e3585f724c919c6fcb5a90a3b59f2a681bf47e24d",
+    "/characters/sippy-body.js": "e12fdae99a8a88cd9e1a8e6fcf578b4318f389cdf6eb495ca5307e912e22d61f",
+    "/characters/sippy-explorer.js": "50897737f914a86a5a84854384901cf2e9fa9afcbd1884f434148082f8f4d33c",
+    "/characters/sippy-expression.js": "634337129e2b18fe0a0de36f365ca37edb21d0a2e6c21d66eab34acbb0bc0cb6",
+    "/characters/sippy-exterior-data.js": "52861ff9f0f3032cd350788266547070a09d8491c4ad81cbbb52d814de8c7b60",
+    "/characters/sippy-hips.js": "dde1e1080e348fdf994266e99515ef4af91c110333905746925f59d1ec894eb9",
+    "/characters/sippy-secondary.js": "77a3e0e04caa8a0555d32bb965588536a840fac2d3c525ff8adde6368b1a3fc5",
+    "/characters/sippy-skin.js": "a8a5282940d89b8e02f5d4ce65d76251aff1d707921769cca85874983ff1418f",
+    "/characters/sippy-tailoring.js": "de73f10db7d36935072f8bc5f27a193558299e0ed0d689599d8b59162e097fb0",
+    "/characters/sippy.js": "a07543aa15254e0f9dcd67340cbe41ee7c3f38873559c1fba62b63ad5c8f80f5",
+    "/characters/source-asset-files.js": "72807e24212cffe795c732b5340c2782f5102c2a27754bd2a4d8da1f4c1b7d4b",
+    "/characters/source-landmarks.js": "f52aa6aa192045f70d2df2fa576fabbb6374fa52d754c970451cf298bf4cb393",
+    "/characters/source-rig.js": "2797b1f579607a7fbc09336dff23a0f3bee52ec7a1f41eafb91066ef0862aaf3",
+    "/characters/stage.js": "d206cbd7a4cfb063c1f86c41cbe345e133023021ef9a940650dc05a80fc4d112",
+    "/characters/ui.js": "145b3db0740fcfd83535c2250edc0e52dcda7843c41ed62b2a394d5df934a7cd",
+    "/__three/examples/jsm/controls/OrbitControls.js": "80efaadea4f8a636a65fb0bd08bfef62f3d93a0bb94e2e7500f23176c5c07f4e",
+    "/__three/examples/jsm/geometries/RoundedBoxGeometry.js": "d20aeaf7077c459a8d952d215738d7b44fba028440bb862d84b622a34f0c80bb",
+    "/__three/examples/jsm/objects/Sky.js": "eacd17d5debec3b909d1208304d70024a59c38c58b6533fcd4711f8a6a0b63bc",
+    "/__three/examples/jsm/postprocessing/EffectComposer.js": "d234e578618fa816955ebdc059c049c577e203e650e33cf22bde3f232c29e669",
+    "/__three/examples/jsm/postprocessing/MaskPass.js": "328cf7db0da5d9be83ffe39d54b01d5ac1fddf108cc98182ddbb056f5c8b537f",
+    "/__three/examples/jsm/postprocessing/OutputPass.js": "32f879d2179087676631c799857a885586b3cdd13b9731bd3b13f06428bd58b7",
+    "/__three/examples/jsm/postprocessing/Pass.js": "b3c6128340eaa37e40a6a2f1b738e894c855239417d50959759b34a2b5e89f92",
+    "/__three/examples/jsm/postprocessing/RenderPass.js": "6c9b8a539ea16e898f65e4760f14937ef9ea94043bd9842c141e0301f41903e8",
+    "/__three/examples/jsm/postprocessing/SMAAPass.js": "f3508e3e17f40c1358921b5c7eb3ab60460d97b06fdadf6b0d40b52d3842c44a",
+    "/__three/examples/jsm/postprocessing/ShaderPass.js": "3b28a1ee27e0eb96c0eab137a1f442ccf127a926904eced2d51e125ec44af781",
+    "/__three/examples/jsm/postprocessing/UnrealBloomPass.js": "3bd23a1097af75c7002d0ffc21a6c14f45c4dd701dbaf737030dfc61fb7c64d9",
+    "/__three/examples/jsm/shaders/CopyShader.js": "4e3346db194db56a596cd074e9bdb39fb5eb52040c333e0d29dc4eb1324d3b1d",
+    "/__three/examples/jsm/shaders/LuminosityHighPassShader.js": "9f4866f9abb2d96fd83eec46ba4bf2165b22155a7a37ff425c0f60eba18007cb",
+    "/__three/examples/jsm/shaders/OutputShader.js": "4944cecd49c0d4d1520a4d927bde8a590fd43f041ee913252b9451855a01d0f0",
+    "/__three/examples/jsm/shaders/SMAAShader.js": "3c7e942a25cb09dd431e395e6e91904715a834b2a6e62ec0b9b77c2f8655c369",
+    "/__three/examples/jsm/utils/BufferGeometryUtils.js": "c25b7930e570e9ec56173cd3b866ec8d2e10016630db3937efb439daf1cedbf6",
+    "/assets/sip-craft-loader.js": "3b7f8db1f51b27e2351ea48219daf0d5d72a1a7c873eb89bd0e4f6d9fddc234d",
+    "/assets/sip-craft.css": "eeb67ad10516467e9ab144f7a3db1fbfa993603150a6aabd43cf788156dfa3b9",
+    "/assets/sip-creek-loader.js": "090402e74371c773b597f8a15ce4a634b51e8fcdd4c8f442165edcae96a8a511",
+    "/assets/sip-creek.css": "b422928d95e275f5215a73f84d5620ad2adbe1feff845d7f1197dc22ca075488",
+    "/assets/sip-village-content.js": "42af565577b636d3d114d151c0e31ef128abe0a45cfd9ea4ac7782f3a85a6620",
+    "/assets/sip-village.js": "3e28582dcb75905764b2132ebaf41d0fcf6d404d742abad515849214a8c4cc06",
+    "/life/appearance.js": "9dc5cc174301e6216710fb087763311f5a4ec751dd94a0c5c4dbd23b3f87a61e",
+    "/life/birds.js": "4dbc31815279e0c342de95086f880a17f7db5153e6032963fe434dfc6536dda8",
+    "/life/cloth.js": "7436d556b5d6da13d150e7f193d8d63120203fbc5d1005c8511bb890455acd48",
+    "/life/crowd.js": "425b71bd3b7a563ccc7be71a7c9165775300c4603bbe6767ba9d753e1a39fcf0",
+    "/life/deformation.js": "c72fd32c51aa8b96c26100df7a6602e9cb084246dc52fe9dd64cce816dc1ef36",
+    "/life/feet.js": "5e059f9da3bed30df1471e62b84ed005f7f34c26534a52deb31b42facf03cefe",
+    "/life/forms.js": "7d5ddf9d8ebe0f5ee247c389c54c5a28d956c5b4ffd2f4805c9c94707b659f97",
+    "/life/harbor.js": "43ac2209a8ba2ac5f0f1a5d9fba6e529adb9a1803fdd9bf086fb09078b2a249e",
+    "/life/junctions.js": "07776e569de4c966c9337932d8c807f7e13eb0c72d2c646b1f8433d62a46704c",
+    "/life/nav-overlay.js": "60ef7eaa7d99b7ff2d616583e9a43284aa7f06873c9d0fb49be84fce995e54aa",
+    "/life/nav.js": "50485a59907d31aff728f5498dec8800cff1baa8210075e82154ebf2f12ffe02",
+    "/life/people.js": "0b3ecb1897bcfedf0fcad1ab65b40f32fb07bdb42bc2c694136677baa23c200a",
+    "/life/physics.js": "4812921279d8a05f3096d65f6cc4b030d90d63d46526429eef5217096e43cb3c",
+    "/life/rig.js": "94e180455ee4961669f9ad09e026da4804dd865c6112100f3b0bbc8ad4e3926f",
+    "/life/rigid-instances.js": "7f70187b049c3c69d938c5552de4630fd2faf70d3fb44408caf8757a1fbd4a72",
+    "/life/scale.js": "3ab33de447b9afe7d1bcaf1eaa66c4ecc9b3ad7a0cf1f2c78da26cf3dbf4b5a3",
+    "/life/scene-people.js": "9c2e4ee9d545dfb258963a5566e7d53d4307a2bb88ef4200498be373197636d7",
+    "/life/stair-feet.js": "486ae47e1eefe4cca5d846bc9fdd95fc995ca540efefd0283f2450e739a87e18",
+    "/life/stair-walk.js": "df2c3e8176c0a73592dda5a2089bb7a47fd82c7913a97ede8e901ae9b9f9aa70",
+    "/life/stairs.js": "e773378963af0f6f40b11141382b30c7a93ffa0a0dce7d2ae3c54131c2a4f9ec",
+    "/life/static-batches.js": "ba67baf656cee42b0098d7a60e66f16baf8ad83619888819bcc7fae626f2ad0c",
+    "/life/tasks.js": "061e8aa03478c9f493e3dac0b34bf5640a8f502fd7bdec6dedc1a76344637241",
+    "/life/village.js": "4c31c72bb6033ccc225a415a7274ca037314c5fccb6c0b2ef3cd40850a00aca6",
+    "/life/wildlife.js": "3913a10bb7aef79d3959008c41b202dc76b3411f9f1d6b58612c3a5b5839d0ed",
+    "/village/camera.js": "41feeb4f5bc372cc6088ef2d3688262b5098669bd00f6d33e472636b4776926a",
+    "/village/canvas.js": "7755e6f87193b5d3f18be7c6930566739290c2e50baf192d7d12716323630a22",
+    "/village/controls.css": "84e49c11a7161050ca459b9db348e8c001d8b1ca7f31a1c1f7b62f2ef3ee8c59",
+    "/village/depth-light.js": "a66fc70c9b243b6249671e6951c013639cae1bda89031fd84a25753827723a4d",
+    "/village/harbor.js": "e66f722009e3987344775057964ab206433e08109e36c9a36425c9a49c176469",
+    "/village/landscape.js": "e0d6dca2be52eb6e29b17a3e30ecb96fead75fb3db17b1e96fed975b1f7b43e0",
+    "/village/light.js": "76c93d0e5b944976fcb283873fbc5d854c2e7f6632bf0540c4efed808b005477",
+    "/village/renderer.js": "f8d9874e50f9c52ffcda9b96e3537ea95bcf77f45fd5fb8620e13c6110c0273f",
+    "/village/surfaces.js": "5ba98bff331997f3fa7922ea95d64c6f141fa3c27b1c135e2f6870de89427ba0"
+  },
+  "verifiedServedSources": true,
+  "requestLedgers": {
+    "5d49fe8a6403aef2": [
+      {
+        "path": "/",
+        "wire": 17676,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__system-fonts",
+        "wire": 161,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/build/three.module.js",
+        "wire": 266798,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+        "wire": 6640,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-app.js",
+        "wire": 2066,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-stack.css",
+        "wire": 10210,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-warm.js",
+        "wire": 716,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/assets/hair/sippy-mobile.glb.gz",
+        "wire": 62591,
+        "complete": true,
+        "status": 200,
+        "completion": "native draw and encoded Content-Length"
+      },
+      {
+        "path": "/characters/avatar-builder.js",
+        "wire": 1101,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/characters.css",
+        "wire": 2332,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/hair-groom.js",
+        "wire": 3922,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/hair-motion.js",
+        "wire": 5352,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/human-exterior.js",
+        "wire": 4661,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/input.js",
+        "wire": 2200,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/main.js",
+        "wire": 6577,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/model-tier.js",
+        "wire": 510,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/motion.js",
+        "wire": 9407,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/render-batches.js",
+        "wire": 3675,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/rig.js",
+        "wire": 839,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/route.js",
+        "wire": 1985,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/secondary.js",
+        "wire": 739,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-body.js",
+        "wire": 3415,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-explorer.js",
+        "wire": 8006,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-expression.js",
+        "wire": 2728,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-exterior-data.js",
+        "wire": 6764,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-hips.js",
+        "wire": 4808,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-secondary.js",
+        "wire": 732,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-skin.js",
+        "wire": 1583,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-tailoring.js",
+        "wire": 6331,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy.js",
+        "wire": 8967,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/source-asset-files.js",
+        "wire": 437,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/source-landmarks.js",
+        "wire": 2541,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/source-rig.js",
+        "wire": 1874,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/stage.js",
+        "wire": 5802,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/ui.js",
+        "wire": 1655,
+        "complete": true,
+        "status": 200
+      }
+    ],
+    "5a53f66b568c7bdc": [
+      {
+        "path": "/",
+        "wire": 17676,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__system-fonts",
+        "wire": 161,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/build/three.module.js",
+        "wire": 266798,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+        "wire": 6640,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-app.js",
+        "wire": 2066,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-stack.css",
+        "wire": 10210,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-warm.js",
+        "wire": 716,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/assets/hair/sippy-high.glb.gz",
+        "wire": 104488,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/avatar-builder.js",
+        "wire": 1101,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/characters.css",
+        "wire": 2332,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/hair-groom.js",
+        "wire": 3922,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/hair-motion.js",
+        "wire": 5352,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/human-exterior.js",
+        "wire": 4661,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/input.js",
+        "wire": 2200,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/main.js",
+        "wire": 6577,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/model-tier.js",
+        "wire": 510,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/motion.js",
+        "wire": 9407,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/render-batches.js",
+        "wire": 3675,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/rig.js",
+        "wire": 839,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/route.js",
+        "wire": 1985,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/secondary.js",
+        "wire": 739,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-body.js",
+        "wire": 3415,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-explorer.js",
+        "wire": 8006,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-expression.js",
+        "wire": 2728,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-exterior-data.js",
+        "wire": 6764,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-hips.js",
+        "wire": 4808,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-secondary.js",
+        "wire": 732,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-skin.js",
+        "wire": 1583,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-tailoring.js",
+        "wire": 6331,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy.js",
+        "wire": 8967,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/source-asset-files.js",
+        "wire": 437,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/source-landmarks.js",
+        "wire": 2541,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/source-rig.js",
+        "wire": 1874,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/stage.js",
+        "wire": 5802,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/ui.js",
+        "wire": 1655,
+        "complete": true,
+        "status": 200
+      }
+    ],
+    "a6c72b2e01e65666": [
+      {
+        "path": "/",
+        "wire": 17676,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__system-fonts",
+        "wire": 161,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/build/three.module.js",
+        "wire": 266798,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+        "wire": 6640,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-app.js",
+        "wire": 2066,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-stack.css",
+        "wire": 10210,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-warm.js",
+        "wire": 716,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/assets/hair/sippy-high.glb.gz",
+        "wire": 104488,
+        "complete": true,
+        "status": 200,
+        "completion": "native draw and encoded Content-Length"
+      },
+      {
+        "path": "/characters/avatar-builder.js",
+        "wire": 1101,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/characters.css",
+        "wire": 2332,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/hair-groom.js",
+        "wire": 3922,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/hair-motion.js",
+        "wire": 5352,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/human-exterior.js",
+        "wire": 4661,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/input.js",
+        "wire": 2200,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/main.js",
+        "wire": 6577,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/model-tier.js",
+        "wire": 510,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/motion.js",
+        "wire": 9407,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/render-batches.js",
+        "wire": 3675,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/rig.js",
+        "wire": 839,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/route.js",
+        "wire": 1985,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/secondary.js",
+        "wire": 739,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-body.js",
+        "wire": 3415,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-explorer.js",
+        "wire": 8006,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-expression.js",
+        "wire": 2728,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-exterior-data.js",
+        "wire": 6764,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-hips.js",
+        "wire": 4808,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-secondary.js",
+        "wire": 732,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-skin.js",
+        "wire": 1583,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-tailoring.js",
+        "wire": 6331,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy.js",
+        "wire": 8967,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/source-asset-files.js",
+        "wire": 437,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/source-landmarks.js",
+        "wire": 2541,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/source-rig.js",
+        "wire": 1874,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/stage.js",
+        "wire": 5802,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/ui.js",
+        "wire": 1655,
+        "complete": true,
+        "status": 200
+      }
+    ],
+    "a1a4b3b386cdc592": [
+      {
+        "path": "/",
+        "wire": 17676,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__system-fonts",
+        "wire": 161,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/build/three.module.js",
+        "wire": 266798,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+        "wire": 6640,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-app.js",
+        "wire": 2066,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-stack.css",
+        "wire": 10210,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-warm.js",
+        "wire": 716,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/assets/hair/sippy-mobile.glb.gz",
+        "wire": 62591,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/avatar-builder.js",
+        "wire": 1101,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/characters.css",
+        "wire": 2332,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/hair-groom.js",
+        "wire": 3922,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/hair-motion.js",
+        "wire": 5352,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/human-exterior.js",
+        "wire": 4661,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/input.js",
+        "wire": 2200,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/main.js",
+        "wire": 6577,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/model-tier.js",
+        "wire": 510,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/motion.js",
+        "wire": 9407,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/render-batches.js",
+        "wire": 3675,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/rig.js",
+        "wire": 839,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/route.js",
+        "wire": 1985,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/secondary.js",
+        "wire": 739,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-body.js",
+        "wire": 3415,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-explorer.js",
+        "wire": 8006,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-expression.js",
+        "wire": 2728,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-exterior-data.js",
+        "wire": 6764,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-hips.js",
+        "wire": 4808,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-secondary.js",
+        "wire": 732,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-skin.js",
+        "wire": 1583,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy-tailoring.js",
+        "wire": 6331,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/sippy.js",
+        "wire": 8967,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/source-asset-files.js",
+        "wire": 437,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/source-landmarks.js",
+        "wire": 2541,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/source-rig.js",
+        "wire": 1874,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/stage.js",
+        "wire": 5802,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/ui.js",
+        "wire": 1655,
+        "complete": true,
+        "status": 200
+      }
+    ],
+    "4b54cfe9c18ab036": [
+      {
+        "path": "/",
+        "wire": 17676,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__system-fonts",
+        "wire": 161,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/build/three.module.js",
+        "wire": 266798,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/controls/OrbitControls.js",
+        "wire": 7028,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/geometries/RoundedBoxGeometry.js",
+        "wire": 1518,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/objects/Sky.js",
+        "wire": 2938,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/postprocessing/EffectComposer.js",
+        "wire": 1382,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/postprocessing/MaskPass.js",
+        "wire": 864,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/postprocessing/OutputPass.js",
+        "wire": 1020,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/postprocessing/Pass.js",
+        "wire": 945,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/postprocessing/RenderPass.js",
+        "wire": 817,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/postprocessing/SMAAPass.js",
+        "wire": 35229,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/postprocessing/ShaderPass.js",
+        "wire": 842,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/postprocessing/UnrealBloomPass.js",
+        "wire": 3116,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/shaders/CopyShader.js",
+        "wire": 524,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/shaders/LuminosityHighPassShader.js",
+        "wire": 704,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/shaders/OutputShader.js",
+        "wire": 757,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/shaders/SMAAShader.js",
+        "wire": 3905,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+        "wire": 7107,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-app.js",
+        "wire": 2066,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-craft-loader.js",
+        "wire": 1121,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-craft.css",
+        "wire": 1536,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-creek-loader.js",
+        "wire": 1070,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-creek.css",
+        "wire": 1389,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-stack.css",
+        "wire": 10210,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-village-content.js",
+        "wire": 3066,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-village.js",
+        "wire": 23631,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-warm.js",
+        "wire": 716,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/route.js",
+        "wire": 1985,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/appearance.js",
+        "wire": 12951,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/birds.js",
+        "wire": 5094,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/cloth.js",
+        "wire": 6238,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/crowd.js",
+        "wire": 1682,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/deformation.js",
+        "wire": 5446,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/feet.js",
+        "wire": 3520,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/forms.js",
+        "wire": 2386,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/harbor.js",
+        "wire": 6979,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/junctions.js",
+        "wire": 1990,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/nav-overlay.js",
+        "wire": 6256,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/nav.js",
+        "wire": 5443,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/people.js",
+        "wire": 4539,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/physics.js",
+        "wire": 6440,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/rig.js",
+        "wire": 3936,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/rigid-instances.js",
+        "wire": 1699,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/scale.js",
+        "wire": 560,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/scene-people.js",
+        "wire": 959,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/stair-feet.js",
+        "wire": 1852,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/stair-walk.js",
+        "wire": 3079,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/stairs.js",
+        "wire": 3378,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/static-batches.js",
+        "wire": 2004,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/tasks.js",
+        "wire": 1620,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/village.js",
+        "wire": 3425,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/life/wildlife.js",
+        "wire": 3984,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/village/camera.js",
+        "wire": 820,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/village/canvas.js",
+        "wire": 1297,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/village/controls.css",
+        "wire": 1273,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/village/depth-light.js",
+        "wire": 1234,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/village/harbor.js",
+        "wire": 2486,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/village/landscape.js",
+        "wire": 5784,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/village/light.js",
+        "wire": 2397,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/village/renderer.js",
+        "wire": 3073,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/village/surfaces.js",
+        "wire": 2564,
+        "complete": true,
+        "status": 200
+      }
+    ]
+  },
+  "verifiedModuleGraphs": {
+    "5d49fe8a6403aef2": [
+      "/__three/build/three.module.js",
+      "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+      "/assets/sip-app.js",
+      "/assets/sip-warm.js",
+      "/characters/avatar-builder.js",
+      "/characters/hair-groom.js",
+      "/characters/hair-motion.js",
+      "/characters/human-exterior.js",
+      "/characters/input.js",
+      "/characters/main.js",
+      "/characters/model-tier.js",
+      "/characters/motion.js",
+      "/characters/render-batches.js",
+      "/characters/rig.js",
+      "/characters/route.js",
+      "/characters/secondary.js",
+      "/characters/sippy-body.js",
+      "/characters/sippy-explorer.js",
+      "/characters/sippy-expression.js",
+      "/characters/sippy-exterior-data.js",
+      "/characters/sippy-hips.js",
+      "/characters/sippy-secondary.js",
+      "/characters/sippy-skin.js",
+      "/characters/sippy-tailoring.js",
+      "/characters/sippy.js",
+      "/characters/source-asset-files.js",
+      "/characters/source-landmarks.js",
+      "/characters/source-rig.js",
+      "/characters/stage.js",
+      "/characters/ui.js"
+    ],
+    "5a53f66b568c7bdc": [
+      "/__three/build/three.module.js",
+      "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+      "/assets/sip-app.js",
+      "/assets/sip-warm.js",
+      "/characters/avatar-builder.js",
+      "/characters/hair-groom.js",
+      "/characters/hair-motion.js",
+      "/characters/human-exterior.js",
+      "/characters/input.js",
+      "/characters/main.js",
+      "/characters/model-tier.js",
+      "/characters/motion.js",
+      "/characters/render-batches.js",
+      "/characters/rig.js",
+      "/characters/route.js",
+      "/characters/secondary.js",
+      "/characters/sippy-body.js",
+      "/characters/sippy-explorer.js",
+      "/characters/sippy-expression.js",
+      "/characters/sippy-exterior-data.js",
+      "/characters/sippy-hips.js",
+      "/characters/sippy-secondary.js",
+      "/characters/sippy-skin.js",
+      "/characters/sippy-tailoring.js",
+      "/characters/sippy.js",
+      "/characters/source-asset-files.js",
+      "/characters/source-landmarks.js",
+      "/characters/source-rig.js",
+      "/characters/stage.js",
+      "/characters/ui.js"
+    ],
+    "a6c72b2e01e65666": [
+      "/__three/build/three.module.js",
+      "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+      "/assets/sip-app.js",
+      "/assets/sip-warm.js",
+      "/characters/avatar-builder.js",
+      "/characters/hair-groom.js",
+      "/characters/hair-motion.js",
+      "/characters/human-exterior.js",
+      "/characters/input.js",
+      "/characters/main.js",
+      "/characters/model-tier.js",
+      "/characters/motion.js",
+      "/characters/render-batches.js",
+      "/characters/rig.js",
+      "/characters/route.js",
+      "/characters/secondary.js",
+      "/characters/sippy-body.js",
+      "/characters/sippy-explorer.js",
+      "/characters/sippy-expression.js",
+      "/characters/sippy-exterior-data.js",
+      "/characters/sippy-hips.js",
+      "/characters/sippy-secondary.js",
+      "/characters/sippy-skin.js",
+      "/characters/sippy-tailoring.js",
+      "/characters/sippy.js",
+      "/characters/source-asset-files.js",
+      "/characters/source-landmarks.js",
+      "/characters/source-rig.js",
+      "/characters/stage.js",
+      "/characters/ui.js"
+    ],
+    "a1a4b3b386cdc592": [
+      "/__three/build/three.module.js",
+      "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+      "/assets/sip-app.js",
+      "/assets/sip-warm.js",
+      "/characters/avatar-builder.js",
+      "/characters/hair-groom.js",
+      "/characters/hair-motion.js",
+      "/characters/human-exterior.js",
+      "/characters/input.js",
+      "/characters/main.js",
+      "/characters/model-tier.js",
+      "/characters/motion.js",
+      "/characters/render-batches.js",
+      "/characters/rig.js",
+      "/characters/route.js",
+      "/characters/secondary.js",
+      "/characters/sippy-body.js",
+      "/characters/sippy-explorer.js",
+      "/characters/sippy-expression.js",
+      "/characters/sippy-exterior-data.js",
+      "/characters/sippy-hips.js",
+      "/characters/sippy-secondary.js",
+      "/characters/sippy-skin.js",
+      "/characters/sippy-tailoring.js",
+      "/characters/sippy.js",
+      "/characters/source-asset-files.js",
+      "/characters/source-landmarks.js",
+      "/characters/source-rig.js",
+      "/characters/stage.js",
+      "/characters/ui.js"
+    ],
+    "4b54cfe9c18ab036": [
+      "/__three/build/three.module.js",
+      "/__three/examples/jsm/controls/OrbitControls.js",
+      "/__three/examples/jsm/geometries/RoundedBoxGeometry.js",
+      "/__three/examples/jsm/objects/Sky.js",
+      "/__three/examples/jsm/postprocessing/EffectComposer.js",
+      "/__three/examples/jsm/postprocessing/MaskPass.js",
+      "/__three/examples/jsm/postprocessing/OutputPass.js",
+      "/__three/examples/jsm/postprocessing/Pass.js",
+      "/__three/examples/jsm/postprocessing/RenderPass.js",
+      "/__three/examples/jsm/postprocessing/SMAAPass.js",
+      "/__three/examples/jsm/postprocessing/ShaderPass.js",
+      "/__three/examples/jsm/postprocessing/UnrealBloomPass.js",
+      "/__three/examples/jsm/shaders/CopyShader.js",
+      "/__three/examples/jsm/shaders/LuminosityHighPassShader.js",
+      "/__three/examples/jsm/shaders/OutputShader.js",
+      "/__three/examples/jsm/shaders/SMAAShader.js",
+      "/__three/examples/jsm/utils/BufferGeometryUtils.js",
+      "/assets/sip-app.js",
+      "/assets/sip-craft-loader.js",
+      "/assets/sip-creek-loader.js",
+      "/assets/sip-village-content.js",
+      "/assets/sip-village.js",
+      "/assets/sip-warm.js",
+      "/characters/route.js",
+      "/life/appearance.js",
+      "/life/birds.js",
+      "/life/cloth.js",
+      "/life/crowd.js",
+      "/life/deformation.js",
+      "/life/feet.js",
+      "/life/forms.js",
+      "/life/harbor.js",
+      "/life/junctions.js",
+      "/life/nav-overlay.js",
+      "/life/nav.js",
+      "/life/people.js",
+      "/life/physics.js",
+      "/life/rig.js",
+      "/life/rigid-instances.js",
+      "/life/scale.js",
+      "/life/scene-people.js",
+      "/life/stair-feet.js",
+      "/life/stair-walk.js",
+      "/life/stairs.js",
+      "/life/static-batches.js",
+      "/life/tasks.js",
+      "/life/village.js",
+      "/life/wildlife.js",
+      "/village/camera.js",
+      "/village/canvas.js",
+      "/village/depth-light.js",
+      "/village/harbor.js",
+      "/village/landscape.js",
+      "/village/light.js",
+      "/village/renderer.js",
+      "/village/surfaces.js"
+    ]
+  },
+  "reusedVillage": {
+    "revision": "654d73bff929c6b06ce422a6a030dfe66028ff23",
+    "origin": "http://127.0.0.1:33655",
+    "verifiedAgainst": "8466f153a3562830fb2be3c738e61ca0bb8e2976",
+    "matchedFiles": 61
+  },
+  "latestRuntimeVerification": {
+    "scope": "wire, import graph, and complete native archive draw retest",
+    "soleColdSourceChange": "/characters/hair-groom.js",
+    "gzipByteDelta": 3,
+    "probe": {
+      "revision": "8466f153a3562830fb2be3c738e61ca0bb8e2976",
+      "origin": "http://127.0.0.1:41507",
+      "network": {
+        "offline": false,
+        "latency": 60,
+        "downloadThroughput": 1125000.0,
+        "uploadThroughput": 187500.0,
+        "connectionType": "cellular4g"
+      },
+      "cpu": 4,
+      "viewport": [
+        800,
+        680
+      ],
+      "hero": "sippy",
+      "probeSha256": "7fac6f4ead9a0f7539411df2cd92d58ba601db0c2551101540c021dd4e326f26",
+      "note": "Gzip level 6 HTML/CSS/JS, pinned local three 0.170.0 mirror, system font fallback, HTTP/1.1, Chromium SwiftShader. Each visit uses a new Chromium process and profile, HTTP cache and GPU shader disk cache disabled.",
+      "rows": [
+        {
+          "route": "heros",
+          "tier": "mobile",
+          "presentedMs": 7073.4000000059605,
+          "interactiveMs": 10087.59999999404,
+          "inputAtMs": 7149.5,
+          "firstProof": {
+            "names": [
+              "sippy"
+            ],
+            "width": 497,
+            "height": 449,
+            "tier": "mobile",
+            "groomMeshes": 4,
+            "groomTriangles": 8578
+          },
+          "positionBefore": [
+            0,
+            0,
+            0
+          ],
+          "positionAfter": [
+            -0.0018816565231339587,
+            0,
+            0.009982130842979914
+          ],
+          "requests": 35,
+          "modules": 30,
+          "transferBytes": 465804,
+          "round": 1,
+          "requestLedger": "9ccfd4432e3033f9",
+          "tierAndGeometry": {
+            "shadowMapWidth": 512,
+            "actor": "sippy",
+            "renderedMesh": "Sippy Part-side temple",
+            "meshVertices": 188,
+            "actualReducedMotion": true
+          }
+        },
+        {
+          "route": "heros",
+          "tier": "high",
+          "presentedMs": 8666.40000000596,
+          "interactiveMs": 12913.100000023842,
+          "inputAtMs": 8773.40000000596,
+          "firstProof": {
+            "names": [
+              "sippy"
+            ],
+            "width": 497,
+            "height": 449,
+            "tier": "high",
+            "groomMeshes": 4,
+            "groomTriangles": 15848
+          },
+          "positionBefore": [
+            0,
+            0,
+            0
+          ],
+          "positionAfter": [
+            -0.0018816565231339587,
+            0,
+            0.009982130842979914
+          ],
+          "requests": 35,
+          "modules": 30,
+          "transferBytes": 507701,
+          "round": 1,
+          "requestLedger": "c06de992ca419a2c",
+          "tierAndGeometry": {
+            "shadowMapWidth": 1024,
+            "actor": "sippy",
+            "renderedMesh": "Sippy Part-side temple",
+            "meshVertices": 285,
+            "actualReducedMotion": true
+          }
+        }
+      ],
+      "summary": [
+        {
+          "route": "heros",
+          "tier": "mobile",
+          "samples": 1,
+          "presentedMs": 7073.4000000059605,
+          "interactiveMs": 10087.59999999404,
+          "transferBytes": 465804,
+          "requests": 35,
+          "modules": 30
+        },
+        {
+          "route": "heros",
+          "tier": "high",
+          "samples": 1,
+          "presentedMs": 8666.40000000596,
+          "interactiveMs": 12913.100000023842,
+          "transferBytes": 507701,
+          "requests": 35,
+          "modules": 30
+        }
+      ],
+      "browser": "155.0.8059.79",
+      "sourceSha256": {
+        "/": "86bddd4109dd52f9840f07f954c616e41c619c5aae36472cfc0ab2d2fe985a81",
+        "/__three/build/three.module.js": "ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb",
+        "/__three/examples/jsm/libs/meshopt_decoder.module.js": "01f48524f4bac6141eaba07e94cc36e7ee56f311796fa6117c159842941b0468",
+        "/assets/sip-app.js": "c80d5bcfad97e9dfba3d0ebc4d80309b5937998fa6f8a28ff2e95b13eeba2193",
+        "/assets/sip-stack.css": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
+        "/assets/sip-warm.js": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
+        "/characters/assets/hair/sippy-high.glb.gz": "c95b8c930c8b3041354c8cc348c4628caca7988ae4de537e56c1ea03dc088cd4",
+        "/characters/assets/hair/sippy-mobile.glb.gz": "309c62556c73c2fe4a20b39c4247dd57ea5175ab2743362ca28ffcfbf3dd6868",
+        "/characters/avatar-builder.js": "7ea387b09b7a0564952641e0179a9c0a5cd562b230c17089eb7c27e04253e3fd",
+        "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
+        "/characters/hair-groom.js": "ca600049c20a6d6ec103fe52770fb94ff8e161a5a3972dc4091897288ac18b13",
+        "/characters/hair-motion.js": "b1ec2a52fb7abcac46f67ef36eaa7402a2d42261a9754f2f34cbc851033483c6",
+        "/characters/human-exterior.js": "7a87b86caacd33c943b0bf331c0acf3a539434deb6b68eb81501954801b4cb20",
+        "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
+        "/characters/main.js": "bf9946cdca21a4ca6dc694df38915fa0dfa1bea6bbb363de14d92cbcd9505fd9",
+        "/characters/model-tier.js": "f1c83eb8d91b243948aea6d45c04fcb19e4340a52fc63bb40c960885aa1e11a9",
+        "/characters/motion.js": "089200089c705e4b589653561215ee10807234f4e3a188c777ebf7fcd6188968",
+        "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
+        "/characters/rig.js": "3e8373a52c7e6a5b2049b4da5b6fbc0a9c13fa0291f6b84b6f6f38252edea20c",
+        "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+        "/characters/secondary.js": "80ed341ab1b5bdc86164c46e3585f724c919c6fcb5a90a3b59f2a681bf47e24d",
+        "/characters/sippy-body.js": "e12fdae99a8a88cd9e1a8e6fcf578b4318f389cdf6eb495ca5307e912e22d61f",
+        "/characters/sippy-explorer.js": "50897737f914a86a5a84854384901cf2e9fa9afcbd1884f434148082f8f4d33c",
+        "/characters/sippy-expression.js": "634337129e2b18fe0a0de36f365ca37edb21d0a2e6c21d66eab34acbb0bc0cb6",
+        "/characters/sippy-exterior-data.js": "52861ff9f0f3032cd350788266547070a09d8491c4ad81cbbb52d814de8c7b60",
+        "/characters/sippy-hips.js": "dde1e1080e348fdf994266e99515ef4af91c110333905746925f59d1ec894eb9",
+        "/characters/sippy-secondary.js": "77a3e0e04caa8a0555d32bb965588536a840fac2d3c525ff8adde6368b1a3fc5",
+        "/characters/sippy-skin.js": "a8a5282940d89b8e02f5d4ce65d76251aff1d707921769cca85874983ff1418f",
+        "/characters/sippy-tailoring.js": "de73f10db7d36935072f8bc5f27a193558299e0ed0d689599d8b59162e097fb0",
+        "/characters/sippy.js": "a07543aa15254e0f9dcd67340cbe41ee7c3f38873559c1fba62b63ad5c8f80f5",
+        "/characters/source-asset-files.js": "72807e24212cffe795c732b5340c2782f5102c2a27754bd2a4d8da1f4c1b7d4b",
+        "/characters/source-landmarks.js": "f52aa6aa192045f70d2df2fa576fabbb6374fa52d754c970451cf298bf4cb393",
+        "/characters/source-rig.js": "2797b1f579607a7fbc09336dff23a0f3bee52ec7a1f41eafb91066ef0862aaf3",
+        "/characters/stage.js": "d206cbd7a4cfb063c1f86c41cbe345e133023021ef9a940650dc05a80fc4d112",
+        "/characters/ui.js": "145b3db0740fcfd83535c2250edc0e52dcda7843c41ed62b2a394d5df934a7cd"
+      },
+      "verifiedServedSources": true,
+      "requestLedgers": {
+        "9ccfd4432e3033f9": [
+          {
+            "path": "/",
+            "wire": 17676,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__system-fonts",
+            "wire": 161,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__three/build/three.module.js",
+            "wire": 266798,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+            "wire": 6640,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-app.js",
+            "wire": 2066,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-stack.css",
+            "wire": 10210,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-warm.js",
+            "wire": 716,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/assets/hair/sippy-mobile.glb.gz",
+            "wire": 62591,
+            "complete": true,
+            "status": 200,
+            "completion": "native draw and encoded Content-Length"
+          },
+          {
+            "path": "/characters/avatar-builder.js",
+            "wire": 1101,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/characters.css",
+            "wire": 2332,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/hair-groom.js",
+            "wire": 3925,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/hair-motion.js",
+            "wire": 5352,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/human-exterior.js",
+            "wire": 4661,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/input.js",
+            "wire": 2200,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/main.js",
+            "wire": 6577,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/model-tier.js",
+            "wire": 510,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/motion.js",
+            "wire": 9407,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/render-batches.js",
+            "wire": 3675,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/rig.js",
+            "wire": 839,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/route.js",
+            "wire": 1985,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/secondary.js",
+            "wire": 739,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-body.js",
+            "wire": 3415,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-explorer.js",
+            "wire": 8006,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-expression.js",
+            "wire": 2728,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-exterior-data.js",
+            "wire": 6764,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-hips.js",
+            "wire": 4808,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-secondary.js",
+            "wire": 732,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-skin.js",
+            "wire": 1583,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-tailoring.js",
+            "wire": 6331,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy.js",
+            "wire": 8967,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-asset-files.js",
+            "wire": 437,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-landmarks.js",
+            "wire": 2541,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-rig.js",
+            "wire": 1874,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/stage.js",
+            "wire": 5802,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/ui.js",
+            "wire": 1655,
+            "complete": true,
+            "status": 200
+          }
+        ],
+        "c06de992ca419a2c": [
+          {
+            "path": "/",
+            "wire": 17676,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__system-fonts",
+            "wire": 161,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__three/build/three.module.js",
+            "wire": 266798,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+            "wire": 6640,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-app.js",
+            "wire": 2066,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-stack.css",
+            "wire": 10210,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-warm.js",
+            "wire": 716,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/assets/hair/sippy-high.glb.gz",
+            "wire": 104488,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/avatar-builder.js",
+            "wire": 1101,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/characters.css",
+            "wire": 2332,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/hair-groom.js",
+            "wire": 3925,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/hair-motion.js",
+            "wire": 5352,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/human-exterior.js",
+            "wire": 4661,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/input.js",
+            "wire": 2200,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/main.js",
+            "wire": 6577,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/model-tier.js",
+            "wire": 510,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/motion.js",
+            "wire": 9407,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/render-batches.js",
+            "wire": 3675,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/rig.js",
+            "wire": 839,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/route.js",
+            "wire": 1985,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/secondary.js",
+            "wire": 739,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-body.js",
+            "wire": 3415,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-explorer.js",
+            "wire": 8006,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-expression.js",
+            "wire": 2728,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-exterior-data.js",
+            "wire": 6764,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-hips.js",
+            "wire": 4808,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-secondary.js",
+            "wire": 732,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-skin.js",
+            "wire": 1583,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-tailoring.js",
+            "wire": 6331,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy.js",
+            "wire": 8967,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-asset-files.js",
+            "wire": 437,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-landmarks.js",
+            "wire": 2541,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-rig.js",
+            "wire": 1874,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/stage.js",
+            "wire": 5802,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/ui.js",
+            "wire": 1655,
+            "complete": true,
+            "status": 200
+          }
+        ]
+      },
+      "verifiedModuleGraphs": {
+        "9ccfd4432e3033f9": [
+          "/__three/build/three.module.js",
+          "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "/assets/sip-app.js",
+          "/assets/sip-warm.js",
+          "/characters/avatar-builder.js",
+          "/characters/hair-groom.js",
+          "/characters/hair-motion.js",
+          "/characters/human-exterior.js",
+          "/characters/input.js",
+          "/characters/main.js",
+          "/characters/model-tier.js",
+          "/characters/motion.js",
+          "/characters/render-batches.js",
+          "/characters/rig.js",
+          "/characters/route.js",
+          "/characters/secondary.js",
+          "/characters/sippy-body.js",
+          "/characters/sippy-explorer.js",
+          "/characters/sippy-expression.js",
+          "/characters/sippy-exterior-data.js",
+          "/characters/sippy-hips.js",
+          "/characters/sippy-secondary.js",
+          "/characters/sippy-skin.js",
+          "/characters/sippy-tailoring.js",
+          "/characters/sippy.js",
+          "/characters/source-asset-files.js",
+          "/characters/source-landmarks.js",
+          "/characters/source-rig.js",
+          "/characters/stage.js",
+          "/characters/ui.js"
+        ],
+        "c06de992ca419a2c": [
+          "/__three/build/three.module.js",
+          "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "/assets/sip-app.js",
+          "/assets/sip-warm.js",
+          "/characters/avatar-builder.js",
+          "/characters/hair-groom.js",
+          "/characters/hair-motion.js",
+          "/characters/human-exterior.js",
+          "/characters/input.js",
+          "/characters/main.js",
+          "/characters/model-tier.js",
+          "/characters/motion.js",
+          "/characters/render-batches.js",
+          "/characters/rig.js",
+          "/characters/route.js",
+          "/characters/secondary.js",
+          "/characters/sippy-body.js",
+          "/characters/sippy-explorer.js",
+          "/characters/sippy-expression.js",
+          "/characters/sippy-exterior-data.js",
+          "/characters/sippy-hips.js",
+          "/characters/sippy-secondary.js",
+          "/characters/sippy-skin.js",
+          "/characters/sippy-tailoring.js",
+          "/characters/sippy.js",
+          "/characters/source-asset-files.js",
+          "/characters/source-landmarks.js",
+          "/characters/source-rig.js",
+          "/characters/stage.js",
+          "/characters/ui.js"
+        ]
+      }
+    }
+  }
+}

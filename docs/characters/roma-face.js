@@ -363,36 +363,6 @@ function buildMouth(head) {
   return mesh;
 }
 
-function headband(head, h) {
-  const band = (u, v) => {
-    const a = (u - 0.5) * Math.PI * 1.03,
-      t = 2 * v - 1,
-      arch = Math.cos(a);
-    return [
-      0.002 + (0.079 - 0.0019 * t) * Math.sin(a),
-      0.073 +
-        0.087 * arch -
-        0.008 * t * (0.38 + 0.62 * arch) +
-        0.0007 * Math.cos((t * Math.PI) / 2),
-      0.021 + 0.008 * arch + 0.01 * t,
-    ];
-  };
-  h.face(head, 44, 7, (u, v) => [...band(u, v), v < 0.13 || v > 0.87 ? '#b94442' : '#8f2831']);
-  for (let i = 1; i <= 12; i++) {
-    const points = [];
-    for (let j = 0; j <= 10; j++) {
-      const a = (j * tau) / 10;
-      const u = i / 13 + 0.024 * Math.sin(a) * (1 - 0.3 * Math.cos(a));
-      const v = 0.5 + 0.29 * Math.cos(a) + 0.13 * Math.sin(a);
-      const p = band(u, v);
-      p[1] += 0.00063 * Math.cos((u - 0.5) * Math.PI);
-      p[0] += 0.00063 * Math.sin((u - 0.5) * Math.PI);
-      points.push(p);
-    }
-    h.thread(head, '#e5bf8b', points, 0.00038, { segments: 13, sides: 3 });
-  }
-}
-
 export function buildRomaFace(head, h, c) {
   buildSkin(head, h, c);
   for (const s of [-1, 1]) {
@@ -416,7 +386,6 @@ export function buildRomaFace(head, h, c) {
   }
   const eyes = [-1, 1].map((s) => buildEye(head, h, s));
   const mouth = buildMouth(head);
-  headband(head, h);
   return { eyes, mouth };
 }
 

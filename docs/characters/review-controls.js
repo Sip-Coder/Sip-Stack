@@ -5,7 +5,7 @@ export function reviewControls(floor) {
     view: floor.setView,
     tier(q) {
       floor.tierSelect.value = q;
-      floor.quality();
+      return floor.quality();
     },
     reset: floor.reset,
     setManual: floor.manualMode,
@@ -18,6 +18,18 @@ export function reviewControls(floor) {
         request.jump = request.roll = request.emote = false;
       }
       floor.updateHUD();
+    },
+    hairPose(n, [pitch = 0, yaw = 0, roll = 0] = []) {
+      if (!floor.canTick()) return;
+      const actor = floor.actor();
+      if (!actor?.rig.groom) return;
+      const head = actor.rig.head.rotation;
+      for (let i = 0; i < n; i++) {
+        const frame = actor.ctrl.step(floor.dt, floor.neutral);
+        head.set(head.x + pitch, head.y + yaw, head.z + roll);
+        actor.pose(frame);
+        actor.ctrl.finishPose();
+      }
     },
     render: floor.render,
     snapshot: floor.snapshot,

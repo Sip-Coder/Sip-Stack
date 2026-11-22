@@ -61,9 +61,11 @@ class Wire:
     def response(self, event):
         r = self.requests.get(event["requestId"])
         if r is not None:
+            headers = {k.lower(): v for k, v in event["response"]["headers"].items()}
             r.update(
                 responseAt=event["timestamp"],
                 headers=max(0, event["response"]["encodedDataLength"]),
+                contentLength=int(headers["content-length"]) if "content-length" in headers else None,
                 status=event["response"]["status"],
                 mime=event["response"]["mimeType"],
             )
@@ -78,21 +80,29 @@ class Wire:
         if r is not None:
             r.update(end=event["timestamp"], total=event["encodedDataLength"])
 
-    def until(self, when, since=None):
+    def until(self, when, since=None, complete_groom=None):
         start = since / 1000 - self.origin_offset if since is not None else -math.inf
         cutoff = when / 1000 - self.origin_offset
         resources = []
         for r in self.requests.values():
             if not start <= r["at"] <= cutoff:
                 continue
-            complete = r.get("end", float("inf")) <= cutoff
-            wire = (
-                r["total"]
-                if complete
-                else (r.get("headers", 0) if r.get("responseAt", float("inf")) <= cutoff else 0)
-                + sum(n for t, n in r["pieces"] if t <= cutoff)
-            )
-            resources.append(dict(path=r["path"], wire=wire, complete=complete, status=r.get("status")))
+            finished = r.get("end", float("inf")) <= cutoff
+            body = sum(n for t, n in r["pieces"] if t <= cutoff)
+            headers = r.get("headers", 0) if r.get("responseAt", float("inf")) <= cutoff else 0
+            # Chromium can omit the final CDP chunk or loadingFinished event
+            # for a piped gzip stream. A native groom draw requires the whole
+            # parsed GLB. Charge its full encoded Content-Length in that case.
+            stream_complete = (r["path"] == complete_groom and r.get("status") == 200
+                               and (r.get("contentLength") or 0) > 0)
+            complete = finished or stream_complete
+            if stream_complete:
+                body = max(body, r["contentLength"])
+            wire = r["total"] if finished else headers + body
+            entry = dict(path=r["path"], wire=wire, complete=complete, status=r.get("status"))
+            if stream_complete and not finished:
+                entry["completion"] = "native draw and encoded Content-Length"
+            resources.append(entry)
         return dict(
             requests=len(resources),
             modules=len({r["path"] for r in resources if r["path"].endswith((".js", ".mjs"))}),
@@ -101,7 +111,11 @@ class Wire:
         )
 
 
-def confirm_graph(page, cdp, route, tier, resources, key, code):
+GROOM_ROOT = "/characters/assets/hair/"
+DECODER = "/__three/examples/jsm/libs/meshopt_decoder.module.js"
+
+
+def confirm_graph(page, cdp, route, tier, hero, resources, key, code):
     # Release the held movement key before the post-timing module audit. On a
     # slow renderer Village otherwise keeps panning past its visible workers.
     cdp.send("Input.dispatchKeyEvent", {"type": "keyUp", "key": key, "code": code})
@@ -126,11 +140,11 @@ def confirm_graph(page, cdp, route, tier, resources, key, code):
     cdp.send("Debugger.disable")
 
     page.evaluate(
-        """async route=>{
+        """async ([route,hero])=>{
         const T=await import(JSON.parse(document.querySelector('script[type=importmap]').textContent).imports.three);
         const old=T.Mesh.prototype.onAfterRender, village=route==='village';
         const canvas=document.querySelector(village?'.vl-stage canvas':'#character-test canvas');
-        const expected=village?new Set(window.routeLoad.proof.names):new Set(['sippy']);
+        const expected=village?new Set(window.routeLoad.proof.names):new Set([hero]);
         window.qualityProof=null;
         T.Mesh.prototype.onAfterRender=function(renderer,scene,camera,...args){
             old.call(this,renderer,scene,camera,...args);
@@ -147,7 +161,7 @@ def confirm_graph(page, cdp, route, tier, resources, key, code):
             T.Mesh.prototype.onAfterRender=old;
         };
     }""",
-        route,
+        [route, hero],
     )
     cdp.send(
         "Input.dispatchKeyEvent",
@@ -166,7 +180,7 @@ def confirm_graph(page, cdp, route, tier, resources, key, code):
     return dict(esModules=sorted(fetched), quality=quality)
 
 
-def trial(browser, url, route, tier, probe, verify):
+def trial(browser, url, route, tier, hero, expected_groom, probe, verify):
     ctx = browser.new_context(
         viewport={"width": 800, "height": 680},
         device_scale_factor=1,
@@ -193,15 +207,16 @@ def trial(browser, url, route, tier, probe, verify):
         cdp.send("Emulation.setCPUThrottlingRate", {"rate": 4})
         key, code = ("ArrowRight", "ArrowRight") if route == "village" else ("w", "KeyW")
 
-        options = json.dumps([route, tier])
+        options = json.dumps([route, tier, hero, expected_groom])
         # In both routes the real renderer already exists before the observer
         # imports its cached module and selects the ordinary quality control.
         page.add_init_script(
             script=probe
             + """
-            const [benchRoute] = """
+            const [benchRoute,,benchHero] = """
             + options
             + """;
+            if (benchRoute==='heros'&&benchHero!=='sippy') sessionStorage.setItem('sip-heros-selected',benchHero);
             const selector=benchRoute==='village'?'.vl-stage canvas':'#character-test canvas';
             const observer=new MutationObserver(()=>{
               if (!document.querySelector(selector)) return;
@@ -243,13 +258,26 @@ def trial(browser, url, route, tier, probe, verify):
         p = page.evaluate("window.routeLoad")
         assert not p.get("error"), p
         origin = page.evaluate("performance.timeOrigin")
-        wire = ledger.until(origin + p["interactiveMs"])
+        if expected_groom:
+            assert p["proof"].get("groomTriangles", 0) > 0, p["proof"]
+        wire = ledger.until(origin + p["interactiveMs"], complete_groom=expected_groom)
         assert wire["resources"][0]["path"] == "/" and wire["resources"][0]["wire"] > 0
-        inspector_paths = [r["path"] for r in wire["resources"] if
-                           r["path"].startswith(("/characters/diagram-", "/characters/axon-",
-                                                "/characters/ref-", "/characters/character-ref"))
-                           or r["path"].endswith(".glb") or "meshopt_decoder" in r["path"]]
+        paths = [r["path"] for r in wire["resources"]]
+        allowed = {expected_groom, DECODER} if expected_groom else set()
+        inspector_paths = [
+            path for path in paths if path not in allowed and (
+                path.startswith(("/characters/diagram-", "/characters/axon-",
+                                 "/characters/ref-", "/characters/character-ref", GROOM_ROOT))
+                or path.endswith(".glb") or "meshopt_decoder" in path
+            )
+        ]
         assert not inspector_paths, f"Cold {route} opened an inspector dependency: {inspector_paths}"
+        if expected_groom:
+            groom_requests = [r for r in wire["resources"] if r["path"] == expected_groom]
+            assert len(groom_requests) == 1 and groom_requests[0]["complete"], groom_requests
+        if route == "heros":
+            built = [name for name in ("sippy", "roma", "hummin") if f"/characters/{name}.js" in paths]
+            assert built == [hero], f"Cold #heros imported builders {built} for {hero}"
         assert p["proof"]["tier"].lower() == tier and p["proof"]["names"]
         assert p["presentedMs"] <= p["inputMs"] <= p["interactiveMs"]
         dx, _, dz = (b - a for a, b in zip(p["positionBefore"], p["positionAfter"]))
@@ -263,7 +291,7 @@ def trial(browser, url, route, tier, probe, verify):
         assert {r["origin"] for r in ledger.requests.values()} == {
             url
         }, "Uncontrolled external origin in the measured session"
-        audit = confirm_graph(page, cdp, route, tier, wire["resources"], key, code) if verify else None
+        audit = confirm_graph(page, cdp, route, tier, hero, wire["resources"], key, code) if verify else None
         return dict(
             graphAndTier=audit,
             route=route,
@@ -313,6 +341,8 @@ def main():
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--tiers", nargs="+", choices=["mobile", "high"], default=["mobile", "high"])
     p.add_argument("--routes", nargs="+", choices=["village", "heros"], default=["village", "heros"])
+    p.add_argument("--hero", choices=["sippy", "roma", "hummin"], default="sippy",
+                   help="Selected Heros actor. Roma and Hummin use the existing remembered-picker state.")
     a = p.parse_args()
     repo = a.repo.resolve()
     if not a.three or a.rounds < 1:
@@ -328,6 +358,7 @@ def main():
         network=benchmark.NETWORK,
         cpu=4,
         viewport=[800, 680],
+        hero=a.hero,
         probeSha256=hashlib.sha256(probe.encode()).hexdigest(),
         note="Gzip level 6 HTML/CSS/JS, pinned local three 0.170.0 mirror, system font fallback, HTTP/1.1, Chromium SwiftShader. Each visit uses a new Chromium process and profile, HTTP cache and GPU shader disk cache disabled.",
         rows=[],
@@ -353,7 +384,11 @@ def main():
                         )
                         report["browser"] = browser.version
                         try:
-                            r = trial(browser, url, route, tier, probe, a.audit)
+                            groom = GROOM_ROOT + f"{a.hero}-{tier}.glb.gz"
+                            expected_groom = groom if (
+                                route == "heros" and (repo / "docs" / groom.lstrip("/")).is_file()
+                            ) else None
+                            r = trial(browser, url, route, tier, a.hero, expected_groom, probe, a.audit)
                         finally:
                             browser.close()
                         r["round"] = i + 1

@@ -1,30 +1,8 @@
-// Springs for Sippy's swept locks, split vest hem and carried field gear.
-import * as T from 'three';
+// Springs for Sippy's strategic locks, split vest hem and carried field gear.
+import { createHairMotion } from './hair-motion.js';
 
-function quiffMotion(groups) {
-  const banks = groups.map(({ root, id, side }) => ({
-    root, amplitude: id < 3 ? 0.87 : 0.60, phase: id * 0.42, side,
-  }));
-  let pitch = 0, roll = 0, pitchV = 0, rollV = 0, last = -Infinity;
-  return (f) => {
-    if (f.time <= last) pitch = roll = pitchV = rollV = 0;
-    last = f.time;
-    const walk = Math.min(1, f.speed / 2.5), dt = f.dt;
-    const target = 0.09 * walk * Math.sin(2*f.phase) + 0.023 * Math.sin(f.time*1.23)
-      + 0.019 * T.MathUtils.clamp(f.vy, -3, 3);
-    pitchV += (95 * (target - pitch) - 10 * pitchV) * dt;
-    rollV += (80 * (T.MathUtils.clamp(f.turn * -0.018, -0.13, 0.13) - roll) - 11 * rollV) * dt;
-    pitch += pitchV * dt;
-    roll += rollV * dt;
-    for (const bank of banks) {
-      bank.root.rotation.x = bank.amplitude * (pitch + 0.014 * walk * Math.sin(2*f.phase - bank.phase));
-      bank.root.rotation.z = bank.amplitude * (roll + bank.side * 0.15 * pitch);
-    }
-  };
-}
-
-export function createSecondary(rig, { banks, tails, pack, drawcord }) {
-  const followGroom = quiffMotion(banks);
+export function createSecondary(rig, { groom, tails, pack, drawcord }) {
+  const followGroom = createHairMotion(rig, groom);
   const packY = pack.position.y;
   let lag = 0,
     lagV = 0,
