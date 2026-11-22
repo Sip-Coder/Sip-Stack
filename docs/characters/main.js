@@ -86,7 +86,23 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
     });
     studies.push(syncStudy);
   }
-  observeStudy(find('[data-axon]'), () => import('./axon-view.js'));
+  observeStudy(find('[data-axon]'), () => {
+    // The observer has already established that Axon is visible. Start the
+    // selected pair while the inspector's module graph is on the wire.
+    const name = names[selected];
+    if (name !== 'hummin' && actualTier) {
+      for (const suffix of ['', '-sa']) {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'fetch';
+        link.crossOrigin = 'anonymous';
+        link.href = new URL('./assets/axon-' + name + '-' + actualTier + suffix + '.glb', import.meta.url);
+        link.onload = link.onerror = () => link.remove();
+        document.head.append(link);
+      }
+    }
+    return import('./axon-view.js');
+  });
   observeStudy(find('[data-ref]'), () => import('./character-ref.js'));
   function updateHUD() {
     const f = cast[selected]?.ctrl.frame;

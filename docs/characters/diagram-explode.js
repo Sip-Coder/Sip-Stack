@@ -5,10 +5,11 @@ import { Vector3 } from 'three';
 export function axialOffsets(parts, body) {
   const center = body.getCenter(new Vector3());
   const height = body.max.y - body.min.y;
-  return parts.map(({ layer, mesh }) => {
+  return parts.map((part) => {
+    const { layer } = part;
     const offset = new Vector3();
     if (layer === 'skeleton') return offset;
-    const point = mesh.geometry.boundingBox.getCenter(new Vector3());
+    const point = (part.bounds ?? part.mesh.geometry.boundingBox).getCenter(new Vector3());
     const lateral = (point.x - center.x) / height;
     const front = (point.z - center.z) / height;
     const level = (point.y - body.min.y) / height;

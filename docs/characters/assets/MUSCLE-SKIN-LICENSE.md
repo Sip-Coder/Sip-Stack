@@ -52,6 +52,18 @@ Each first-open pair below contains a posed character inspection model and its s
 
 ## Reproduce the packages
 
+To build the eight fitted GLBs from the versioned inputs, run the following from the repository root with Node.js 24. The baker uses the same rig, inspection pose, cortical landmarks and tissue fit as the Worker. It validates the resulting character and license groups before writing each file. The Worker bundle is built from that fitter separately. [Baker](../../../tools/bake-axon-packs.mjs) · [Worker build](../../../tools/build-axon-worker.mjs)
+
+```sh
+npm install --prefix /tmp/axon-tools three@0.170.0 meshoptimizer@1.3.0 esbuild@0.25.12
+export THREE_ROOT=/tmp/axon-tools/node_modules/three
+export MESHOPT_ROOT=/tmp/axon-tools/node_modules/meshoptimizer
+node tools/bake-axon-packs.mjs
+NODE_PATH=/tmp/axon-tools/node_modules node tools/build-axon-worker.mjs
+```
+
+### Earlier source preparation
+
 Copy both [BodyParts3D preparation](../../../tools/prepare-muscle-lod.mjs) and [female lower-limb preparation](../../../tools/prepare-female-muscles.mjs) into a scratch directory. Place the two originally supplied BodyParts3D GLBs inside an `original/` subdirectory. Run the following in that scratch directory.
 
 ```sh

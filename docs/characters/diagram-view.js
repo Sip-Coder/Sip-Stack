@@ -624,9 +624,8 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
   function project(part) {
     const layer = layers.get(part?.layer);
     if (!layer || !layer.group.visible) return null;
-    const g = part.mesh.geometry;
-    if (!g.boundingBox) g.computeBoundingBox();
-    g.boundingBox.getCenter(projected).add(layer.group.position);
+    const bounds = part.bounds ?? part.mesh.geometry.boundingBox;
+    bounds.getCenter(projected).add(layer.group.position);
     if (lastDisplacement) projected.addScaledVector(offsets[model.parts.indexOf(part)], lastDisplacement);
     projected.project(camera);
     return {

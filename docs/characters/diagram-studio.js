@@ -197,14 +197,20 @@ export function createHumanStudio() {
     // Bony, muscular, skinned and shod feet each have their own contact area.
     // A cropped shoulder or pelvis study has no soles and casts no floor decal.
     const groups = new Map();
-    parts.forEach(({ name, layer, mesh }, index) => {
+    parts.forEach((part, index) => {
+      const { name, layer } = part;
       if (!/calcaneus|metatarsal|plantar foot|foot inside trainer|shoe sole|sneaker sole/i.test(name)) return;
       const side = /(?:left|right)/i.exec(name)?.[0].toLowerCase();
       if (!side) return;
       const key = layer + '/' + side;
       if (!groups.has(key)) groups.set(key, { layer, parts: [], bounds: new T.Box3() });
-      if (!mesh.geometry.boundingBox) mesh.geometry.computeBoundingBox();
-      groups.get(key).parts.push({ index, box: mesh.geometry.boundingBox });
+      let box = part.bounds;
+      if (!box) {
+        const geometry = part.mesh.geometry;
+        if (!geometry.boundingBox) geometry.computeBoundingBox();
+        box = geometry.boundingBox;
+      }
+      groups.get(key).parts.push({ index, box });
     });
     soleGroups = [...groups.values()];
   }
