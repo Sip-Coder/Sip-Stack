@@ -19,7 +19,7 @@ Six orthographic projections at 512 px compare the nearest anatomical triangles 
 | Roma Mobile | 146,959 | 84 | 0 | 0 |
 | Roma High | 147,063 | 92 | 0 | 0 |
 
-The remaining bare-skin samples are concentrated at the lower fibula, toes and fingertip margins. Sippy’s dressed residual is at exposed fingertips. These checks apply to the sampled upright Axon pose. [Per-view and per-part coverage](exterior-coverage.json) · [Movement checks](rig.md) · [Matched-angle review plates](media.md)
+The remaining bare-skin samples are concentrated at the lower fibula, toes and fingertip margins. Sippy’s dressed residual is at exposed fingertips. These checks apply to the sampled upright Axon pose. The isolated Roma skin shows a raised seam where the pelvis loft joins the thigh lofts. Her trousers cover that junction in the dressed view. [Per-view and per-part coverage](exterior-coverage.json) · [Movement checks](rig.md) · [Matched-angle review plates](media.md)
 
 ## Reproduce
 
@@ -27,24 +27,5 @@ Rebuild the two lightweight profile modules using Node 22.15 or later and Three.
 
 ```sh
 THREE_ROOT=/path/to/three HUBMAP_FEMALE_SKIN=/path/to/3d-vh-f-skin.glb node tools/build-human-exteriors.mjs
-THREE_ROOT=/path/to/three node tools/check-source-shell.mjs
-```
-
-## Skin coverage in Axon View
-
-Six orthographic projections at 512 px compare the nearest anatomical triangles with the visible skin. A sample counts if the anatomy is more than 0.04 in in front of the skin or extends past its projected silhouette. The dressed figures add the clothes and accessories to the exterior comparison. Roma's breast and fat layers count as interior for this check.
-
-| Character and tier | Interior samples | Beyond bare skin | Beyond dressed exterior | Beyond dressed silhouette |
-|---|---:|---:|---:|---:|
-| Sippy Mobile | 138,103 | 282 | 11 | 0 |
-| Sippy High | 138,509 | 289 | 15 | 0 |
-| Roma Mobile | 146,959 | 84 | 0 | 0 |
-| Roma High | 147,063 | 92 | 0 | 0 |
-
-The remaining bare-skin samples are concentrated at the lower fibula, toes and fingertip margins. Sippy’s dressed residual is at exposed fingertips. These are checks of the six sampled projections in Axon's measured upright pose. The actual walk, run, jump and roll use the same rig lengths and were verified with the production outer models. [Per-view and per-part coverage](exterior-coverage.json) · [Pose and movement checks](rig.md) · [Matched-angle review plates](media.md)
-
-Run the check from the repository root with Node.js 24 and the repository's pinned Three.js version.
-
-```sh
 THREE_ROOT=/path/to/three node tools/check-source-shell.mjs
 ```
