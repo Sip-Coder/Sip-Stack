@@ -448,6 +448,10 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
     ready = false;
     generation++;
     stage.canvas.style.visibility = 'hidden';
+    // Drop the old GPU bone textures while deletes are safe. Three creates
+    // new textures on the first draw in the restored context.
+    for (const actor of cast)
+      for (const { mesh } of actor?.rig.groom?.bindings ?? []) mesh.skeleton.dispose();
     stage.releaseTargets();
     loading.hidden = false;
     loading.textContent = 'Restoring the test floor…';

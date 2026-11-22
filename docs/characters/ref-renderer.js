@@ -433,6 +433,9 @@ export function createRefRenderer(stage) {
       lost = true;
       stats.contextLosses++;
       warmed.clear();
+      for (const rows of groups.values())
+        for (const { mesh } of rows)
+          if (mesh.userData.hairPart) mesh.skeleton?.dispose();
       beauty.dispose();
       photo.dispose();
     },
