@@ -31,6 +31,14 @@ Sip-Stack registers the left and right hip, thigh and shank separately in the co
 
 Both female supplements preserve 76 connected surfaces. Measured against all registered donor surfaces, 99% of bidirectional vertex and triangle-centroid samples fall within 0.090 inches on Mobile and 0.043 inches on High. [Female donor surface measurements](../review/scan-skeleton/female-muscle-lod-surface.json)
 
+## Additional superficial muscles
+
+**BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International.** The supplementary export recovers 34 part-level elements of the deltoid, pectoralis major, trapezius, biceps brachii, quadriceps and gastrocnemius in the official BodyParts3D 4.0 archive. The archived meshes retain their original FJ identifiers. The 2025 license applies to these elements and their fitted atlas surfaces. [Archive](https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html) · [Rights holder’s terms](https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html)
+
+Sippy uses all 34 elements, including all four quadriceps heads and both gastrocnemius heads on each side. Roma uses the 22 upper-body elements, fitted to her female skeleton, along with the 76 Andreassen female lower-limb surfaces described above. Sip-Stack registers attachment landmarks, adapts the shapes to the posed rig and skin, supplies the surface finishes and compresses the derived geometry. [Mobile source pack](bp3d-missing-muscles-mobile-meshopt.glb) · [High source pack](bp3d-missing-muscles-high-meshopt.glb)
+
+**Latissimus dorsi and rectus abdominis: Z-Anatomy (https://github.com/Z-Anatomy/Models-of-human-anatomy), CC BY-SA 4.0, derived from BodyParts3D. Share-alike applies to this pack.** The four meshes come from the left and right latissimus dorsi and rectus abdominis in the muscular-system collection of Z-Anatomy’s `Startup.blend`. Each character has separate fitted Z-Anatomy GLBs at both tiers. Those adaptations carry CC BY-SA 4.0. Changes include segment registration to the character, attachment and envelope fitting, tendon and fibre shading attributes, and compression. [Z-Anatomy source](https://github.com/Z-Anatomy/Models-of-human-anatomy) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) · [Mobile source pack](zanatomy-lats-rectus-mobile-meshopt.glb) · [High source pack](zanatomy-lats-rectus-high-meshopt.glb)
+
 ## Reproduce the packages
 
 Copy both [BodyParts3D preparation](../../../tools/prepare-muscle-lod.mjs) and [female lower-limb preparation](../../../tools/prepare-female-muscles.mjs) into a scratch directory. Place the two originally supplied BodyParts3D GLBs inside an `original/` subdirectory. Run the following in that scratch directory.
