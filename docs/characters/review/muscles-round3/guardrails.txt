@@ -1,0 +1,24 @@
+Injecting transient missing asset for sippy
+Stale selected hero restored {"documents": 2, "requests": ["script", "fetch", "script"]}
+Injecting persistent missing asset for sippy
+Stale selected hero loop suppressed {"documents": 2, "requests": ["script", "fetch", "script"]}
+Injecting transient missing asset for roma
+Stale selected hero restored {"documents": 2, "requests": ["script", "fetch", "script"]}
+Production #heros started with Sippy alone, then restored Roma alone and Hummin alone after real picker selections and reloads.
+Heros aliases, Back/Forward, landing link and three saved content routes
+First frame Sippy alone; selecting Hummin and then Lineup loads each builder once. Cached selections reuse the prepared actors.
+The held selection preserved every framebuffer pixel. Context recovery let the cached Sippy render before releasing the pending Hummin response.
+Idle in both tiers fetched zero secondary modules. Movement continued with the quiff request held. Each hero loaded its dynamics once on movement or gesture.
+mobile all three cast buttons drew distinct actors; differing colour samples [346, 389, 421]
+mobile · three heroes rendered, context restored and shaders rewarmed
+high all three cast buttons drew distinct actors; differing colour samples [342, 391, 418]
+high · three heroes rendered, context restored and shaders rewarmed
+Rejected shader warm-up returned to the preserved target and the stage painted
+Three-character formation travel (ft) [10.86, 10.65, 4.15]
+Keyboard and standard gamepad input
+Completed 5 four-tab cycles
+Completed 10 four-tab cycles
+Completed 15 four-tab cycles
+Completed 20 four-tab cycles
+20 four-tab cycles {"contexts": 2, "clears": 0, "black": 0, "frames": 558, "byTab": {"heros": 301, "village": 257}}
+Touch stick, simultaneous run, jump and roll

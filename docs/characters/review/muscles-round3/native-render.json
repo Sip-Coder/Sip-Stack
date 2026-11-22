@@ -1,0 +1,434 @@
+{
+  "verifiedServedSources": true,
+  "presentedPixels": {
+    "images": 41,
+    "minimumColorBins": 51
+  },
+  "revision": "e4c1af12befd3e7b16d2ada99b26df5cd4745b30",
+  "chromium": "155.0.8059.79",
+  "renderer": "ANGLE Vulkan SwiftShader",
+  "rows": [
+    {
+      "hero": "hummin",
+      "tier": "mobile",
+      "states": {
+        "0": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            29
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 29,
+          "maxCompositeDraws": 0,
+          "maxInspectorDraws": 29,
+          "maxAllDraws": 29
+        },
+        "0.5": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            29
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 29,
+          "maxCompositeDraws": 0,
+          "maxInspectorDraws": 29,
+          "maxAllDraws": 29
+        },
+        "1": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            29
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 29,
+          "maxCompositeDraws": 0,
+          "maxInspectorDraws": 29,
+          "maxAllDraws": 29
+        },
+        "allLayersTranslucentWithSelection": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            29
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 29,
+          "maxCompositeDraws": 0,
+          "maxInspectorDraws": 29,
+          "maxAllDraws": 29
+        }
+      }
+    },
+    {
+      "hero": "roma",
+      "tier": "mobile",
+      "states": {
+        "0": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            9
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 9,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 10,
+          "maxAllDraws": 10
+        },
+        "0.5": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            9
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 9,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 10,
+          "maxAllDraws": 10
+        },
+        "1": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            9
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 9,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 10,
+          "maxAllDraws": 10
+        },
+        "allLayersTranslucentWithSelection": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            9
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 9,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 10,
+          "maxAllDraws": 10
+        }
+      }
+    },
+    {
+      "hero": "sippy",
+      "tier": "mobile",
+      "states": {
+        "0": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            33
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 33,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 34,
+          "maxAllDraws": 34
+        },
+        "0.5": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            33
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 33,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 34,
+          "maxAllDraws": 34
+        },
+        "1": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            33
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 33,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 34,
+          "maxAllDraws": 34
+        },
+        "allLayersTranslucentWithSelection": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            33
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 33,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 34,
+          "maxAllDraws": 34
+        }
+      }
+    },
+    {
+      "hero": "hummin",
+      "tier": "high",
+      "states": {
+        "0": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            29
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 29,
+          "maxCompositeDraws": 0,
+          "maxInspectorDraws": 29,
+          "maxAllDraws": 29
+        },
+        "0.5": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            29
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 29,
+          "maxCompositeDraws": 0,
+          "maxInspectorDraws": 29,
+          "maxAllDraws": 29
+        },
+        "1": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            29
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 29,
+          "maxCompositeDraws": 0,
+          "maxInspectorDraws": 29,
+          "maxAllDraws": 29
+        },
+        "allLayersTranslucentWithSelection": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            29
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 29,
+          "maxCompositeDraws": 0,
+          "maxInspectorDraws": 29,
+          "maxAllDraws": 29
+        }
+      }
+    },
+    {
+      "hero": "roma",
+      "tier": "high",
+      "states": {
+        "0": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            9
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 9,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 10,
+          "maxAllDraws": 10
+        },
+        "0.5": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            9
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 9,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 10,
+          "maxAllDraws": 10
+        },
+        "1": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            9
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 9,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 10,
+          "maxAllDraws": 10
+        },
+        "allLayersTranslucentWithSelection": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            9
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 9,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 10,
+          "maxAllDraws": 10
+        }
+      }
+    },
+    {
+      "hero": "sippy",
+      "tier": "high",
+      "states": {
+        "0": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            33
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 33,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 34,
+          "maxAllDraws": 34
+        },
+        "0.5": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            33
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 33,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 34,
+          "maxAllDraws": 34
+        },
+        "1": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            33
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 33,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 34,
+          "maxAllDraws": 34
+        },
+        "allLayersTranslucentWithSelection": {
+          "frames": 1,
+          "passes": 1,
+          "submissionCounts": [
+            33
+          ],
+          "maxPasses": 1,
+          "maxDiagramDraws": 33,
+          "maxCompositeDraws": 1,
+          "maxInspectorDraws": 34,
+          "maxAllDraws": 34
+        }
+      }
+    }
+  ],
+  "stallMs": 250,
+  "stallActor": "sippy-high",
+  "afterStall": {
+    "frames": 2,
+    "passes": 2,
+    "submissionCounts": [
+      33
+    ],
+    "maxPasses": 1,
+    "maxDiagramDraws": 33,
+    "maxCompositeDraws": 1,
+    "maxInspectorDraws": 34,
+    "maxAllDraws": 34
+  },
+  "offscreen": {
+    "draws": 263,
+    "passes": 0,
+    "diagram": 0,
+    "composite": 0,
+    "blits": 0
+  },
+  "contexts": [
+    {
+      "live": true,
+      "canvasClass": ""
+    }
+  ],
+  "errors": [],
+  "sourceSha256": {
+    "/": "86bddd4109dd52f9840f07f954c616e41c619c5aae36472cfc0ab2d2fe985a81",
+    "/__three/build/three.module.js": "ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb",
+    "/__three/examples/jsm/libs/meshopt_decoder.module.js": "01f48524f4bac6141eaba07e94cc36e7ee56f311796fa6117c159842941b0468",
+    "/__three/examples/jsm/utils/BufferGeometryUtils.js": "c25b7930e570e9ec56173cd3b866ec8d2e10016630db3937efb439daf1cedbf6",
+    "/assets/sip-app.js": "c80d5bcfad97e9dfba3d0ebc4d80309b5937998fa6f8a28ff2e95b13eeba2193",
+    "/assets/sip-stack.css": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
+    "/assets/sip-warm.js": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
+    "/characters/assets/axon-roma-high-sa.glb": "e7d0b2557a62fafe1ec5423d685e83353eedfef2bba81fdd1a001e42d80844d0",
+    "/characters/assets/axon-roma-high.glb": "7c05218ccc2463096fc3efe6122475ea3728946580db8d5dc641a6427a85e345",
+    "/characters/assets/axon-roma-mobile-sa.glb": "b70a0898e4d18b5c4d3ff330a78690b4800f14fd0eeafdadd23a62027bb2726b",
+    "/characters/assets/axon-roma-mobile.glb": "aebc90c3a66024f17872978af0bee1d3623fb0f3d88b4b020661f7f76fa60b29",
+    "/characters/assets/axon-sippy-high-sa.glb": "4a09f98aef51fb4b2de4c7a95a22068f3cdd3a3c8c0133923798e42d58172772",
+    "/characters/assets/axon-sippy-high.glb": "427308defae04cd4ccbfcc10343ffcfd3a4fb6d3de4e53251fb0a9cd5b831050",
+    "/characters/assets/axon-sippy-mobile-sa.glb": "f144360549eb906cdbe295561fec5df7ce5e0d01b9d68486ad5c90be48fb8b45",
+    "/characters/assets/axon-sippy-mobile.glb": "58c9e1c88236a959c452beeb61805430edd6e22717a20e69d450ee9687fca72d",
+    "/characters/axon-view.css": "a1462c79925355218a1ce3c04de4f0e46f782902ebf416ced013d80a310bf66b",
+    "/characters/axon-view.js": "5f23d23a18b6b8f457c823d13ef0b78c2ca6fed2ce260b15f2c8fe28f62d0928",
+    "/characters/character-ref.css": "babf0c425296e54ff77005e3dd4fde158140d5c5b7c85297f16d87f03a00cb99",
+    "/characters/character-ref.js": "34ce268fb3cee37e04590dfbaf5841ee8fa3466bd3ef29940885c19aed6d8838",
+    "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
+    "/characters/diagram-anatomy.js": "e3ab9d061e371a8407e3bef7d802c711b0732499b98da939e88ea5af1077379f",
+    "/characters/diagram-baked-material.js": "a27b68dab2e5821c445a7ab5c28eb7cbb19688c83c08615d874fe70679cdbad2",
+    "/characters/diagram-baked-pack.js": "0d4848ee9e16c5457b3a928944c3cd98e482af8b67a99397a576f88edaaf4519",
+    "/characters/diagram-explode.js": "8b0c94d4ab040042039e28518820a1b23826c4107b8a83cfecfb7f5166af6b5c",
+    "/characters/diagram-fit-model.js": "7656e91d95f14d47e8d6ec15c2d143f255d23262ae54f26fbfb417267b52f1d8",
+    "/characters/diagram-hummin.js": "7045476935da4c5c7cec5b2129638069ddb9251f0d5b6a6618d5c3d8986e3153",
+    "/characters/diagram-outer-parts.js": "2b13338c395ee6d9392ac39516a8400835718f41f221d3f7b199e96a4456f8a8",
+    "/characters/diagram-parts.js": "75dbeffee2d6e1ce336a9b1cf2c1300f2ba8a453564dfbb6a4966181f32845f9",
+    "/characters/diagram-robot.js": "c4d40cdac02d93e1547fa6339c6a0d2de2fc350d4b810c0d8ebc23fbe131596b",
+    "/characters/diagram-snapshot.js": "072370c7c1fe88c4f871ed2d64892af9bf9453c8c860025c49070f4a872b86bf",
+    "/characters/diagram-studio.js": "3e076c0a79b648a2ed66dfc9e2cb9b4344bd273660dabf57cf3d36c46b62e0a0",
+    "/characters/diagram-view.js": "c640dd9acf19def06fbb70a6a1bb092a8a1df523a5fc2683cd1603adf53695ae",
+    "/characters/embroidery.js": "67fdf06663210a5715febb6510e5d92f0ddca9777cb595d9f1bd79966e2a81e5",
+    "/characters/hummin-leather.js": "b308a1fd91a605aee7ae3c7af648cca289bb9ec7f599f5d07794af7d6ca365b9",
+    "/characters/hummin-panels.js": "bfba2d8006b4f7e6ab27016a9fc5dd886df805dd5343201337a558bfb489f7ff",
+    "/characters/hummin-pouches.js": "6c64e8a3ae01e0734a7e7108c13824ee1dd9ebca3c53fdfd3df279a93e9c3fdb",
+    "/characters/hummin-scarf.js": "e9641fad314ded58f071ab43803b38b40ffa41a5c1361bfdca6dcdcd77a46e2d",
+    "/characters/hummin-shell-fit.js": "6408ef12663c389886509e83b41132b5d93e26e1a78dc54a7f825d153e5447a4",
+    "/characters/hummin-textiles.js": "35a8cf775f9d165e64aef73ade868f6b7b9555c4f5eb9893b0b282c76eec5cef",
+    "/characters/hummin.js": "cb4c8e9ce22c12a8afd634301ea07aac3f7fd6934a8657b92412a20b100bb8f3",
+    "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
+    "/characters/main.js": "40ad46a5040fb0a96b9ac67ce21e562ad2ec74963409b28e8fac1dbb27d3f1b4",
+    "/characters/material-detail.js": "ca5364d5e570943552bb6d40b3e50a956acb8431548da591f600fd280d0fa63d",
+    "/characters/model-tier.js": "f1c83eb8d91b243948aea6d45c04fcb19e4340a52fc63bb40c960885aa1e11a9",
+    "/characters/motion.js": "88132184dde77d7b3ccb2d9b370a212a6da4811cee6072fd865dc2a55eaf98b2",
+    "/characters/ref-model.js": "a5b69dfc665546f8eb97d3af77465cd3988936905e8fc8166ad6c73e7fdaa5a3",
+    "/characters/ref-panels.js": "3037812e249774a4e92550c05f27c87e8e8cf29998cd708d3897d17eb24c39c4",
+    "/characters/ref-renderer.js": "bb806d731f336cbe2d626cc780e9c449ddf3e3699221d14e0426bda560915d56",
+    "/characters/ref-robot.js": "f93904e9175aed1af4c7a2b7ab38b356d1ed205a75b2de0e1eb913cb3a644c05",
+    "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
+    "/characters/rig.js": "fc0c1d81f2695004894aa0dd4e12f9886d5ea6f5d375bce4dadc71026537bb5c",
+    "/characters/roma-forms.js": "b7c27e14d407728c661dbd79c75a001941ae1d14aaaf1992907be868dad581ec",
+    "/characters/roma-light-groom.js": "b76a5f82ecd48cab4dccdab3d4da5c78197e765603eda0a35411f008be87dccd",
+    "/characters/roma.js": "db55e1e5155eefa3a4e8a1e286473b0a93cc630bf6c47dfd9c84284e9ebebe34",
+    "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+    "/characters/secondary.js": "80ed341ab1b5bdc86164c46e3585f724c919c6fcb5a90a3b59f2a681bf47e24d",
+    "/characters/sippy-body.js": "2d5690035f0fbd2bd648d908db99524e3878357e1973d673655623ef6fc2ee8b",
+    "/characters/sippy-explorer.js": "99a3d325033ddb551220398462bb28f92317ecea5b35dc02262906e70f38f172",
+    "/characters/sippy-expression.js": "5ad54467f42692d2bbd42a3abbdba2038e9dc9cae67a1c35bcd675eb88591e46",
+    "/characters/sippy-hips.js": "dde1e1080e348fdf994266e99515ef4af91c110333905746925f59d1ec894eb9",
+    "/characters/sippy-secondary.js": "3e8cf51201dc946a4b90d19369eb6f3c26d6ff465b8d5a5bf0c4cd11c9e267a7",
+    "/characters/sippy-shoulders.js": "178d942fab123c16eabcd0ef8a3d948e9a121e68fe568364d0eaacbb14423b6e",
+    "/characters/sippy-skin.js": "a40f2bf5b900c4be94e6b9ced5a0c7a640ce27c2c2bddf96e0cac95cebe90a0f",
+    "/characters/sippy-tailoring.js": "a3e917d000cc04c0f78f5e0956617669cba914067a6ba5ff084861c02b1ed1dc",
+    "/characters/sippy.js": "ab4fc809a7b73b6ec5d100dfaf8436b5db4a7d752ab208f5c4d1203dee4c4305",
+    "/characters/stage.js": "d206cbd7a4cfb063c1f86c41cbe345e133023021ef9a940650dc05a80fc4d112",
+    "/characters/ui.js": "145b3db0740fcfd83535c2250edc0e52dcda7843c41ed62b2a394d5df934a7cd"
+  },
+  "verifiedRuntimeRevision": "1c154506c8b22fecc59bd59f6c1a5fa4829c8633"
+}
