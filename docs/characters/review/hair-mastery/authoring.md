@@ -24,6 +24,8 @@ The packed exports retain the parting, root placement, and curl guides. Against 
 
 HAELE 3D informed loose tip separation, the moving highlight band, and the response to abrupt stops and a backward tilt. The models, curves, and materials are original Blender work and follow Jonathan’s character sheets. [HAELE 3D motion reference](https://x.com/haele3d/status/2110397355623358674)
 
+Head and body inertia move the guides away from their curved rest shape. Gravity redirects the tips as the head tilts. Root joints stay pinned and the solver preserves guide segment lengths while the tips slide along the padded collision volumes. In the shake test, the representative forelock settles in 1.23 seconds and Roma’s side wave in 1.80 seconds. Each makes three reversals exceeding 8% of its first swing. [Guide, clearance and reduced-motion audit](motion-check.json)
+
 ## Rebuild the assets
 
 Run the commands from the repository root with Blender 4.3 or newer and Node. Install `@gltf-transform/core@4.5.1`, `@gltf-transform/extensions@4.5.1`, `@gltf-transform/functions@4.5.1` and `meshoptimizer@1.3.0` where Node can resolve the packer’s imports.
