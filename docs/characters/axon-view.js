@@ -97,13 +97,14 @@ export function mountStudy(section, stage, chooseHero) {
       // An opaque 2D context starts black. Reveal only after the first readback
       // has been copied, then keep that photograph through later replacements.
       if (canvas.style.visibility) canvas.style.visibility = '';
-      if (!stats.ready || !model || stats.parts !== model.parts.length) return;
+      if (!model || stats.parts !== model.parts.length) return;
       if (model.partial) {
         section.dataset.progress = 'skeleton';
         status.textContent = 'Fitting muscle layers…';
         previewPaint?.();
         return;
       }
+      if (!stats.ready) return;
       delete section.dataset.progress;
       status.textContent = '';
       section.dataset.ready = key;
