@@ -5,7 +5,7 @@ export function reviewControls(floor) {
     view: floor.setView,
     tier(q) {
       floor.tierSelect.value = q;
-      floor.quality();
+      return floor.quality();
     },
     reset: floor.reset,
     setManual: floor.manualMode,

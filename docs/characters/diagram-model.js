@@ -4,12 +4,7 @@ import { setModelDetail } from './model-tier.js';
 import { heights, names } from './ui.js';
 import { freezeSurface, components, joinPart, snapshotResources } from './diagram-snapshot.js';
 import { describeRoma, sippyCatalog } from './diagram-outer-parts.js';
-
-const builders = {
-  sippy: () => import('./sippy.js').then((m) => m.buildSippy),
-  roma: () => import('./roma.js').then((m) => m.buildRoma),
-  hummin: () => import('./hummin.js').then((m) => m.buildHummin),
-};
+import { loadAvatar } from './avatar-builder.js';
 
 async function prepareInterior(name, tier, signal, options) {
   if (name === 'hummin') {
@@ -30,7 +25,7 @@ export async function buildDiagramModel(name, tier, signal, onPartial) {
     // Build the authored exterior while the same hero's native anatomy loads.
     const [interior] = await Promise.all([
       prepareInterior(name, tier, signal, { upperOnly: staged }),
-      builders[name]().then((build) => {
+      loadAvatar(name, tier).then((build) => {
         signal?.throwIfAborted();
         const pose = build(rig);
         setModelDetail(rig.root, tier);

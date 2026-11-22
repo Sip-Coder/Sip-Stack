@@ -249,17 +249,19 @@ if (typeof process !== 'undefined' && process.versions?.node) {
         const { createActor } = await import('/characters/rig.js'),
           { createController, FIXED_DT } = await import('/characters/motion.js');
         const { setModelDetail } = await import('/characters/material-detail.js');
+        const { loadAvatar } = await import('/characters/avatar-builder.js');
         const { measureRigLandmarks } = await import('/tools/blueprints/measure-landmarks.mjs');
         const heroes = [
-          ['sippy', 1.78, 'buildSippy'],
-          ['roma', 1.68, 'buildRoma'],
-          ['hummin', 1.85, 'buildHummin'],
+          ['sippy', 1.78],
+          ['roma', 1.68],
+          ['hummin', 1.85],
         ];
         const results = {};
-        for (const [name, height, builder] of heroes) {
+        for (const [name, height] of heroes) {
           if (only && only !== name) continue;
           const rig = createActor(name, height);
-          const animate = (await import('/characters/' + name + '.js'))[builder](rig);
+          const build = await loadAvatar(name, tier);
+          const animate = build(rig);
           setModelDetail(rig.root, tier);
           const controller = createController(rig);
           controller.reset(0, 0);

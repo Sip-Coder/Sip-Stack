@@ -4,12 +4,9 @@ import * as T from 'three';
 import { createActor } from '/characters/rig.js';
 import { FIXED_DT, createController } from '/characters/motion.js';
 import { setModelDetail } from '/characters/material-detail.js';
-import { buildSippy } from '/characters/sippy.js';
-import { buildRoma } from '/characters/roma.js';
-import { buildHummin } from '/characters/hummin.js';
+import { loadAvatar } from '/characters/avatar-builder.js';
 import { names, heights } from '/characters/ui.js';
 
-const builders = { sippy: buildSippy, roma: buildRoma, hummin: buildHummin };
 const neutral = { x: 0, z: 0, run: false, jump: false, roll: false, emote: false };
 const swatchSize = 128;
 
@@ -320,10 +317,11 @@ function calibrateBooth(renderer, booth, camera, meter) {
   return readings;
 }
 
-function posedHero(hero, tier) {
+async function posedHero(hero, tier) {
   const height = heights[names.indexOf(hero)];
   const rig = createActor(hero, height);
-  const animate = builders[hero](rig);
+  const build = await loadAvatar(hero, tier);
+  const animate = build(rig);
   setModelDetail(rig.root, tier);
   const ctrl = createController(rig);
   ctrl.reset(0, 0);
@@ -337,12 +335,12 @@ function posedHero(hero, tier) {
 
 export async function measurePose(hero, tier) {
   const { measureRigLandmarks } = await import('/tools/blueprints/measure-landmarks.mjs');
-  return measureRigLandmarks(posedHero(hero, tier), tier);
+  return measureRigLandmarks(await posedHero(hero, tier), tier);
 }
 
 export async function setup(hero, spec, strict, withLandmarks) {
   const height = heights[names.indexOf(hero)];
-  const rig = posedHero(hero, 'high');
+  const rig = await posedHero(hero, 'high');
   const landmarks = withLandmarks
     ? (await import('/tools/blueprints/measure-landmarks.mjs')).measureRigLandmarks(rig, 'high')
     : null;

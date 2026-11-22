@@ -116,7 +116,7 @@ function rollHull(rig) {
   }
   rig.root.updateWorldMatrix(true, true);
   rig.root.traverse((mesh) => {
-    if (!mesh.isMesh || !mesh.visible || mesh.userData.debug || mesh.userData.highDetail) return;
+    if (!mesh.isMesh || !mesh.visible || mesh.userData.debug || mesh.userData.highDetail || mesh.userData.hairPart) return;
     let parent = mesh;
     while (parent !== rig.root && !moving.has(parent) && !parent.userData.dynamicPose) parent = parent.parent;
     const { position, skinIndex, skinWeight } = mesh.geometry.attributes;
@@ -202,6 +202,23 @@ function rollHull(rig) {
     }
     return min;
   };
+}
+
+// Authored hair can change LOD during play. Measure its active surface during
+// the roll; the controller's precomputed body hull never holds removed bones.
+function posedHairFloor(group, probe, minimum) {
+  group.traverseVisible(mesh => {
+    if (!mesh.isMesh) return;
+    const { position } = mesh.geometry.attributes;
+    const m = mesh.matrixWorld.elements;
+    for (let i = 0; i < position.count; i++) {
+      const y = mesh.isSkinnedMesh
+        ? mesh.getVertexPosition(i, probe).applyMatrix4(mesh.matrixWorld).y
+        : m[1] * position.getX(i) + m[5] * position.getY(i) + m[9] * position.getZ(i) + m[13];
+      minimum = Math.min(minimum, y);
+    }
+  });
+  return minimum;
 }
 
 export function createController(rig, x = 0, z = 0) {
@@ -730,7 +747,7 @@ export function createController(rig, x = 0, z = 0) {
   function finishPose() {
     if (frame.state !== 'roll') return;
     root.updateMatrixWorld(true);
-    const lowest = rollFloor();
+    const lowest = rig.groom?.group ? posedHairFloor(rig.groom.group, sample, rollFloor()) : rollFloor();
     if (Number.isFinite(lowest)) {
       // A finite directional hull inscribes the curved boot, pack and helmet.
       // Reserve a thin contact margin for the unsampled arc between support points.

@@ -26,6 +26,7 @@ if (process.env.THREE_ROOT) {
 const T = await import('three');
 if (T.REVISION !== '170') throw Error('Expected three@0.170.0');
 const { createActor } = await import('../docs/characters/rig.js');
+const { loadAvatar } = await import('../docs/characters/avatar-builder.js');
 const { createController, FIXED_DT, PROPS } = await import('../docs/characters/motion.js');
 const { optimizeCharacter } = await import('../docs/characters/render-batches.js');
 const { setModelDetail } = await import('../docs/characters/material-detail.js');
@@ -138,9 +139,7 @@ function relativeTip(tip, frame) {
     .applyMatrix4(inverse.copy(frame.matrixWorld).invert());
 }
 async function measure(name, tier) {
-  const { ['build' + name[0].toUpperCase() + name.slice(1)]: build } = await import(
-    '../docs/characters/' + name + '.js'
-  );
+  const build = await loadAvatar(name, tier);
   const height = heights[names.indexOf(name)],
     rig = createActor(name, height);
   const pose = build(rig),
@@ -357,26 +356,31 @@ async function measure(name, tier) {
   }
   check(emoteTicks > 60 && gesture > 0.03 && waveReturn < 0.035, 'gesture moves visible hand and returns');
   reset();
-  const guides = [];
-  rig.root.traverseVisible((n) => {
-    if (
-      name === 'sippy'
-        ? /^Sippy quiff spring [0-9]+$/.test(n.name)
-        : name === 'roma'
-          ? /^Roma (temple|side|nape) waves /.test(n.name)
-          : n === rig.secondary.hummin.antenna
-    )
-      guides.push(n);
-  });
+  const guides = rig.groom
+    ? rig.groom.bindings.map(({ mesh, points }) => {
+      const uv = mesh.geometry.attributes.uv;
+      const end = new T.Vector3(...points.at(-1));
+      const toHead = new T.Matrix4().copy(rig.groom.head.matrixWorld).invert().multiply(mesh.matrixWorld);
+      let index = -1, best = Infinity;
+      for (let i = 0; i < uv.count; i++) {
+        if (uv.getX(i) < 0.986) continue;
+        const d = mesh.getVertexPosition(i, point).applyMatrix4(toHead).distanceToSquared(end);
+        if (d < best) {
+          best = d;
+          index = i;
+        }
+      }
+      if (index < 0) throw Error('Missing rendered tip for ' + mesh.name);
+      return { node: mesh, tip: { mesh, index }, frame: rig.groom.head };
+    }) : [rig.secondary.hummin.antenna].map(node => ({ node, tip: tipOf(node), frame: node.parent }));
   check(
-    guides.length === (name === 'sippy' ? 5 : name === 'roma' ? 6 : 1),
+    guides.length === (name === 'sippy' ? 3 : name === 'roma' ? 8 : 1),
     'missing animated guide geometry',
   );
   // Run the same clock twice, first at rest. Idle breathing and a groom's
   // authored idle sway remain active while acceleration-driven motion settles.
-  const witness = guides.map((node) => ({
-    node,
-    tip: tipOf(node),
+  const witness = guides.map((guide) => ({
+    ...guide,
     baseline: [],
     max: 0,
     tail: 0,
@@ -386,14 +390,14 @@ async function measure(name, tier) {
   const toWorld = new T.Matrix3();
   for (let i = 0; i < 240; i++) {
     tick(neutral);
-    for (const w of witness) w.baseline.push(relativeTip(w.tip, w.node.parent));
+    for (const w of witness) w.baseline.push(relativeTip(w.tip, w.frame));
   }
   reset();
   for (let i = 0; i < 240; i++) {
     tick({ ...neutral, z: i < 105 ? 1 : 0, run: i < 105, x: i > 50 && i < 105 ? 0.55 : 0 });
     for (const w of witness) {
-      const current = relativeTip(w.tip, w.node.parent);
-      toWorld.setFromMatrix4(w.node.parent.matrixWorld);
+      const current = relativeTip(w.tip, w.frame);
+      toWorld.setFromMatrix4(w.frame.matrixWorld);
       const d = point.subVectors(current, w.baseline[i]).applyMatrix3(toWorld).length();
       w.max = Math.max(w.max, d);
       if (i >= 204) w.tail = Math.max(w.tail, d);

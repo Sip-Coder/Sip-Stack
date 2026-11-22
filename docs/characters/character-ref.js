@@ -188,7 +188,7 @@ export function mountStudy(section, stage, chooseHero) {
     notice.textContent = 'Could not update the sheet. Use Refresh to retry.';
     if (
       await import('../assets/sip-recover.js')
-        .then((m) => m.recover('Character Ref', error, [stylesheet.href]))
+        .then((m) => m.recover('Character Ref', error, [stylesheet.href, error.assetURL].filter(Boolean)))
         .catch(() => false)
     )
       return;

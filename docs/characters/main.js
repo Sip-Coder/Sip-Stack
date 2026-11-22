@@ -7,12 +7,7 @@ import { createUI, heights, labels, names } from './ui.js';
 import { createInput } from './input.js';
 import { optimizeCharacter } from './render-batches.js';
 import { femaleMuscleFile, sourceAssetFiles } from './source-asset-files.js';
-
-const loadBuilder = [
-  () => import('./sippy.js').then(m => m.buildSippy),
-  () => import('./roma.js').then(m => m.buildRoma),
-  () => import('./hummin.js').then(m => m.buildHummin),
-];
+import { loadAvatarBuilder, loadAvatarGroom } from './avatar-builder.js';
 
 export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
   const el = createUI(host),
@@ -59,6 +54,7 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
     lineupButton = find('[data-action=lineup]'),
     slowCheck = find('[data-setting=slow]');
   const studies = [];
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   function observeStudy(section, load, enterFromBelow = 0) {
     let inView = false, pending, block, failed = false;
     const open = section.querySelector('[data-open-study]');
@@ -141,12 +137,26 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
   }
   function loadActor(i) {
     if (pending.has(i)) return pending.get(i);
-    if (cast[i]) return Promise.resolve();
-    const job = loadBuilder[i]().then(async build => {
-      const rig = createActor(names[i], heights[i]);
-      const pose = build(rig), ctrl = createController(rig);
+    const name = names[i], existing = cast[i];
+    if (existing && (!existing.rig.groom || existing.rig.groom.tier === actualTier)) return Promise.resolve();
+    const job = (existing ? Promise.resolve() : loadAvatarBuilder(name)).then(async build => {
+      let tier, attach;
+      do {
+        tier = actualTier;
+        attach = await loadAvatarGroom(name, tier);
+      } while (tier !== actualTier);
+      if (existing) {
+        const { rig } = existing;
+        attach(rig.groom.head, rig.groom);
+        setModelDetail(rig.root, tier);
+        stage.invalidateShadow();
+        if (!lost && rig.root.visible) await warm();
+        return;
+      }
+      const rig = createActor(name, heights[i]);
+      const pose = build(rig, attach), ctrl = createController(rig);
       optimizeCharacter(rig);
-      setModelDetail(rig.root, actualTier);
+      setModelDetail(rig.root, tier);
       const drawDebug = debug ? (await import('./debug-rig.js')).debugRig(stage.scene, rig, ctrl) : null;
       stage.scene.add(rig.root);
       cast[i] = { rig, pose, ctrl, drawDebug, contactShadow: contactShadows(stage.scene, rig) };
@@ -165,7 +175,9 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
     return Promise.all(indices.map(loadActor)).catch(async error => {
       try {
         const { recover } = await import('../assets/sip-recover.js');
-        if (await recover('Heros', error, indices.map(i => './characters/' + names[i] + '.js'))) return;
+        const files = indices.map(i => './characters/' + names[i] + '.js');
+        if (error.assetURL) files.push(error.assetURL);
+        if (await recover('Heros', error, files)) return;
       } catch {
         // Recovery itself can be unavailable while the connection is down.
       }
@@ -247,11 +259,13 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
   const mobileDisplay = matchMedia('(pointer:coarse), (max-width:739px)');
   function quality() {
     const auto = autoLimited || mobileDisplay.matches ? 'mobile' : stage.autoTier();
+    const prior = actualTier;
     actualTier = tierSelect.value === 'auto' ? auto : tierSelect.value;
     tierSelect.options[0].textContent = 'Auto · ' + (auto === 'high' ? 'High' : 'Mobile');
     for (const actor of cast) if (actor) setModelDetail(actor.rig.root, actualTier);
     stage.quality(actualTier);
     for (const update of studies) update();
+    if (prior && prior !== actualTier && cast.some(Boolean)) return requestedCast();
   }
   tierSelect.addEventListener('change', () => {
     autoLimited = false;
@@ -349,6 +363,17 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
       performance.mark('heros-first-hero-frame');
     }
     if (!(party || lineup) || cast.every(Boolean)) loading.hidden = true;
+    // Warm the human secondary motion after the floor has already painted and
+    // responded to input. Walking and emoting can request it immediately.
+    for (const entry of cast) {
+      if (!manual && !reducedMotion.matches && entry?.rig.groom &&
+          entry.rig.root.visible && !entry.idleHair) {
+        entry.idleHair = setTimeout(() => {
+          if (active() && !manual && !reducedMotion.matches && entry.rig.root.visible) entry.rig.loadSecondary();
+          else entry.idleHair = 0;
+        }, 3500);
+      }
+    }
   }
   function active() {
     return visible && onscreen && !lost && !document.hidden && ready;
@@ -465,6 +490,8 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
             x: p?.x ?? 0, y: p?.y ?? 0, z: p?.z ?? 0, heading: f?.heading ?? 0,
             tier: actualTier, view, emote: f?.emote ?? -1, visible: active(),
             built: cast.flatMap((a, i) => a ? [names[i]] : []), firstHeroPainted,
+            hairAngles: actor?.rig.groom?.bindings.map(({ mesh, bones }) =>
+              [mesh.name, ...bones.slice(1).map(b => 2 * Math.acos(Math.min(1, Math.abs(b.quaternion.w))))]),
           };
         },
       });

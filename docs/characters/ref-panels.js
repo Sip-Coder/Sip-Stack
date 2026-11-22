@@ -97,7 +97,7 @@ const sippyGroups = [
   ]),
   group('hair', 'Hair', [
     detail('quiff', 'Swept quiff', 'Scalp and crest', 0.57, 0.21),
-    detail('forelock', 'Tapered forelock', 'Left forelock', 0.63, 0.09),
+    detail('forelock', 'Tapered forelock', 'Forelock crest', -0.63, 0.09),
   ]),
 ];
 

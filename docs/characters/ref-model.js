@@ -8,12 +8,7 @@ import { setModelDetail } from './model-tier.js';
 import { heights, names } from './ui.js';
 import { freezeSurface, components, joinPart, snapshotResources } from './diagram-snapshot.js';
 import { describeRoma, sippyCatalog } from './diagram-outer-parts.js';
-
-const builders = {
-  sippy: () => import('./sippy.js').then((m) => m.buildSippy),
-  roma: () => import('./roma.js').then((m) => m.buildRoma),
-  hummin: () => import('./hummin.js').then((m) => m.buildHummin),
-};
+import { loadAvatar } from './avatar-builder.js';
 const still = { x: 0, z: 0, run: false, jump: false, roll: false, emote: false };
 const humanCues = {
   sippy: {
@@ -275,7 +270,7 @@ async function yieldForInput(alive) {
 export async function buildRefModel(name, tier, alive = () => true) {
   if (!names.includes(name) || !['high', 'mobile'].includes(tier))
     throw Error('Unknown reference character or tier');
-  const build = await builders[name](),
+  const build = await loadAvatar(name, tier),
     human = name !== 'hummin';
   const robot = human ? null : await import('./ref-robot.js');
   const describeRobot = human ? null : (await import('./diagram-hummin.js')).describeHummin;
