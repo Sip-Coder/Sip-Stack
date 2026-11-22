@@ -39,6 +39,17 @@ Sippy uses all 34 elements, including all four quadriceps heads and both gastroc
 
 **Latissimus dorsi and rectus abdominis: Z-Anatomy (https://github.com/Z-Anatomy/Models-of-human-anatomy), CC BY-SA 4.0, derived from BodyParts3D. Share-alike applies to this pack.** The four meshes come from the left and right latissimus dorsi and rectus abdominis in the muscular-system collection of Z-Anatomy’s `Startup.blend`. Each character has separate fitted Z-Anatomy GLBs at both tiers. Those adaptations carry CC BY-SA 4.0. Changes include segment registration to the character, attachment and envelope fitting, tendon and fibre shading attributes, and compression. [Z-Anatomy source](https://github.com/Z-Anatomy/Models-of-human-anatomy) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) · [Mobile source pack](zanatomy-lats-rectus-mobile-meshopt.glb) · [High source pack](zanatomy-lats-rectus-high-meshopt.glb)
 
+## Fitted Axon View files
+
+Each first-open pair below contains a posed character inspection model and its separately licensed Z-Anatomy surfaces. The base file contains the credited anatomical components and Sip-Stack’s stylized skin, hair, clothes and accessories. Each Z-Anatomy file contains only the bilateral lats and rectus abdominis, fitted to that character and distributed under CC BY-SA 4.0. The unposed input files above remain available for the missing-file fallback. [BoneHub skeleton credits](SKELETON-LICENSE.md) · [CC BY-SA 4.0 terms](https://creativecommons.org/licenses/by-sa/4.0/)
+
+| Character and tier | Fitted base | Fitted Z-Anatomy adaptation |
+|---|---|---|
+| Sippy Mobile | [Base GLB](axon-sippy-mobile.glb) | [CC BY-SA GLB](axon-sippy-mobile-sa.glb) |
+| Sippy High | [Base GLB](axon-sippy-high.glb) | [CC BY-SA GLB](axon-sippy-high-sa.glb) |
+| Roma Mobile | [Base GLB](axon-roma-mobile.glb) | [CC BY-SA GLB](axon-roma-mobile-sa.glb) |
+| Roma High | [Base GLB](axon-roma-high.glb) | [CC BY-SA GLB](axon-roma-high-sa.glb) |
+
 ## Reproduce the packages
 
 Copy both [BodyParts3D preparation](../../../tools/prepare-muscle-lod.mjs) and [female lower-limb preparation](../../../tools/prepare-female-muscles.mjs) into a scratch directory. Place the two originally supplied BodyParts3D GLBs inside an `original/` subdirectory. Run the following in that scratch directory.
