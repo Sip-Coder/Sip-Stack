@@ -1,5 +1,7 @@
 # Source-true anatomy review
 
+The full-body captures below record the anatomy rebuild. The later facial pass has matched close-ups, expression sheets and its own live film. [Sippy and Roma face studies](faces/media.md)
+
 The outfit plates pair rendered PR #24 characters with the rebuilt Sippy and Roma on the same scale and ground origin. Both rows use the Character Ref renderer and the playable character builders. The capture fixes the orthographic camera at four angles to make shoulder, hip, limb and overall silhouette changes visible.
 
 | Character | Mobile before and after | High before and after | Mobile source anatomy | High source anatomy |
