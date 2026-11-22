@@ -186,10 +186,10 @@ function styleQuiff(head, locks) {
 // The iris remains embedded as the gaze shifts behind its anatomical lids.
 function eyeSurface(parent) {
   const gaze = { value: new T.Vector2() };
-  const mat = surface('#f5e8d8', 0.36, { specularIntensity: 0.25 });
-  const iris = new T.Color('#734214'),
-    pupil = new T.Color('#190600'),
-    catchlight = new T.Color('#fff8e7');
+  const mat = surface('#f7eee0', 0.36, { specularIntensity: 0.30 });
+  const iris = new T.Color('#604021'),
+    pupil = new T.Color('#190e0a'),
+    catchlight = new T.Color('#fff9ec');
   mat.userData.blueprintId = 'sclera';
   mat.userData.finishInks = { iris, pupil, catchlight };
   mat.userData.blueprintSamples = [
@@ -214,17 +214,17 @@ function eyeSurface(parent) {
       shader.fragmentShader.replace(
         '#include <color_fragment>',
         `#include <color_fragment>
-      vec2 p=(eyePoint-eyeGaze-vec2(0.,.00075))/vec2(.0104,.0125);
+      vec2 p=(eyePoint-eyeGaze-vec2(0.,.0009))/vec2(.0102,.0111);
       float r=length(p), a=atan(p.y,p.x), aa=max(.012,fwidth(r));
       float ray=.5+.5*sin(a*43.+sin(11.*a)*2.7+r*9.)*sin(a*17.-r*7.);
-      float honey=(.5-.5*p.y)*(.66+.34*ray);
-      vec3 iris=irisTint*(.69+.65*honey);
+      float honey=(.46-.46*p.y)*(.66+.34*ray);
+      vec3 iris=irisTint*(.54+.85*honey);
       iris*=.77+.23*smoothstep(.53,.76,r);
       iris=mix(iris,vec3(.022,.013,.009),smoothstep(.81,.98,r));
       iris=mix(pupilTint,iris,smoothstep(.52-aa,.52+aa,r));
       diffuseColor.rgb=mix(iris,diffuseColor.rgb,smoothstep(1.-aa,1.+aa,r));
-      float c=1.-smoothstep(.093,.119,length(p-vec2(-.32,.40)));
-      c+=.43*(1.-smoothstep(.044,.070,length(p-vec2(.30,-.34))));
+      float c=1.-smoothstep(.080,.108,length(p-vec2(-.32,.40)));
+      c+=.29*(1.-smoothstep(.044,.063,length(p-vec2(.30,-.34))));
       diffuseColor.rgb=mix(diffuseColor.rgb,glintTint,min(c,1.));`,
       );
   };
@@ -235,7 +235,7 @@ function eyeSurface(parent) {
 
 // The two lids glide over the convex eye (including the iris), so a blink
 // keeps the volume of the eyeball. Their lash edges are part of the same skin.
-function eyelid(parent, skin, lash, upper) {
+function eyelid(parent, skin, lash, upper, side) {
   const cols = 28,
     rows = 4,
     count = (cols + 1) * (rows + 1);
@@ -261,10 +261,11 @@ function eyelid(parent, skin, lash, upper) {
     for (let i = 0; i <= cols; i++) {
       const x = (i / cols) * 2 - 1,
         radius = Math.sqrt(Math.max(0, 1 - x * x));
-      const seam = upper ? 0.65 - 0.75 * closure : -0.66 + 0.56 * closure;
+      const seam = upper ? 0.61 - 0.71 * closure : -0.55 + 0.45 * closure;
       for (let j = 0; j <= rows; j++) {
         const f = offsets[j],
-          y = radius * T.MathUtils.lerp(seam, upper ? 1 : -1, f);
+          tilt = 0.055 * side * x * (1 - f),
+          y = radius * (T.MathUtils.lerp(seam, upper ? 1 : -1, f) + tilt);
         const k = (j * (cols + 1) + i) * 3;
         positions[k] = 0.02 * x;
         positions[k + 1] = 0.0168 * y;
@@ -296,16 +297,61 @@ function eyelid(parent, skin, lash, upper) {
   };
 }
 
-// Pinstripes follow the cut of each pattern piece. Filter their footprint on
+function modelFaceFinish(material, g) {
+  const face = material.clone();
+  face.vertexColors = true;
+  const colour = new T.Color(), pigments = [];
+  const p = g.attributes.position;
+  const flush = new T.Color('#edc5c3'), shade = new T.Color('#bfa998');
+  const bell = (v, center, width) => Math.exp(-(((v - center) / width) ** 2));
+  for (let i = 0; i < p.count; i++) {
+    const x = Math.abs(p.getX(i)), y = p.getY(i), z = p.getZ(i);
+    const front = T.MathUtils.smoothstep(z, 0.004, 0.044);
+    const cheeks = bell(x, 0.037, 0.020) * bell(y, 0.060, 0.022);
+    const tip = bell(x, 0, 0.012) * bell(y, 0.054, 0.011);
+    const jaw = bell(y, 0.023, 0.025) * front;
+    colour.setRGB(1, 1, 1).lerp(flush, (0.39 * cheeks + 0.28 * tip) * front).lerp(shade, 0.16 * jaw);
+    pigments.push(colour.r, colour.g, colour.b);
+  }
+  g.setAttribute('color', new T.Float32BufferAttribute(pigments, 3));
+  // Use resting face coordinates so pigment stays on the surface at all
+  // angles, in Character Ref and Axon too, without a texture request.
+  face.onBeforeCompile = (shader) => {
+    shader.vertexShader = 'varying vec3 skinSite;\n' + shader.vertexShader.replace(
+      '#include <begin_vertex>',
+      '#include <begin_vertex>\nvec3 sipRest = position; skinSite = sipRest;',
+    );
+    shader.fragmentShader = 'varying vec3 skinSite;\n' + shader.fragmentShader.replace(
+      '#include <color_fragment>',
+      [
+        '#include <color_fragment>',
+        'vec2 freckles = skinSite.xy * 510.0;',
+        'vec2 site = floor(freckles);',
+        'float seed = fract(52.9829189*fract(dot(site,vec2(.06711056,.00583715))));',
+        'vec2 spot = fract(vec2(seed*37.9,seed*117.37))*.54+.23;',
+        'float r = length(fract(freckles)-spot);',
+        'vec2 q=vec2((skinSite.y-.066)/.011,(abs(skinSite.x)-.027)/.036);',
+        'float mask = exp(-dot(q,q));',
+        'float soft = min(.18,max(.027,fwidth(r)));',
+        'float speckle = (1.0-smoothstep(.16-soft,.16+soft,r));',
+        'speckle *= step(seed,.30*mask)*smoothstep(.023,.045,skinSite.z);',
+        'diffuseColor.rgb = mix(diffuseColor.rgb,diffuseColor.rgb*vec3(.63,.47,.37),speckle*.73);',
+      ].join('\n'),
+    );
+  };
+  face.customProgramCacheKey = () => 'sippy-face-pigment';
+  return face;
+}
+
 export function buildSippy(rig) {
   attachExteriorProfile(rig, sippyExterior);
-  const skin = surface('#dfa071', 0.54),
-    blush = surface('#c78669', 0.62);
-  const hair = surface('#2d1605', 0.44, { specularIntensity: 0.38 }),
-    black = surface('#1b0904', 0.48, { specularIntensity: 0.24 });
+  const skin = surface('#dfa477', 0.62),
+    blush = surface('#cd8e75', 0.65);
+  const hair = surface('#2d1b16', 0.49, { specularIntensity: 0.36 }),
+    black = surface('#5a3429', 0.61, { specularIntensity: 0.24 });
   const white = surface('#f5e5c5', 0.64),
-    mouth = surface('#5a1d13', 0.52, { specularIntensity: 0.52 }),
-    lip = surface('#ad684c', 0.57);
+    mouth = surface('#5a2b25', 0.56, { specularIntensity: 0.37 }),
+    lip = surface('#be7c63', 0.58);
   const suit = surface('#39393c', 0.76),
     trousers = surface('#f1e1c0', 0.79),
     waistcoat = surface('#841e32', 0.78),
@@ -321,12 +367,6 @@ export function buildSippy(rig) {
     knit = surface('#630b23', 0.83),
     pad = surface('#171721', 0.8);
   const enamel = surface('#f5e7d6', 0.39);
-  const sheen = new T.MeshPhysicalMaterial({
-    color: '#834c23',
-    roughness: 0.46,
-    anisotropy: 0.58,
-    specularIntensity: 0.48,
-  });
   for (const [id, mat] of Object.entries({
     skin,
     flush: blush,
@@ -349,7 +389,6 @@ export function buildSippy(rig) {
     cargoSeam,
     cuff: knit,
     pad,
-    chestnut: sheen,
   }))
     mat.userData.blueprintId = id;
   const head = rig.head,
@@ -357,22 +396,24 @@ export function buildSippy(rig) {
   quiltFinish(suit);
   const headSkin = group(head);
   headSkin.name = 'sippy-head';
-  seatExplorerHead(rig, headSkin, { width: 0.138, depth: 0.111, baseWidth: 0.116,
+  seatExplorerHead(rig, headSkin, { width: 0.128, depth: 0.111, baseWidth: 0.116,
     baseDepth: 0.104, height: 0.122, middle: 0.067, front: 0.003 });
   const cheekRows = [
-    [0.006, 0.01, 0.016, 0.004],
-    [0.012, 0.03, 0.031, 0.004],
-    [0.025, 0.045, 0.042, 0.002],
-    [0.045, 0.0555, 0.049, 0],
+    [0.006, 0.015, 0.018, 0.005],
+    [0.012, 0.031, 0.031, 0.006],
+    [0.025, 0.045, 0.039, 0.0035],
+    [0.042, 0.051, 0.046, 0.001],
+    [0.053, 0.0545, 0.049, 0],
     [0.067, 0.058, 0.052, 0],
-    [0.086, 0.057, 0.052, -0.001],
-    [0.107, 0.051, 0.044, -0.003],
+    [0.080, 0.056, 0.050, -0.001],
+    [0.094, 0.055, 0.051, -0.002],
+    [0.107, 0.052, 0.045, -0.003],
     [0.119, 0.036, 0.032, -0.007],
     [0.128, 0.01, 0.01, -0.008],
   ];
   // Shape the cheek planes and the shallow orbit into the same continuous
   // surface as the jaw. A broad warm face sits beneath the raised brow bone.
-  const cheekColumns = 56,
+  const cheekColumns = 72,
     faceShape = rings(cheekRows, cheekColumns);
   const facePos = faceShape.attributes.position;
   const bump = (x, c, w) => Math.exp(-(((x - c) / w) ** 2));
@@ -383,25 +424,27 @@ export function buildSippy(rig) {
       z = facePos.getZ(i);
     const front = T.MathUtils.smoothstep(z, 0.001, 0.031),
       flank = bump(ax, 0.039, 0.017);
-    const cheek = bump(y, 0.047, 0.015) * flank,
-      jaw = bump(y, 0.025, 0.018) * bump(ax, 0.03, 0.017);
-    const brow = bump(y, 0.089, 0.009) * bump(ax, 0.023, 0.019);
-    const orbit = bump(y, 0.071, 0.012) * bump(ax, 0.023, 0.016);
+    const cheek = bump(y, 0.062, 0.017) * flank,
+      jaw = bump(y, 0.028, 0.015) * bump(ax, 0.038, 0.017);
+    const brow = bump(y, 0.088, 0.008) * bump(ax, 0.026, 0.020);
+    const orbit = bump(y, 0.077, 0.013) * bump(ax, 0.026, 0.016);
+    // Continuous facial relief across the nasal bridge, tip and philtrum.
+    const dorsum = 0.0087 * bump(x, 0, 0.008) * bump(y, 0.066, 0.021);
+    const tip = 0.0150 * bump(x, 0, 0.0086) * bump(y, 0.0525, 0.0083);
+    const ala = 0.0064 * bump(ax, 0.0072, 0.0060) * bump(y, 0.0493, 0.0053);
+    const philtrum = 0.0020 * bump(ax, 0.0036, 0.0028) * bump(y, 0.0395, 0.0060);
     facePos.setXYZ(
       i,
       x + Math.sign(x) * front * (0.0017 * cheek + 0.0012 * jaw),
       y,
       z +
         front *
-          (0.0055 * cheek +
-            0.0032 * brow +
-            0.0022 * jaw -
-            0.0021 * orbit +
-            0.0021 * bump(y, 0.023, 0.011) * bump(x, 0, 0.017)),
+          (0.0066 * cheek + 0.0051 * brow + 0.0024 * jaw - 0.0046 * orbit +
+            dorsum + tip + ala + philtrum + 0.0040 * bump(y, 0.017, 0.011) * bump(x, 0, 0.015)),
     );
   }
   faceShape.computeVertexNormals();
-  const skullMesh = mesh(headSkin, faceShape, skin);
+  const skullMesh = mesh(headSkin, faceShape, modelFaceFinish(skin, faceShape));
   skullMesh.name = 'sippy-face-sculpt';
   skullMesh.userData.patternPiece = true;
   const expression = fitExpression(skullMesh, cheekColumns, mouth, enamel, lip);
@@ -409,9 +452,9 @@ export function buildSippy(rig) {
   const neck = group(chest);
   neck.name = 'sippy-neck';
   for (const s of [-1, 1]) {
-    const ear = ellipsoid(headSkin, skin, s * 0.056, 0.059, -0.001, 0.012, 0.019, 0.009);
-    ear.rotation.z = -s * 0.15;
-    ellipsoid(headSkin, blush, s * 0.06, 0.059, 0.005, 0.006, 0.012, 0.004);
+    const ear = ellipsoid(headSkin, skin, s * 0.055, 0.061, -0.001, 0.0115, 0.018, 0.0097);
+    ear.rotation.z = -s * 0.21;
+    ellipsoid(headSkin, blush, s * 0.061, 0.060, 0.0042, 0.0056, 0.0115, 0.0050);
     stroke(
       headSkin,
       skin,
@@ -429,50 +472,36 @@ export function buildSippy(rig) {
     lids = [],
     brows = [];
   for (const s of [-1, 1]) {
-    const eye = group(headSkin, s * 0.0237, 0.0798, 0.0441);
-    eye.rotation.y = s * 0.38;
-    eye.rotation.z = -s * 0.037;
-    eye.scale.set(1.06, 1.19, 0.83);
+    const eyeX = s * 0.0244, eyeY = 0.0750;
+    const eyeZ = expression.surfaceDepth(eyeX, eyeY) - 0.0023;
+    const eye = group(headSkin, eyeX, eyeY, eyeZ);
+    eye.rotation.y = s * 0.27;
+    eye.rotation.z = s * 0.030;
+    eye.scale.set(0.91, 0.84, 1.0);
     orbitalRims.push(expression.orbit(eye, skin, s));
     const gaze = eyeSurface(eye);
     corneas.unshift(eye.children.at(-1));
-    lids.push(eyelid(eye, skin, black, true), eyelid(eye, skin, blush, false));
+    lids.push(eyelid(eye, skin, black, true, s), eyelid(eye, skin, skin, false, s));
     gazes.push(gaze);
-    const brow = group(headSkin, s * 0.025, 0.1012, 0.0418);
+    const browX = s * 0.025, browY = 0.0945;
+    const browZ = expression.surfaceDepth(browX, browY);
+    const brow = group(headSkin, browX, browY, browZ);
     brow.name = 'sippy-brow-' + (s === 1 ? 'L' : 'R');
     brow.userData.dynamicPose = true;
     brows.push(brow);
     sweep(
       brow,
       hair,
-      [
-        [-s * 0.018, -0.002, 0.006],
-        [-s * 0.011, 0.005, 0.006],
-        [s * 0.003, 0.006, 0.002],
-        [s * 0.016, 0.003, -0.006],
-        [s * 0.023, -0.0045, -0.014],
-      ],
-      0.0045,
-      0.0042,
-      0.18,
+      [[-0.015, -0.0035], [-0.009, .0001], [0.002, .0037], [.012, .0019], [.020, -.0027]]
+        .map(([x, y]) => [x * s, y, expression.surfaceDepth(browX + x * s, browY + y) - browZ + 0.0023]),
+      0.0035, 0.0028, 0.24,
     );
   }
-  mesh(
-    headSkin,
-    rings(
-      [
-        [0.047, 0.004, 0.003, 0.052],
-        [0.05, 0.0102, 0.0085, 0.053],
-        [0.056, 0.0096, 0.0092, 0.054],
-        [0.06, 0.0065, 0.007, 0.052],
-        [0.074, 0.0053, 0.0054, 0.0475],
-        [0.086, 0.0047, 0.003, 0.0458],
-      ],
-      24,
-    ),
-    skin,
-  );
-  for (const s of [-1, 1]) ellipsoid(headSkin, blush, s * 0.006, 0.0505, 0.06, 0.0017, 0.00095, 0.0007);
+  for (const s of [-1, 1]) {
+    const x = s * 0.0065, y = 0.0478;
+    const nostril = ellipsoid(headSkin, blush, x, y, expression.surfaceDepth(x, y), 0.0022, 0.0011, 0.0007);
+    nostril.rotation.z = s * 0.31;
+  }
   // A fitted short back and sides, a low taper at the nape and a broken temple
   // hairline. The comb flows around the ear then spirals into the crown.
   const skullProfile = new T.CatmullRomCurve3(
@@ -517,10 +546,10 @@ export function buildSippy(rig) {
     const angle = Math.atan2(Math.sin(a), Math.cos(a)),
       side = Math.abs(angle),
       front = (1 + Math.cos(angle)) * 0.5;
-    const forehead = 0.037 + 0.072 * front ** 1.45;
+    const forehead = 0.037 + 0.074 * front ** 1.45;
     const earArch = 0.019 * Math.exp(-((side - 1.6) ** 2) / 0.05);
     const sideburn = 0.019 * Math.exp(-((side - 1.17) ** 2) / 0.024);
-    const part = 0.009 * Math.exp(-((angle - 0.62) ** 2) / 0.029);
+    const part = 0.012 * Math.exp(-((angle - 0.72) ** 2) / 0.039);
     const hairline = forehead + earArch - sideburn + part + 0.0025 * Math.cos(4 * a + 0.6) * front;
     const phi = u * Math.PI * 0.5;
     const comb = a * 24 + Math.sign(angle) * u * 9 + 1.9 * Math.sin(a * 2.5 + u * 2);
@@ -531,13 +560,13 @@ export function buildSippy(rig) {
     return fitSkull(
       [
         width * Math.sin(a) - 0.004 * Math.sin(phi),
-        hairline + (0.15 - hairline) * Math.sin(phi),
+        hairline + (0.144 - hairline) * Math.sin(phi),
         -0.0025 + depth * Math.cos(a) - 0.003 * u + 0.004 * Math.sin(u * Math.PI) * front,
       ],
       0.0013 + 0.0018 * Math.min(1, u * 7),
     );
   };
-  const baseColor = new T.Color('#39251c');
+  const baseColor = new T.Color('#492e22');
   const capP = [],
     capColor = [],
     capUV = [],
@@ -569,13 +598,13 @@ export function buildSippy(rig) {
   // U follows the authored fibre direction. Three derives the anisotropic
   // tangent frame from the deformed positions and these UVs at render time.
   const combed = new T.MeshPhysicalMaterial({
-    color: '#876b51',
+    color: '#917a67',
     vertexColors: true,
-    roughness: 0.44,
-    anisotropy: 0.68,
-    specularIntensity: 0.64,
+    roughness: 0.54,
+    anisotropy: 0.58,
+    specularIntensity: 0.43,
     specularColor: '#e9cbb4',
-    sheen: 0.22,
+    sheen: 0.16,
     sheenRoughness: 0.65,
     sheenColor: '#bd9274',
   });
@@ -660,57 +689,27 @@ export function buildSippy(rig) {
     const lockGroup = group(headSkin);
     lockGroup.name = name;
     mesh(lockGroup, geo, combed);
-    if (name.startsWith('sippy-quiff-')) {
-      const pos = [],
-        strips = [],
-        tex = [];
-      for (let j = 2; j < along - 2; j++) {
-        const u = j / along;
-        const a = 0.5 * Math.PI + 0.17 * Math.sin(u * Math.PI);
-        for (const sign of [-1, 1]) {
-          const phi = a + sign * 0.076 * Math.sin((Math.PI * (j - 2)) / (along - 5));
-          const s = (phi / tau) * around,
-            k = Math.floor(s),
-            t = s - k;
-          const l = (j * (around + 1) + k) * 3;
-          for (let axis = 0; axis < 3; axis++) {
-            const c = vertices[l + axis] * (1 - t) + vertices[l + 3 + axis] * t;
-            pos.push(c + (0.00022 * (c - [0, 0.079, -0.004][axis])) / 0.09);
-          }
-          tex.push(u, sign === 1 ? 1 : 0);
-        }
-        if (j > 2) {
-          const k = (j - 2) * 2;
-          strips.push(k - 2, k - 1, k, k - 1, k + 1, k);
-        }
-      }
-      const h = new T.BufferGeometry();
-      h.setAttribute('position', new T.Float32BufferAttribute(pos, 3));
-      h.setAttribute('uv', new T.Float32BufferAttribute(tex, 2));
-      h.setIndex(strips);
-      h.computeVertexNormals();
-      mesh(lockGroup, h, sheen);
-    }
     haircut.push(lockGroup);
     if (flex) grooms.push({ group: lockGroup, points, flex });
   }
   // The deep side part feeds a fan of swept forelocks: flat at the hairline,
   // projecting well forward over the forehead before rising and folding back.
-  const browns = ['#503328', '#563a2c', '#463025', '#5a3b2b', '#50362b'];
+  const browns = ['#482e22', '#513629', '#472d24', '#543528', '#4b3025'];
   function crest(u) {
     const x = -0.0475 + 0.095 * u,
       rim = (2 * u - 1) ** 2,
       arch = 1 - rim;
     const back = scalp(Math.PI - Math.asin(x / 0.058), 0.51);
-    const wave = 0.008 * (1 - rim * 0.45);
+    const wave = 0.012 * (1 - rim * 0.44);
+    const swell = 0.019 * Math.exp(-(((u - 0.24) / 0.31) ** 2)) + 0.0030 * arch;
     return [
       scalp(Math.asin(x / 0.06), 0.018),
-      [x * 0.94 - wave * 1.1, 0.126 + 0.005 * arch - 0.007 * rim, 0.053 - 0.014 * rim],
-      [x * 0.92 - wave * 2.4, 0.1505 + 0.005 * arch - 0.007 * rim, 0.048 - 0.014 * rim],
-      [x * 0.97 - wave * 1.7, 0.161 + 0.0033 * arch - 0.007 * rim, 0.028 - 0.006 * rim],
-      [x + wave * 0.1, 0.1635 + 0.0027 * arch - 0.0068 * rim, -0.008 - 0.002 * arch],
-      [x * 0.96 + wave, 0.1565 + 0.0032 * arch - 0.006 * rim, -0.029 + 0.003 * rim],
-      [x * 0.96 + wave * 1.4, 0.143 + 0.0035 * arch - 0.006 * rim, -0.043 + 0.006 * rim],
+      [x * 0.94 - wave * 0.8, 0.122 + 0.37 * swell - 0.006 * rim, 0.053 - 0.014 * rim],
+      [x * 0.92 - wave * 2.1, 0.139 + 0.91 * swell - 0.009 * rim, 0.048 - 0.017 * rim],
+      [x * 0.97 - wave * 1.7, 0.149 + swell - 0.013 * rim, 0.029 - 0.008 * rim],
+      [x + wave * 0.06, 0.145 + 0.67 * swell - 0.012 * rim, -0.004 - 0.003 * arch],
+      [x * 0.96 + wave, 0.140 + 0.46 * swell - 0.008 * rim, -0.028 + 0.003 * rim],
+      [x * 0.96 + wave * 1.4, 0.132 + 0.26 * swell - 0.007 * rim, -0.043 + 0.006 * rim],
       back,
     ];
   }
@@ -750,7 +749,7 @@ export function buildSippy(rig) {
   coiffure.setAttribute('color', new T.Float32BufferAttribute(crestC, 3));
   coiffure.setIndex(crestI);
   coiffure.computeVertexNormals();
-  const baseGroom = surface('#e2c47b', 0.41, {
+  const baseGroom = surface('#ad8e73', 0.47, {
     vertexColors: true,
     side: T.DoubleSide,
     specularIntensity: 0.35,
@@ -789,7 +788,9 @@ export function buildSippy(rig) {
     for (let i = 1; i < points.length - 1; i++) {
       const f = i / (points.length - 1);
       points[i][0] -= 0.0065 * Math.sin(Math.PI * f) * (0.4 + arch);
-      points[i][2] += 0.002 * Math.sin(Math.PI * f + 0.8 * j);
+      const curl = Math.sin(Math.PI * f);
+      points[i][1] += 0.003 * curl * Math.sin(2.3 * Math.PI * f - 0.6 * j);
+      points[i][2] += 0.003 * Math.sin(Math.PI * f + 0.8 * j);
     }
     lock(
       'sippy-quiff-' + j,
@@ -824,13 +825,13 @@ export function buildSippy(rig) {
     // One loose S-shaped forelock reverses the crown sweep, curling inward over the brow.
     const curl = long
       ? [
-          [0.016, 0.145, 0.034],
-          [0.04, 0.147, 0.042],
-          [0.049, 0.13, 0.046],
-          [0.042, 0.117, 0.054],
-          [0.029, 0.111, 0.059],
-          [0.024, 0.101, 0.061],
-          [0.028, 0.096, 0.06],
+          [0.016, 0.139, 0.034],
+          [0.037, 0.142, 0.040],
+          [0.046, 0.124, 0.043],
+          [0.042, 0.113, 0.049],
+          [0.036, 0.108, 0.053],
+          [0.033, 0.105, 0.054],
+          [0.034, 0.102, 0.050],
         ]
       : temples;
     lock('sippy-face-' + (long ? 'L' : 'R'), curl, 0.0065 + long * 0.0015, 0.0034, browns[long ? 1 : 3], {
@@ -852,7 +853,7 @@ export function buildSippy(rig) {
             0.022 + u * (0.65 + 0.1 * Math.sin(i + sign * 0.5)),
           );
         const n = vec(v[0], v[1] - 0.08, v[2] + 0.003).normalize();
-        const clearance = 0.002 + 0.0022 * (1 - u);
+        const clearance = 0.0003 + 0.0023 * Math.sin(u * Math.PI);
         pts.push([v[0] + n.x * clearance, v[1] + n.y * clearance, v[2] + n.z * clearance]);
       }
       const flex =
@@ -960,24 +961,12 @@ export function buildSippy(rig) {
   });
   const { pack, drawcord } = explorer;
   for (const node of [pack, drawcord, ...tails]) node.userData.dynamicPose = true;
-  // A small irregular constellation over each malar prominence.
-  for (const s of [-1, 1]) {
-    for (const [x, y, z, r] of [
-      [0.029, 0.061, 0.047, 0.001],
-      [0.033, 0.063, 0.045, 0.00076],
-      [0.038, 0.061, 0.041, 0.00095],
-      [0.036, 0.057, 0.043, 0.00066],
-      [0.027, 0.058, 0.048, 0.00067],
-    ]) {
-      ellipsoid(headSkin, blush, x * s, y, z, r, r * 0.69, r * 0.4);
-    }
-  }
   const banks = styleQuiff(headSkin, grooms);
   shapeExplorerCrown(rig, headSkin);
   rig.secondary ??= {};
   // Keep the actual face and collar surfaces available to the review tools.
   const faceSkin = headSkin.children
-    .filter((part) => part.isMesh && part.material === skin)
+    .filter((part) => part === skullMesh || (part.isMesh && part.material === skin))
     .concat(orbitalRims);
   fitOpenings(tailoring)();
   fitHipSeams(tailoring);
@@ -1026,38 +1015,39 @@ export function buildSippy(rig) {
   const secondary = secondaryMotion(rig, './sippy-secondary.js', { banks, tails, pack, drawcord });
   return function animate(f) {
     const t = f.time;
+    const cue = f.faceCue;
     const blinkTime = (t + 0.13) % 4.2,
       blink = blinkTime < 0.16 ? Math.sin((Math.PI * blinkTime) / 0.16) : 0;
     const focus = f.emote >= 0 ? Math.sin(Math.PI * f.emote) ** 0.8 : 0;
     const thinking = f.emote < 0 ? 0 : Math.exp(-((f.emote - 0.56) ** 2) / 0.01);
-    const wink = f.emote < 0 ? 0 : Math.exp(-(((f.emote - 0.86) / 0.042) ** 2));
+    const wink = cue?.wink ?? (f.emote < 0 ? 0 : Math.exp(-(((f.emote - 0.86) / 0.042) ** 2)));
     const curious = f.emote < 0 ? 0 : Math.exp(-(((f.emote - 0.22) / 0.13) ** 2));
-    const rise = f.state === 'jump' ? Math.min(1, 0.36 + Math.abs(f.vy) * 0.15) : 0;
+    const rise = cue?.surprise ?? (f.state === 'jump' ? Math.min(1, 0.36 + Math.abs(f.vy) * 0.15) : 0);
     const laugh = f.state === 'run' ? 0.74 + 0.14 * Math.sin(f.phase * 2) : 0;
-    expression.smile(Math.max(laugh, focus, 0.22 * Number(f.state === 'walk')), thinking, rise);
+    const smiling = cue?.smile ?? Math.max(laugh, focus, 0.22 * Number(f.state === 'walk'));
+    const concentrating = cue?.focus ?? thinking;
+    const asymmetry = cue?.asymmetry ?? 0;
+    expression.smile(smiling, concentrating, rise, asymmetry);
 
     for (let i = 0; i < 2; i++) {
       const close = Math.max(
-        blink,
-        thinking * (i === 0 ? 0.33 : 0.18),
+        cue ? 0 : blink,
+        concentrating * (i === 0 ? 0.31 : 0.24),
         i === 1 ? wink : 0,
-        laugh * 0.17,
+        cue?.squint ?? laugh * 0.17,
         f.state === 'roll' ? 0.36 : 0,
       );
       lids[i * 2](close);
       lids[i * 2 + 1](close);
       const side = i === 0 ? -1 : 1;
       brows[i].position.y =
-        0.1012 +
-        0.005 * focus +
-        0.0013 * Math.sin(t * 1.1 + i) +
-        side * 0.003 * thinking +
-        rise * 0.004 +
-        curious * (i === 0 ? 0.005 : 0.001);
-      brows[i].rotation.z = side * (0.11 * thinking - 0.14 * focus + 0.04 * Math.sin(t * 0.7));
+        0.0945 + 0.0036 * (cue?.browLift ?? focus) + 0.0027 * rise -
+        0.0013 * concentrating + 0.0023 * side * asymmetry +
+        (cue ? 0 : 0.0009 * Math.sin(t * 1.1 + i) + curious * (i === 0 ? 0.0028 : 0.0007));
+      brows[i].rotation.z = side * (0.16 * concentrating - 0.10 * smiling) - 0.10 * asymmetry;
 
-      gazes[i].y = -0.0018 * focus + 0.0009 * Math.sin(t * 0.85);
-      gazes[i].x = 0.0016 * Math.sin(t * 0.67);
+      gazes[i].y = cue ? 0.0026 * (cue.gazeY ?? 0) : -0.0018 * focus + 0.0009 * Math.sin(t * 0.85);
+      gazes[i].x = cue ? 0.0026 * (cue.gazeX ?? 0) : 0.0016 * Math.sin(t * 0.67);
     }
     // Sippy raises his left wrist to check the time and glances toward the dial.
     const resting = 1 / (1 + f.speed * f.speed * 0.4);
