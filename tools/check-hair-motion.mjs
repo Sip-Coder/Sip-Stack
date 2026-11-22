@@ -35,7 +35,46 @@ globalThis.matchMedia = query => ({ get matches() { return query === '(prefers-r
 const posed = new T.Vector3(), centre = new T.Vector3(), root = new T.Vector3();
 const origin = new T.Vector3(), direction = new T.Vector3();
 const inverse = new T.Matrix4(), fromMesh = new T.Matrix4();
-const tilt = [0, 0, 0];
+const restHead = [0, 0, 0], shakeStop = 42, shakeTicks = shakeStop + 124;
+
+function shakeCue(i) {
+  if (i < 12 || i >= shakeStop) return restHead;
+  const shake = Math.sin((i - 12) * 2 * Math.PI / 20);
+  return [0.03 * shake, 0.5 * shake, 0.12 * shake];
+}
+
+function tiltCue(i) {
+  return [-0.52 * Math.min(1, i / 32), 0, 0];
+}
+
+function ringDown(moving, still, chainIndex, inchesPerLocalUnit) {
+  const offsets = moving.slice(shakeStop).map((tips, i) =>
+    tips[chainIndex].clone().sub(still[shakeStop + i][chainIndex]));
+  // Project one lock along its strongest early response. Crossing that
+  // same quiet point demonstrates reversal rather than absolute angle decay.
+  const initial = offsets.slice(0, 31).reduce((peak, sample) =>
+    sample.lengthSq() > peak.lengthSq() ? sample : peak);
+  const peak = initial.length(), axis = initial.clone().normalize();
+  const signed = offsets.map(sample => sample.dot(axis));
+  const rebounds = [];
+  let side = 1;
+  for (const [i, value] of signed.entries()) {
+    if (Math.abs(value) <= 0.08 * peak) continue;
+    const sign = Math.sign(value);
+    if (sign !== side) {
+      side = sign;
+      rebounds.push({ tick: i, value });
+    } else if (rebounds.length && Math.abs(value) > Math.abs(rebounds.at(-1).value)) {
+      rebounds[rebounds.length - 1] = { tick: i, value };
+    }
+  }
+  return {
+    peakTipLagIn: peak * inchesPerLocalUnit,
+    rebounds: rebounds.map(({ tick, value }) =>
+      ({ seconds: tick * FIXED_DT, signedLagIn: value * inchesPerLocalUnit })),
+    settledWithinSeconds: (signed.findLastIndex(value => Math.abs(value) > 0.035 * peak) + 1) * FIXED_DT,
+  };
+}
 
 function sampleCap(chain, meshToHead) {
   const { mesh, points } = chain, { uv, skinIndex, skinWeight } = mesh.geometry.attributes;
@@ -67,7 +106,7 @@ async function measure(name, tier) {
   setModelDetail(rig.root, tier);
   if (!await rig.loadSecondary()) throw Error('Missing lazy secondary motion for ' + key);
   const { groom } = rig;
-  function tick(intent, cue = tilt) {
+  function tick(intent, cue = restHead) {
     const frame = controller.step(FIXED_DT, { ...neutral, ...intent });
     rig.head.rotation.set(
       rig.head.rotation.x + cue[0],
@@ -105,7 +144,7 @@ async function measure(name, tier) {
     return { chain, ...caps };
   });
 
-  function scenario(ticks, input, cue = () => tilt) {
+  function scenario(ticks, input, cue = () => restHead) {
     controller.reset(-10, 0);
     const samples = metrics.map(({ chain }) => ({
       name: chain.mesh.name, region: chain.region, maxAngle: 0, maxAngleAfterStop: 0,
@@ -165,6 +204,18 @@ async function measure(name, tier) {
     };
   }
 
+  function track(ticks, cue) {
+    controller.reset(-10, 0);
+    return Array.from({ length: ticks }, (_, i) => {
+      tick(neutral, cue(i));
+      inverse.copy(groom.head.matrixWorld).invert();
+      return chains.map(chain => {
+        const { dir, length, bone } = chain.links.at(-1);
+        return dir.clone().multiplyScalar(length).applyMatrix4(bone.matrixWorld).applyMatrix4(inverse);
+      });
+    });
+  }
+
   reduced = false;
   const scenarios = {
     idle: scenario(210, () => neutral),
@@ -174,11 +225,47 @@ async function measure(name, tier) {
       const wave = (start, end) => Math.sin(Math.PI * T.MathUtils.clamp((i - start) / (end - start), 0, 1));
       return [-0.18 * wave(52, 90), 0.35 * wave(22, 70) - 0.24 * wave(85, 132), 0];
     }),
+    stoppedShake: scenario(shakeTicks, () => neutral, shakeCue),
+    backTilt: scenario(110, () => neutral, tiltCue),
     run: scenario(120, () => ({ z: 1, run: true })),
     jump: scenario(100, i => ({ z: 0.6, jump: i === 15 })),
     roll: scenario(82, i => ({ z: 0.65, roll: i === 15 })),
   };
+  const inchesPerLocalUnit = height * inchesPerUnit;
+  const quietTrack = track(shakeTicks, () => restHead);
+  const shakeTrack = track(shakeTicks, shakeCue);
+  const rings = chains.map((chain, i) => ({
+    name: chain.mesh.name, region: chain.region,
+    ...ringDown(shakeTrack, quietTrack, i, inchesPerLocalUnit),
+  }));
+  const selected = rings.filter(row => row.region === (name === 'sippy' ? 'quiff' : 'temple'))
+    .reduce((best, row) => row.peakTipLagIn > best.peakTipLagIn ? row : best);
+  check(selected.peakTipLagIn > (name === 'sippy' ? 0.16 : 0.35), 'shake misses tip lag');
+  check(selected.rebounds.length >= 2 && selected.rebounds.length <= 3, 'shake misses two to three rebounds');
+  check(selected.settledWithinSeconds >= 1 && selected.settledWithinSeconds <= 2, 'shake does not settle in one to two seconds');
+  let maxFanIn = 0;
+  for (const [i, row] of shakeTrack.entries()) {
+    for (let a = 0; a < row.length; a++) for (let b = a + 1; b < row.length; b++) {
+      const rest = quietTrack[i][a].distanceTo(quietTrack[i][b]);
+      maxFanIn = Math.max(maxFanIn, (row[a].distanceTo(row[b]) - rest) * inchesPerLocalUnit);
+    }
+  }
+  check(maxFanIn > (name === 'sippy' ? 0.06 : 0.2), 'shake misses neighboring guide separation');
+  const tiltTrack = track(110, tiltCue);
+  const backTilt = chains.map((chain, i) => ({
+    name: chain.mesh.name,
+    region: chain.region,
+    finalTipTravelIn: tiltTrack.at(-1)[i].distanceTo(quietTrack[109][i]) * inchesPerLocalUnit,
+  }));
+  if (name === 'roma') check(backTilt.some(row => row.region === 'nape' && row.finalTipTravelIn > 0.45),
+    'back tilt misses nape response');
+
   reduced = true;
+  const reducedQuiet = track(shakeTicks, () => restHead);
+  const reducedTrack = track(shakeTicks, shakeCue);
+  const reducedReboundIn = Math.max(...reducedTrack.slice(shakeStop).map((row, i) =>
+    Math.max(...row.map((point, j) => point.distanceTo(reducedQuiet[shakeStop + i][j]))))) * inchesPerLocalUnit;
+  check(reducedReboundIn < 0.01, 'shake bounces with reduced motion');
   scenarios.reducedMotion = scenario(155, i => i < 115 ? { z: 1, x: i < 60 ? 0 : 0.55 } : neutral);
   reduced = false;
   // Browser changes the same MediaQueryList while the actor is in motion.
@@ -216,7 +303,11 @@ async function measure(name, tier) {
       delete row.maxBoneStretch;
     }
   }
-  return { name, tier, boneCount, colliders, reducedFrontAngleAfterToggleDegrees: reducedFrontMax, scenarios };
+  return {
+    name, tier, boneCount, colliders,
+    stoppedShake: { stopSeconds: shakeStop * FIXED_DT, selected, maxFanIn, reducedReboundIn, rings },
+    backTilt, reducedFrontAngleAfterToggleDegrees: reducedFrontMax, scenarios,
+  };
 }
 const results = [];
 for (const name of ['sippy', 'roma'])

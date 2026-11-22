@@ -474,6 +474,7 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
     import('./review-controls.js').then(({ reviewControls }) => {
       host.characterTest = reviewControls({
         choose, names, setView, tierSelect, quality, reset, neutral, render, simulate, updateHUD,
+        actor: () => cast[selected], dt: FIXED_DT,
         manualMode(v) {
           manual = !!v;
           cancelAnimationFrame(raf);

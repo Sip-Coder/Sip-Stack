@@ -4,7 +4,7 @@
 import * as T from 'three';
 
 const { clamp } = T.MathUtils;
-const X = new T.Vector3(1, 0, 0), Z = new T.Vector3(0, 0, 1);
+const X = new T.Vector3(1, 0, 0), Z = new T.Vector3(0, 0, 1), DOWN = new T.Vector3(0, -1, 0);
 const slideAngles = [0.018, 0.036, 0.065, 0.095, 0.14, 0.21, 0.31, 0.44, 0.60]
   .map(a => [Math.cos(a), Math.sin(a)]);
 const slideRing = Array.from({ length: 12 }, (_, i) =>
@@ -94,6 +94,8 @@ function linkChain(binding, index, headInverse, roma) {
   const phase = index * 2.3999632;
   const side = Math.sign(points.at(-1).x) || Math.cos(phase);
   const axis = new T.Vector3(side * 0.55, 0.25, -0.8).normalize();
+  const guideLength = points.slice(1).reduce((sum, p, i) => sum + p.distanceTo(points[i]), 0);
+  const lengthRate = clamp((roma ? 0.15 : 0.084) / guideLength, 0.9, 1.13);
   return {
     ...binding, points, phase, side, axis,
     pads: chainRadii({ ...binding, points }, headInverse).map((radius, i) =>
@@ -103,10 +105,10 @@ function linkChain(binding, index, headInverse, roma) {
       const length = dir.length();
       if (length < 1e-5) throw Error('Degenerate hair segment for ' + binding.mesh.name);
       const freedom = i / (bones.length - 1);
-      const stiffness = (roma ? 158 : 215) - freedom * (roma ? 70 : 53);
+      const stiffness = ((roma ? 154 : 198) - freedom * (roma ? 58 : 55)) * lengthRate;
       return {
         bone, length, dir: dir.divideScalar(length), share: freedom ** 1.4, stiffness,
-        damping: Math.sqrt(stiffness) * (i === bones.length - 1 ? 1.48 : 1.77),
+        damping: Math.sqrt(stiffness) * (0.58 - (roma ? 0.19 : 0.14) * freedom),
         offset: new T.Vector3(), velocity: new T.Vector3(),
       };
     }),
@@ -134,9 +136,12 @@ function groomSolver(rig, groom) {
   const shapes = collisionVolumes(rig, groom);
   const preference = globalThis.matchMedia?.(reducedQuery);
   const stepLimit = 1 / (groom.tier === 'high' ? 120 : 60);
-  const rotation = new T.Quaternion(), previous = new T.Quaternion();
+  const rotation = new T.Quaternion(), previous = new T.Quaternion(), worldToHead = new T.Quaternion();
   const delta = new T.Quaternion(), parent = new T.Quaternion(), parentInverse = new T.Quaternion();
   const angular = new T.Vector3(), rate = new T.Vector3();
+  const position = new T.Vector3(), previousPosition = new T.Vector3();
+  const velocity = new T.Vector3(), previousVelocity = new T.Vector3(), acceleration = new T.Vector3();
+  const inertia = new T.Vector3(), gravity = new T.Vector3();
   const base = new T.Vector3(), gust = new T.Vector3();
   const start = new T.Vector3(), end = new T.Vector3(), candidate = new T.Vector3();
   const direction = new T.Vector3(), ac = new T.Vector3();
@@ -209,6 +214,7 @@ function groomSolver(rig, groom) {
 
   function reset() {
     angular.setScalar(0);
+    acceleration.setScalar(0);
     for (const { links } of chains) {
       for (const link of links) {
         link.offset.setScalar(0);
@@ -229,13 +235,28 @@ function groomSolver(rig, groom) {
 
     poseVolumes();
     rig.head.getWorldQuaternion(rotation);
-    if (restarting) previous.copy(rotation);
+    worldToHead.copy(rotation).invert();
+    position.setFromMatrixPosition(groom.head.matrixWorld);
+    if (restarting) {
+      previous.copy(rotation);
+      previousPosition.copy(position);
+      previousVelocity.setScalar(0);
+    }
     delta.copy(rotation).invert().multiply(previous);
     if (delta.w < 0) delta.set(-delta.x, -delta.y, -delta.z, -delta.w);
     // The inverse rotational step is the inherited angular lag in head space.
-    rate.set(delta.x, delta.y, delta.z).multiplyScalar(2 / dt).clampLength(0, 9);
-    angular.lerp(rate, 1 - Math.exp(-22 * dt));
+    rate.set(delta.x, delta.y, delta.z).multiplyScalar(2 / dt).clampLength(0, 12);
+    angular.lerp(rate, 1 - Math.exp(-26 * dt));
+    velocity.subVectors(position, previousPosition).divideScalar(dt);
+    rate.subVectors(velocity, previousVelocity).divideScalar(dt).clampLength(0, 17);
+    acceleration.lerp(rate, 1 - Math.exp(-13 * dt));
+    inertia.copy(acceleration).applyQuaternion(worldToHead).negate();
+    // Gravity is already built into the rest curl. Use its change relative to
+    // the head so reclining redirects the tips without erasing that shape.
+    gravity.copy(DOWN).applyQuaternion(worldToHead).sub(DOWN);
     previous.copy(rotation);
+    previousPosition.copy(position);
+    previousVelocity.copy(velocity);
     const steps = reduced ? 1 : Math.ceil(Math.min(dt, 0.05) / stepLimit);
     const h = Math.min(dt, 0.05) / steps;
     const pace = reduced ? 0 : clamp(frame.speed / 1.13, 0, 1);
@@ -256,16 +277,19 @@ function groomSolver(rig, groom) {
         start.copy(points[1]);
         for (let i = 1; i < links.length; i++) {
           const link = links[i], { length: len, share, stiffness, damping } = link;
-          const bounce = pace * (swing * (roma ? 0.32 + 0.064 * sprint : 0.079 + 0.035 * sprint)) +
-            idle * breath * (roma ? 0.032 : 0.028);
-          const wind = (roma ? 0.0065 : 0.003) * pace * clamp(frame.vy ?? 0, -3, 3);
+          const bounce = pace * (swing * (roma ? 0.232 + 0.064 * sprint : 0.071 + 0.035 * sprint)) +
+            idle * breath * (roma ? 0.029 : 0.028);
           base.copy(link.dir).applyQuaternion(parent);
-          gust.copy(base).applyAxisAngle(chain.axis, (bounce + wind) * share).sub(base);
+          gust.copy(base).applyAxisAngle(chain.axis, bounce * share).sub(base);
           gust.x += pace * fan * share * chain.side * (roma ? (face ? 0.067 : 0.041) : 0.012);
           // The down-step folds the open curls upward by a small amount.
           // Changing their orientation shortens the drape without stretching it.
           gust.y += pace * Math.max(0, swing) * share * (roma ? 0.046 : 0.012);
-          if (!reduced) gust.addScaledVector(ac.crossVectors(angular, base), share * (roma ? 0.034 : 0.019));
+          if (!reduced) {
+            gust.addScaledVector(ac.crossVectors(angular, base), share * (roma ? 0.047 : 0.023));
+            gust.addScaledVector(inertia, share * (roma ? 0.0047 : 0.0018));
+            gust.addScaledVector(gravity, share * (roma ? 0.24 : 0.067));
+          }
           gust.multiplyScalar(len);
           link.velocity.addScaledVector(ac.subVectors(gust, link.offset), h * stiffness)
             .multiplyScalar(Math.exp(-damping * h));
