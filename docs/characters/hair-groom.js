@@ -55,8 +55,8 @@ function strandFinish(across, detail) {
           roughnessFactor *= 1.0 + 0.12 * valley - 0.07 * gleam;
         #endif`)
       .replace('#include <opaque_fragment>', `#ifdef USE_ANISOTROPY
-        float edge = 1.0 - max(0.0, dot(normalize(vViewPosition), nonPerturbedNormal));
-        outgoingLight += 0.08 * diffuseColor.rgb * edge * edge * edge;
+        float fiberRim = 1.0 - max(0.0, dot(normalize(vViewPosition), nonPerturbedNormal));
+        outgoingLight += 0.08 * diffuseColor.rgb * fiberRim * fiberRim * fiberRim;
       #endif
       #include <opaque_fragment>`);
   };
