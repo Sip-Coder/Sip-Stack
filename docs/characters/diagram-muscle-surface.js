@@ -2,7 +2,7 @@
 // and attachments therefore keep their finish through posing and across heroes.
 import { Color, Float32BufferAttribute, MathUtils, Vector3 } from 'three';
 import { coverAtlasContacts } from './diagram-scan-envelope.js';
-import { fitMuscleFolds, muscleEnvelope } from './diagram-fascia.js';
+import { fitMuscleFolds } from './diagram-fascia.js';
 
 const belly = new Color('#8e2732'),
   tendon = new Color('#e8e0d1');
@@ -285,7 +285,48 @@ function restoreCancelledNormals(geometry) {
   }
 }
 
-export function fitAtlasMuscles(parts, rig, landmarks, fit = muscleEnvelope(parts, rig.height)) {
+// At the axillary fold, nearby atlas vertices can project onto opposite
+// sides of a skin crease. Redistribute excessive edge strain through the
+// original triangle network before refining a chord. A cortical endpoint
+// stays pinned, and a correction is accepted only inside the posed skin.
+function relaxSheetEdges(geometry, donor, fit, pinned, height) {
+  const pos = geometry.attributes.position, original = donor.attributes.position;
+  const faces = geometry.index.array, seen = new Set(), edges = [];
+  const a = new Vector3(), b = new Vector3(), delta = new Vector3();
+  for (let i = 0; i < faces.length; i += 3) {
+    for (let j = 0; j < 3; j++) {
+      const from = faces[i + j], to = faces[i + (j + 1) % 3];
+      const key = Math.min(from, to) * pos.count + Math.max(from, to);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const rest = a.fromBufferAttribute(original, from).distanceTo(b.fromBufferAttribute(original, to));
+      edges.push([from, to, height * 0.0015 + rest * 2.8]);
+    }
+  }
+  const candidate = new Vector3();
+  for (let pass = 0; pass < 10; pass++) {
+    let changed = false;
+    for (const [from, to, limit] of edges) {
+      a.fromBufferAttribute(pos, from);
+      b.fromBufferAttribute(pos, to);
+      delta.subVectors(b, a);
+      const length = delta.length();
+      if (length < limit + height * 0.0001) continue;
+      delta.multiplyScalar((length - limit) * 0.46 / length);
+      if (!pinned.has(from) && fit.inside(candidate.copy(a).add(delta))) {
+        pos.setXYZ(from, candidate.x, candidate.y, candidate.z);
+        changed = true;
+      }
+      if (!pinned.has(to) && fit.inside(candidate.copy(b).sub(delta))) {
+        pos.setXYZ(to, candidate.x, candidate.y, candidate.z);
+        changed = true;
+      }
+    }
+    if (!changed) break;
+  }
+}
+
+export function fitAtlasMuscles(parts, rig, atlas, selectEnvelope) {
   const p = new Vector3(),
     before = new Vector3();
   const contacts = [];
@@ -293,6 +334,7 @@ export function fitAtlasMuscles(parts, rig, landmarks, fit = muscleEnvelope(part
     eps = rig.height * 1e-7;
   for (const part of parts) {
     if (!part.muscleNode) continue;
+    const { fit, thinSheet } = selectEnvelope(part);
     const g = part.mesh.geometry,
       pos = g.attributes.position,
       uv = g.attributes.uv;
@@ -310,7 +352,7 @@ export function fitAtlasMuscles(parts, rig, landmarks, fit = muscleEnvelope(part
       lengths[band] += length;
       touched++;
     }
-    if (!touched) {
+    if (!touched && !thinSheet) {
       // A broad adductor can bridge the groin with every original vertex
       // safely inside each leg. Check its long, sparsely triangulated edge.
       if (part.region !== 'adductor') continue;
@@ -320,7 +362,7 @@ export function fitAtlasMuscles(parts, rig, landmarks, fit = muscleEnvelope(part
       g.computeBoundingSphere();
       continue;
     }
-    for (let j = 0; j < rows; j++) if (lengths[j]) moves[j].multiplyScalar(0.75 / lengths[j]);
+    for (let j = 0; j < rows; j++) if (lengths[j]) moves[j].multiplyScalar((thinSheet ? 0 : 0.75) / lengths[j]);
     for (let i = 0; i < pos.count; i++) {
       const row = clamp(uv.getY(i) * (rows - 1), 0, rows - 1),
         a = Math.min(rows - 2, Math.floor(row)),
@@ -333,14 +375,16 @@ export function fitAtlasMuscles(parts, rig, landmarks, fit = muscleEnvelope(part
       fit(p);
       pos.setXYZ(i, p.x, p.y, p.z);
     }
+    if (thinSheet) relaxSheetEdges(g, atlas.get(part.muscleNode), fit, cortical, rig.height);
     fitTissueFolds(g, fit, cortical, rig.height);
     // A few long source edges still cross a deep skin crease after the
     // bend, particularly where their endpoints must stay pinned to cortex.
     // Only refine actual exterior chords; the ordinary tissue reserve should
     // never add triangles on an interior muscle.
-    // The thin subcutaneous platysma wraps the underside of the jaw in a
-    // deep tuck; its overlap needs finer sampling than a rounded limb belly.
-    const pitch = rig.height * (/platysma/.test(part.muscleNode) ? 0.0011 : 0.0033);
+    // Thin sheets wrap tight creases under the jaw and between the upper
+    // arm and chest. Resolve those folds at a finer sampling pitch.
+    const sheet = /platysma|pectoralis/.test(part.muscleNode);
+    const pitch = rig.height * (sheet ? 0.0011 : 0.0033);
     fitMuscleFolds(g, fit, pitch, contacts);
     g.computeVertexNormals();
     g.computeBoundingBox();

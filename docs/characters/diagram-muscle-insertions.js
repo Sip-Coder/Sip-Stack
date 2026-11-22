@@ -75,6 +75,96 @@ export function muscleSites(id, side, lm, geometry) {
   const humMedial = hum([0.18, 1.12, -0.034], medialEpic, 'origin'),
     humLateral = hum([0.23, 1.131, -0.047], lateralEpic, 'origin');
   const calc = bone('CALCANEUS', [0.076, 0.024, -0.063], null, 'insertion');
+  // The broad superficial sheets have several origins. Register both ends of
+  // each fan independently, so the sternum and scapula can move relative to
+  // the upper arm. Coordinates are donor landmarks in the supplied atlas.
+  if (/deltoid_/.test(id)) {
+    const insertion = hum([0.202, 1.276, -0.027], a.deltoidTuberosity);
+    if (/clavicular/.test(id)) return [
+      bone('CLAVICLE', [0.091, 1.412, 0.008], a.clavicle[10]),
+      bone('CLAVICLE', [0.137, 1.419, -0.006], a.clavicle[14]), insertion,
+    ];
+    if (/spinal/.test(id)) return [
+      scap([0.084, 1.378, -0.095], a.spineRoot),
+      scap([0.152, 1.406, -0.062], a.spine[3]), insertion,
+    ];
+    return [scap([0.158, 1.414, -0.026], a.acromion), insertion];
+  }
+  if (/pectoralis_major/.test(id)) {
+    const insertion = hum([0.182, 1.35, -0.016], a.humerusAt(0.175, 0.003, 0.005));
+    if (/clavicular/.test(id)) return [
+      bone('CLAVICLE', [0.027, 1.386, 0.039], a.clavicle[2]),
+      bone('CLAVICLE', [0.082, 1.404, 0.009], a.clavicle[8]), insertion,
+    ];
+    // The abdominal head arises on the external oblique aponeurosis. Its
+    // superior costal root is the reproducible cortical registration site.
+    if (/abdominal/.test(id)) return [rib(7, [0.052, 1.18, 0.102], 0.97), insertion];
+    return [
+      site('STERNUM', [0.008, 1.365, 0.068], t.sternalAngle),
+      site('STERNUM', [0.008, 1.243, 0.105], t.xiphoid),
+      rib(5, [0.037, 1.263, 0.097], 0.99), insertion,
+    ];
+  }
+  if (/trapezius_/.test(id)) {
+    if (/descending/.test(id)) return [
+      site('SKULL_CRANIAL_MAXILLA', [0.003, 1.578, -0.085], lm.head.occiput),
+      vertebra('C7', [0.003, 1.452, -0.093]),
+      bone('CLAVICLE', [0.127, 1.421, -0.017], a.clavicle[14], 'insertion'),
+    ];
+    if (/transverse/.test(id)) return [
+      vertebra('T1', [0.003, 1.441, -0.095]), vertebra('T4', [0.003, 1.38, -0.111]),
+      bone('SCAPULA', [0.157, 1.413, -0.051], a.acromion, 'insertion'),
+    ];
+    return [
+      vertebra('T7', [0.003, 1.297, -0.119]), vertebra('T12', [0.004, 1.135, -0.111]),
+      bone('SCAPULA', [0.09, 1.382, -0.094], a.spineRoot, 'insertion'),
+    ];
+  }
+  if (/biceps_brachii/.test(id)) {
+    const origin = /long/.test(id)
+      ? scap([0.155, 1.409, -0.024], a.glenoid.clone().addScaledVector(a.socketUp, 0.008))
+      : scap([0.135, 1.399, -0.004], a.coracoid);
+    const distal = bone('RADIUS', [0.209, 1.068, -0.028], a.radiusTuberosity, 'insertion');
+    // The short-head file stops at the confluence with the shared tendon.
+    if (/short_head/.test(id)) distal.influenceRadius = 0.038;
+    return [origin, distal];
+  }
+  if (/latissimus_dorsi/.test(id)) return [
+    vertebra('T7', [0.004, 1.272, -0.125]), vertebra('L2', [0.004, 1.063, -0.102]),
+    hip([0.085, 0.974, -0.097], b.posteriorCrest),
+    hum([0.182, 1.328, -0.031], a.humeralInsertion),
+  ];
+  if (/rectus_abdominis/.test(id)) return [
+    hip([0.016, 0.846, 0.035], b.pubis),
+    rib(5, [0.076, 1.235, 0.086], 0.97, 'insertion'),
+    site('STERNUM', [0.011, 1.227, 0.103], t.xiphoid, 'insertion'),
+  ];
+  if (!geometry.userData.sourceAtlas && /rectus_femoris|vastus_/.test(id)) {
+    let origin;
+    if (/rectus_femoris/.test(id)) origin = hip([0.115, 0.941, 0.021], b.aiis);
+    else if (/lateralis/.test(id)) origin = bone('FEMUR', [0.134, 0.858, -0.038], b.greaterTrochanter);
+    else if (/medialis/.test(id)) origin = bone('FEMUR', [0.092, 0.805, -0.012], b.shaftPoint(0.17, -0.004, 0));
+    else origin = bone('FEMUR', [0.11, 0.84, 0.006], b.shaftPoint(0.13, 0, 0.004));
+    return [origin, bone('PATELLA', [0.08, 0.469, 0.04], b.patella, 'insertion'),
+      shin([0.082, 0.405, 0.034], b.tibialTuberosity)];
+  }
+  if (/gastrocnemius/.test(id) && !geometry.userData.sourceAtlas) {
+    const medial = /medial_head/.test(id);
+    const heel = lm.scan.bones.get('CALCANEUS' + suffix).boundingBox.getCenter(v());
+    const forefoot = lm.scan.bones.get('METATARSAL_2' + suffix).boundingBox.getCenter(v());
+    calc.hint = heel.clone().add(heel.clone().sub(forefoot).multiplyScalar(0.6));
+    // The BP3D segment stops at the muscular end of the Achilles. Extend
+    // just the terminal fibres to the posterior calcaneus, keeping the two
+    // heads full behind the knee. VHF's continuous tendons keep their fit.
+    // In a deep tuck the two articular anchors approach each other. Let
+    // additional longitudinal fibres share that displacement across the calf
+    // so its distal triangles follow the flexed shank to the heel.
+    const thigh = b.knee.clone().sub(b.femoralHead).normalize();
+    const shank = b.ankle.clone().sub(b.knee).normalize();
+    calc.influenceRadius = 0.049 + 0.16 * Math.max(0, 0.55 - thigh.dot(shank));
+    return [bone('FEMUR', [medial ? 0.054 : 0.105, 0.493, -0.046],
+      medial ? b.medialCondyle : b.lateralCondyle), calc];
+  }
   if (/gluteus_maximus/.test(id))
     return [
       hip([0.074, 0.987, -0.096], b.posteriorCrest),

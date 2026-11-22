@@ -1,6 +1,7 @@
 import { Mesh, MeshStandardMaterial, Vector3 } from 'three';
 import { atlasCharts, atlasRegion } from './diagram-muscle-charts.js';
 import { corticalProjector, muscleSites, peripheralSites } from './diagram-muscle-insertions.js';
+import { skinGauge } from './diagram-thorax.js';
 import { muscleDisplayName } from './diagram-muscle-names.js';
 import { makeOrbitalAtlasFit } from './diagram-muscle-orbits.js';
 import { muscleEnvelope } from './diagram-fascia.js';
@@ -59,6 +60,7 @@ function attach(geometry, source, chart, sites, project, mirror) {
       index,
       source: src,
       role: spec.role,
+      influenceRadius: spec.influenceRadius,
       target,
       delta: target.clone().sub(mapped),
     });
@@ -81,7 +83,8 @@ function attach(geometry, source, chart, sites, project, mirror) {
       }
       const w = 1 / (d2 * d2);
       sum += w;
-      offset.addScaledVector(a.delta, w);
+      const falloff = a.influenceRadius ? 1 / (1 + (d2 / a.influenceRadius ** 2) ** 2) : 1;
+      offset.addScaledVector(a.delta, w * falloff);
     }
     if (sum) {
       const attenuation = 1 / (1 + (min / (radius * radius)) ** 2);
@@ -92,12 +95,90 @@ function attach(geometry, source, chart, sites, project, mirror) {
   return anchors;
 }
 
+// Adult superficial sheets cover the wall of a much deeper thorax. A
+// skeletal chart alone lets the character's fitted ribs and deep abdominal
+// muscles poke through them. Seat the sheets in the subcutaneous layer,
+// preserving their relief, attachment footprints and moving humeral slips.
+const superficialTrunk = /pectoralis_major|rectus_abdominis|latissimus_dorsi|trapezius/;
+
+function subcutaneousSheet(lm, parts, height, envelope) {
+  const { chest } = lm.thorax;
+  const low = Math.min(...['L', 'R'].map((side) => chest.from(lm.pelvis[side].pubis).y));
+  const high = Math.max(...['L', 'R'].map((side) => chest.from(lm.shoulders[side].acromion).y));
+  const skinRadius = skinGauge(parts, chest, low, high, 79, 72);
+  const donor = v(), world = v(), sample = v(), chestForward = chest.direction(0, 0, 1);
+  const smooth = (x) => {
+    const t = Math.max(0, Math.min(1, x));
+    return t * t * (3 - 2 * t);
+  };
+  return (id, geometry, source, anchors, shoulder) => {
+    if (!superficialTrunk.test(id)) return;
+    const positions = geometry.attributes.position;
+    const pectoral = id.includes('pectoralis_major');
+    const posteriorFold = id.includes('latissimus_dorsi');
+    const { sternoclavicular, headCenter, axes } = shoulder;
+    const span = headCenter.clone().sub(sternoclavicular).dot(axes.x);
+    for (let i = 0; i < positions.count; i++) {
+      donor.fromBufferAttribute(source.attributes.position, i);
+      const local = chest.from(world.fromBufferAttribute(positions, i));
+      const radius = Math.hypot(local.x, local.z);
+      const outer = skinRadius(local.y, Math.atan2(local.x, local.z));
+      if (radius < height * 0.006) continue;
+      let nearestSq = Infinity;
+      for (const anchor of anchors) nearestSq = Math.min(nearestSq, donor.distanceToSquared(anchor.source));
+      const free = smooth(Math.sqrt(nearestSq) / 0.037);
+      const axial = 1 - smooth((Math.abs(donor.x) - 0.118) / 0.052) * smooth((donor.y - 1.269) / 0.099);
+      const edge = smooth((local.y - low) / (height * 0.016)) * smooth((high - local.y) / (height * 0.016));
+      const space = Number.isFinite(outer) ? Math.min(height * 0.035, Math.max(0, outer - height * 0.00075 - radius)) : 0;
+      const shift = 0.96 * space * free * axial * edge / radius;
+      world.copy(chest.point(local.x * (1 + shift), local.y, local.z * (1 + shift)));
+      if (pectoral || posteriorFold) {
+        // Wrap the converging lateral fan over the anterior axillary fold
+        // before it descends to the humeral lip. A straight interpolation
+        // from ribs to humerus would cut diagonally across the hollow.
+        const t = world.clone().sub(sternoclavicular).dot(axes.x) / span;
+        const slip = posteriorFold
+          ? smooth((donor.y - 1.221) / 0.086) * smooth((Math.abs(donor.x) - 0.074) / 0.042)
+          : smooth((donor.y - 1.201) / 0.113);
+        const wrap = smooth((t - 0.43) / 0.25) * (1 - smooth((t - 0.83) / 0.24)) * slip * free;
+        const roof = sternoclavicular.clone().lerp(shoulder.acromioclavicular, Math.min(1, t / 0.83));
+        roof.lerp(headCenter, smooth((t - 0.80) / 0.22));
+        const offset = world.clone().sub(roof);
+        const dy = offset.dot(axes.y), dz = offset.dot(axes.z);
+        const under = height * 0.0065, depth = height * 0.008;
+        if (dy < 0) world.addScaledVector(axes.y, (-under * Math.tanh(-dy / under) - dy) * wrap);
+        const bias = posteriorFold ? -0.65 : 0.45;
+        world.addScaledVector(axes.z, (depth * (bias + Math.tanh(dz / depth - bias)) - dz) * wrap);
+      }
+      // The stylized back is particularly shallow. Register the free wall
+      // against the actual anterior/posterior skin intersection as well as
+      // the radial section. This keeps rib relief beneath the continuous
+      // fan between the donor's real margins, even in an oblique view.
+      const outward = pectoral || id.includes('rectus_abdominis') ? 1 : -1;
+      const wall = free * (1 - smooth((Math.abs(donor.x) - 0.128) / 0.04))
+        * smooth((donor.y - 0.86) / 0.12) * (1 - smooth((donor.y - 1.37) / 0.06));
+      if (wall > 0 && envelope.inside(world)) {
+        let inner = 0, outer = height * 0.023;
+        for (let j = 0; j < 7; j++) {
+          const d = (inner + outer) / 2;
+          if (envelope.inside(sample.copy(world).addScaledVector(chestForward, outward * d))) inner = d;
+          else outer = d;
+        }
+        const travel = Math.max(0, inner - height * 0.00115);
+        world.addScaledVector(chestForward, outward * travel * wall * 0.96);
+      }
+      world.toArray(positions.array, i * 3);
+    }
+  };
+}
+
 export function addScanMuscles(rig, roma, parts, atlas, lm) {
   const project = corticalProjector(lm);
   const charts = atlasCharts(rig, roma, lm, project),
     orbital = makeOrbitalAtlasFit(rig, lm, atlas, parts);
   const fit = muscleEnvelope(parts, rig.height),
     oral = throatChart(charts.L.trunk, fit, lm, atlas);
+  const seatSheet = subcutaneousSheet(lm, parts, rig.height, fit);
   const material = new MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.3 });
   lm.scan.attachments = [];
   for (const [id, source] of atlas) {
@@ -135,6 +216,7 @@ export function addScanMuscles(rig, roma, parts, atlas, lm) {
       for (let i = 0; i < ix.length; i += 3) [ix[i], ix[i + 1]] = [ix[i + 1], ix[i]];
     }
     const anchors = attach(g, source, chart, sites, project, mirror);
+    seatSheet(id, g, source, anchors, lm.shoulders[side]);
     g.computeVertexNormals();
     g.computeBoundingBox();
     g.computeBoundingSphere();
@@ -157,5 +239,36 @@ export function addScanMuscles(rig, roma, parts, atlas, lm) {
     for (const a of anchors)
       lm.scan.attachments.push({ muscle: id, bone: a.bone, point: a.target, index: a.index, role: a.role });
   }
-  fitAtlasMuscles(parts, rig, lm, fit);
+  // Some fitted ribs lie within 0.16 in of the skin. The generic coarse-grid
+  // reserve can move an entire back sheet behind those ribs. For these broad
+  // thin sheets, check the actual skin triangles around each marginal point.
+  const probe = v(), clearance = rig.height * 0.0008;
+  const hasClearance = (p) => {
+    if (fit.hasReserve(p)) return true;
+    for (const axis of ['x', 'y', 'z']) {
+      probe.copy(p);
+      probe[axis] += clearance;
+      if (!fit.inside(probe)) return false;
+      probe[axis] -= 2 * clearance;
+      if (!fit.inside(probe)) return false;
+    }
+    return fit.inside(p);
+  };
+  const coarse = v(), between = v();
+  const thin = (p) => {
+    if (hasClearance(p)) return p;
+    fit(coarse.copy(p));
+    if (!hasClearance(coarse)) return p.copy(coarse);
+    let near = 0, far = 1;
+    for (let i = 0; i < 6; i++) {
+      const fraction = (near + far) / 2;
+      if (hasClearance(between.lerpVectors(p, coarse, fraction))) far = fraction;
+      else near = fraction;
+    }
+    return p.lerp(coarse, far);
+  };
+  thin.hasReserve = hasClearance;
+  thin.inside = fit.inside;
+  fitAtlasMuscles(parts, rig, atlas, (part) =>
+    superficialTrunk.test(part.muscleNode) ? { fit: thin, thinSheet: true } : { fit });
 }
