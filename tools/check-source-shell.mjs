@@ -16,8 +16,11 @@ if (process.env.THREE_ROOT) {
 const T = await import('three');
 const { depthViews, raster } = await import('./axon-depth.mjs');
 const { buildDiagramModel } = await import('../docs/characters/diagram-parts.js');
+const { createSourceRig } = await import('../docs/characters/source-rig.js');
+const { romaExterior } = await import('../docs/characters/roma-exterior-data.js');
 
 const inch = 0.0254;
+const softTissue = ['breast', 'gluteal-fat', 'hip-fat'];
 const resolution = 512;
 const allowance = 0.04 * inch;
 const hair = /hair|curl|brow|lash|sideburn|quiff|wave|scalp|forelock|tapered lock|fringe/i;
@@ -40,7 +43,8 @@ function worldParts(parts) {
 }
 
 function measure(parts) {
-  const interior = worldParts(parts.filter((p) => p.layer === 'skeleton' || p.layer === 'muscles'));
+  const interior = worldParts(parts.filter((p) => p.layer === 'skeleton' || p.layer === 'muscles' ||
+    softTissue.includes(p.layer)));
   const skin = parts.filter((p) => p.layer === 'skin' && !hair.test(p.name));
   const outside = [...skin, ...parts.filter((p) => p.layer === 'clothes')];
   const bounds = new T.Box3();
@@ -82,10 +86,33 @@ function measure(parts) {
   };
 }
 
+function waistToHip() {
+  const { joints } = createSourceRig('roma');
+  const hips = joints.hips.y, chest = joints.chest.y;
+  const sections = romaExterior.torso.map(([y, , , ...radii]) => {
+    const turn = Math.cos(2 * Math.PI / radii.length);
+    let circumference = 0;
+    for (const [i, a] of radii.entries()) {
+      const b = radii[(i + 1) % radii.length];
+      circumference += Math.sqrt(a*a + b*b - 2*a*b*turn);
+    }
+    return { height: y / 10000, circumference: circumference / 10000 };
+  });
+  const waist = Math.min(...sections.filter((s) =>
+    s.height >= hips + 0.33 * (chest - hips) && s.height <= hips + 0.79 * (chest - hips))
+    .map((s) => s.circumference));
+  const hip = Math.max(...sections.filter((s) => Math.abs(s.height - hips) <= 0.048)
+    .map((s) => s.circumference));
+  return { ratio: waist / hip, waistIn: waist * 1.68 / inch, hipIn: hip * 1.68 / inch };
+}
+
 for (const name of onlyName ? [onlyName] : ['sippy', 'roma']) {
   for (const tier of onlyTier ? [onlyTier] : ['mobile', 'high']) {
     const model = await buildDiagramModel(name, tier);
-    try { console.log(JSON.stringify({ name, tier, ...measure(model.parts) })); }
+    try {
+      const body = name === 'roma' ? { waistToHip: waistToHip() } : {};
+      console.log(JSON.stringify({ name, tier, ...body, ...measure(model.parts) }));
+    }
     finally { model.dispose(); }
   }
 }
