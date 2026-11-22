@@ -1,0 +1,106 @@
+{
+  "bakedGLBsServedSHA256": {
+    "axon-roma-high-sa.glb": "e7d0b2557a62fafe1ec5423d685e83353eedfef2bba81fdd1a001e42d80844d0",
+    "axon-roma-high.glb": "7c05218ccc2463096fc3efe6122475ea3728946580db8d5dc641a6427a85e345",
+    "axon-roma-mobile-sa.glb": "b70a0898e4d18b5c4d3ff330a78690b4800f14fd0eeafdadd23a62027bb2726b",
+    "axon-roma-mobile.glb": "aebc90c3a66024f17872978af0bee1d3623fb0f3d88b4b020661f7f76fa60b29",
+    "axon-sippy-high-sa.glb": "4a09f98aef51fb4b2de4c7a95a22068f3cdd3a3c8c0133923798e42d58172772",
+    "axon-sippy-high.glb": "427308defae04cd4ccbfcc10343ffcfd3a4fb6d3de4e53251fb0a9cd5b831050",
+    "axon-sippy-mobile-sa.glb": "f144360549eb906cdbe295561fec5df7ce5e0d01b9d68486ad5c90be48fb8b45",
+    "axon-sippy-mobile.glb": "58c9e1c88236a959c452beeb61805430edd6e22717a20e69d450ee9687fca72d"
+  },
+  "beforeCommit": "1eab056",
+  "mediaSHA256": {
+    "axon-open-orbit-explode.mp4": "345eb1b8c9fd6d9a20aa5456b30f11cc4ff3399973ab6879e99d57190cc98e1c",
+    "reference-to-rig.jpg": "a66e9c22c54ae07cc82865b8ba95043c7d54641885cc9011bec4c21a4ce241a9",
+    "roma-details.jpg": "b9b863f0a8cc6340afdb0e50154d8cf56b9004aa323dbb81876cdf9da1af9ca0",
+    "roma-high.jpg": "9aaad9af7309875dbdd25aeff5be6e7c5dfd3701926b84b144269a5503f718d9",
+    "roma-mobile.jpg": "b98c90d201ee6b9121d1615036c517941316c5f96bcee4a148d77f88d32b7276",
+    "sippy-details.jpg": "91e46d1e8089b881e9b9f103dbf07aea00b75990d5d4c7639986569b44aefef6",
+    "sippy-high.jpg": "374d4b47d021a9e09fa36d2dda74a395672598c66736dd1de413137cf5aa523b",
+    "sippy-mobile.jpg": "244395e5ef4ec8ff732c265154ea7378cc488a9c390371344acbcaeb9b94d7c0",
+    "superficial-groups.jpg": "50390e7214c173c43b75f54b1eb0808371a1a563338a9b0f990edeb2323b053f"
+  },
+  "photographs": {
+    "roma-high": {
+      "cameraPitchDegrees": [
+        0,
+        0,
+        0,
+        4
+      ],
+      "frontPixelsRepeatAfterOrbit": true,
+      "viewsDegrees": [
+        0,
+        90,
+        180,
+        32
+      ]
+    },
+    "roma-mobile": {
+      "cameraPitchDegrees": [
+        0,
+        0,
+        0,
+        4
+      ],
+      "frontPixelsRepeatAfterOrbit": true,
+      "viewsDegrees": [
+        0,
+        90,
+        180,
+        32
+      ]
+    },
+    "sippy-high": {
+      "cameraPitchDegrees": [
+        0,
+        0,
+        0,
+        4
+      ],
+      "frontPixelsRepeatAfterOrbit": true,
+      "viewsDegrees": [
+        0,
+        90,
+        180,
+        32
+      ]
+    },
+    "sippy-mobile": {
+      "cameraPitchDegrees": [
+        0,
+        0,
+        0,
+        4
+      ],
+      "frontPixelsRepeatAfterOrbit": true,
+      "viewsDegrees": [
+        0,
+        90,
+        180,
+        32
+      ]
+    }
+  },
+  "recording": {
+    "firstOpenBrowserFrames": {
+      "roma": 14,
+      "sippy": 14
+    },
+    "stream": {
+      "codec_name": "h264",
+      "duration": "29.333333",
+      "height": 740,
+      "r_frame_rate": "24/1",
+      "width": 1024
+    }
+  },
+  "referenceOverlayInputsSHA256": {
+    "bp3d-missing-muscles-high-meshopt.glb": "3973c7e17087f3742ca2ee1664786106ec1b3d954e800d3e24a3f80080919d93",
+    "bp3d-muscles-high-meshopt.glb": "4a2d4840c04053271dd191834986543bd9f3a441630e1b4b1564309049cded8e",
+    "zanatomy-lats-rectus-high-meshopt.glb": "9a90c6e8b8e27a22b5e1417c3d07cd72ba6dfec34719a03640ca8ddfacaeec9e"
+  },
+  "referenceSkeletonCollection": "1: Skeletal system",
+  "referenceSkeletonRevision": "d14fa54355a3b484cefd08c33f6e18526d9aea85"
+}
