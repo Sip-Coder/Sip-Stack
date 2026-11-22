@@ -963,6 +963,17 @@ export function buildSippy(rig) {
   for (const node of [pack, drawcord, ...tails]) node.userData.dynamicPose = true;
   const banks = styleQuiff(headSkin, grooms);
   shapeExplorerCrown(rig, headSkin);
+  // Reducing the groom's height moves the cap onto wider sections of the
+  // stationary skull. Reseat the high cap under the locks at its new height.
+  const seatedCap = scalpCap.geometry.attributes.position;
+  for (let i = 0; i < seatedCap.count; i++) {
+    const y = seatedCap.getY(i);
+    const pad = 0.0035 * T.MathUtils.smoothstep(y, 0.093, 0.108);
+    if (pad) seatedCap.setXYZ(i, ...fitSkull([seatedCap.getX(i), y, seatedCap.getZ(i)], pad));
+  }
+  seatedCap.needsUpdate = true;
+  scalpCap.geometry.computeVertexNormals();
+  scalpCap.geometry.computeBoundingSphere();
   rig.secondary ??= {};
   // Keep the actual face and collar surfaces available to the review tools.
   const faceSkin = headSkin.children
