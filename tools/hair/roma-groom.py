@@ -1,4 +1,4 @@
-"""Author Roma's layered ringlets as Blender Bézier guides and opaque meshes.
+"""Author Roma's layered waves as Blender Bézier guides and opaque clump meshes.
 
 blender -b -t 2 --python tools/hair/roma-groom.py -- /path/to/hair-raw
 Pass --blend to also keep the editable guide scene. The separate asset packer
@@ -7,7 +7,7 @@ in the site's model frame (+Y crown, +Z forward).
 """
 import argparse
 from dataclasses import dataclass
-from math import atan2, cos, hypot, pi, sin, sqrt
+from math import atan2, cos, hypot, pi, sin
 from pathlib import Path
 import sys
 
@@ -174,6 +174,7 @@ class Guide:
     turn: float
     tint: float
     region: str = ''
+    detail: bool = False
 
 
 def author_bezier(guide):
@@ -193,7 +194,7 @@ def author_bezier(guide):
     return spline, obj
 
 
-def sample_guide(spline, stations):
+def sample_guide(spline, rows):
     """Arc-length stations share silhouette and bone points between LODs."""
     points = spline.bezier_points
     segments = [interpolate_bezier(a.co, a.handle_right, b.handle_left, b.co, 20) for a, b in zip(points[:-1], points[1:])]
@@ -202,8 +203,8 @@ def sample_guide(spline, stations):
     for a, b in zip(sampled[:-1], sampled[1:]):
         distances.append(distances[-1] + (b - a).length)
     out, k = [], 0
-    for t in stations:
-        distance = distances[-1] * t
+    for j in range(rows + 1):
+        distance = distances[-1] * j / rows
         while k + 1 < len(distances) - 1 and distances[k + 1] < distance:
             k += 1
         factor = (distance - distances[k]) / (distances[k + 1] - distances[k])
@@ -232,53 +233,144 @@ def frames(samples, outward):
     return [(radial, tangent.cross(radial).normalized()) for tangent, radial in zip(tangents, axes)]
 
 
-def sweep(surface, guide, samples, stations, sides):
-    """Sweep a rounded ringlet with a concealed root and tucked oval end."""
+def sweep(surface, guide, samples, sides, arc=None):
+    """Sweep a flattened, fluted profile with a closed, pointed tip."""
     start = len(surface.vertices)
     rows = len(samples) - 1
-    roots, tips = linear('2b1a15'), linear('593321')
-    front = sides // 2
-    cover = guide.name.startswith('Whorl cover')
-    tuck = .006 if guide.name.startswith('Whorl') else .002
-    def cross_uv(index):
-        # The outward half gets almost all the texture span. Keeping the two
-        # underside values close avoids high-frequency detail in shadow.
-        if index <= front:
-            return .06 + .88 * index / front
-        return .94 + .06 * (index - front) / (sides - front)
-
+    if arc is None:
+        arc = tuple(i / rows for i in range(rows + 1))
+    roots, tips = linear('291914'), linear('643a2a')
     for j, (point, (radial, cross)) in enumerate(zip(samples, frames(samples, guide.outward))):
-        t = stations[j]
-        twist = guide.turn * sin(pi * (1.16 * t + .08))
-        root = .36 + .64 * ramp(t, .02, .19 if cover else .35)
-        cap = max(0., (t - .89) / .11)
-        tip = sqrt(max(.0121, 1. - cap * cap))
-        roll = 1. + .08 * sin(TAU * (t + .12))
-        width = guide.width * root * tip * roll
-        if not guide.region:
-            point = point - radial * (tuck * ramp(t, .83, 1.))
+        t = j / rows
+        u, prev_u = arc[j], arc[j - 1]
+        twist = guide.turn * sin(pi * (1.14 * t + 0.12))
+        root = 0.28 + 0.72 * ramp(t, 0.025, 0.27)
+        tip = 1 - 0.88 * ramp(t, 0.62, 1.0)
+        width = guide.width * root * tip * (1. - 0.10 * t)
         for i in range(sides):
-            theta = -pi / 2 + TAU * i / sides
-            across = width * sin(theta)
-            depth = width * guide.depth * cos(theta)
+            theta = TAU * i / sides
+            flute = cos(3 * theta + 1.30 * t) + 0.29 * cos(6 * theta + 2.2 * t)
+            swell = 1 + 0.13 * flute
+            across = width * sin(theta) * swell
+            depth = width * guide.depth * cos(theta) * swell
             p = point + cross * (across * cos(twist) - depth * sin(twist))
             p += radial * (across * sin(twist) + depth * cos(twist))
-            light = guide.tint * (.86 + .15 * cos(theta) + .065 * sin(3 * t + guide.turn))
-            surface.vertex(under_band(p), pigment(roots, tips, .22 + .59 * ramp(t, .15, .87), light))
+            tone = (0.81 + 0.24 * cos(theta) + 0.16 * flute + 0.12 * sin(4.5 * t + guide.turn)) * guide.tint
+            surface.vertex(under_band(p), pigment(roots, tips, 0.18 + 0.61 * ramp(t, 0.07, 0.96), tone))
             if j:
                 prev, now = start + (j - 1) * sides, start + j * sides
-                nxt = (i + 1) % sides
-                v0, v1 = cross_uv(i), cross_uv(i + 1)
-                before = stations[j - 1]
-                surface.face((prev + i, prev + nxt, now + nxt, now + i),
-                             ((before, v0), (before, v1), (t, v1), (t, v0)))
+                ii = (i + 1) % sides
+                v, next_v = i / sides, (i + 1) / sides
+                surface.face((prev + i, prev + ii, now + ii, now + i),
+                             ((prev_u, v), (prev_u, next_v), (u, next_v), (u, v)))
     end = start + rows * sides
-    def cap_uv(at, i):
-        # The terminal cap still binds to its end joint.
-        return at + .0015 * cos(TAU * i / sides), .5 + .46 * sin(TAU * i / sides)
+    def cap_uv(center, j):
+        # Tangents need an area in UV space, but the cap still binds to its endpoint joint.
+        return center + 0.0015 * cos(TAU * j / sides), 0.5 + 0.48 * sin(TAU * j / sides)
     for i in range(1, sides - 1):
-        surface.face((start, start + i + 1, start + i), tuple(cap_uv(.002, k) for k in (0, i + 1, i)))
-        surface.face((end, end + i, end + i + 1), tuple(cap_uv(.998, k) for k in (0, i, i + 1)))
+        surface.face((start, start + i + 1, start + i),
+                     tuple(cap_uv(arc[0] + .002, j) for j in (0, i + 1, i)))
+        surface.face((end, end + i, end + i + 1),
+                     tuple(cap_uv(arc[-1] - .002, j) for j in (0, i, i + 1)))
+
+
+def bundle_frames(guide, samples):
+    for j, (point, (radial, cross)) in enumerate(zip(samples, frames(samples, guide.outward))):
+        t = j / (len(samples) - 1)
+        twist = guide.turn * sin(pi * (1.14 * t + .12))
+        cross_axis = cross * cos(twist) + radial * sin(twist)
+        depth_axis = radial * cos(twist) - cross * sin(twist)
+        width = guide.width * (.28 + .72 * ramp(t, .025, .27))
+        width *= (1 - .90 * ramp(t, .62, 1.)) * (1. - .10 * t)
+        yield point, cross_axis, depth_axis, width
+
+
+def curve_stations(carriers, rows):
+    """Spend section rings on the S-bends and on rotating silhouette edges."""
+    envelope = [(point, point + across * width, point - across * width)
+                for point, across, _, width in carriers]
+    last = len(envelope) - 1
+    selected = [0, last]
+    while len(selected) < rows + 1:
+        error, pick = -1., 1
+        for a, b in zip(selected[:-1], selected[1:]):
+            for i in range(a + 1, b):
+                u = (i - a) / (b - a)
+                drift = max((p - x.lerp(y, u)).length_squared
+                            for p, x, y in zip(envelope[i], envelope[a], envelope[b]))
+                if drift > error:
+                    error, pick = drift, i
+        selected.append(pick)
+        selected.sort()
+    return [(i / last, carriers[i]) for i in selected]
+
+
+def comb_bundle(surface, guide, carriers, rows):
+    """Sweep three separate tendrils through the original wave envelope."""
+    sides = 3
+    roots, tips = linear('281713'), linear('633925')
+    phase = guide.turn * 5.2 + guide.tint * 9.1
+    length = len(carriers) - 1
+    lanes = ((-.66, .34, .75), (-.016, .35, 1.0), (.65, .34, .86))
+    for lane, (offset, breadth, brow) in enumerate(lanes):
+        stop = length if lane == 1 else length - 3 - round(4 * (.5 + .5 * sin(phase + lane * 2.2)))
+        end_u = stop / length
+        start = len(surface.vertices)
+        edge = .06 + lane * .296
+        uv_lanes = (edge, edge + .14, edge + .28)
+        previous = 0.
+        for j, (progress, (point, across, depth, width)) in enumerate(
+                curve_stations(carriers[:stop + 1], rows)):
+            t = progress * end_u
+            drift = .065 * sin(phase + t * 9.1 + lane * 1.9) * sin(pi * t)
+            spread = (1. + .17 * ramp(t, .54, .87)) * (.91 + .09 * ramp(t, .07, .42))
+            centre = offset * spread + drift
+            size = breadth * width * (1. - .75 * ramp(progress, .73, 1.))
+            lip = .095 * sin(phase + lane * 1.6 + 5 * t)
+            rise = brow * (1. + .10 * cos(phase + 8 * t + lane * 2.3))
+            cross_section = ((-1., -.22 + lip), (.13 * sin(phase + 6. * t), rise),
+                             (1., -.28 - lip))
+            for i, (side, h) in enumerate(cross_section):
+                p = point + across * (centre * width + side * size)
+                p += depth * (width * guide.depth * h)
+                light = (.96 + .17 * sin(phase + lane * 2.1 + t * 4.)) * (1.08 if i == 1 else .78)
+                surface.vertex(under_band(p), pigment(roots, tips, .21 + .63 * ramp(t, .04, .96),
+                                                      light * guide.tint))
+                if j:
+                    prev, now = start + (j - 1) * sides, start + j * sides
+                    k = (i + 1) % sides
+                    v0, v1 = uv_lanes[i], uv_lanes[k] if k else uv_lanes[2] + .008
+                    surface.face((prev + i, prev + k, now + k, now + i),
+                                 ((previous, v0), (previous, v1), (t, v1), (t, v0)))
+            previous = t
+        tip = start + rows * sides
+        middle = uv_lanes[1]
+        surface.face((start, start + 2, start + 1),
+                     ((.002, edge), (.002, uv_lanes[2]), (.0006, middle)))
+        surface.face((tip, tip + 1, tip + 2),
+                     ((end_u - .002, edge), (end_u - .0006, middle), (end_u - .002, uv_lanes[2])))
+
+
+def loose_filament(surface, guide, carriers, side, high, short=False):
+    """Grow a fine tapered offshoot within the outer envelope of a parent wave."""
+    phase = guide.turn * 12.4 + guide.tint * 9.8
+    first = (3 if short else 18) + int(8 * (.5 + .5 * sin(phase + side)))
+    last = (30 if short else 62) - int(8 * (.5 + .5 * cos(phase * 1.24 + side)))
+    frames_by_arc = carriers[first:last + 1]
+    stations = curve_stations(frames_by_arc, 8 if high and not short else 5)
+    points = []
+    for fraction, (point, across, depth, width) in stations:
+        lift = .0012 * sin(pi * fraction) + .00115 * ramp(fraction, .45, 1.)
+        drift = .0027 * sin(pi * fraction) + .0018 * ramp(fraction, .56, 1.)
+        p = point + across * side * ((.79 if short else .64) * width + drift)
+        p += depth * (width * guide.depth * (.32 if short else .62) + lift)
+        points.append(p)
+    thread = Guide('Loose filament', (), guide.outward, guide.width / (24 if short else 16),
+                   .56, side * .09, guide.tint * (1.13 + .1 * sin(phase)))
+    # Keep the UV root-to-tip weights at their parent arc distances even
+    # where the stations bunch around an especially tight bend.
+    fractions = tuple(lerp(first, last, u) / (len(carriers) - 1) for u, _ in stations)
+    sweep(surface, thread, points, 4, fractions)
 
 
 def scalp_underlay(high):
@@ -297,15 +389,14 @@ def scalp_underlay(high):
             p = scalp(y, angle)
             fit = 0.0009 + 0.0014 * sin(r * pi)
             p += Vector((fit * sin(angle), 0.0005 + 0.0013 * r, fit * cos(angle)))
-            grain = .48 + (1. - ramp(r, .72, 1.)) * (.20 * cos(15 * angle - 3.8 * r)
-                                                    + .08 * cos(21 * angle + 1.4 * r))
+            grain = 0.53 + 0.24 * cos(15 * angle - 3.8 * r) + 0.08 * cos(21 * angle + 1.4 * r)
             surface.vertex(under_band(p), pigment(dark, light, grain * (0.5 + 0.5 * r)))
             if row:
                 prev, now = (row - 1) * around, row * around
                 nxt = (col + 1) % around
                 u, v = col / around, (col + 1) / around
                 surface.face((prev + col, prev + nxt, now + nxt, now + col), ((r - 1 / rows, u), (r - 1 / rows, v), (r, v), (r, u)))
-    top = surface.vertex(Vector((0., .1527, -.006)), pigment(dark, light, .48))
+    top = surface.vertex(Vector((0., 0.1527, -0.006)), light + (1.,))
     for a in range(around):
         surface.face((rows * around + a, rows * around + (a + 1) % around, top), ((0.98, a / around), (0.98, (a + 1) / around), (1., (a + 0.5) / around)))
     return surface
@@ -353,20 +444,16 @@ def headband(high, cloth):
     obj['hairBandRadius'] = 0.009
 
 
-# Four laid-in temple shapes leave Roma's eyes and gold hoops clear.
+# Two lengths on each side of the part keep forehead and hoop silhouettes distinct.
 FORELOCKS = (
-    ('Swept forehead left', ((.014, .146, .030), (.004, .146, .037), (-.024, .139, .045),
-                             (-.046, .125, .047), (-.064, .110, .046), (-.074, .089, .043),
-                             (-.077, .073, .047), (-.071, .065, .056), (-.068, .067, .060)), .012),
-    ('Outer frame left', ((.016, .145, .030), (-.011, .142, .036), (-.041, .132, .044),
-                          (-.065, .116, .045), (-.080, .100, .047), (-.087, .083, .043),
-                          (-.084, .068, .043), (-.075, .060, .052), (-.071, .062, .054)), .0094),
-    ('Swept forehead right', ((.018, .145, .030), (.034, .142, .035), (.051, .133, .044),
-                              (.065, .118, .050), (.075, .102, .051), (.082, .085, .045),
-                              (.080, .069, .050), (.074, .060, .061), (.071, .063, .062)), .0109),
-    ('Outer frame right', ((.020, .145, .032), (.038, .142, .033), (.058, .129, .045),
-                           (.074, .111, .050), (.086, .090, .048), (.086, .075, .037),
-                           (.081, .064, .043), (.075, .060, .052)), .0089),
+    ('Swept forehead left', ((0.016, .148, .029), (.006, .156, .037), (-.016, .156, .043), (-.038, .142, .047),
+                             (-.058, .122, .044), (-.073, .103, .043), (-.077, .082, .032), (-.071, .068, .034)), 0.0165),
+    ('Outer frame left', ((0.014, .145, .036), (-.004, .151, .043), (-.036, .139, .058), (-.060, .117, .059),
+                           (-.073, .098, .054), (-.080, .080, .039), (-.084, .066, .037), (-.081, .056, .042)), 0.0135),
+    ('Swept forehead right', ((.015, .148, .029), (.029, .155, .037), (.050, .145, .045), (.062, .127, .044),
+                              (.074, .108, .048), (.080, .088, .047), (.079, .072, .045), (.074, .054, .046)), 0.0140),
+    ('Outer frame right', ((.020, .141, .038), (.035, .144, .047), (.055, .133, .055), (.068, .112, .055),
+                            (.077, .093, .052), (.083, .077, .044), (.087, .061, .042), (.084, .050, .044)), 0.0115),
 )
 
 
@@ -374,136 +461,104 @@ def forelocks():
     for i, (name, path, width) in enumerate(FORELOCKS):
         side = -1 if i < 2 else 1
         region = 'front' if i % 2 == 0 else ''
-        yield Guide(name, path, (side * .25, .43, 1.), width, .51, side * .19, 1.05 + .06 * (i % 2), region)
+        yield Guide(name, path, (side * 0.25, 0.46, 1.), width, 0.32, side * 0.14, 1 + 0.09 * (i % 2), region)
+    # Short combed fibers feather the seated line where the forehead meets the part.
     for side in (-1, 1):
-        # A seated, aligned transition at the origin of the part.
-        for i in range(2):
-            angle = .07 + i * .30
-            points = tuple(tuple(scalp(y, side * (a + angle)) + Vector((0., .001, .0035)))
-                           for y, a in ((.140, .00), (.136, .15), (.131, .33), (.124 - i * .003, .55)))
-            yield Guide(f'Part root feather {side:+d}-{i + 1}', points, (side * .25, .31, 1.),
-                        .0041 - i * .0006, .48, side * .15, 1.11)
+        for i in range(3):
+            angle = 0.018 + i * 0.21
+            points = tuple(tuple(scalp(y, side * (a + angle)) + Vector((0., 0.0007, 0.0028)))
+                           for y, a in ((.138, .00), (.137, .13), (.131, .28), (.121 - i * .002, .49)))
+            yield Guide(f'Part root feather {side:+d}-{i + 1}', points, (side * .25, .30, 1.),
+                        .0031 - i * .00042, .25, side * .12, 1.12 + i * .07, detail=i > 0)
 
 
-@dataclass(frozen=True)
-class Ringlet:
-    index: int
-    angle: float
-    end: float
-    radius: float
-    turns: float
-    width: float
-    phase: float
-    inset: float = 0.
-    region: str = ''
-
-
-# The outer curls are arranged before the shorter inner ones so the shoulder
-# silhouette is held by overlapping volumes at staggered lengths.
-RINGLETS = (
-    Ringlet(1, .94, -.001, .0158, 1.13, .0104, .70, region='temple'),
-    Ringlet(3, 1.10, -.014, .0180, 1.32, .0105, .62),
-    Ringlet(5, 1.36, -.020, .0172, 1.29, .0118, .34),
-    Ringlet(7, 1.66, -.027, .0190, 1.34, .0122, .27),
-    Ringlet(9, 1.92, -.033, .0205, 1.36, .0120, .16),
-    Ringlet(11, 2.15, -.034, .0208, 1.38, .0124, -.08, region='cascade'),
-    Ringlet(13, 2.42, -.036, .0182, 1.32, .0124, -.20),
-    Ringlet(16, 2.68, -.040, .0199, 1.43, .0121, -.34),
-    Ringlet(18, 2.91, -.037, .0170, 1.37, .0121, -.39),
-    Ringlet(20, 3.12, -.044, .0159, 1.42, .0124, -.30),
-    Ringlet(15, 2.55, .010, .0144, 1.22, .0103, -.29, .020, 'nape'),
-    Ringlet(6, 1.56, -.017, .0132, 1.20, .0103, .34, .017),
-    Ringlet(2, 1.04, .019, .0111, 1.48, .0085, .02, .016),
-    Ringlet(12, 2.30, -.001, .0124, 1.49, .0086, -.64, .017),
+# Azimuths run from the temples to the whorl at the back. Each row is an
+# independent wave, with long drapes interleaved with shorter returning layers.
+# angle, length, face/rear clearance bias, width, phase, optional live chain
+BANK = (
+    (0.92, .149, .000, .014, 0.75, 'temple'),
+    (1.03, .157, .006, .016, -1.0, ''),
+    (1.17, .157, .009, .019, 1.8, ''),
+    (1.23, .148, -.004, .018, -2.2, ''),
+    (1.39, .148, -.002, .016, .43, ''),
+    (1.46, .156, -.004, .017, -1.5, ''),
+    (1.60, .142, -.024, .016, 1.1, ''),
+    (1.68, .148, -.026, .019, -1.1, ''),
+    (1.87, .159, -.027, .016, .62, ''),
+    (1.99, .163, -.028, .019, 2.4, ''),
+    (2.14, .180, -.029, .017, .72, 'cascade'),
+    (2.25, .178, -.024, .019, -.57, ''),
+    (2.36, .174, -.020, .019, -1.79, ''),
+    (2.48, .186, -.014, .021, 1.1, ''),
+    (2.54, .133, -.010, .016, 2.2, 'nape'),
+    (2.66, .170, -.014, .020, -1.0, ''),
+    (2.78, .149, -.010, .018, -.74, ''),
+    (2.89, .179, -.008, .019, 2.2, ''),
+    (3.02, .144, -.005, .016, .0, ''),
+    (3.11, .177, -.009, .018, -1.6, ''),
 )
 
 
 def waves():
     for side in (-1, 1):
-        for ring in RINGLETS:
-            if ring.index == 20 and side > 0:
+        for i, (angle, length, bias, width, phase, region) in enumerate(BANK):
+            if i not in (0, 2, 4, 6, 8, 10, 12, 14, 15, 17, 19):
                 continue
-            angle = ring.angle + side * .023 * sin(ring.index * .8)
-            y0 = .146 - .005 * ramp(angle, 2.15, 3.12)
-            end = ring.end + side * .003 * sin(ring.index * 1.73)
-            start = scalp(y0, side * angle)
-            start += Vector((side * .002 * sin(angle), .001, .001 + .003 * cos(angle)))
+            # Neighbouring ribbons broadly share the wave, with staggered phase and depth.
+            phase = 0.28 * phase + 0.91 * sin(1.7 * angle + 0.29) + side * 0.32
+            angle += 0.026 * side * sin(i + .3)
+            length += side * (0.0038 * sin(1.96 * i) + 0.002 * cos(1.22 * i + .4))
+            left_sweep = (0.08 * side - .055) * sin(angle * 1.12)
+            start_y = 0.1438 + 0.0028 * sin(i * 2.1 + side) - 0.0055 * ramp(angle, 2.18, 3.12)
             path = []
-            for j in range(23):
-                t = j / 22
-                tuck = ramp(t, .78, 1.)
-                opening = ramp(t, .03, .37)
-                a = angle + .17 * sin(pi * t) - .085 * tuck
-                radial = Vector((side * sin(a), 0., cos(a)))
-                around = Vector((side * cos(a), 0., -sin(a)))
-                wide = .089 + .005 * sin(a) - ring.inset - .008 * tuck
-                deep = .073 - ring.inset - .010 * tuck
-                carrier = Vector((side * wide * sin(a), 0., -.008 + deep * cos(a)))
-                # The descending axis aims toward the cuff. Elliptical turns
-                # trace the curl in depth as well as across the head.
-                amp = ring.radius * ramp(t, .12, .43) * (1. - .69 * tuck)
-                spin = TAU * (ring.turns * t ** 1.28 + .063 * t * t) + ring.phase
-                spiral = amp * (around * sin(spin) + radial * (.74 * cos(spin)))
-                p = start.lerp(carrier, opening) + spiral
-                p.z += (1. - ramp(angle, .92, 1.49)) * .026 * ramp(t, .10, .80)
-                p.y = lerp(y0, end, t) + .014 * sin(pi * ramp(t, 0., .42))
-                p.y += .009 * sin(spin + .54) * ramp(t, .32, .62) * (1. - ramp(t, .77, 1.))
-                # Return the final arc under the body of the curl.
-                p += radial * (-.006 * tuck)
-                p.y += .005 * ramp(t, .90, 1.)
-                if ring.region in ('cascade', 'nape'):
-                    clearance = .009 if ring.region == 'cascade' else .014
-                    p += radial * (clearance * ramp(t, .56, 1.))
-                    reach = ramp(t, .61, 1.)
-                    p.x += side * .013 * reach
-                    p.z -= (.031 if ring.region == 'cascade' else .024) * reach
-                if ring.region not in ('cascade', 'nape'):
-                    # Sew the upper arc against the head before the ringlet
-                    # opens into its shoulder envelope.
-                    near = scalp(min(.149, p.y), side * a) + radial * .006
-                    seat = .74 * ramp(t, .06, .25) * (1. - ramp(t, .31, .62))
-                    p.x = lerp(p.x, near.x, seat)
-                    p.z = lerp(p.z, near.z, seat)
-                    if ring.angle > 1.8 and not ring.inset:
-                        lane = .006 if ring.index in (9, 16, 20) else -.003
-                        p += radial * (lane * ramp(t, .27, .45) * (1. - ramp(t, .70, .95)))
-                path.append(tuple(p))
-            outward = (side * sin(angle), .11, cos(angle))
-            name = ('Right' if side < 0 else 'Left') + f' wave {ring.index:02d}'
-            depth = .64 if ring.region in ('cascade', 'nape') else .56
-            yield Guide(name, tuple(path), outward, ring.width, depth, side * .22,
-                        .95 + .16 * ramp(angle, 3.05, .95) - 6. * ring.inset, ring.region)
+            for j in range(11):
+                t = j / 10
+                centerline = angle + left_sweep * (1 - t) + 0.085 * sin(pi * t) * sin(phase)
+                middle = sin(pi * (0.80 * t + 0.05)) ** .8
+                s = 2 * pi * (1.53 * t + 0.09 * t * t) + phase
+                sway = 0.018 * sin(s) * middle + .0029 * cos(2 * s + 0.7) * middle
+                wave = (0.0056 * cos(s + 0.35) - .0017 * sin(2 * s)) * middle
+                origin = scalp(start_y, side * centerline)
+                spread = ramp(t, 0., .44)
+                x = lerp(abs(origin.x) * .92, (0.093 + .006 * sin(i * 2 + side)) * sin(centerline), spread)
+                z = lerp(origin.z + .004, -.006 + (.076 + .005 * sin(i * 2 + side)) * cos(centerline), spread)
+                x += (wave + .0042 * sin(s * 0.65)) * sin(centerline) + sway * cos(centerline)
+                z += wave * cos(centerline) - sway * sin(centerline)
+                z += bias * ramp(t, 0.32, 0.92)
+                x += .007 * sin(centerline) * ramp(t, .18, .77) * (1 - 0.7 * ramp(t, .73, 1.))
+                y = start_y + .042 * ramp(t, 0., .19) * (1 - ramp(t, .23, .44)) - length * t
+                # Pin the ends low and allow tangential turn-under only.
+                y -= .0025 * ramp(t, .80, 1.) * (0.5 + 0.5 * sin(phase))
+                if angle < 1.25:
+                    z += .021 * (1 - ramp(angle, .92, 1.25)) * ramp(t, .45, 1.)
+                    x = max(x, (.071 + .009 * ramp(t, .5, 1.)) * ramp(t, .18, .55))
+                path.append((side * x, y, z))
+            outward = (side * sin(angle), 0.11, cos(angle))
+            name = ('Right' if side < 0 else 'Left') + f' wave {i + 1:02d}'
+            yield Guide(name, tuple(path), outward, width * (0.88 + 0.060 * sin(phase)), .40 - .048 * sin(phase),
+                        side * (.29 + .16 * sin(phase)), 1.03 + 0.24 * sin(phase * 1.73), region)
 
 
 def crown_whorl():
-    # Comb the part onto the scalp with connected curves whose ends run
-    # into the spiral bodies. All starts sit under the cloth edge.
-    crown = (
-        ((-.027, .146, .024), (-.028, .154, .008), (-.030, .153, -.012),
-         (-.033, .146, -.031), (-.034, .132, -.047), (-.035, .118, -.054)),
-        ((-.010, .149, .022), (-.013, .160, .004), (-.016, .162, -.015),
-         (-.015, .151, -.032), (-.017, .136, -.049), (-.018, .122, -.056)),
-        ((.008, .150, .022), (.007, .162, .003), (.004, .162, -.014),
-         (.001, .153, -.032), (.003, .135, -.048), (.005, .120, -.058)),
-        ((.023, .147, .021), (.024, .155, .003), (.023, .157, -.016),
-         (.026, .149, -.031), (.029, .133, -.045), (.027, .119, -.053)),
-    )
-    for i, path in enumerate(crown):
-        yield Guide(f'Whorl cover {i + 1}', path, ((i - 1.5) * .21, .88, -.23),
-                    .0132, .34, (i - 1.5) * .12, 1.04)
-    # Low sweeps run from the part beneath the first shoulders of the long curls.
+    # Fan the upper guides around the offset whorl behind the cloth, continuing
+    # the part into the long cascade rather than leaving an exposed dome.
+    crown_y = (0.150, .153, .153, .146, .136, .125)
     for side in (-1, 1):
-        for i, angle in enumerate((1.13, 1.60, 2.08, 2.56, 2.91)):
+        for i in range(5):
+            angle = 1.31 + i * .40
             points = []
-            for r in (0., .18, .37, .62, .82, 1.):
-                y = .149 - (.039 + .002 * i) * r
-                a = side * (angle + .24 * sin(r * pi * .68)) + .15 * (1 - r)
+            for j, y in enumerate(crown_y):
+                r = j / (len(crown_y) - 1)
+                a = side * (angle + .28 * sin(pi * r)) + .13 * (1 - r)
                 p = scalp(y, a)
-                lift = .002 + .005 * sin(pi * r)
-                p += Vector((lift * sin(a), .0025 * sin(pi * r), lift * cos(a)))
+                lift = (.006 + i * .00065) * sin(pi * (.18 + .70 * r))
+                p += Vector((lift * sin(a) - .004 * (1 - r), lift * (1 - .37 * r), lift * cos(a) - .006 * r))
+                if i < 2:
+                    p.z += .005 * (1 - r)
                 points.append(tuple(p))
-            yield Guide(f'Whorl {side:+d}-{i + 1}', tuple(points), (side * sin(angle), .6, cos(angle)),
-                        .0115, .45, side * .12, 1.03 + .04 * sin(i + side))
+            yield Guide(f'Whorl {side:+d}-{i + 1}', tuple(points), (side * .35, .8, -.40),
+                        .0093 + .0014 * sin(i * 1.83 + side), .31, side * .20,
+                        1.11 + .11 * sin(i * 1.18 + side), detail=i == 3)
         for i in range(2):
             # The neck remains behind a shorter bedding layer while the parted
             # foreground wave tips can separate a little in space.
@@ -513,7 +568,7 @@ def crown_whorl():
                           -.064 - .012 * ramp(t, .12, .81) + .005 * cos(7.0 * t + phase))
                          for t in (0., .24, .49, .71, 1.))
             yield Guide(f'Nape underneath {side:+d}-{i + 1}', path, (side * .18, .15, -1.), .015,
-                        .32, side * .23, .87)
+                        .32, side * .23, .87, detail=False)
     layers = (
         ((-.012, .085, -.069), (-.011, .067, -.079), (.003, .047, -.081),
          (.011, .024, -.075), (.002, .004, -.072), (-.013, -.009, -.069)),
@@ -523,7 +578,8 @@ def crown_whorl():
     for i, path in enumerate(layers):
         yield Guide(f'Nape underneath center {i + 1}', path, (.03, .10, -1.), .015 + .002 * i,
                     .31, .18 - .32 * i, .85 + .08 * i)
-    # A shorter inner bed holds the collar silhouette between the longer curls.
+    # A short darker bed covers the nape behind the gaps in the fine outer
+    # tendrils. The tapered ends stay well inside the old shoulder envelope.
     for side in (-1, 1):
         path = tuple((side * x, y, z) for x, y, z in (
             (.023, .091, -.064), (.030, .067, -.066), (.039, .040, -.070),
@@ -567,7 +623,7 @@ def export(destination, high, keep_blend):
     bpy.ops.wm.read_factory_settings(use_empty=True)
     guide_collection = bpy.data.collections.new('Guides')
     bpy.context.scene.collection.children.link(guide_collection)
-    chocolate = material('Chocolate ringlets', .37, .60)
+    chocolate = material('Chocolate waves', .45, .58)
     cloth = material('Embroidered red cotton', .82, 0.)
     base = scalp_underlay(high).create('Roma scalp underlay', chocolate, 'crown')
     base['hairLayer'] = 'underlay'
@@ -575,31 +631,36 @@ def export(destination, high, keep_blend):
     static_crown = Surface()
     static_waves = Surface()
     for guide in (*forelocks(), *crown_whorl(), *waves()):
+        if guide.detail and not high:
+            continue
         spline, author = author_bezier(guide)
         compact = guide.name.startswith(('Whorl', 'Nape underneath', 'Part root'))
         crest = guide.name.startswith(('Swept forehead', 'Outer frame', 'Part root', 'Whorl'))
         surface = Surface() if guide.region else static_crown if crest else static_waves
         if compact:
-            rows, sides = (13, 6) if high else (10, 6)
-        elif crest:
-            rows, sides = (24, 8) if high else (17, 6)
+            sweep(surface, guide, sample_guide(spline, 10), sides=5)
         else:
-            rows, sides = (25, 8) if high else (18, 6)
-        stations = [i / rows for i in range(rows + 1)]
-        if not compact:
-            # A few closely spaced stations round the last turn while the
-            # body and the chain retain the original arc weighting.
-            stations = sorted(set(stations + [.978, .992]))
-        sweep(surface, guide, sample_guide(spline, stations), stations, sides)
+            rows = 17 if high else 12
+            if crest or guide.region:
+                rows += 2
+            carriers = list(bundle_frames(guide, sample_guide(spline, 64)))
+            comb_bundle(surface, guide, carriers, rows)
+            side = -1 if guide.outward[0] < 0 else 1
+            if high or crest or guide.region:
+                loose_filament(surface, guide, carriers, side, high)
+            if high and (crest or guide.region):
+                loose_filament(surface, guide, carriers, -side, high)
+            if high and (crest or guide.region == 'temple'):
+                loose_filament(surface, guide, carriers, side, high, short=True)
         if guide.region:
             obj = surface.create('Roma ' + guide.name, chocolate, 'crown' if crest else 'waves')
-            controls = [seat_crown(under_band(p.copy())) for p in sample_guide(spline, (i / 30 for i in range(31)))]
+            controls = [seat_crown(under_band(p.copy())) for p in sample_guide(spline, 30)]
             obj['hairChain'] = [round(float(v), 6) for i in (0, 10, 20, 30) for v in controls[i]]
             obj['hairRegion'] = guide.region
             obj['hairRadius'] = 0.34 * guide.width
         author.hide_set(True)
     static_crown.create('Roma fixed part and forehead curls', chocolate, 'crown')
-    static_waves.create('Roma fixed spiral cascade and nape', chocolate, 'waves')
+    static_waves.create('Roma fixed cascade and nape', chocolate, 'waves')
     bake_contacts([obj for obj in bpy.context.scene.objects if obj.type == 'MESH'])
     bpy.ops.object.select_all(action='DESELECT')
     for obj in bpy.context.scene.objects:

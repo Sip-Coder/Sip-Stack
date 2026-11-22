@@ -1,34 +1,27 @@
-Cleanup runtime bce7b96269bb4faa84c7cd1bd3f6243413a1e082
-mobile all three cast buttons drew distinct actors; differing colour samples [379, 412, 432]
+Floor guardrails 3884cb281a2c871fdc1ef0e6b0ee3fe8965a68dd
+mobile all three cast buttons drew distinct actors; differing colour samples [382, 412, 432]
 Opaque native strand materials {"tier": "mobile", "hero": "sippy", "uniqueDraws": 4}
 Opaque native strand materials {"tier": "mobile", "hero": "roma", "uniqueDraws": 12}
 mobile context restored and native finer groom repainted with GL_NO_ERROR
-high all three cast buttons drew distinct actors; differing colour samples [379, 409, 433]
+high all three cast buttons drew distinct actors; differing colour samples [381, 409, 433]
 Opaque native strand materials {"tier": "high", "hero": "sippy", "uniqueDraws": 4}
 Opaque native strand materials {"tier": "high", "hero": "roma", "uniqueDraws": 12}
 high context restored and native finer groom repainted with GL_NO_ERROR
 The injected Mobile warm-up rejection returned to the preserved target and repainted.
-5 four-tab cycles {"tier": "mobile", "contexts": 2, "clears": 0, "black": 0, "frames": 134, "byTab": {"heros": 74, "village": 60}}
-5 four-tab cycles {"tier": "high", "contexts": 2, "clears": 0, "black": 0, "frames": 140, "byTab": {"heros": 72, "village": 68}}
+5 four-tab cycles {"tier": "mobile", "contexts": 2, "clears": 0, "black": 0, "frames": 151, "byTab": {"heros": 82, "village": 69}}
+5 four-tab cycles {"tier": "high", "contexts": 2, "clears": 0, "black": 0, "frames": 150, "byTab": {"heros": 84, "village": 66}}
 No browser JavaScript or GL invalid-operation errors.
 
+Study views after local shader name fix 8466f153a3562830fb2be3c738e61ca0bb8e2976
 Study views with sippy selected
-Axon View High before loss [0, 0, 0, 0, 0]
-Visible Axon View retained its pixels during context loss and rewarmed to the same image.
-Axon View High after restore [0, 0, 0, 0, 0]
-Character Ref High before loss [0, 0, 0, 0, 0]
-Character Ref retained High portrait pixels during context loss.
-Character Ref High after restore [0, 0, 0, 0, 0]
-Character Ref Mobile repaint [0, 0, 0, 0, 0]
-Axon View Mobile repaint [0, 0, 0, 0, 0]
-Both studies restored Sippy with GL_NO_ERROR.
+before loss [0, 0, 0, 0, 0]
+retained pixels during loss
+after restored High [0, 0, 0, 0, 0]
+after switched Mobile [0, 0, 0, 0, 0]
+Character Ref preserved Sippy’s High portrait through context loss and repainted on Mobile with GL_NO_ERROR.
 Study views with roma selected
-Axon View High before loss [0, 0, 0, 0, 0]
-Visible Axon View retained its pixels during context loss and rewarmed to the same image.
-Axon View High after restore [0, 0, 0, 0, 0]
-Character Ref High before loss [0, 0, 0, 0, 0]
-Character Ref retained High portrait pixels during context loss.
-Character Ref High after restore [0, 0, 0, 0, 0]
-Character Ref Mobile repaint [0, 0, 0, 0, 0]
-Axon View Mobile repaint [0, 0, 0, 0, 0]
-Both studies restored Roma with GL_NO_ERROR.
+before loss [0, 0, 0, 0, 0]
+retained pixels during loss
+after restored High [0, 0, 0, 0, 0]
+after switched Mobile [0, 0, 0, 0, 0]
+Character Ref preserved Roma’s High portrait through context loss and repainted on Mobile with GL_NO_ERROR.
