@@ -12,3 +12,5 @@ The first row in each comparison shows the characters at `2fc3102`, after the an
 The expression panels use actual authored Character Ref poses. The film shows the matched three-quarter before and after, a rendered camera orbit around each neutral face, and the current expressions as deliberate cuts. [Face study film](character-ref-face-studies.mp4)
 
 The capture ledger records the camera angles, source and image hashes, and the exact front-view return after the other angles. [Capture ledger](capture.json) · [Full-body and anatomy studies](../media.md)
+
+The production Character Ref checks rendered 38 live panels for Sippy and 37 for Roma on each tier. Every expression produced a distinct image. The checks also verified that Refresh picked up a live material edit, that finished photographs survived graphics context loss, and that recovery from a stale module produced a new portrait. [Browser verification](../../../../../tools/check-character-ref.py)
