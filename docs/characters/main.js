@@ -6,7 +6,7 @@ import { createStage, contactShadows } from './stage.js';
 import { createUI, heights, labels, names } from './ui.js';
 import { createInput } from './input.js';
 import { optimizeCharacter } from './render-batches.js';
-import { sourceAssetFiles } from './source-asset-files.js';
+import { femaleMuscleFile, sourceAssetFiles } from './source-asset-files.js';
 
 const loadBuilder = [
   () => import('./sippy.js').then(m => m.buildSippy),
@@ -99,6 +99,8 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
     const name = names[selected];
     if (name !== 'hummin' && actualTier) {
       for (const file of sourceAssetFiles(name, actualTier)) {
+        // Roma's complete lower-limb archive starts after the first image.
+        if (file === femaleMuscleFile) continue;
         const link = document.createElement('link');
         link.rel = 'preload';
         link.as = 'fetch';

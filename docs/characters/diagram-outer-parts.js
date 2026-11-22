@@ -16,6 +16,11 @@ function anatomicalX(rig, point) {
 }
 
 export function describeRoma(rig, mesh, c) {
+  const fat = mesh.userData.anatomicalFat;
+  if (fat) {
+    const layer = /breast/i.test(fat) ? 'breast' : /gluteal/i.test(fat) ? 'gluteal-fat' : 'hip-fat';
+    return { name: fat, layer };
+  }
   if (mesh.userData.anatomicalSkin) return skin(mesh.userData.anatomicalSkin);
   const id = mesh.name.replace(/^Roma /, ''),
     { index: i, color, objectCenter: p } = c;
