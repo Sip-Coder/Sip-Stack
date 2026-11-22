@@ -87,8 +87,8 @@ const fragment = `
     vec3 n = normalize(vec3(-(abs(left)<abs(right)?-left:right)/(pixelSize.x*viewSize.x),
                             -(abs(down)<abs(up)?-down:up)/(pixelSize.y*viewSize.y), 1.0));
     float occ = 0.0;
-    for (int i=0;i<16;i++) {
-      float t=(float(i)+0.5)/16.0;
+    for (int i=0;i<SCREEN_AO;i++) {
+      float t=(float(i)+0.5)/float(SCREEN_AO);
       float a=float(i)*2.3999632;
       vec2 xy=vec2(cos(a),sin(a))*(0.005+0.052*t);
       float dz=zAt(st+xy/viewSize)-z;
@@ -96,7 +96,7 @@ const fragment = `
       float r=length(delta);
       occ += max(0.0, dot(n,delta)/max(r,0.001)-0.08) * (1.0-smoothstep(0.018,0.082,r));
     }
-    return clamp(1.0-2.35*occ/16.0,0.43,1.0);
+    return clamp(1.0-2.35*occ/float(SCREEN_AO),0.43,1.0);
   }
   #endif
   void main(){
@@ -181,11 +181,11 @@ export function createHumanStudio() {
     tier = quality;
     renderTarget = new T.WebGLRenderTarget(1, 1, {
       colorSpace: T.SRGBColorSpace,
-      depthTexture: quality === 'high' ? new T.DepthTexture(1, 1, T.UnsignedIntType) : null,
+      depthTexture: new T.DepthTexture(1, 1, T.UnsignedIntType),
     });
     uniforms.beauty.value = renderTarget.texture;
     uniforms.depthField.value = renderTarget.depthTexture;
-    material.defines = quality === 'high' ? { SCREEN_AO: 1 } : {};
+    material.defines = { SCREEN_AO: quality === 'high' ? 16 : 4 };
     material.needsUpdate = true;
   }
   function resize(width, height) {

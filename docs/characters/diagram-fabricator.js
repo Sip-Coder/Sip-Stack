@@ -1,14 +1,10 @@
-// Original cutaway anatomy registered to the live actor's posed joints.
-// The rendered world-space points are also used for picking and measurements.
+// Authored cartilage and missing articular surfaces remain separate meshes.
 import * as T from 'three';
 
 const tau = Math.PI * 2;
 const lerp = T.MathUtils.lerp;
 const v = (x = 0, y = 0, z = 0) => new T.Vector3(x, y, z);
 const ivory = new T.Color('#dfc69c');
-const romaSkin = new T.Color('#d5956e'),
-  sippySkin = new T.Color('#dfa071');
-
 function fabricator(tier, height, parts) {
   const high = tier === 'high';
   const materials = new Map();
@@ -78,29 +74,14 @@ function fabricator(tier, height, parts) {
             rx = height * lerp(radii[k][0], radii[k + 1][0], u - k);
             rz = height * lerp(radii[k][1], radii[k + 1][1], u - k);
           }
-          const point = center.clone()
+          return center.clone()
             .addScaledVector(basis, rx * Math.cos(a))
             .addScaledVector(up, rz * Math.sin(a));
-          return options.fit ? options.fit(point) : point;
         },
         color,
       );
     }
-    function bands(place, rings, color = ivory, sides = high ? 28 : 16) {
-      net(
-        rings.length,
-        sides,
-        (i, j, t, a) => {
-          const [y, rx, rz, cz = 0, cx = 0] = rings[i];
-          // Mirrored face charts reverse their ring parameter to preserve
-          // outward normals in world space on both anatomical sides.
-          const theta = place.mirrored ? -a : a;
-          return place(cx + rx * Math.cos(theta), y, cz - rz * Math.sin(theta));
-        },
-        color,
-      );
-    }
-    assemble({ high, net, bands, sweep });
+    assemble({ high, net, sweep });
     const g = new T.BufferGeometry();
     g.setAttribute('position', new T.Float32BufferAttribute(pos, 3));
     g.setAttribute('color', new T.Float32BufferAttribute(ink, 3));
@@ -123,7 +104,4 @@ function fabricator(tier, height, parts) {
   return part;
 }
 
-function local(node) {
-  return (x, y, z) => v(x, y, z).applyMatrix4(node.matrixWorld);
-}
-export { fabricator, local, romaSkin, sippySkin, tau, lerp, v };
+export { fabricator };

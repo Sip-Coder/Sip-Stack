@@ -1,4 +1,4 @@
-// Move each outer part along its anatomical axis, with the fitted skeleton as the
+// Move each outer part along its anatomical axis, with the donor skeleton as the
 // stationary frame. All distances follow the live actor's standing height.
 import { Vector3 } from 'three';
 
@@ -24,6 +24,9 @@ export function axialOffsets(parts, body) {
       // Keep eyes, lids, hair and skin registered to each other as one shell.
       return offset.set(0, height * 0.07, height * 0.32);
     }
+    if (layer === 'breast') return offset.set(0, height * 0.04, height * 0.23);
+    if (layer === 'gluteal-fat') return offset.set(0, height * 0.025, height * -0.15);
+    if (layer === 'hip-fat') return offset.set(height * lateral * 1.7, height * 0.01, height * 0.17);
     // Clothing opens around the frame: a rear pack separates behind the body,
     // front panels travel forward, and shoes settle below the feet.
     const forward = Math.max(-1, Math.min(1, front / 0.045));
@@ -35,22 +38,22 @@ export function axialOffsets(parts, body) {
   });
 }
 
-// A baked batch keeps the source span for each part. Re-reading its rest
+// A render batch keeps the posed span for each part. Re-reading its original
 // positions makes slider reversals exact and keeps CPU raycasts, screen-space
 // AO and the rendered triangles in the same frame. The skeleton is stationary.
 export function displaceBatch(mesh, offsets, amount) {
   const geometry = mesh.geometry;
-  // A baked batch can draw its incoming buffer directly at rest. Allocate
+  // A batch can draw its incoming buffer directly at rest. Allocate
   // mutable positions only when it first moves away from that rest pose.
   const spans = mesh.userData.sourceSpans;
-  if (geometry.attributes.position === spans[0].geometry.attributes.position) {
+  if (geometry.attributes.position === spans[0].position) {
     geometry.setAttribute('position', geometry.attributes.position.clone());
   }
   const destination = geometry.attributes.position;
   const target = destination.array;
   let j = 0;
-  for (const { geometry: source, number, lo, hi } of spans) {
-    const positions = source.attributes.position.array;
+  for (const { position, number, lo, hi } of spans) {
+    const positions = position.array;
     const offset = offsets[number];
     const dx = offset.x * amount,
       dy = offset.y * amount,

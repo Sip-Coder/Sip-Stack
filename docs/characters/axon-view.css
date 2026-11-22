@@ -92,6 +92,17 @@
   text-align: center;
   pointer-events: none;
 }
+[data-progress='available-layers'] .ax-status {
+  inset: 10px auto auto 12px;
+  width: auto;
+  max-width: calc(100% - 24px);
+  margin: 0;
+  padding: 5px 8px;
+  background: #f9f7ef;
+  color: #305349;
+  border-radius: 4px;
+  font-size: 13px;
+}
 .ax-settings {
   padding: 17px;
   border-left: 1px solid #c6cfc4;
@@ -175,7 +186,8 @@
 .ax-ghost input {
   accent-color: #23655b;
 }
-[data-human-setting][hidden] {
+[data-human-setting][hidden],
+.ax-layer[hidden] {
   display: none;
 }
 .ax-help summary {

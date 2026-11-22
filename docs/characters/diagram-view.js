@@ -29,7 +29,10 @@ function ranges(parts) {
       // Preserve indexing (including UV seams), instead of expanding triangles.
       let lo = first,
         hi = last - 1;
-      if (geometry.index) {
+      if (part.sourceMatrix && first === 0 && last === total) {
+        lo = 0;
+        hi = pos.count - 1;
+      } else if (geometry.index) {
         lo = Infinity;
         hi = -1;
         const ix = geometry.index.array;
@@ -38,7 +41,7 @@ function ranges(parts) {
           hi = Math.max(hi, ix[j]);
         }
       }
-      batches.get(key).spans.push({ geometry, number, first, last, lo, hi });
+      batches.get(key).spans.push({ geometry, number, first, last, lo, hi, matrix: part.sourceMatrix });
     }
   }
   return batches.values();
@@ -61,12 +64,23 @@ function bake(spans) {
   }
   let v = 0,
     i = 0;
-  for (const { geometry: source, lo, hi, first, last, number } of spans) {
+  const point = new T.Vector3();
+  const rotation = new T.Matrix3();
+  for (const { geometry: source, lo, hi, first, last, number, matrix } of spans) {
     const n = hi - lo + 1;
+    if (matrix) rotation.setFromMatrix4(matrix).multiplyScalar(1 / Math.hypot(...matrix.elements.slice(0, 3)));
     for (const [name, size] of attrs) {
       const attr = source.getAttribute(name);
-      if (attr)
-        geometry.attributes[name].array.set(attr.array.subarray(lo * size, (hi + 1) * size), v * size);
+      if (!attr) continue;
+      const target = geometry.attributes[name].array;
+      if (matrix && (name === 'normal' || name === 'position')) {
+        for (let j = lo, out = v * size; j <= hi; j++, out += size) {
+          point.fromBufferAttribute(attr, j);
+          if (name === 'position') point.applyMatrix4(matrix);
+          else point.applyMatrix3(rotation);
+          point.toArray(target, out);
+        }
+      } else target.set(attr.array.subarray(lo * size, (hi + 1) * size), v * size);
     }
     partIds.fill(number, v, v + n);
     const ix = source.index?.array;
@@ -76,31 +90,24 @@ function bake(spans) {
   geometry.setIndex(new T.BufferAttribute(indices, 1));
   geometry.setAttribute('axonPart', new T.BufferAttribute(partIds, 1));
   geometry.computeBoundingBox();
-  geometry.computeBoundingSphere();
+  geometry.boundingSphere = geometry.boundingBox.getBoundingSphere(new T.Sphere());
   return geometry;
 }
 
-// Baked GLBs already group geometry by layer and material. The display owns
-// its picker IDs and any exploded positions. Keep the decoded pack in its
-// neutral pose so a later view can use it again.
-function fromBakedBatches(model) {
-  const numbers = new Map(model.parts.map((part, number) => [part.id, number]));
-  return model.batches.map((batch) => {
-    const source = batch.geometry;
-    const geometry = new T.BufferGeometry();
-    for (const [key, attribute] of Object.entries(source.attributes)) geometry.setAttribute(key, attribute);
-    geometry.setIndex(source.index);
-    geometry.boundingBox = source.boundingBox.clone();
-    geometry.boundingSphere = geometry.boundingBox.getBoundingSphere(new T.Sphere());
-
-    const ids = new Float32Array(source.attributes.position.count);
-    const spans = batch.spans.map(({ partId, lo, hi }) => {
-      const number = numbers.get(partId);
-      if (number === undefined) throw new Error('Unregistered baked part ' + partId);
-      ids.fill(number, lo, hi + 1);
-      return { geometry: source, number, lo, hi };
+// Flatten only the draw copies. Preserve source-relative index ranges for
+// proof and picking, and retain the posed positions for exploded views.
+export function buildDisplayBatches(parts) {
+  return Array.from(ranges(parts), (batch) => {
+    const geometry = bake(batch.spans), position = geometry.attributes.position;
+    let start = 0, indexStart = 0;
+    const spans = batch.spans.map(({ number, lo, hi, first: sourceFirst, last: sourceLast }) => {
+      const first = start;
+      start += hi - lo + 1;
+      const indexCount = sourceLast - sourceFirst;
+      const span = { position, number, lo: first, hi: start - 1, indexStart, indexCount };
+      indexStart += indexCount;
+      return span;
     });
-    geometry.setAttribute('axonPart', new T.BufferAttribute(ids, 1));
     return { ...batch, geometry, spans };
   });
 }
@@ -282,7 +289,7 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
       return;
     }
     stats.studio = human;
-    stats.ambientOcclusion = human ? (tier === 'high' ? 'screen-space' : 'baked vertices') : 'none';
+    stats.ambientOcclusion = human ? 'screen-space' : 'none';
     stats.ghost = human && !!ghost.value;
     originalLights.visible = !human;
     scene.background = human ? null : originalBackground;
@@ -312,9 +319,8 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
         layers.set(id, { group, index: layers.size, box: new T.Box3() });
       }
       const all = new T.Box3();
-      const batches = model.batches ? fromBakedBatches(model) : ranges(model.parts);
-      for (const b of batches) {
-        const geometry = b.geometry ?? bake(b.spans);
+      for (const b of buildDisplayBatches(model.parts)) {
+        const { geometry } = b;
         const tissue = human ? { shade: studioModule.shadeTissue, layer: b.layer, ghost } : null;
         const mesh = new T.Mesh(geometry, studyMaterial(b.finish, chosen, hovered, tissue));
         mesh.renderOrder = b.renderOrder;

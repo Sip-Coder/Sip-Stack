@@ -22,7 +22,7 @@ if (process.env.THREE_ROOT) {
     },
   });
 }
-const { REVISION } = await import('three');
+const { REVISION, Vector3 } = await import('three');
 if (REVISION !== '170') throw Error('Expected three@0.170.0');
 const component = (file) => pathToFileURL(resolve(checkout, 'docs/characters', file)).href;
 const fitModule = existsSync(resolve(checkout, 'docs/characters/diagram-fit-model.js'))
@@ -30,9 +30,16 @@ const fitModule = existsSync(resolve(checkout, 'docs/characters/diagram-fit-mode
 const { buildDiagramModel } = await import(component(fitModule));
 const { loadSkeletonScan } = await import(component('diagram-scan-source.js'));
 const selected = /^(FEMUR|CLAVICLE|TIBIA)_(LEFT|RIGHT)$/;
-function geometryBuffers(geometry) {
+function geometryBuffers(geometry, matrix) {
+  const position = geometry.attributes.position;
+  const vertices = Array.from(position.array);
+  if (matrix) {
+    const p = new Vector3();
+    for (let i = 0; i < position.count; i++)
+      p.fromBufferAttribute(position, i).applyMatrix4(matrix).toArray(vertices, i * 3);
+  }
   return {
-    vertices: Array.from(geometry.attributes.position.array),
+    vertices,
     indices: Array.from(geometry.index.array),
   };
 }
@@ -44,7 +51,7 @@ for (const name of ['sippy', 'roma']) {
     const fitted = Object.fromEntries(
       model.parts
         .filter((p) => selected.test(p.scanNode))
-        .map((p) => [p.scanNode, geometryBuffers(p.mesh.geometry)]),
+        .map((p) => [p.scanNode, geometryBuffers(p.mesh.geometry, p.sourceMatrix)]),
     );
     const donor = Object.fromEntries(
       [...scan].filter(([id]) => id.startsWith('FEMUR_')).map(([id, g]) => [id, geometryBuffers(g)]),
