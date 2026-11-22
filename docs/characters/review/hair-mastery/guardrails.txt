@@ -1,35 +1,27 @@
-Production build b5cf3fa83edb56063eebdce84dfea71ba44e6bfb
+Floor guardrails 3884cb281a2c871fdc1ef0e6b0ee3fe8965a68dd
+mobile all three cast buttons drew distinct actors; differing colour samples [382, 412, 432]
+Opaque native strand materials {"tier": "mobile", "hero": "sippy", "uniqueDraws": 4}
+Opaque native strand materials {"tier": "mobile", "hero": "roma", "uniqueDraws": 12}
+mobile context restored and native finer groom repainted with GL_NO_ERROR
+high all three cast buttons drew distinct actors; differing colour samples [381, 409, 433]
+Opaque native strand materials {"tier": "high", "hero": "sippy", "uniqueDraws": 4}
+Opaque native strand materials {"tier": "high", "hero": "roma", "uniqueDraws": 12}
+high context restored and native finer groom repainted with GL_NO_ERROR
+The injected Mobile warm-up rejection returned to the preserved target and repainted.
+5 four-tab cycles {"tier": "mobile", "contexts": 2, "clears": 0, "black": 0, "frames": 151, "byTab": {"heros": 82, "village": 69}}
+5 four-tab cycles {"tier": "high", "contexts": 2, "clears": 0, "black": 0, "frames": 150, "byTab": {"heros": 84, "village": 66}}
+No browser JavaScript or GL invalid-operation errors.
 
-WEBGL warning THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.
-mobile all three cast buttons drew distinct actors; differing colour samples [382, 413, 431]
-WEBGL log THREE.WebGLRenderer: Context Lost.
-WEBGL log THREE.WebGLRenderer: Context Restored.
-WEBGL warning Shader warm-up skipped: Error: test warm-up rejection
-    at renderer.compileAsync (http://127.0.0.1:8732/assets/sip-warm.js:10:35)
-    at warmShaders (http://127.0.0.1:8732/assets/sip-warm.js?observed:13:27)
-    at warmShaders (http://127.0.0.1:8732/assets/sip-warm.js:13:24)
-    at Object.warm (http://127.0.0.1:8732/characters/stage.js:303:12)
-
-After context restore mobile {'lost': False, 'errors': [0, 0, 0, 0, 0]}
-mobile · three heroes rendered, context restored and shaders rewarmed
-high all three cast buttons drew distinct actors; differing colour samples [382, 410, 432]
-WEBGL log THREE.WebGLRenderer: Context Lost.
-WEBGL log THREE.WebGLRenderer: Context Restored.
-After context restore high {'lost': False, 'errors': [0, 0, 0, 0, 0]}
-high · three heroes rendered, context restored and shaders rewarmed
-Rejected shader warm-up returned to the preserved target and the stage painted
-
-mobile completed 5
-mobile completed 10
-mobile completed 15
-mobile completed 20
-20 four-tab cycles {"tier": "mobile", "contexts": 2, "clears": 0, "black": 0, "frames": 571, "byTab": {"heros": 327, "village": 244}}
-high completed 5
-5 four-tab cycles {"tier": "high", "contexts": 2, "clears": 0, "black": 0, "frames": 137, "byTab": {"heros": 77, "village": 60}}
-
-Open Character Ref and Axon View with Roma selected
-High portrait pixels retained during context loss
-Five GL error checks before loss: 0, 0, 0, 0, 0
-Five GL error checks after High restoration: 0, 0, 0, 0, 0
-Five GL error checks after Mobile repaint: 0, 0, 0, 0, 0
-Invalid WebGL resource deletes: 0
+Study views after local shader name fix 8466f153a3562830fb2be3c738e61ca0bb8e2976
+Study views with sippy selected
+before loss [0, 0, 0, 0, 0]
+retained pixels during loss
+after restored High [0, 0, 0, 0, 0]
+after switched Mobile [0, 0, 0, 0, 0]
+Character Ref preserved Sippy’s High portrait through context loss and repainted on Mobile with GL_NO_ERROR.
+Study views with roma selected
+before loss [0, 0, 0, 0, 0]
+retained pixels during loss
+after restored High [0, 0, 0, 0, 0]
+after switched Mobile [0, 0, 0, 0, 0]
+Character Ref preserved Roma’s High portrait through context loss and repainted on Mobile with GL_NO_ERROR.

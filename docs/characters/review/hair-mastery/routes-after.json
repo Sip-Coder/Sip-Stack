@@ -1,6 +1,6 @@
 {
-  "revision": "b5cf3fa83edb56063eebdce84dfea71ba44e6bfb",
-  "origin": "http://127.0.0.1:39915",
+  "revision": "3884cb281a2c871fdc1ef0e6b0ee3fe8965a68dd",
+  "origin": "http://127.0.0.1:35109",
   "network": {
     "offline": false,
     "latency": 60,
@@ -20,9 +20,9 @@
     {
       "route": "heros",
       "tier": "mobile",
-      "presentedMs": 4490.799999982119,
-      "interactiveMs": 6501.4000000059605,
-      "inputAtMs": 4531.799999982119,
+      "presentedMs": 4029.2999999821186,
+      "interactiveMs": 5345.4000000059605,
+      "inputAtMs": 4050.699999988079,
       "firstProof": {
         "names": [
           "sippy"
@@ -31,7 +31,7 @@
         "height": 449,
         "tier": "mobile",
         "groomMeshes": 4,
-        "groomTriangles": 8780
+        "groomTriangles": 8578
       },
       "positionBefore": [
         0,
@@ -39,29 +39,29 @@
         0
       ],
       "positionAfter": [
-        -0.0018816565231339587,
+        -0.00040976587473801296,
         0,
-        0.009982130842979914
+        0.003600087931791048
       ],
       "requests": 35,
       "modules": 30,
-      "transferBytes": 458749,
+      "transferBytes": 465801,
       "round": 1,
-      "requestLedger": "085635ee48b14b13",
+      "requestLedger": "5d49fe8a6403aef2",
       "tierAndGeometry": {
         "shadowMapWidth": 512,
         "actor": "sippy",
         "renderedMesh": "Sippy Part-side temple",
-        "meshVertices": 137,
+        "meshVertices": 188,
         "actualReducedMotion": true
       }
     },
     {
       "route": "heros",
       "tier": "high",
-      "presentedMs": 4951.0999999940395,
-      "interactiveMs": 7170.200000017881,
-      "inputAtMs": 4995.300000011921,
+      "presentedMs": 4546.800000011921,
+      "interactiveMs": 6514.199999988079,
+      "inputAtMs": 4585.300000011921,
       "firstProof": {
         "names": [
           "sippy"
@@ -70,7 +70,7 @@
         "height": 449,
         "tier": "high",
         "groomMeshes": 4,
-        "groomTriangles": 15918
+        "groomTriangles": 15848
       },
       "positionBefore": [
         0,
@@ -84,23 +84,23 @@
       ],
       "requests": 35,
       "modules": 30,
-      "transferBytes": 495068,
+      "transferBytes": 507698,
       "round": 1,
-      "requestLedger": "c1b1b96703b52d39",
+      "requestLedger": "5a53f66b568c7bdc",
       "tierAndGeometry": {
         "shadowMapWidth": 1024,
         "actor": "sippy",
         "renderedMesh": "Sippy Part-side temple",
-        "meshVertices": 202,
+        "meshVertices": 285,
         "actualReducedMotion": true
       }
     },
     {
       "route": "heros",
       "tier": "mobile",
-      "presentedMs": 3960.7000000178814,
-      "interactiveMs": 5198.5,
-      "inputAtMs": 4023,
+      "presentedMs": 4245.799999982119,
+      "interactiveMs": 5833.4000000059605,
+      "inputAtMs": 4294.4000000059605,
       "firstProof": {
         "names": [
           "sippy"
@@ -109,7 +109,7 @@
         "height": 449,
         "tier": "mobile",
         "groomMeshes": 4,
-        "groomTriangles": 8780
+        "groomTriangles": 8578
       },
       "positionBefore": [
         0,
@@ -121,25 +121,25 @@
         0,
         0.009982130842979914
       ],
-      "requests": 34,
-      "modules": 29,
-      "transferBytes": 452998,
+      "requests": 35,
+      "modules": 30,
+      "transferBytes": 465801,
       "round": 2,
-      "requestLedger": "a235ba81611a30bf",
+      "requestLedger": "5d49fe8a6403aef2",
       "tierAndGeometry": {
         "shadowMapWidth": 512,
         "actor": "sippy",
         "renderedMesh": "Sippy Part-side temple",
-        "meshVertices": 137,
+        "meshVertices": 188,
         "actualReducedMotion": true
       }
     },
     {
       "route": "heros",
       "tier": "high",
-      "presentedMs": 4179.0999999940395,
-      "interactiveMs": 5751.0999999940395,
-      "inputAtMs": 4232.4000000059605,
+      "presentedMs": 4450,
+      "interactiveMs": 6501.199999988079,
+      "inputAtMs": 4494,
       "firstProof": {
         "names": [
           "sippy"
@@ -148,7 +148,7 @@
         "height": 449,
         "tier": "high",
         "groomMeshes": 4,
-        "groomTriangles": 15918
+        "groomTriangles": 15848
       },
       "positionBefore": [
         0,
@@ -160,25 +160,25 @@
         0,
         0.009982130842979914
       ],
-      "requests": 34,
-      "modules": 29,
-      "transferBytes": 489317,
+      "requests": 35,
+      "modules": 30,
+      "transferBytes": 507698,
       "round": 2,
-      "requestLedger": "3ff59f10d3879321",
+      "requestLedger": "a6c72b2e01e65666",
       "tierAndGeometry": {
         "shadowMapWidth": 1024,
         "actor": "sippy",
         "renderedMesh": "Sippy Part-side temple",
-        "meshVertices": 202,
+        "meshVertices": 285,
         "actualReducedMotion": true
       }
     },
     {
       "route": "heros",
       "tier": "mobile",
-      "presentedMs": 3986.199999988079,
-      "interactiveMs": 5736.0999999940395,
-      "inputAtMs": 4033.5,
+      "presentedMs": 3847.9000000059605,
+      "interactiveMs": 5388.800000011921,
+      "inputAtMs": 3894.7000000178814,
       "firstProof": {
         "names": [
           "sippy"
@@ -187,7 +187,7 @@
         "height": 449,
         "tier": "mobile",
         "groomMeshes": 4,
-        "groomTriangles": 8780
+        "groomTriangles": 8578
       },
       "positionBefore": [
         0,
@@ -201,23 +201,23 @@
       ],
       "requests": 35,
       "modules": 30,
-      "transferBytes": 458749,
+      "transferBytes": 465801,
       "round": 3,
-      "requestLedger": "085635ee48b14b13",
+      "requestLedger": "5d49fe8a6403aef2",
       "tierAndGeometry": {
         "shadowMapWidth": 512,
         "actor": "sippy",
         "renderedMesh": "Sippy Part-side temple",
-        "meshVertices": 137,
+        "meshVertices": 188,
         "actualReducedMotion": true
       }
     },
     {
       "route": "heros",
       "tier": "high",
-      "presentedMs": 4393.199999988079,
-      "interactiveMs": 6518.699999988079,
-      "inputAtMs": 4438.5999999940395,
+      "presentedMs": 4033,
+      "interactiveMs": 6087.399999976158,
+      "inputAtMs": 4079.5999999940395,
       "firstProof": {
         "names": [
           "sippy"
@@ -226,7 +226,7 @@
         "height": 449,
         "tier": "high",
         "groomMeshes": 4,
-        "groomTriangles": 15918
+        "groomTriangles": 15848
       },
       "positionBefore": [
         0,
@@ -240,23 +240,23 @@
       ],
       "requests": 35,
       "modules": 30,
-      "transferBytes": 495068,
+      "transferBytes": 507698,
       "round": 3,
-      "requestLedger": "c1b1b96703b52d39",
+      "requestLedger": "5a53f66b568c7bdc",
       "tierAndGeometry": {
         "shadowMapWidth": 1024,
         "actor": "sippy",
         "renderedMesh": "Sippy Part-side temple",
-        "meshVertices": 202,
+        "meshVertices": 285,
         "actualReducedMotion": true
       }
     },
     {
       "route": "heros",
       "tier": "mobile",
-      "presentedMs": 3239.5,
-      "interactiveMs": 4717.899999976158,
-      "inputAtMs": 3278.199999988079,
+      "presentedMs": 4088.399999976158,
+      "interactiveMs": 5591.399999976158,
+      "inputAtMs": 4131.399999976158,
       "firstProof": {
         "names": [
           "sippy"
@@ -265,7 +265,7 @@
         "height": 449,
         "tier": "mobile",
         "groomMeshes": 4,
-        "groomTriangles": 8780
+        "groomTriangles": 8578
       },
       "positionBefore": [
         0,
@@ -279,23 +279,23 @@
       ],
       "requests": 35,
       "modules": 30,
-      "transferBytes": 458749,
+      "transferBytes": 465801,
       "round": 4,
-      "requestLedger": "63957f63cbe82f0d",
+      "requestLedger": "a1a4b3b386cdc592",
       "tierAndGeometry": {
         "shadowMapWidth": 512,
         "actor": "sippy",
         "renderedMesh": "Sippy Part-side temple",
-        "meshVertices": 137,
+        "meshVertices": 188,
         "actualReducedMotion": true
       }
     },
     {
       "route": "heros",
       "tier": "high",
-      "presentedMs": 4041.9000000059605,
-      "interactiveMs": 5988.300000011921,
-      "inputAtMs": 4092.300000011921,
+      "presentedMs": 3891.199999988079,
+      "interactiveMs": 5998.699999988079,
+      "inputAtMs": 3936.4000000059605,
       "firstProof": {
         "names": [
           "sippy"
@@ -304,7 +304,7 @@
         "height": 449,
         "tier": "high",
         "groomMeshes": 4,
-        "groomTriangles": 15918
+        "groomTriangles": 15848
       },
       "positionBefore": [
         0,
@@ -318,23 +318,23 @@
       ],
       "requests": 35,
       "modules": 30,
-      "transferBytes": 495068,
+      "transferBytes": 507698,
       "round": 4,
-      "requestLedger": "c1b1b96703b52d39",
+      "requestLedger": "5a53f66b568c7bdc",
       "tierAndGeometry": {
         "shadowMapWidth": 1024,
         "actor": "sippy",
         "renderedMesh": "Sippy Part-side temple",
-        "meshVertices": 202,
+        "meshVertices": 285,
         "actualReducedMotion": true
       }
     },
     {
       "route": "heros",
       "tier": "mobile",
-      "presentedMs": 4347.9000000059605,
-      "interactiveMs": 5893.9000000059605,
-      "inputAtMs": 4381.299999982119,
+      "presentedMs": 3800.899999976158,
+      "interactiveMs": 5208.0999999940395,
+      "inputAtMs": 3840.899999976158,
       "firstProof": {
         "names": [
           "sippy"
@@ -343,7 +343,7 @@
         "height": 449,
         "tier": "mobile",
         "groomMeshes": 4,
-        "groomTriangles": 8780
+        "groomTriangles": 8578
       },
       "positionBefore": [
         0,
@@ -357,23 +357,23 @@
       ],
       "requests": 35,
       "modules": 30,
-      "transferBytes": 458749,
+      "transferBytes": 465801,
       "round": 5,
-      "requestLedger": "085635ee48b14b13",
+      "requestLedger": "5d49fe8a6403aef2",
       "tierAndGeometry": {
         "shadowMapWidth": 512,
         "actor": "sippy",
         "renderedMesh": "Sippy Part-side temple",
-        "meshVertices": 137,
+        "meshVertices": 188,
         "actualReducedMotion": true
       }
     },
     {
       "route": "heros",
       "tier": "high",
-      "presentedMs": 3866.800000011921,
-      "interactiveMs": 5438.5,
-      "inputAtMs": 3908,
+      "presentedMs": 3798.199999988079,
+      "interactiveMs": 5838.799999982119,
+      "inputAtMs": 3835.0999999940395,
       "firstProof": {
         "names": [
           "sippy"
@@ -382,7 +382,7 @@
         "height": 449,
         "tier": "high",
         "groomMeshes": 4,
-        "groomTriangles": 15918
+        "groomTriangles": 15848
       },
       "positionBefore": [
         0,
@@ -394,16 +394,16 @@
         0,
         0.009982130842979914
       ],
-      "requests": 34,
-      "modules": 29,
-      "transferBytes": 489317,
+      "requests": 35,
+      "modules": 30,
+      "transferBytes": 507698,
       "round": 5,
-      "requestLedger": "30ac5e8d9f1e6f72",
+      "requestLedger": "a6c72b2e01e65666",
       "tierAndGeometry": {
         "shadowMapWidth": 1024,
         "actor": "sippy",
         "renderedMesh": "Sippy Part-side temple",
-        "meshVertices": 202,
+        "meshVertices": 285,
         "actualReducedMotion": true
       }
     },
@@ -843,9 +843,9 @@
       "route": "heros",
       "tier": "mobile",
       "samples": 5,
-      "presentedMs": 3986.199999988079,
-      "interactiveMs": 5736.0999999940395,
-      "transferBytes": 458749,
+      "presentedMs": 4029.2999999821186,
+      "interactiveMs": 5388.800000011921,
+      "transferBytes": 465801,
       "requests": 35,
       "modules": 30
     },
@@ -853,9 +853,9 @@
       "route": "heros",
       "tier": "high",
       "samples": 5,
-      "presentedMs": 4179.0999999940395,
-      "interactiveMs": 5988.300000011921,
-      "transferBytes": 495068,
+      "presentedMs": 4033,
+      "interactiveMs": 6087.399999976158,
+      "transferBytes": 507698,
       "requests": 35,
       "modules": 30
     },
@@ -888,15 +888,15 @@
     "/assets/sip-app.js": "c80d5bcfad97e9dfba3d0ebc4d80309b5937998fa6f8a28ff2e95b13eeba2193",
     "/assets/sip-stack.css": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
     "/assets/sip-warm.js": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
-    "/characters/assets/hair/sippy-high.glb.gz": "54e99797356f94ce4ca47dbde8b7e920310bcd8aded03ce80c63b9c80fbd86a2",
-    "/characters/assets/hair/sippy-mobile.glb.gz": "043fe6a709344459ced83c852d4d312097eeae49eaaebb3b6699071cffd53fbd",
+    "/characters/assets/hair/sippy-high.glb.gz": "c95b8c930c8b3041354c8cc348c4628caca7988ae4de537e56c1ea03dc088cd4",
+    "/characters/assets/hair/sippy-mobile.glb.gz": "309c62556c73c2fe4a20b39c4247dd57ea5175ab2743362ca28ffcfbf3dd6868",
     "/characters/avatar-builder.js": "7ea387b09b7a0564952641e0179a9c0a5cd562b230c17089eb7c27e04253e3fd",
     "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
-    "/characters/hair-groom.js": "5c87316ff1d881e8f01052f89a9539385a56ecbd8f0be1b67c55cde805ae6338",
-    "/characters/hair-motion.js": "eb904cdc26834fdd6978daf29d87d146643c6d5c19592bd1e3ca7cffd90ae210",
+    "/characters/hair-groom.js": "245b3357c31c801d51fe2e4849ff6bdecd68f3f4832d32ada60d9c1a084f0a72",
+    "/characters/hair-motion.js": "b1ec2a52fb7abcac46f67ef36eaa7402a2d42261a9754f2f34cbc851033483c6",
     "/characters/human-exterior.js": "7a87b86caacd33c943b0bf331c0acf3a539434deb6b68eb81501954801b4cb20",
     "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
-    "/characters/main.js": "522d620e343d8458ce9a4895b1906d9e893fa0fd38c0efb5e9747e33034dcdf6",
+    "/characters/main.js": "bf9946cdca21a4ca6dc694df38915fa0dfa1bea6bbb363de14d92cbcd9505fd9",
     "/characters/model-tier.js": "f1c83eb8d91b243948aea6d45c04fcb19e4340a52fc63bb40c960885aa1e11a9",
     "/characters/motion.js": "089200089c705e4b589653561215ee10807234f4e3a188c777ebf7fcd6188968",
     "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
@@ -975,7 +975,7 @@
   },
   "verifiedServedSources": true,
   "requestLedgers": {
-    "085635ee48b14b13": [
+    "5d49fe8a6403aef2": [
       {
         "path": "/",
         "wire": 17676,
@@ -1020,7 +1020,7 @@
       },
       {
         "path": "/characters/assets/hair/sippy-mobile.glb.gz",
-        "wire": 56273,
+        "wire": 62591,
         "complete": true,
         "status": 200,
         "completion": "native draw and encoded Content-Length"
@@ -1039,13 +1039,13 @@
       },
       {
         "path": "/characters/hair-groom.js",
-        "wire": 3539,
+        "wire": 3922,
         "complete": true,
         "status": 200
       },
       {
         "path": "/characters/hair-motion.js",
-        "wire": 5019,
+        "wire": 5352,
         "complete": true,
         "status": 200
       },
@@ -1063,7 +1063,7 @@
       },
       {
         "path": "/characters/main.js",
-        "wire": 6559,
+        "wire": 6577,
         "complete": true,
         "status": 200
       },
@@ -1188,7 +1188,7 @@
         "status": 200
       }
     ],
-    "c1b1b96703b52d39": [
+    "5a53f66b568c7bdc": [
       {
         "path": "/",
         "wire": 17676,
@@ -1233,10 +1233,9 @@
       },
       {
         "path": "/characters/assets/hair/sippy-high.glb.gz",
-        "wire": 92592,
+        "wire": 104488,
         "complete": true,
-        "status": 200,
-        "completion": "native draw and encoded Content-Length"
+        "status": 200
       },
       {
         "path": "/characters/avatar-builder.js",
@@ -1252,13 +1251,13 @@
       },
       {
         "path": "/characters/hair-groom.js",
-        "wire": 3539,
+        "wire": 3922,
         "complete": true,
         "status": 200
       },
       {
         "path": "/characters/hair-motion.js",
-        "wire": 5019,
+        "wire": 5352,
         "complete": true,
         "status": 200
       },
@@ -1276,7 +1275,7 @@
       },
       {
         "path": "/characters/main.js",
-        "wire": 6559,
+        "wire": 6577,
         "complete": true,
         "status": 200
       },
@@ -1401,213 +1400,7 @@
         "status": 200
       }
     ],
-    "a235ba81611a30bf": [
-      {
-        "path": "/",
-        "wire": 17676,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/__system-fonts",
-        "wire": 161,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/__three/build/three.module.js",
-        "wire": 266798,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
-        "wire": 6640,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/assets/sip-app.js",
-        "wire": 2066,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/assets/sip-stack.css",
-        "wire": 10210,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/assets/sip-warm.js",
-        "wire": 716,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/assets/hair/sippy-mobile.glb.gz",
-        "wire": 56273,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/avatar-builder.js",
-        "wire": 1101,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/characters.css",
-        "wire": 2332,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/hair-groom.js",
-        "wire": 3539,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/human-exterior.js",
-        "wire": 4661,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/input.js",
-        "wire": 2200,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/main.js",
-        "wire": 6559,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/model-tier.js",
-        "wire": 510,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/motion.js",
-        "wire": 9407,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/render-batches.js",
-        "wire": 3675,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/rig.js",
-        "wire": 839,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/route.js",
-        "wire": 1985,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/secondary.js",
-        "wire": 739,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy-body.js",
-        "wire": 3415,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy-explorer.js",
-        "wire": 8006,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy-expression.js",
-        "wire": 2728,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy-exterior-data.js",
-        "wire": 6764,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy-hips.js",
-        "wire": 4808,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy-secondary.js",
-        "wire": 0,
-        "complete": false,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy-skin.js",
-        "wire": 1583,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy-tailoring.js",
-        "wire": 6331,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy.js",
-        "wire": 8967,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/source-asset-files.js",
-        "wire": 437,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/source-landmarks.js",
-        "wire": 2541,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/source-rig.js",
-        "wire": 1874,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/stage.js",
-        "wire": 5802,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/ui.js",
-        "wire": 1655,
-        "complete": true,
-        "status": 200
-      }
-    ],
-    "3ff59f10d3879321": [
+    "a6c72b2e01e65666": [
       {
         "path": "/",
         "wire": 17676,
@@ -1652,7 +1445,7 @@
       },
       {
         "path": "/characters/assets/hair/sippy-high.glb.gz",
-        "wire": 92592,
+        "wire": 104488,
         "complete": true,
         "status": 200,
         "completion": "native draw and encoded Content-Length"
@@ -1671,219 +1464,13 @@
       },
       {
         "path": "/characters/hair-groom.js",
-        "wire": 3539,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/human-exterior.js",
-        "wire": 4661,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/input.js",
-        "wire": 2200,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/main.js",
-        "wire": 6559,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/model-tier.js",
-        "wire": 510,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/motion.js",
-        "wire": 9407,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/render-batches.js",
-        "wire": 3675,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/rig.js",
-        "wire": 839,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/route.js",
-        "wire": 1985,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/secondary.js",
-        "wire": 739,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy-body.js",
-        "wire": 3415,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy-explorer.js",
-        "wire": 8006,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy-expression.js",
-        "wire": 2728,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy-exterior-data.js",
-        "wire": 6764,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy-hips.js",
-        "wire": 4808,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy-secondary.js",
-        "wire": 0,
-        "complete": false,
-        "status": null
-      },
-      {
-        "path": "/characters/sippy-skin.js",
-        "wire": 1583,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy-tailoring.js",
-        "wire": 6331,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/sippy.js",
-        "wire": 8967,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/source-asset-files.js",
-        "wire": 437,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/source-landmarks.js",
-        "wire": 2541,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/source-rig.js",
-        "wire": 1874,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/stage.js",
-        "wire": 5802,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/ui.js",
-        "wire": 1655,
-        "complete": true,
-        "status": 200
-      }
-    ],
-    "63957f63cbe82f0d": [
-      {
-        "path": "/",
-        "wire": 17676,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/__system-fonts",
-        "wire": 161,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/__three/build/three.module.js",
-        "wire": 266798,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
-        "wire": 6640,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/assets/sip-app.js",
-        "wire": 2066,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/assets/sip-stack.css",
-        "wire": 10210,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/assets/sip-warm.js",
-        "wire": 716,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/assets/hair/sippy-mobile.glb.gz",
-        "wire": 56273,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/avatar-builder.js",
-        "wire": 1101,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/characters.css",
-        "wire": 2332,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/hair-groom.js",
-        "wire": 3539,
+        "wire": 3922,
         "complete": true,
         "status": 200
       },
       {
         "path": "/characters/hair-motion.js",
-        "wire": 5019,
+        "wire": 5352,
         "complete": true,
         "status": 200
       },
@@ -1901,7 +1488,7 @@
       },
       {
         "path": "/characters/main.js",
-        "wire": 6559,
+        "wire": 6577,
         "complete": true,
         "status": 200
       },
@@ -2026,7 +1613,7 @@
         "status": 200
       }
     ],
-    "30ac5e8d9f1e6f72": [
+    "a1a4b3b386cdc592": [
       {
         "path": "/",
         "wire": 17676,
@@ -2070,8 +1657,8 @@
         "status": 200
       },
       {
-        "path": "/characters/assets/hair/sippy-high.glb.gz",
-        "wire": 92592,
+        "path": "/characters/assets/hair/sippy-mobile.glb.gz",
+        "wire": 62591,
         "complete": true,
         "status": 200
       },
@@ -2089,7 +1676,13 @@
       },
       {
         "path": "/characters/hair-groom.js",
-        "wire": 3539,
+        "wire": 3922,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/hair-motion.js",
+        "wire": 5352,
         "complete": true,
         "status": 200
       },
@@ -2107,7 +1700,7 @@
       },
       {
         "path": "/characters/main.js",
-        "wire": 6559,
+        "wire": 6577,
         "complete": true,
         "status": 200
       },
@@ -2179,8 +1772,8 @@
       },
       {
         "path": "/characters/sippy-secondary.js",
-        "wire": 0,
-        "complete": false,
+        "wire": 732,
+        "complete": true,
         "status": 200
       },
       {
@@ -2608,7 +2201,7 @@
     ]
   },
   "verifiedModuleGraphs": {
-    "085635ee48b14b13": [
+    "5d49fe8a6403aef2": [
       "/__three/build/three.module.js",
       "/__three/examples/jsm/libs/meshopt_decoder.module.js",
       "/assets/sip-app.js",
@@ -2640,7 +2233,7 @@
       "/characters/stage.js",
       "/characters/ui.js"
     ],
-    "c1b1b96703b52d39": [
+    "5a53f66b568c7bdc": [
       "/__three/build/three.module.js",
       "/__three/examples/jsm/libs/meshopt_decoder.module.js",
       "/assets/sip-app.js",
@@ -2672,69 +2265,7 @@
       "/characters/stage.js",
       "/characters/ui.js"
     ],
-    "a235ba81611a30bf": [
-      "/__three/build/three.module.js",
-      "/__three/examples/jsm/libs/meshopt_decoder.module.js",
-      "/assets/sip-app.js",
-      "/assets/sip-warm.js",
-      "/characters/avatar-builder.js",
-      "/characters/hair-groom.js",
-      "/characters/human-exterior.js",
-      "/characters/input.js",
-      "/characters/main.js",
-      "/characters/model-tier.js",
-      "/characters/motion.js",
-      "/characters/render-batches.js",
-      "/characters/rig.js",
-      "/characters/route.js",
-      "/characters/secondary.js",
-      "/characters/sippy-body.js",
-      "/characters/sippy-explorer.js",
-      "/characters/sippy-expression.js",
-      "/characters/sippy-exterior-data.js",
-      "/characters/sippy-hips.js",
-      "/characters/sippy-secondary.js",
-      "/characters/sippy-skin.js",
-      "/characters/sippy-tailoring.js",
-      "/characters/sippy.js",
-      "/characters/source-asset-files.js",
-      "/characters/source-landmarks.js",
-      "/characters/source-rig.js",
-      "/characters/stage.js",
-      "/characters/ui.js"
-    ],
-    "3ff59f10d3879321": [
-      "/__three/build/three.module.js",
-      "/__three/examples/jsm/libs/meshopt_decoder.module.js",
-      "/assets/sip-app.js",
-      "/assets/sip-warm.js",
-      "/characters/avatar-builder.js",
-      "/characters/hair-groom.js",
-      "/characters/human-exterior.js",
-      "/characters/input.js",
-      "/characters/main.js",
-      "/characters/model-tier.js",
-      "/characters/motion.js",
-      "/characters/render-batches.js",
-      "/characters/rig.js",
-      "/characters/route.js",
-      "/characters/secondary.js",
-      "/characters/sippy-body.js",
-      "/characters/sippy-explorer.js",
-      "/characters/sippy-expression.js",
-      "/characters/sippy-exterior-data.js",
-      "/characters/sippy-hips.js",
-      "/characters/sippy-secondary.js",
-      "/characters/sippy-skin.js",
-      "/characters/sippy-tailoring.js",
-      "/characters/sippy.js",
-      "/characters/source-asset-files.js",
-      "/characters/source-landmarks.js",
-      "/characters/source-rig.js",
-      "/characters/stage.js",
-      "/characters/ui.js"
-    ],
-    "63957f63cbe82f0d": [
+    "a6c72b2e01e65666": [
       "/__three/build/three.module.js",
       "/__three/examples/jsm/libs/meshopt_decoder.module.js",
       "/assets/sip-app.js",
@@ -2766,13 +2297,14 @@
       "/characters/stage.js",
       "/characters/ui.js"
     ],
-    "30ac5e8d9f1e6f72": [
+    "a1a4b3b386cdc592": [
       "/__three/build/three.module.js",
       "/__three/examples/jsm/libs/meshopt_decoder.module.js",
       "/assets/sip-app.js",
       "/assets/sip-warm.js",
       "/characters/avatar-builder.js",
       "/characters/hair-groom.js",
+      "/characters/hair-motion.js",
       "/characters/human-exterior.js",
       "/characters/input.js",
       "/characters/main.js",
@@ -2859,7 +2391,665 @@
   "reusedVillage": {
     "revision": "654d73bff929c6b06ce422a6a030dfe66028ff23",
     "origin": "http://127.0.0.1:33655",
-    "verifiedAgainst": "b5cf3fa83edb56063eebdce84dfea71ba44e6bfb",
+    "verifiedAgainst": "8466f153a3562830fb2be3c738e61ca0bb8e2976",
     "matchedFiles": 61
+  },
+  "latestRuntimeVerification": {
+    "scope": "wire, import graph, and complete native archive draw retest",
+    "soleColdSourceChange": "/characters/hair-groom.js",
+    "gzipByteDelta": 3,
+    "probe": {
+      "revision": "8466f153a3562830fb2be3c738e61ca0bb8e2976",
+      "origin": "http://127.0.0.1:41507",
+      "network": {
+        "offline": false,
+        "latency": 60,
+        "downloadThroughput": 1125000.0,
+        "uploadThroughput": 187500.0,
+        "connectionType": "cellular4g"
+      },
+      "cpu": 4,
+      "viewport": [
+        800,
+        680
+      ],
+      "hero": "sippy",
+      "probeSha256": "7fac6f4ead9a0f7539411df2cd92d58ba601db0c2551101540c021dd4e326f26",
+      "note": "Gzip level 6 HTML/CSS/JS, pinned local three 0.170.0 mirror, system font fallback, HTTP/1.1, Chromium SwiftShader. Each visit uses a new Chromium process and profile, HTTP cache and GPU shader disk cache disabled.",
+      "rows": [
+        {
+          "route": "heros",
+          "tier": "mobile",
+          "presentedMs": 7073.4000000059605,
+          "interactiveMs": 10087.59999999404,
+          "inputAtMs": 7149.5,
+          "firstProof": {
+            "names": [
+              "sippy"
+            ],
+            "width": 497,
+            "height": 449,
+            "tier": "mobile",
+            "groomMeshes": 4,
+            "groomTriangles": 8578
+          },
+          "positionBefore": [
+            0,
+            0,
+            0
+          ],
+          "positionAfter": [
+            -0.0018816565231339587,
+            0,
+            0.009982130842979914
+          ],
+          "requests": 35,
+          "modules": 30,
+          "transferBytes": 465804,
+          "round": 1,
+          "requestLedger": "9ccfd4432e3033f9",
+          "tierAndGeometry": {
+            "shadowMapWidth": 512,
+            "actor": "sippy",
+            "renderedMesh": "Sippy Part-side temple",
+            "meshVertices": 188,
+            "actualReducedMotion": true
+          }
+        },
+        {
+          "route": "heros",
+          "tier": "high",
+          "presentedMs": 8666.40000000596,
+          "interactiveMs": 12913.100000023842,
+          "inputAtMs": 8773.40000000596,
+          "firstProof": {
+            "names": [
+              "sippy"
+            ],
+            "width": 497,
+            "height": 449,
+            "tier": "high",
+            "groomMeshes": 4,
+            "groomTriangles": 15848
+          },
+          "positionBefore": [
+            0,
+            0,
+            0
+          ],
+          "positionAfter": [
+            -0.0018816565231339587,
+            0,
+            0.009982130842979914
+          ],
+          "requests": 35,
+          "modules": 30,
+          "transferBytes": 507701,
+          "round": 1,
+          "requestLedger": "c06de992ca419a2c",
+          "tierAndGeometry": {
+            "shadowMapWidth": 1024,
+            "actor": "sippy",
+            "renderedMesh": "Sippy Part-side temple",
+            "meshVertices": 285,
+            "actualReducedMotion": true
+          }
+        }
+      ],
+      "summary": [
+        {
+          "route": "heros",
+          "tier": "mobile",
+          "samples": 1,
+          "presentedMs": 7073.4000000059605,
+          "interactiveMs": 10087.59999999404,
+          "transferBytes": 465804,
+          "requests": 35,
+          "modules": 30
+        },
+        {
+          "route": "heros",
+          "tier": "high",
+          "samples": 1,
+          "presentedMs": 8666.40000000596,
+          "interactiveMs": 12913.100000023842,
+          "transferBytes": 507701,
+          "requests": 35,
+          "modules": 30
+        }
+      ],
+      "browser": "155.0.8059.79",
+      "sourceSha256": {
+        "/": "86bddd4109dd52f9840f07f954c616e41c619c5aae36472cfc0ab2d2fe985a81",
+        "/__three/build/three.module.js": "ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb",
+        "/__three/examples/jsm/libs/meshopt_decoder.module.js": "01f48524f4bac6141eaba07e94cc36e7ee56f311796fa6117c159842941b0468",
+        "/assets/sip-app.js": "c80d5bcfad97e9dfba3d0ebc4d80309b5937998fa6f8a28ff2e95b13eeba2193",
+        "/assets/sip-stack.css": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
+        "/assets/sip-warm.js": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
+        "/characters/assets/hair/sippy-high.glb.gz": "c95b8c930c8b3041354c8cc348c4628caca7988ae4de537e56c1ea03dc088cd4",
+        "/characters/assets/hair/sippy-mobile.glb.gz": "309c62556c73c2fe4a20b39c4247dd57ea5175ab2743362ca28ffcfbf3dd6868",
+        "/characters/avatar-builder.js": "7ea387b09b7a0564952641e0179a9c0a5cd562b230c17089eb7c27e04253e3fd",
+        "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
+        "/characters/hair-groom.js": "ca600049c20a6d6ec103fe52770fb94ff8e161a5a3972dc4091897288ac18b13",
+        "/characters/hair-motion.js": "b1ec2a52fb7abcac46f67ef36eaa7402a2d42261a9754f2f34cbc851033483c6",
+        "/characters/human-exterior.js": "7a87b86caacd33c943b0bf331c0acf3a539434deb6b68eb81501954801b4cb20",
+        "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
+        "/characters/main.js": "bf9946cdca21a4ca6dc694df38915fa0dfa1bea6bbb363de14d92cbcd9505fd9",
+        "/characters/model-tier.js": "f1c83eb8d91b243948aea6d45c04fcb19e4340a52fc63bb40c960885aa1e11a9",
+        "/characters/motion.js": "089200089c705e4b589653561215ee10807234f4e3a188c777ebf7fcd6188968",
+        "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
+        "/characters/rig.js": "3e8373a52c7e6a5b2049b4da5b6fbc0a9c13fa0291f6b84b6f6f38252edea20c",
+        "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+        "/characters/secondary.js": "80ed341ab1b5bdc86164c46e3585f724c919c6fcb5a90a3b59f2a681bf47e24d",
+        "/characters/sippy-body.js": "e12fdae99a8a88cd9e1a8e6fcf578b4318f389cdf6eb495ca5307e912e22d61f",
+        "/characters/sippy-explorer.js": "50897737f914a86a5a84854384901cf2e9fa9afcbd1884f434148082f8f4d33c",
+        "/characters/sippy-expression.js": "634337129e2b18fe0a0de36f365ca37edb21d0a2e6c21d66eab34acbb0bc0cb6",
+        "/characters/sippy-exterior-data.js": "52861ff9f0f3032cd350788266547070a09d8491c4ad81cbbb52d814de8c7b60",
+        "/characters/sippy-hips.js": "dde1e1080e348fdf994266e99515ef4af91c110333905746925f59d1ec894eb9",
+        "/characters/sippy-secondary.js": "77a3e0e04caa8a0555d32bb965588536a840fac2d3c525ff8adde6368b1a3fc5",
+        "/characters/sippy-skin.js": "a8a5282940d89b8e02f5d4ce65d76251aff1d707921769cca85874983ff1418f",
+        "/characters/sippy-tailoring.js": "de73f10db7d36935072f8bc5f27a193558299e0ed0d689599d8b59162e097fb0",
+        "/characters/sippy.js": "a07543aa15254e0f9dcd67340cbe41ee7c3f38873559c1fba62b63ad5c8f80f5",
+        "/characters/source-asset-files.js": "72807e24212cffe795c732b5340c2782f5102c2a27754bd2a4d8da1f4c1b7d4b",
+        "/characters/source-landmarks.js": "f52aa6aa192045f70d2df2fa576fabbb6374fa52d754c970451cf298bf4cb393",
+        "/characters/source-rig.js": "2797b1f579607a7fbc09336dff23a0f3bee52ec7a1f41eafb91066ef0862aaf3",
+        "/characters/stage.js": "d206cbd7a4cfb063c1f86c41cbe345e133023021ef9a940650dc05a80fc4d112",
+        "/characters/ui.js": "145b3db0740fcfd83535c2250edc0e52dcda7843c41ed62b2a394d5df934a7cd"
+      },
+      "verifiedServedSources": true,
+      "requestLedgers": {
+        "9ccfd4432e3033f9": [
+          {
+            "path": "/",
+            "wire": 17676,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__system-fonts",
+            "wire": 161,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__three/build/three.module.js",
+            "wire": 266798,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+            "wire": 6640,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-app.js",
+            "wire": 2066,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-stack.css",
+            "wire": 10210,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-warm.js",
+            "wire": 716,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/assets/hair/sippy-mobile.glb.gz",
+            "wire": 62591,
+            "complete": true,
+            "status": 200,
+            "completion": "native draw and encoded Content-Length"
+          },
+          {
+            "path": "/characters/avatar-builder.js",
+            "wire": 1101,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/characters.css",
+            "wire": 2332,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/hair-groom.js",
+            "wire": 3925,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/hair-motion.js",
+            "wire": 5352,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/human-exterior.js",
+            "wire": 4661,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/input.js",
+            "wire": 2200,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/main.js",
+            "wire": 6577,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/model-tier.js",
+            "wire": 510,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/motion.js",
+            "wire": 9407,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/render-batches.js",
+            "wire": 3675,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/rig.js",
+            "wire": 839,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/route.js",
+            "wire": 1985,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/secondary.js",
+            "wire": 739,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-body.js",
+            "wire": 3415,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-explorer.js",
+            "wire": 8006,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-expression.js",
+            "wire": 2728,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-exterior-data.js",
+            "wire": 6764,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-hips.js",
+            "wire": 4808,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-secondary.js",
+            "wire": 732,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-skin.js",
+            "wire": 1583,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-tailoring.js",
+            "wire": 6331,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy.js",
+            "wire": 8967,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-asset-files.js",
+            "wire": 437,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-landmarks.js",
+            "wire": 2541,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-rig.js",
+            "wire": 1874,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/stage.js",
+            "wire": 5802,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/ui.js",
+            "wire": 1655,
+            "complete": true,
+            "status": 200
+          }
+        ],
+        "c06de992ca419a2c": [
+          {
+            "path": "/",
+            "wire": 17676,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__system-fonts",
+            "wire": 161,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__three/build/three.module.js",
+            "wire": 266798,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+            "wire": 6640,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-app.js",
+            "wire": 2066,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-stack.css",
+            "wire": 10210,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-warm.js",
+            "wire": 716,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/assets/hair/sippy-high.glb.gz",
+            "wire": 104488,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/avatar-builder.js",
+            "wire": 1101,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/characters.css",
+            "wire": 2332,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/hair-groom.js",
+            "wire": 3925,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/hair-motion.js",
+            "wire": 5352,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/human-exterior.js",
+            "wire": 4661,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/input.js",
+            "wire": 2200,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/main.js",
+            "wire": 6577,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/model-tier.js",
+            "wire": 510,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/motion.js",
+            "wire": 9407,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/render-batches.js",
+            "wire": 3675,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/rig.js",
+            "wire": 839,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/route.js",
+            "wire": 1985,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/secondary.js",
+            "wire": 739,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-body.js",
+            "wire": 3415,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-explorer.js",
+            "wire": 8006,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-expression.js",
+            "wire": 2728,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-exterior-data.js",
+            "wire": 6764,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-hips.js",
+            "wire": 4808,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-secondary.js",
+            "wire": 732,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-skin.js",
+            "wire": 1583,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy-tailoring.js",
+            "wire": 6331,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/sippy.js",
+            "wire": 8967,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-asset-files.js",
+            "wire": 437,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-landmarks.js",
+            "wire": 2541,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-rig.js",
+            "wire": 1874,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/stage.js",
+            "wire": 5802,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/ui.js",
+            "wire": 1655,
+            "complete": true,
+            "status": 200
+          }
+        ]
+      },
+      "verifiedModuleGraphs": {
+        "9ccfd4432e3033f9": [
+          "/__three/build/three.module.js",
+          "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "/assets/sip-app.js",
+          "/assets/sip-warm.js",
+          "/characters/avatar-builder.js",
+          "/characters/hair-groom.js",
+          "/characters/hair-motion.js",
+          "/characters/human-exterior.js",
+          "/characters/input.js",
+          "/characters/main.js",
+          "/characters/model-tier.js",
+          "/characters/motion.js",
+          "/characters/render-batches.js",
+          "/characters/rig.js",
+          "/characters/route.js",
+          "/characters/secondary.js",
+          "/characters/sippy-body.js",
+          "/characters/sippy-explorer.js",
+          "/characters/sippy-expression.js",
+          "/characters/sippy-exterior-data.js",
+          "/characters/sippy-hips.js",
+          "/characters/sippy-secondary.js",
+          "/characters/sippy-skin.js",
+          "/characters/sippy-tailoring.js",
+          "/characters/sippy.js",
+          "/characters/source-asset-files.js",
+          "/characters/source-landmarks.js",
+          "/characters/source-rig.js",
+          "/characters/stage.js",
+          "/characters/ui.js"
+        ],
+        "c06de992ca419a2c": [
+          "/__three/build/three.module.js",
+          "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "/assets/sip-app.js",
+          "/assets/sip-warm.js",
+          "/characters/avatar-builder.js",
+          "/characters/hair-groom.js",
+          "/characters/hair-motion.js",
+          "/characters/human-exterior.js",
+          "/characters/input.js",
+          "/characters/main.js",
+          "/characters/model-tier.js",
+          "/characters/motion.js",
+          "/characters/render-batches.js",
+          "/characters/rig.js",
+          "/characters/route.js",
+          "/characters/secondary.js",
+          "/characters/sippy-body.js",
+          "/characters/sippy-explorer.js",
+          "/characters/sippy-expression.js",
+          "/characters/sippy-exterior-data.js",
+          "/characters/sippy-hips.js",
+          "/characters/sippy-secondary.js",
+          "/characters/sippy-skin.js",
+          "/characters/sippy-tailoring.js",
+          "/characters/sippy.js",
+          "/characters/source-asset-files.js",
+          "/characters/source-landmarks.js",
+          "/characters/source-rig.js",
+          "/characters/stage.js",
+          "/characters/ui.js"
+        ]
+      }
+    }
   }
 }

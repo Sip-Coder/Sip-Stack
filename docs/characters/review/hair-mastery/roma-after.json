@@ -1,6 +1,6 @@
 {
-  "revision": "b5cf3fa83edb56063eebdce84dfea71ba44e6bfb",
-  "origin": "http://127.0.0.1:45871",
+  "revision": "3884cb281a2c871fdc1ef0e6b0ee3fe8965a68dd",
+  "origin": "http://127.0.0.1:44815",
   "network": {
     "offline": false,
     "latency": 60,
@@ -20,9 +20,9 @@
     {
       "route": "heros",
       "tier": "mobile",
-      "presentedMs": 2860.300000011921,
-      "interactiveMs": 3811.800000011921,
-      "inputAtMs": 2878.9000000059605,
+      "presentedMs": 2857.199999988079,
+      "interactiveMs": 3928.699999988079,
+      "inputAtMs": 2902.4000000059605,
       "firstProof": {
         "names": [
           "roma"
@@ -31,7 +31,7 @@
         "height": 449,
         "tier": "mobile",
         "groomMeshes": 12,
-        "groomTriangles": 9118
+        "groomTriangles": 10422
       },
       "positionBefore": [
         0,
@@ -45,23 +45,23 @@
       ],
       "requests": 32,
       "modules": 27,
-      "transferBytes": 454787,
+      "transferBytes": 461886,
       "round": 1,
-      "requestLedger": "cfa69c1405a457ce",
+      "requestLedger": "8ab2ce2704087ff2",
       "tierAndGeometry": {
         "shadowMapWidth": 512,
         "actor": "roma",
         "renderedMesh": "Roma Left wave 01",
-        "meshVertices": 150,
+        "meshVertices": 236,
         "actualReducedMotion": true
       }
     },
     {
       "route": "heros",
       "tier": "high",
-      "presentedMs": 2954,
-      "interactiveMs": 4494.9000000059605,
-      "inputAtMs": 2984.100000023842,
+      "presentedMs": 3142.2999999821186,
+      "interactiveMs": 4728.799999982119,
+      "inputAtMs": 3183.899999976158,
       "firstProof": {
         "names": [
           "roma"
@@ -70,7 +70,7 @@
         "height": 449,
         "tier": "high",
         "groomMeshes": 12,
-        "groomTriangles": 15088
+        "groomTriangles": 16764
       },
       "positionBefore": [
         0,
@@ -84,23 +84,23 @@
       ],
       "requests": 32,
       "modules": 27,
-      "transferBytes": 489294,
+      "transferBytes": 500004,
       "round": 1,
-      "requestLedger": "c560ec7a7dd9f216",
+      "requestLedger": "f1005cfafb6ff5e7",
       "tierAndGeometry": {
         "shadowMapWidth": 1024,
         "actor": "roma",
         "renderedMesh": "Roma Left wave 01",
-        "meshVertices": 198,
+        "meshVertices": 402,
         "actualReducedMotion": true
       }
     },
     {
       "route": "heros",
       "tier": "mobile",
-      "presentedMs": 3172.2000000178814,
-      "interactiveMs": 4254.4000000059605,
-      "inputAtMs": 3215.100000023842,
+      "presentedMs": 3217,
+      "interactiveMs": 4392.5,
+      "inputAtMs": 3257.300000011921,
       "firstProof": {
         "names": [
           "roma"
@@ -109,7 +109,7 @@
         "height": 449,
         "tier": "mobile",
         "groomMeshes": 12,
-        "groomTriangles": 9118
+        "groomTriangles": 10422
       },
       "positionBefore": [
         0,
@@ -123,23 +123,23 @@
       ],
       "requests": 32,
       "modules": 27,
-      "transferBytes": 454787,
+      "transferBytes": 461886,
       "round": 2,
-      "requestLedger": "cfa69c1405a457ce",
+      "requestLedger": "8ab2ce2704087ff2",
       "tierAndGeometry": {
         "shadowMapWidth": 512,
         "actor": "roma",
         "renderedMesh": "Roma Left wave 01",
-        "meshVertices": 150,
+        "meshVertices": 236,
         "actualReducedMotion": true
       }
     },
     {
       "route": "heros",
       "tier": "high",
-      "presentedMs": 3621,
-      "interactiveMs": 5104.5,
-      "inputAtMs": 3675.7000000178814,
+      "presentedMs": 3313.199999988079,
+      "interactiveMs": 4831.199999988079,
+      "inputAtMs": 3348.699999988079,
       "firstProof": {
         "names": [
           "roma"
@@ -148,7 +148,7 @@
         "height": 449,
         "tier": "high",
         "groomMeshes": 12,
-        "groomTriangles": 15088
+        "groomTriangles": 16764
       },
       "positionBefore": [
         0,
@@ -162,23 +162,23 @@
       ],
       "requests": 32,
       "modules": 27,
-      "transferBytes": 489294,
+      "transferBytes": 500004,
       "round": 2,
-      "requestLedger": "43f1dcd40b322a65",
+      "requestLedger": "f1005cfafb6ff5e7",
       "tierAndGeometry": {
         "shadowMapWidth": 1024,
         "actor": "roma",
         "renderedMesh": "Roma Left wave 01",
-        "meshVertices": 198,
+        "meshVertices": 402,
         "actualReducedMotion": true
       }
     },
     {
       "route": "heros",
       "tier": "mobile",
-      "presentedMs": 2908.800000011921,
-      "interactiveMs": 3926.800000011921,
-      "inputAtMs": 2942.600000023842,
+      "presentedMs": 3069.2000000178814,
+      "interactiveMs": 4252.600000023842,
+      "inputAtMs": 3115.2000000178814,
       "firstProof": {
         "names": [
           "roma"
@@ -187,7 +187,7 @@
         "height": 449,
         "tier": "mobile",
         "groomMeshes": 12,
-        "groomTriangles": 9118
+        "groomTriangles": 10422
       },
       "positionBefore": [
         0,
@@ -201,23 +201,23 @@
       ],
       "requests": 32,
       "modules": 27,
-      "transferBytes": 449768,
+      "transferBytes": 461886,
       "round": 3,
-      "requestLedger": "1e85d600dd8931d0",
+      "requestLedger": "f5ecb067d6e97a65",
       "tierAndGeometry": {
         "shadowMapWidth": 512,
         "actor": "roma",
         "renderedMesh": "Roma Left wave 01",
-        "meshVertices": 150,
+        "meshVertices": 236,
         "actualReducedMotion": true
       }
     },
     {
       "route": "heros",
       "tier": "high",
-      "presentedMs": 3320.5,
-      "interactiveMs": 4779.4000000059605,
-      "inputAtMs": 3361.800000011921,
+      "presentedMs": 3195.5,
+      "interactiveMs": 4351,
+      "inputAtMs": 3235.0999999940395,
       "firstProof": {
         "names": [
           "roma"
@@ -226,7 +226,7 @@
         "height": 449,
         "tier": "high",
         "groomMeshes": 12,
-        "groomTriangles": 15088
+        "groomTriangles": 16764
       },
       "positionBefore": [
         0,
@@ -238,16 +238,16 @@
         0,
         0.009982130842979914
       ],
-      "requests": 32,
-      "modules": 27,
-      "transferBytes": 489294,
+      "requests": 31,
+      "modules": 26,
+      "transferBytes": 494128,
       "round": 3,
-      "requestLedger": "43f1dcd40b322a65",
+      "requestLedger": "d17fa791e18580a9",
       "tierAndGeometry": {
         "shadowMapWidth": 1024,
         "actor": "roma",
         "renderedMesh": "Roma Left wave 01",
-        "meshVertices": 198,
+        "meshVertices": 402,
         "actualReducedMotion": true
       }
     }
@@ -257,9 +257,9 @@
       "route": "heros",
       "tier": "mobile",
       "samples": 3,
-      "presentedMs": 2908.800000011921,
-      "interactiveMs": 3926.800000011921,
-      "transferBytes": 454787,
+      "presentedMs": 3069.2000000178814,
+      "interactiveMs": 4252.600000023842,
+      "transferBytes": 461886,
       "requests": 32,
       "modules": 27
     },
@@ -267,9 +267,9 @@
       "route": "heros",
       "tier": "high",
       "samples": 3,
-      "presentedMs": 3320.5,
-      "interactiveMs": 4779.4000000059605,
-      "transferBytes": 489294,
+      "presentedMs": 3195.5,
+      "interactiveMs": 4728.799999982119,
+      "transferBytes": 500004,
       "requests": 32,
       "modules": 27
     }
@@ -282,15 +282,15 @@
     "/assets/sip-app.js": "c80d5bcfad97e9dfba3d0ebc4d80309b5937998fa6f8a28ff2e95b13eeba2193",
     "/assets/sip-stack.css": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
     "/assets/sip-warm.js": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
-    "/characters/assets/hair/roma-high.glb.gz": "3023b67f9531186699250c09f3bfb044abbc1213edddba41bcbbf5e9818f397a",
-    "/characters/assets/hair/roma-mobile.glb.gz": "993ca6eeffa1190b3c762dedf911c8d00168782e0b639714abed1b4fc4415b91",
+    "/characters/assets/hair/roma-high.glb.gz": "4d699e44cafae5b56307f8da60206e0f9c7200b34494ac73b15b429016124794",
+    "/characters/assets/hair/roma-mobile.glb.gz": "18f63026ed5251593c20e7c183f84672e6d4b315d24b1513a2bace6a1310d554",
     "/characters/avatar-builder.js": "7ea387b09b7a0564952641e0179a9c0a5cd562b230c17089eb7c27e04253e3fd",
     "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
-    "/characters/hair-groom.js": "5c87316ff1d881e8f01052f89a9539385a56ecbd8f0be1b67c55cde805ae6338",
-    "/characters/hair-motion.js": "eb904cdc26834fdd6978daf29d87d146643c6d5c19592bd1e3ca7cffd90ae210",
+    "/characters/hair-groom.js": "245b3357c31c801d51fe2e4849ff6bdecd68f3f4832d32ada60d9c1a084f0a72",
+    "/characters/hair-motion.js": "b1ec2a52fb7abcac46f67ef36eaa7402a2d42261a9754f2f34cbc851033483c6",
     "/characters/human-exterior.js": "7a87b86caacd33c943b0bf331c0acf3a539434deb6b68eb81501954801b4cb20",
     "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
-    "/characters/main.js": "522d620e343d8458ce9a4895b1906d9e893fa0fd38c0efb5e9747e33034dcdf6",
+    "/characters/main.js": "bf9946cdca21a4ca6dc694df38915fa0dfa1bea6bbb363de14d92cbcd9505fd9",
     "/characters/model-tier.js": "f1c83eb8d91b243948aea6d45c04fcb19e4340a52fc63bb40c960885aa1e11a9",
     "/characters/motion.js": "089200089c705e4b589653561215ee10807234f4e3a188c777ebf7fcd6188968",
     "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
@@ -311,7 +311,7 @@
   },
   "verifiedServedSources": true,
   "requestLedgers": {
-    "cfa69c1405a457ce": [
+    "8ab2ce2704087ff2": [
       {
         "path": "/",
         "wire": 17676,
@@ -356,7 +356,7 @@
       },
       {
         "path": "/characters/assets/hair/roma-mobile.glb.gz",
-        "wire": 72976,
+        "wire": 79341,
         "complete": true,
         "status": 200,
         "completion": "native draw and encoded Content-Length"
@@ -375,13 +375,13 @@
       },
       {
         "path": "/characters/hair-groom.js",
-        "wire": 3539,
+        "wire": 3922,
         "complete": true,
         "status": 200
       },
       {
         "path": "/characters/hair-motion.js",
-        "wire": 5019,
+        "wire": 5352,
         "complete": true,
         "status": 200
       },
@@ -399,7 +399,7 @@
       },
       {
         "path": "/characters/main.js",
-        "wire": 6559,
+        "wire": 6577,
         "complete": true,
         "status": 200
       },
@@ -506,7 +506,7 @@
         "status": 200
       }
     ],
-    "c560ec7a7dd9f216": [
+    "f1005cfafb6ff5e7": [
       {
         "path": "/",
         "wire": 17676,
@@ -551,7 +551,7 @@
       },
       {
         "path": "/characters/assets/hair/roma-high.glb.gz",
-        "wire": 107483,
+        "wire": 117459,
         "complete": true,
         "status": 200,
         "completion": "native draw and encoded Content-Length"
@@ -570,13 +570,13 @@
       },
       {
         "path": "/characters/hair-groom.js",
-        "wire": 3539,
+        "wire": 3922,
         "complete": true,
         "status": 200
       },
       {
         "path": "/characters/hair-motion.js",
-        "wire": 5019,
+        "wire": 5352,
         "complete": true,
         "status": 200
       },
@@ -594,7 +594,7 @@
       },
       {
         "path": "/characters/main.js",
-        "wire": 6559,
+        "wire": 6577,
         "complete": true,
         "status": 200
       },
@@ -701,201 +701,7 @@
         "status": 200
       }
     ],
-    "43f1dcd40b322a65": [
-      {
-        "path": "/",
-        "wire": 17676,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/__system-fonts",
-        "wire": 161,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/__three/build/three.module.js",
-        "wire": 266798,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
-        "wire": 6640,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/assets/sip-app.js",
-        "wire": 2066,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/assets/sip-stack.css",
-        "wire": 10210,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/assets/sip-warm.js",
-        "wire": 716,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/assets/hair/roma-high.glb.gz",
-        "wire": 107483,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/avatar-builder.js",
-        "wire": 1101,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/characters.css",
-        "wire": 2332,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/hair-groom.js",
-        "wire": 3539,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/hair-motion.js",
-        "wire": 5019,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/human-exterior.js",
-        "wire": 4661,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/input.js",
-        "wire": 2200,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/main.js",
-        "wire": 6559,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/model-tier.js",
-        "wire": 510,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/motion.js",
-        "wire": 9407,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/render-batches.js",
-        "wire": 3675,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/rig.js",
-        "wire": 839,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/roma-exterior-data.js",
-        "wire": 6791,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/roma-face.js",
-        "wire": 5353,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/roma-forms.js",
-        "wire": 2871,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/roma-secondary.js",
-        "wire": 524,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/roma-soft-tissue.js",
-        "wire": 1435,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/roma.js",
-        "wire": 5695,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/route.js",
-        "wire": 1985,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/secondary.js",
-        "wire": 739,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/source-asset-files.js",
-        "wire": 437,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/source-landmarks.js",
-        "wire": 2541,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/source-rig.js",
-        "wire": 1874,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/stage.js",
-        "wire": 5802,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/ui.js",
-        "wire": 1655,
-        "complete": true,
-        "status": 200
-      }
-    ],
-    "1e85d600dd8931d0": [
+    "f5ecb067d6e97a65": [
       {
         "path": "/",
         "wire": 17676,
@@ -940,10 +746,9 @@
       },
       {
         "path": "/characters/assets/hair/roma-mobile.glb.gz",
-        "wire": 72976,
+        "wire": 79341,
         "complete": true,
-        "status": 200,
-        "completion": "native draw and encoded Content-Length"
+        "status": 200
       },
       {
         "path": "/characters/avatar-builder.js",
@@ -959,81 +764,269 @@
       },
       {
         "path": "/characters/hair-groom.js",
-        "wire": 3539,
+        "wire": 3922,
         "complete": true,
         "status": 200
       },
       {
         "path": "/characters/hair-motion.js",
+        "wire": 5352,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/human-exterior.js",
+        "wire": 4661,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/input.js",
+        "wire": 2200,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/main.js",
+        "wire": 6577,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/model-tier.js",
+        "wire": 510,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/motion.js",
+        "wire": 9407,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/render-batches.js",
+        "wire": 3675,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/rig.js",
+        "wire": 839,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/roma-exterior-data.js",
+        "wire": 6791,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/roma-face.js",
+        "wire": 5353,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/roma-forms.js",
+        "wire": 2871,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/roma-secondary.js",
+        "wire": 524,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/roma-soft-tissue.js",
+        "wire": 1435,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/roma.js",
+        "wire": 5695,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/route.js",
+        "wire": 1985,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/secondary.js",
+        "wire": 739,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/source-asset-files.js",
+        "wire": 437,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/source-landmarks.js",
+        "wire": 2541,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/source-rig.js",
+        "wire": 1874,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/stage.js",
+        "wire": 5802,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/ui.js",
+        "wire": 1655,
+        "complete": true,
+        "status": 200
+      }
+    ],
+    "d17fa791e18580a9": [
+      {
+        "path": "/",
+        "wire": 17676,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__system-fonts",
+        "wire": 161,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/build/three.module.js",
+        "wire": 266798,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+        "wire": 6640,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-app.js",
+        "wire": 2066,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-stack.css",
+        "wire": 10210,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/assets/sip-warm.js",
+        "wire": 716,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/assets/hair/roma-high.glb.gz",
+        "wire": 117459,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/avatar-builder.js",
+        "wire": 1101,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/characters.css",
+        "wire": 2332,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/hair-groom.js",
+        "wire": 3922,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/human-exterior.js",
+        "wire": 4661,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/input.js",
+        "wire": 2200,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/main.js",
+        "wire": 6577,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/model-tier.js",
+        "wire": 510,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/motion.js",
+        "wire": 9407,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/render-batches.js",
+        "wire": 3675,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/rig.js",
+        "wire": 839,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/roma-exterior-data.js",
+        "wire": 6791,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/roma-face.js",
+        "wire": 5353,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/roma-forms.js",
+        "wire": 2871,
+        "complete": true,
+        "status": 200
+      },
+      {
+        "path": "/characters/roma-secondary.js",
         "wire": 0,
         "complete": false,
-        "status": 200
-      },
-      {
-        "path": "/characters/human-exterior.js",
-        "wire": 4661,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/input.js",
-        "wire": 2200,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/main.js",
-        "wire": 6559,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/model-tier.js",
-        "wire": 510,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/motion.js",
-        "wire": 9407,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/render-batches.js",
-        "wire": 3675,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/rig.js",
-        "wire": 839,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/roma-exterior-data.js",
-        "wire": 6791,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/roma-face.js",
-        "wire": 5353,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/roma-forms.js",
-        "wire": 2871,
-        "complete": true,
-        "status": 200
-      },
-      {
-        "path": "/characters/roma-secondary.js",
-        "wire": 524,
-        "complete": true,
-        "status": 200
+        "status": null
       },
       {
         "path": "/characters/roma-soft-tissue.js",
@@ -1092,7 +1085,7 @@
     ]
   },
   "verifiedModuleGraphs": {
-    "cfa69c1405a457ce": [
+    "8ab2ce2704087ff2": [
       "/__three/build/three.module.js",
       "/__three/examples/jsm/libs/meshopt_decoder.module.js",
       "/assets/sip-app.js",
@@ -1121,7 +1114,7 @@
       "/characters/stage.js",
       "/characters/ui.js"
     ],
-    "c560ec7a7dd9f216": [
+    "f1005cfafb6ff5e7": [
       "/__three/build/three.module.js",
       "/__three/examples/jsm/libs/meshopt_decoder.module.js",
       "/assets/sip-app.js",
@@ -1150,7 +1143,7 @@
       "/characters/stage.js",
       "/characters/ui.js"
     ],
-    "43f1dcd40b322a65": [
+    "f5ecb067d6e97a65": [
       "/__three/build/three.module.js",
       "/__three/examples/jsm/libs/meshopt_decoder.module.js",
       "/assets/sip-app.js",
@@ -1179,14 +1172,13 @@
       "/characters/stage.js",
       "/characters/ui.js"
     ],
-    "1e85d600dd8931d0": [
+    "d17fa791e18580a9": [
       "/__three/build/three.module.js",
       "/__three/examples/jsm/libs/meshopt_decoder.module.js",
       "/assets/sip-app.js",
       "/assets/sip-warm.js",
       "/characters/avatar-builder.js",
       "/characters/hair-groom.js",
-      "/characters/hair-motion.js",
       "/characters/human-exterior.js",
       "/characters/input.js",
       "/characters/main.js",
@@ -1208,5 +1200,618 @@
       "/characters/stage.js",
       "/characters/ui.js"
     ]
+  },
+  "latestRuntimeVerification": {
+    "scope": "wire, import graph, and complete native archive draw retest",
+    "soleColdSourceChange": "/characters/hair-groom.js",
+    "gzipByteDelta": 3,
+    "probe": {
+      "revision": "8466f153a3562830fb2be3c738e61ca0bb8e2976",
+      "origin": "http://127.0.0.1:45805",
+      "network": {
+        "offline": false,
+        "latency": 60,
+        "downloadThroughput": 1125000.0,
+        "uploadThroughput": 187500.0,
+        "connectionType": "cellular4g"
+      },
+      "cpu": 4,
+      "viewport": [
+        800,
+        680
+      ],
+      "hero": "roma",
+      "probeSha256": "7fac6f4ead9a0f7539411df2cd92d58ba601db0c2551101540c021dd4e326f26",
+      "note": "Gzip level 6 HTML/CSS/JS, pinned local three 0.170.0 mirror, system font fallback, HTTP/1.1, Chromium SwiftShader. Each visit uses a new Chromium process and profile, HTTP cache and GPU shader disk cache disabled.",
+      "rows": [
+        {
+          "route": "heros",
+          "tier": "mobile",
+          "presentedMs": 8910.699999988079,
+          "interactiveMs": 10933.90000000596,
+          "inputAtMs": 8970.59999999404,
+          "firstProof": {
+            "names": [
+              "roma"
+            ],
+            "width": 497,
+            "height": 449,
+            "tier": "mobile",
+            "groomMeshes": 12,
+            "groomTriangles": 10422
+          },
+          "positionBefore": [
+            0,
+            0,
+            0
+          ],
+          "positionAfter": [
+            -0.0018816565231339587,
+            0,
+            0.009982130842979914
+          ],
+          "requests": 32,
+          "modules": 27,
+          "transferBytes": 461889,
+          "round": 1,
+          "requestLedger": "0a50f6b8575c772b",
+          "tierAndGeometry": {
+            "shadowMapWidth": 512,
+            "actor": "roma",
+            "renderedMesh": "Roma Left wave 01",
+            "meshVertices": 236,
+            "actualReducedMotion": true
+          }
+        },
+        {
+          "route": "heros",
+          "tier": "high",
+          "presentedMs": 6632.199999988079,
+          "interactiveMs": 10698.90000000596,
+          "inputAtMs": 6709.699999988079,
+          "firstProof": {
+            "names": [
+              "roma"
+            ],
+            "width": 497,
+            "height": 449,
+            "tier": "high",
+            "groomMeshes": 12,
+            "groomTriangles": 16764
+          },
+          "positionBefore": [
+            0,
+            0,
+            0
+          ],
+          "positionAfter": [
+            -0.0018816565231339587,
+            0,
+            0.009982130842979914
+          ],
+          "requests": 32,
+          "modules": 27,
+          "transferBytes": 500007,
+          "round": 1,
+          "requestLedger": "2c9fee6757ada375",
+          "tierAndGeometry": {
+            "shadowMapWidth": 1024,
+            "actor": "roma",
+            "renderedMesh": "Roma Left wave 01",
+            "meshVertices": 402,
+            "actualReducedMotion": true
+          }
+        }
+      ],
+      "summary": [
+        {
+          "route": "heros",
+          "tier": "mobile",
+          "samples": 1,
+          "presentedMs": 8910.699999988079,
+          "interactiveMs": 10933.90000000596,
+          "transferBytes": 461889,
+          "requests": 32,
+          "modules": 27
+        },
+        {
+          "route": "heros",
+          "tier": "high",
+          "samples": 1,
+          "presentedMs": 6632.199999988079,
+          "interactiveMs": 10698.90000000596,
+          "transferBytes": 500007,
+          "requests": 32,
+          "modules": 27
+        }
+      ],
+      "browser": "155.0.8059.79",
+      "sourceSha256": {
+        "/": "86bddd4109dd52f9840f07f954c616e41c619c5aae36472cfc0ab2d2fe985a81",
+        "/__three/build/three.module.js": "ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb",
+        "/__three/examples/jsm/libs/meshopt_decoder.module.js": "01f48524f4bac6141eaba07e94cc36e7ee56f311796fa6117c159842941b0468",
+        "/assets/sip-app.js": "c80d5bcfad97e9dfba3d0ebc4d80309b5937998fa6f8a28ff2e95b13eeba2193",
+        "/assets/sip-stack.css": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
+        "/assets/sip-warm.js": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
+        "/characters/assets/hair/roma-high.glb.gz": "4d699e44cafae5b56307f8da60206e0f9c7200b34494ac73b15b429016124794",
+        "/characters/assets/hair/roma-mobile.glb.gz": "18f63026ed5251593c20e7c183f84672e6d4b315d24b1513a2bace6a1310d554",
+        "/characters/avatar-builder.js": "7ea387b09b7a0564952641e0179a9c0a5cd562b230c17089eb7c27e04253e3fd",
+        "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
+        "/characters/hair-groom.js": "ca600049c20a6d6ec103fe52770fb94ff8e161a5a3972dc4091897288ac18b13",
+        "/characters/hair-motion.js": "b1ec2a52fb7abcac46f67ef36eaa7402a2d42261a9754f2f34cbc851033483c6",
+        "/characters/human-exterior.js": "7a87b86caacd33c943b0bf331c0acf3a539434deb6b68eb81501954801b4cb20",
+        "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
+        "/characters/main.js": "bf9946cdca21a4ca6dc694df38915fa0dfa1bea6bbb363de14d92cbcd9505fd9",
+        "/characters/model-tier.js": "f1c83eb8d91b243948aea6d45c04fcb19e4340a52fc63bb40c960885aa1e11a9",
+        "/characters/motion.js": "089200089c705e4b589653561215ee10807234f4e3a188c777ebf7fcd6188968",
+        "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
+        "/characters/rig.js": "3e8373a52c7e6a5b2049b4da5b6fbc0a9c13fa0291f6b84b6f6f38252edea20c",
+        "/characters/roma-exterior-data.js": "f9bd426450568ab11b0c197875efe1c9694fe6eff450c057d95d40cf017a633b",
+        "/characters/roma-face.js": "dc5a35cad70ca162c0813428e82eb9a83021253c15874d93926de01f6e9b8dca",
+        "/characters/roma-forms.js": "c8033cbf6938fbe78ae1ee4c6d821d6d2e2cb75c5d78613052fc5abcc99fac13",
+        "/characters/roma-secondary.js": "44d96d1facd00e79a1e4097868a8a733b4243f864f870d9b6522caad8a7edddd",
+        "/characters/roma-soft-tissue.js": "a1979c07550bbb85222f328bf794da64977d8956b7db01ca68dd25908cbd7d3f",
+        "/characters/roma.js": "2a19d0b8e4ce55b21bcb3df06ecf8e692cb91637a2743e4f00b367943c55b7ad",
+        "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+        "/characters/secondary.js": "80ed341ab1b5bdc86164c46e3585f724c919c6fcb5a90a3b59f2a681bf47e24d",
+        "/characters/source-asset-files.js": "72807e24212cffe795c732b5340c2782f5102c2a27754bd2a4d8da1f4c1b7d4b",
+        "/characters/source-landmarks.js": "f52aa6aa192045f70d2df2fa576fabbb6374fa52d754c970451cf298bf4cb393",
+        "/characters/source-rig.js": "2797b1f579607a7fbc09336dff23a0f3bee52ec7a1f41eafb91066ef0862aaf3",
+        "/characters/stage.js": "d206cbd7a4cfb063c1f86c41cbe345e133023021ef9a940650dc05a80fc4d112",
+        "/characters/ui.js": "145b3db0740fcfd83535c2250edc0e52dcda7843c41ed62b2a394d5df934a7cd"
+      },
+      "verifiedServedSources": true,
+      "requestLedgers": {
+        "0a50f6b8575c772b": [
+          {
+            "path": "/",
+            "wire": 17676,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__system-fonts",
+            "wire": 161,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__three/build/three.module.js",
+            "wire": 266798,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+            "wire": 6640,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-app.js",
+            "wire": 2066,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-stack.css",
+            "wire": 10210,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-warm.js",
+            "wire": 716,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/assets/hair/roma-mobile.glb.gz",
+            "wire": 79341,
+            "complete": true,
+            "status": 200,
+            "completion": "native draw and encoded Content-Length"
+          },
+          {
+            "path": "/characters/avatar-builder.js",
+            "wire": 1101,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/characters.css",
+            "wire": 2332,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/hair-groom.js",
+            "wire": 3925,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/hair-motion.js",
+            "wire": 5352,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/human-exterior.js",
+            "wire": 4661,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/input.js",
+            "wire": 2200,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/main.js",
+            "wire": 6577,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/model-tier.js",
+            "wire": 510,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/motion.js",
+            "wire": 9407,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/render-batches.js",
+            "wire": 3675,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/rig.js",
+            "wire": 839,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/roma-exterior-data.js",
+            "wire": 6791,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/roma-face.js",
+            "wire": 5353,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/roma-forms.js",
+            "wire": 2871,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/roma-secondary.js",
+            "wire": 524,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/roma-soft-tissue.js",
+            "wire": 1435,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/roma.js",
+            "wire": 5695,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/route.js",
+            "wire": 1985,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/secondary.js",
+            "wire": 739,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-asset-files.js",
+            "wire": 437,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-landmarks.js",
+            "wire": 2541,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-rig.js",
+            "wire": 1874,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/stage.js",
+            "wire": 5802,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/ui.js",
+            "wire": 1655,
+            "complete": true,
+            "status": 200
+          }
+        ],
+        "2c9fee6757ada375": [
+          {
+            "path": "/",
+            "wire": 17676,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__system-fonts",
+            "wire": 161,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__three/build/three.module.js",
+            "wire": 266798,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+            "wire": 6640,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-app.js",
+            "wire": 2066,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-stack.css",
+            "wire": 10210,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/assets/sip-warm.js",
+            "wire": 716,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/assets/hair/roma-high.glb.gz",
+            "wire": 117459,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/avatar-builder.js",
+            "wire": 1101,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/characters.css",
+            "wire": 2332,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/hair-groom.js",
+            "wire": 3925,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/hair-motion.js",
+            "wire": 5352,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/human-exterior.js",
+            "wire": 4661,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/input.js",
+            "wire": 2200,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/main.js",
+            "wire": 6577,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/model-tier.js",
+            "wire": 510,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/motion.js",
+            "wire": 9407,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/render-batches.js",
+            "wire": 3675,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/rig.js",
+            "wire": 839,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/roma-exterior-data.js",
+            "wire": 6791,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/roma-face.js",
+            "wire": 5353,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/roma-forms.js",
+            "wire": 2871,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/roma-secondary.js",
+            "wire": 524,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/roma-soft-tissue.js",
+            "wire": 1435,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/roma.js",
+            "wire": 5695,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/route.js",
+            "wire": 1985,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/secondary.js",
+            "wire": 739,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-asset-files.js",
+            "wire": 437,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-landmarks.js",
+            "wire": 2541,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/source-rig.js",
+            "wire": 1874,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/stage.js",
+            "wire": 5802,
+            "complete": true,
+            "status": 200
+          },
+          {
+            "path": "/characters/ui.js",
+            "wire": 1655,
+            "complete": true,
+            "status": 200
+          }
+        ]
+      },
+      "verifiedModuleGraphs": {
+        "0a50f6b8575c772b": [
+          "/__three/build/three.module.js",
+          "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "/assets/sip-app.js",
+          "/assets/sip-warm.js",
+          "/characters/avatar-builder.js",
+          "/characters/hair-groom.js",
+          "/characters/hair-motion.js",
+          "/characters/human-exterior.js",
+          "/characters/input.js",
+          "/characters/main.js",
+          "/characters/model-tier.js",
+          "/characters/motion.js",
+          "/characters/render-batches.js",
+          "/characters/rig.js",
+          "/characters/roma-exterior-data.js",
+          "/characters/roma-face.js",
+          "/characters/roma-forms.js",
+          "/characters/roma-secondary.js",
+          "/characters/roma-soft-tissue.js",
+          "/characters/roma.js",
+          "/characters/route.js",
+          "/characters/secondary.js",
+          "/characters/source-asset-files.js",
+          "/characters/source-landmarks.js",
+          "/characters/source-rig.js",
+          "/characters/stage.js",
+          "/characters/ui.js"
+        ],
+        "2c9fee6757ada375": [
+          "/__three/build/three.module.js",
+          "/__three/examples/jsm/libs/meshopt_decoder.module.js",
+          "/assets/sip-app.js",
+          "/assets/sip-warm.js",
+          "/characters/avatar-builder.js",
+          "/characters/hair-groom.js",
+          "/characters/hair-motion.js",
+          "/characters/human-exterior.js",
+          "/characters/input.js",
+          "/characters/main.js",
+          "/characters/model-tier.js",
+          "/characters/motion.js",
+          "/characters/render-batches.js",
+          "/characters/rig.js",
+          "/characters/roma-exterior-data.js",
+          "/characters/roma-face.js",
+          "/characters/roma-forms.js",
+          "/characters/roma-secondary.js",
+          "/characters/roma-soft-tissue.js",
+          "/characters/roma.js",
+          "/characters/route.js",
+          "/characters/secondary.js",
+          "/characters/source-asset-files.js",
+          "/characters/source-landmarks.js",
+          "/characters/source-rig.js",
+          "/characters/stage.js",
+          "/characters/ui.js"
+        ]
+      }
+    }
   }
 }
