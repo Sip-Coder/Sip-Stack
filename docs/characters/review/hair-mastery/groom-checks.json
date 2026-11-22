@@ -1,49 +1,49 @@
 {
-  "revision": "3884cb281a2c871fdc1ef0e6b0ee3fe8965a68dd",
+  "revision": "bce7b96269bb4faa84c7cd1bd3f6243413a1e082",
   "assets": [
     {
       "hero": "sippy",
       "tier": "mobile",
-      "wireBytes": 62417,
-      "glbBytes": 98580,
-      "vertices": 6066,
-      "triangles": 8578,
-      "skinnedTriangles": 864,
+      "wireBytes": 24779,
+      "glbBytes": 50216,
+      "vertices": 2583,
+      "triangles": 4744,
+      "skinnedTriangles": 900,
       "rigJoints": 6,
-      "sha256": "309c62556c73c2fe4a20b39c4247dd57ea5175ab2743362ca28ffcfbf3dd6868"
+      "sha256": "cabea405afb2e78cf05463f8edebcc19ce80d7b18407892ba2f56fab81b9764a"
     },
     {
       "hero": "sippy",
       "tier": "high",
-      "wireBytes": 104313,
-      "glbBytes": 164888,
-      "vertices": 11004,
-      "triangles": 15848,
-      "skinnedTriangles": 1320,
+      "wireBytes": 39828,
+      "glbBytes": 80900,
+      "vertices": 4983,
+      "triangles": 9392,
+      "skinnedTriangles": 1764,
       "rigJoints": 6,
-      "sha256": "c95b8c930c8b3041354c8cc348c4628caca7988ae4de537e56c1ea03dc088cd4"
+      "sha256": "5e4719055c330c759715bb55dfb05e747998b16b8406e192a5e0266a9d243c7e"
     },
     {
       "hero": "roma",
       "tier": "mobile",
-      "wireBytes": 79167,
-      "glbBytes": 154056,
-      "vertices": 7992,
-      "triangles": 10422,
-      "skinnedTriangles": 2416,
+      "wireBytes": 81446,
+      "glbBytes": 166792,
+      "vertices": 8695,
+      "triangles": 12910,
+      "skinnedTriangles": 1960,
       "rigJoints": 24,
-      "sha256": "18f63026ed5251593c20e7c183f84672e6d4b315d24b1513a2bace6a1310d554"
+      "sha256": "c9b4b207b00841e7d479fc823c82824557c0b8dd0cc39ca2d1b50c788fb0ac22"
     },
     {
       "hero": "roma",
       "tier": "high",
-      "wireBytes": 117284,
-      "glbBytes": 217240,
-      "vertices": 12444,
-      "triangles": 16764,
-      "skinnedTriangles": 4048,
+      "wireBytes": 116262,
+      "glbBytes": 235316,
+      "vertices": 13292,
+      "triangles": 21000,
+      "skinnedTriangles": 3520,
       "rigJoints": 24,
-      "sha256": "4d699e44cafae5b56307f8da60206e0f9c7200b34494ac73b15b429016124794"
+      "sha256": "db48899e4dde64dcae1f53ca3b08b35ba6c37373b4265fd8938c7c1250d53bed"
     }
   ],
   "demandLoading": {
@@ -83,7 +83,7 @@
       "hero": "sippy",
       "walking": {
         "bones": 3,
-        "maxAngularChangeDegrees": 13.724713728620019,
+        "maxAngularChangeDegrees": 13.699774945008862,
         "speed": 1.129999999999729,
         "reduced": false
       },
@@ -98,7 +98,7 @@
       "hero": "roma",
       "walking": {
         "bones": 4,
-        "maxAngularChangeDegrees": 19.168534207417665,
+        "maxAngularChangeDegrees": 17.58723121913326,
         "speed": 1.129999999999729,
         "reduced": false
       },
