@@ -4,26 +4,26 @@
     "tier": "mobile",
     "resolution": 512,
     "depthToleranceIn": 0.04,
-    "tested": 138103,
-    "skinDepth": 266,
+    "tested": 137680,
+    "skinDepth": 269,
     "skinSilhouette": 16,
-    "outfitDepth": 11,
+    "outfitDepth": 16,
     "outfitSilhouette": 0,
     "views": [
       {
         "yaw": 0,
         "pitch": 0,
-        "tested": 28274,
-        "skinDepth": 21,
+        "tested": 28194,
+        "skinDepth": 23,
         "skinSilhouette": 0,
-        "outfitDepth": 6,
+        "outfitDepth": 7,
         "outfitSilhouette": 0
       },
       {
         "yaw": 3.141592653589793,
         "pitch": 0,
-        "tested": 28274,
-        "skinDepth": 80,
+        "tested": 28194,
+        "skinDepth": 79,
         "skinSilhouette": 0,
         "outfitDepth": 1,
         "outfitSilhouette": 0
@@ -31,8 +31,8 @@
       {
         "yaw": 1.5707963267948966,
         "pitch": 0,
-        "tested": 15715,
-        "skinDepth": 37,
+        "tested": 15654,
+        "skinDepth": 35,
         "skinSilhouette": 0,
         "outfitDepth": 0,
         "outfitSilhouette": 0
@@ -40,150 +40,150 @@
       {
         "yaw": -1.5707963267948966,
         "pitch": 0,
-        "tested": 15715,
-        "skinDepth": 38,
+        "tested": 15654,
+        "skinDepth": 39,
         "skinSilhouette": 0,
-        "outfitDepth": 0,
+        "outfitDepth": 1,
         "outfitSilhouette": 0
       },
       {
         "yaw": 0.69,
         "pitch": 0.32,
-        "tested": 25101,
-        "skinDepth": 13,
-        "skinSilhouette": 12,
-        "outfitDepth": 4,
+        "tested": 24994,
+        "skinDepth": 16,
+        "skinSilhouette": 5,
+        "outfitDepth": 7,
         "outfitSilhouette": 0
       },
       {
         "yaw": -2.43,
         "pitch": -0.3,
-        "tested": 25024,
+        "tested": 24990,
         "skinDepth": 77,
-        "skinSilhouette": 4,
+        "skinSilhouette": 11,
         "outfitDepth": 0,
         "outfitSilhouette": 0
       }
     ],
     "parts": [
       {
-        "name": "Left fibula",
-        "layer": "skeleton",
-        "skin": 54,
-        "outfit": 0,
-        "maximumDepthIn": 1.6782737857713474
-      },
-      {
         "name": "Right fibula",
         "layer": "skeleton",
-        "skin": 52,
+        "skin": 58,
         "outfit": 0,
-        "maximumDepthIn": 9.278577319749697
-      },
-      {
-        "name": "Right little finger phalanges",
-        "layer": "skeleton",
-        "skin": 50,
-        "outfit": 0,
-        "maximumDepthIn": 1.1397587267432627
+        "maximumDepthIn": 9.290882217602467
       },
       {
         "name": "Left little finger phalanges",
         "layer": "skeleton",
-        "skin": 49,
+        "skin": 52,
         "outfit": 1,
-        "maximumDepthIn": 0.8627209137743853
+        "maximumDepthIn": 0.9808304360297722
+      },
+      {
+        "name": "Left fibula",
+        "layer": "skeleton",
+        "skin": 51,
+        "outfit": 0,
+        "maximumDepthIn": 1.579876842461233
+      },
+      {
+        "name": "Right little finger phalanges",
+        "layer": "skeleton",
+        "skin": 47,
+        "outfit": 0,
+        "maximumDepthIn": 1.1239541093195518
       },
       {
         "name": "Left great toe phalanges",
         "layer": "skeleton",
-        "skin": 23,
+        "skin": 22,
         "outfit": 0,
-        "maximumDepthIn": 0.8835080336398028
+        "maximumDepthIn": 0.37534910393512155
       },
       {
         "name": "Right plantaris",
         "layer": "muscles",
-        "skin": 16,
+        "skin": 15,
         "outfit": 0,
-        "maximumDepthIn": 0.8541110932357668
+        "maximumDepthIn": 0.8566231708826981
       },
       {
         "name": "Left extensor pollicis longus",
         "layer": "muscles",
-        "skin": 5,
-        "outfit": 5,
-        "maximumDepthIn": 0.15011570585055614
-      },
-      {
-        "name": "Right ring finger phalanges",
-        "layer": "skeleton",
-        "skin": 9,
-        "outfit": 0,
-        "maximumDepthIn": 0.4041587977897464
+        "skin": 6,
+        "outfit": 6,
+        "maximumDepthIn": 0.6308195393855178
       },
       {
         "name": "Right great toe phalanges",
         "layer": "skeleton",
+        "skin": 9,
+        "outfit": 0,
+        "maximumDepthIn": 0.21006735995059878
+      },
+      {
+        "name": "Right ring finger phalanges",
+        "layer": "skeleton",
         "skin": 8,
         "outfit": 0,
-        "maximumDepthIn": 0.24917029489682416
+        "maximumDepthIn": 0.40382865493691816
+      },
+      {
+        "name": "Right extensor pollicis brevis",
+        "layer": "muscles",
+        "skin": 3,
+        "outfit": 3,
+        "maximumDepthIn": 0.8330177369080191
+      },
+      {
+        "name": "Left extensor pollicis brevis",
+        "layer": "muscles",
+        "skin": 3,
+        "outfit": 3,
+        "maximumDepthIn": 0.1118732542972865
       },
       {
         "name": "Right extensor pollicis longus",
         "layer": "muscles",
         "skin": 2,
         "outfit": 2,
-        "maximumDepthIn": 0.12870203322312965
-      },
-      {
-        "name": "Right extensor pollicis brevis",
-        "layer": "muscles",
-        "skin": 2,
-        "outfit": 2,
-        "maximumDepthIn": 0.11238086176669504
+        "maximumDepthIn": 0.12031499677755701
       },
       {
         "name": "Right flexor digitorum profundus",
         "layer": "muscles",
         "skin": 4,
         "outfit": 0,
-        "maximumDepthIn": 0.23018583420693406
+        "maximumDepthIn": 1.613938315646855
       },
       {
-        "name": "Right flexor digitorum superficialis",
+        "name": "Left flexor digitorum longus",
         "layer": "muscles",
-        "skin": 3,
-        "outfit": 0,
-        "maximumDepthIn": 0.7229279653411212
+        "skin": 1,
+        "outfit": 1,
+        "maximumDepthIn": 0.34709585698570794
       },
       {
         "name": "Right extensor indicis",
         "layer": "muscles",
         "skin": 2,
         "outfit": 0,
-        "maximumDepthIn": 0.13893279503649614
-      },
-      {
-        "name": "Left extensor pollicis brevis",
-        "layer": "muscles",
-        "skin": 1,
-        "outfit": 1,
-        "maximumDepthIn": 0.07182711691368283
+        "maximumDepthIn": 0.6471295643040514
       },
       {
         "name": "Right extensor digitorum",
         "layer": "muscles",
         "skin": 1,
         "outfit": 0,
-        "maximumDepthIn": 0.8918958034102372
+        "maximumDepthIn": 2.824068142790494
       },
       {
-        "name": "Right middle finger phalanges",
-        "layer": "skeleton",
+        "name": "Right flexor digitorum superficialis",
+        "layer": "muscles",
         "skin": 1,
         "outfit": 0,
-        "maximumDepthIn": 0.06192371131866936
+        "maximumDepthIn": 0.7620030557131762
       }
     ]
   },
@@ -192,26 +192,26 @@
     "tier": "high",
     "resolution": 512,
     "depthToleranceIn": 0.04,
-    "tested": 138509,
-    "skinDepth": 277,
-    "skinSilhouette": 12,
-    "outfitDepth": 15,
+    "tested": 138079,
+    "skinDepth": 275,
+    "skinSilhouette": 16,
+    "outfitDepth": 19,
     "outfitSilhouette": 0,
     "views": [
       {
         "yaw": 0,
         "pitch": 0,
-        "tested": 28372,
-        "skinDepth": 24,
+        "tested": 28290,
+        "skinDepth": 23,
         "skinSilhouette": 0,
-        "outfitDepth": 9,
+        "outfitDepth": 7,
         "outfitSilhouette": 0
       },
       {
         "yaw": 3.141592653589793,
         "pitch": 0,
-        "tested": 28372,
-        "skinDepth": 81,
+        "tested": 28290,
+        "skinDepth": 77,
         "skinSilhouette": 0,
         "outfitDepth": 1,
         "outfitSilhouette": 0
@@ -219,8 +219,8 @@
       {
         "yaw": 1.5707963267948966,
         "pitch": 0,
-        "tested": 15738,
-        "skinDepth": 37,
+        "tested": 15688,
+        "skinDepth": 34,
         "skinSilhouette": 0,
         "outfitDepth": 0,
         "outfitSilhouette": 0
@@ -228,27 +228,27 @@
       {
         "yaw": -1.5707963267948966,
         "pitch": 0,
-        "tested": 15738,
-        "skinDepth": 43,
+        "tested": 15688,
+        "skinDepth": 41,
         "skinSilhouette": 0,
-        "outfitDepth": 0,
+        "outfitDepth": 1,
         "outfitSilhouette": 0
       },
       {
         "yaw": 0.69,
         "pitch": 0.32,
-        "tested": 25174,
-        "skinDepth": 19,
-        "skinSilhouette": 8,
-        "outfitDepth": 5,
+        "tested": 25084,
+        "skinDepth": 24,
+        "skinSilhouette": 6,
+        "outfitDepth": 10,
         "outfitSilhouette": 0
       },
       {
         "yaw": -2.43,
         "pitch": -0.3,
-        "tested": 25115,
-        "skinDepth": 73,
-        "skinSilhouette": 4,
+        "tested": 25039,
+        "skinDepth": 76,
+        "skinSilhouette": 10,
         "outfitDepth": 0,
         "outfitSilhouette": 0
       }
@@ -257,107 +257,121 @@
       {
         "name": "Right fibula",
         "layer": "skeleton",
-        "skin": 63,
+        "skin": 59,
         "outfit": 0,
-        "maximumDepthIn": 9.289694231326186
-      },
-      {
-        "name": "Left fibula",
-        "layer": "skeleton",
-        "skin": 57,
-        "outfit": 0,
-        "maximumDepthIn": 1.6950516719517745
+        "maximumDepthIn": 9.300561812449628
       },
       {
         "name": "Left little finger phalanges",
         "layer": "skeleton",
-        "skin": 49,
+        "skin": 51,
         "outfit": 1,
-        "maximumDepthIn": 0.9915773118809452
+        "maximumDepthIn": 1.0863606136028223
+      },
+      {
+        "name": "Left fibula",
+        "layer": "skeleton",
+        "skin": 51,
+        "outfit": 0,
+        "maximumDepthIn": 1.5936551366265366
       },
       {
         "name": "Right little finger phalanges",
         "layer": "skeleton",
-        "skin": 47,
+        "skin": 46,
         "outfit": 0,
-        "maximumDepthIn": 0.972609351000448
+        "maximumDepthIn": 0.9536725564265814
       },
       {
         "name": "Left great toe phalanges",
         "layer": "skeleton",
-        "skin": 25,
+        "skin": 23,
         "outfit": 0,
-        "maximumDepthIn": 0.9017725159802775
+        "maximumDepthIn": 0.3860345271628673
       },
       {
         "name": "Right plantaris",
         "layer": "muscles",
-        "skin": 14,
+        "skin": 17,
         "outfit": 0,
-        "maximumDepthIn": 0.8631867217266653
+        "maximumDepthIn": 0.4320926084293155
+      },
+      {
+        "name": "Right great toe phalanges",
+        "layer": "skeleton",
+        "skin": 10,
+        "outfit": 0,
+        "maximumDepthIn": 0.19332614001326676
       },
       {
         "name": "Left extensor pollicis longus",
         "layer": "muscles",
         "skin": 5,
         "outfit": 5,
-        "maximumDepthIn": 0.6139067214305007
-      },
-      {
-        "name": "Right great toe phalanges",
-        "layer": "skeleton",
-        "skin": 9,
-        "outfit": 0,
-        "maximumDepthIn": 0.25377850832901605
+        "maximumDepthIn": 0.6318632073289766
       },
       {
         "name": "Right extensor pollicis brevis",
         "layer": "muscles",
-        "skin": 4,
-        "outfit": 4,
-        "maximumDepthIn": 0.107148735541997
+        "skin": 5,
+        "outfit": 5,
+        "maximumDepthIn": 0.7802394666071013
+      },
+      {
+        "name": "Right flexor digitorum profundus",
+        "layer": "muscles",
+        "skin": 7,
+        "outfit": 0,
+        "maximumDepthIn": 1.4579263845766623
       },
       {
         "name": "Right extensor pollicis longus",
         "layer": "muscles",
         "skin": 3,
         "outfit": 3,
-        "maximumDepthIn": 0.11624387047422215
+        "maximumDepthIn": 0.11149280535893177
+      },
+      {
+        "name": "Left extensor pollicis brevis",
+        "layer": "muscles",
+        "skin": 3,
+        "outfit": 3,
+        "maximumDepthIn": 0.10355177709436793
       },
       {
         "name": "Right extensor indicis",
         "layer": "muscles",
         "skin": 5,
         "outfit": 0,
-        "maximumDepthIn": 0.8432684451576293
-      },
-      {
-        "name": "Left extensor pollicis brevis",
-        "layer": "muscles",
-        "skin": 2,
-        "outfit": 2,
-        "maximumDepthIn": 0.10812332428346469
+        "maximumDepthIn": 0.8565518917061213
       },
       {
         "name": "Right flexor digitorum superficialis",
         "layer": "muscles",
-        "skin": 2,
+        "skin": 3,
         "outfit": 0,
-        "maximumDepthIn": 1.2672862668675702
+        "maximumDepthIn": 0.7780047690891845
       },
       {
-        "name": "Right flexor digitorum profundus",
+        "name": "Left extensor digitorum longus",
         "layer": "muscles",
-        "skin": 2,
-        "outfit": 0,
-        "maximumDepthIn": 0.176980622171417
+        "skin": 1,
+        "outfit": 1,
+        "maximumDepthIn": 0.5880693399061369
+      },
+      {
+        "name": "Left flexor digitorum longus",
+        "layer": "muscles",
+        "skin": 1,
+        "outfit": 1,
+        "maximumDepthIn": 0.39266818386363234
       },
       {
         "name": "Right extensor digitorum",
         "layer": "muscles",
-        "skin": 2,
+        "skin": 1,
         "outfit": 0,
-        "maximumDepthIn": 0.8541333863115687
+        "maximumDepthIn": 0.44941667496688725
       }
     ]
   },
@@ -371,17 +385,17 @@
     },
     "resolution": 512,
     "depthToleranceIn": 0.04,
-    "tested": 146959,
-    "skinDepth": 83,
-    "skinSilhouette": 1,
+    "tested": 147114,
+    "skinDepth": 86,
+    "skinSilhouette": 2,
     "outfitDepth": 0,
     "outfitSilhouette": 0,
     "views": [
       {
         "yaw": 0,
         "pitch": 0,
-        "tested": 29175,
-        "skinDepth": 14,
+        "tested": 29195,
+        "skinDepth": 15,
         "skinSilhouette": 0,
         "outfitDepth": 0,
         "outfitSilhouette": 0
@@ -389,7 +403,7 @@
       {
         "yaw": 3.141592653589793,
         "pitch": 0,
-        "tested": 29175,
+        "tested": 29195,
         "skinDepth": 10,
         "skinSilhouette": 0,
         "outfitDepth": 0,
@@ -398,8 +412,8 @@
       {
         "yaw": 1.5707963267948966,
         "pitch": 0,
-        "tested": 17982,
-        "skinDepth": 16,
+        "tested": 18020,
+        "skinDepth": 18,
         "skinSilhouette": 0,
         "outfitDepth": 0,
         "outfitSilhouette": 0
@@ -407,8 +421,8 @@
       {
         "yaw": -1.5707963267948966,
         "pitch": 0,
-        "tested": 17982,
-        "skinDepth": 14,
+        "tested": 18020,
+        "skinDepth": 17,
         "skinSilhouette": 0,
         "outfitDepth": 0,
         "outfitSilhouette": 0
@@ -416,8 +430,8 @@
       {
         "yaw": 0.69,
         "pitch": 0.32,
-        "tested": 26302,
-        "skinDepth": 21,
+        "tested": 26319,
+        "skinDepth": 19,
         "skinSilhouette": 1,
         "outfitDepth": 0,
         "outfitSilhouette": 0
@@ -425,9 +439,9 @@
       {
         "yaw": -2.43,
         "pitch": -0.3,
-        "tested": 26343,
-        "skinDepth": 8,
-        "skinSilhouette": 0,
+        "tested": 26365,
+        "skinDepth": 7,
+        "skinSilhouette": 1,
         "outfitDepth": 0,
         "outfitSilhouette": 0
       }
@@ -436,58 +450,51 @@
       {
         "name": "Left fifth toe phalanges",
         "layer": "skeleton",
-        "skin": 23,
+        "skin": 24,
         "outfit": 0,
-        "maximumDepthIn": 0.6387083549199142
+        "maximumDepthIn": 0.636627765621726
       },
       {
         "name": "Right fibula",
         "layer": "skeleton",
         "skin": 19,
         "outfit": 0,
-        "maximumDepthIn": 0.19052293239616033
+        "maximumDepthIn": 0.20058576281615131
       },
       {
         "name": "Left fibula",
         "layer": "skeleton",
         "skin": 16,
         "outfit": 0,
-        "maximumDepthIn": 0.34505926717923385
+        "maximumDepthIn": 0.2815982136200732
+      },
+      {
+        "name": "Left great toe phalanges",
+        "layer": "skeleton",
+        "skin": 11,
+        "outfit": 0,
+        "maximumDepthIn": 0.7542505801662686
       },
       {
         "name": "Right second toe phalanges",
         "layer": "skeleton",
         "skin": 10,
         "outfit": 0,
-        "maximumDepthIn": 0.6269780904289306
-      },
-      {
-        "name": "Left great toe phalanges",
-        "layer": "skeleton",
-        "skin": 9,
-        "outfit": 0,
-        "maximumDepthIn": 0.4756365587392191
+        "maximumDepthIn": 0.5509845149798657
       },
       {
         "name": "Right third toe phalanges",
         "layer": "skeleton",
-        "skin": 4,
+        "skin": 5,
         "outfit": 0,
-        "maximumDepthIn": 0.4211440682411194
+        "maximumDepthIn": 0.5570400183595072
       },
       {
         "name": "Left fourth toe phalanges",
         "layer": "skeleton",
-        "skin": 2,
+        "skin": 3,
         "outfit": 0,
-        "maximumDepthIn": 0.05643550805219515
-      },
-      {
-        "name": "Right fifth toe phalanges",
-        "layer": "skeleton",
-        "skin": 1,
-        "outfit": 0,
-        "maximumDepthIn": 0.18120750667541985
+        "maximumDepthIn": 0.057126593402051555
       }
     ]
   },
@@ -501,17 +508,17 @@
     },
     "resolution": 512,
     "depthToleranceIn": 0.04,
-    "tested": 147063,
-    "skinDepth": 91,
-    "skinSilhouette": 1,
+    "tested": 147188,
+    "skinDepth": 100,
+    "skinSilhouette": 2,
     "outfitDepth": 0,
     "outfitSilhouette": 0,
     "views": [
       {
         "yaw": 0,
         "pitch": 0,
-        "tested": 29200,
-        "skinDepth": 14,
+        "tested": 29209,
+        "skinDepth": 16,
         "skinSilhouette": 0,
         "outfitDepth": 0,
         "outfitSilhouette": 0
@@ -519,7 +526,7 @@
       {
         "yaw": 3.141592653589793,
         "pitch": 0,
-        "tested": 29200,
+        "tested": 29209,
         "skinDepth": 12,
         "skinSilhouette": 0,
         "outfitDepth": 0,
@@ -528,8 +535,8 @@
       {
         "yaw": 1.5707963267948966,
         "pitch": 0,
-        "tested": 17997,
-        "skinDepth": 18,
+        "tested": 18033,
+        "skinDepth": 20,
         "skinSilhouette": 0,
         "outfitDepth": 0,
         "outfitSilhouette": 0
@@ -537,8 +544,8 @@
       {
         "yaw": -1.5707963267948966,
         "pitch": 0,
-        "tested": 17997,
-        "skinDepth": 15,
+        "tested": 18033,
+        "skinDepth": 19,
         "skinSilhouette": 0,
         "outfitDepth": 0,
         "outfitSilhouette": 0
@@ -546,7 +553,7 @@
       {
         "yaw": 0.69,
         "pitch": 0.32,
-        "tested": 26314,
+        "tested": 26322,
         "skinDepth": 21,
         "skinSilhouette": 1,
         "outfitDepth": 0,
@@ -555,9 +562,9 @@
       {
         "yaw": -2.43,
         "pitch": -0.3,
-        "tested": 26355,
-        "skinDepth": 11,
-        "skinSilhouette": 0,
+        "tested": 26382,
+        "skinDepth": 12,
+        "skinSilhouette": 1,
         "outfitDepth": 0,
         "outfitSilhouette": 0
       }
@@ -566,58 +573,51 @@
       {
         "name": "Right fibula",
         "layer": "skeleton",
-        "skin": 25,
+        "skin": 28,
         "outfit": 0,
-        "maximumDepthIn": 0.2040187498246591
+        "maximumDepthIn": 0.20567591734758514
       },
       {
         "name": "Left fifth toe phalanges",
         "layer": "skeleton",
-        "skin": 23,
+        "skin": 24,
         "outfit": 0,
-        "maximumDepthIn": 0.6390134180624655
+        "maximumDepthIn": 0.6382903597486301
       },
       {
         "name": "Left fibula",
         "layer": "skeleton",
-        "skin": 18,
+        "skin": 20,
         "outfit": 0,
-        "maximumDepthIn": 0.34735838728626883
+        "maximumDepthIn": 0.31110984603251063
       },
       {
         "name": "Right second toe phalanges",
         "layer": "skeleton",
-        "skin": 10,
+        "skin": 11,
         "outfit": 0,
-        "maximumDepthIn": 0.649257673053291
+        "maximumDepthIn": 0.5509968348375456
       },
       {
         "name": "Left great toe phalanges",
         "layer": "skeleton",
-        "skin": 9,
+        "skin": 11,
         "outfit": 0,
-        "maximumDepthIn": 0.4884431974625024
+        "maximumDepthIn": 0.32008104906307433
       },
       {
         "name": "Right third toe phalanges",
         "layer": "skeleton",
-        "skin": 4,
+        "skin": 5,
         "outfit": 0,
-        "maximumDepthIn": 0.4127034990806279
+        "maximumDepthIn": 0.5571426838401735
       },
       {
         "name": "Left fourth toe phalanges",
         "layer": "skeleton",
-        "skin": 2,
+        "skin": 3,
         "outfit": 0,
-        "maximumDepthIn": 0.057351284139738314
-      },
-      {
-        "name": "Right fifth toe phalanges",
-        "layer": "skeleton",
-        "skin": 1,
-        "outfit": 0,
-        "maximumDepthIn": 0.18169795434305988
+        "maximumDepthIn": 0.05781269214284702
       }
     ]
   }

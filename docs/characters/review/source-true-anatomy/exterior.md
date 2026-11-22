@@ -14,10 +14,10 @@ Six orthographic projections at 512 px compare the nearest anatomical triangles 
 
 | Character and tier | Interior samples | Beyond bare skin | Beyond dressed exterior | Beyond dressed silhouette |
 |---|---:|---:|---:|---:|
-| Sippy Mobile | 138,103 | 282 | 11 | 0 |
-| Sippy High | 138,509 | 289 | 15 | 0 |
-| Roma Mobile | 146,959 | 84 | 0 | 0 |
-| Roma High | 147,063 | 92 | 0 | 0 |
+| Sippy Mobile | 137,680 | 285 | 16 | 0 |
+| Sippy High | 138,079 | 291 | 19 | 0 |
+| Roma Mobile | 147,114 | 88 | 0 | 0 |
+| Roma High | 147,188 | 102 | 0 | 0 |
 
 The remaining bare-skin samples are concentrated at the lower fibula, toes and fingertip margins. Sippy’s dressed residual is at exposed fingertips. These checks apply to the sampled upright Axon pose. The isolated Roma skin shows a raised seam where the pelvis loft joins the thigh lofts. Her trousers cover that junction in the dressed view. [Per-view and per-part coverage](exterior-coverage.json) · [Movement checks](rig.md) · [Matched-angle review plates](media.md)
 
