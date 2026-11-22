@@ -16,6 +16,7 @@ function anatomicalX(rig, point) {
 }
 
 export function describeRoma(rig, mesh, c) {
+  if (mesh.userData.anatomicalSkin) return skin(mesh.userData.anatomicalSkin);
   const id = mesh.name.replace(/^Roma /, ''),
     { index: i, color, objectCenter: p } = c;
   const side = sideName(anatomicalX(rig, c.worldCenter));
@@ -82,6 +83,7 @@ export function sippyCatalog(rig) {
     hood: 'Folded hood',
   };
   return (_rig, mesh, c) => {
+    if (mesh.userData.anatomicalSkin) return skin(mesh.userData.anatomicalSkin);
     const id = surfaces.get(mesh),
       mat = c.material.userData.blueprintId,
       p = c.worldCenter;

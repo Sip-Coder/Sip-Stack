@@ -6,7 +6,7 @@ import { createStage, contactShadows } from './stage.js';
 import { createUI, heights, labels, names } from './ui.js';
 import { createInput } from './input.js';
 import { optimizeCharacter } from './render-batches.js';
-import { sourceAssetFiles } from './diagram-source-assets.js';
+import { sourceAssetFiles } from './source-asset-files.js';
 
 const loadBuilder = [
   () => import('./sippy.js').then(m => m.buildSippy),
