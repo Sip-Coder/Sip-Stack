@@ -1,0 +1,1980 @@
+{
+  "revisions": {
+    "pr24": {
+      "stills": {
+        "phone/front": {
+          "drawingBuffer": [
+            382,
+            522
+          ],
+          "cssBox": [
+            382,
+            521.547
+          ],
+          "viewport": [
+            412,
+            915
+          ],
+          "devicePixelRatio": 2.5999999046325684,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 0.7318,
+            "positionIn": [
+              6.2342,
+              53.15753,
+              138.44414
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "mobile",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true
+          },
+          "imageSha256": "bc81b64373ea755551d51731c21f300bf5cd090f0277e3a5c4e54469a04755fb"
+        },
+        "phone/side": {
+          "drawingBuffer": [
+            382,
+            522
+          ],
+          "cssBox": [
+            382,
+            521.547
+          ],
+          "viewport": [
+            412,
+            915
+          ],
+          "devicePixelRatio": 2.5999999046325684,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 0.7318,
+            "positionIn": [
+              139.76378,
+              41.73228,
+              0
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "mobile",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true
+          },
+          "imageSha256": "7a131e425891163b50b2a6a4ad651679a974f8531aa1c9eb33a6ea4c8d17e3b8"
+        },
+        "phone/hand-front": {
+          "drawingBuffer": [
+            382,
+            522
+          ],
+          "cssBox": [
+            382,
+            521.547
+          ],
+          "viewport": [
+            412,
+            915
+          ],
+          "devicePixelRatio": 2.5999999046325684,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 0.7318,
+            "positionIn": [
+              27.20511,
+              30.16558,
+              9.7275
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "mobile",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true
+          },
+          "imageSha256": "547f92e2016ebb21751e9469d304595cd8ff62c78b8f36e3dcfe960a8777f5bb"
+        },
+        "phone/hand-back": {
+          "drawingBuffer": [
+            382,
+            522
+          ],
+          "cssBox": [
+            382,
+            521.547
+          ],
+          "viewport": [
+            412,
+            915
+          ],
+          "devicePixelRatio": 2.5999999046325684,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 0.7318,
+            "positionIn": [
+              28.16242,
+              30.16558,
+              -5.99914
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "mobile",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true
+          },
+          "imageSha256": "c2c357fc3a5435962f7e78928a699ceb667ea74add13f29ff0b8a8937084b767"
+        },
+        "desktop/front": {
+          "drawingBuffer": [
+            1095,
+            634
+          ],
+          "cssBox": [
+            1094.969,
+            633.594
+          ],
+          "viewport": [
+            1440,
+            960
+          ],
+          "devicePixelRatio": 1,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 1.72713,
+            "positionIn": [
+              6.2342,
+              53.15753,
+              138.44414
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "high",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true
+          },
+          "imageSha256": "2042c459b0331a1c8ed63596369af53e6039465a08212d82d641440878900349"
+        },
+        "desktop/side": {
+          "drawingBuffer": [
+            1095,
+            634
+          ],
+          "cssBox": [
+            1094.969,
+            633.594
+          ],
+          "viewport": [
+            1440,
+            960
+          ],
+          "devicePixelRatio": 1,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 1.72713,
+            "positionIn": [
+              139.76378,
+              41.73228,
+              0
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "high",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true
+          },
+          "imageSha256": "62d8b000e632578fe95183582f60ae0b8a06fc3cee1d13a49211a138d134a994"
+        },
+        "desktop/hand-front": {
+          "drawingBuffer": [
+            1095,
+            634
+          ],
+          "cssBox": [
+            1094.969,
+            633.594
+          ],
+          "viewport": [
+            1440,
+            960
+          ],
+          "devicePixelRatio": 1,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 1.72713,
+            "positionIn": [
+              27.20511,
+              30.16558,
+              9.7275
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "high",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true
+          },
+          "imageSha256": "8ab27ae98da52e37d95d93f5e7d8eeee268b9415533808e6e8aa303a2b217439"
+        },
+        "desktop/hand-back": {
+          "drawingBuffer": [
+            1095,
+            634
+          ],
+          "cssBox": [
+            1094.969,
+            633.594
+          ],
+          "viewport": [
+            1440,
+            960
+          ],
+          "devicePixelRatio": 1,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 1.72713,
+            "positionIn": [
+              28.16242,
+              30.16558,
+              -5.99914
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "high",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true
+          },
+          "imageSha256": "8e9b67f33c244f84a64d2fdc836265b120ba265813a96fc254e611522bb42e88"
+        }
+      },
+      "checkout": "b45086380e9d85c9f28c0de3e099b29d3e231964",
+      "servedSha256": {
+        "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+        "/characters/stage.js": "d206cbd7a4cfb063c1f86c41cbe345e133023021ef9a940650dc05a80fc4d112",
+        "/characters/motion.js": "88132184dde77d7b3ccb2d9b370a212a6da4811cee6072fd865dc2a55eaf98b2",
+        "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
+        "/characters/sippy.js": "ab4fc809a7b73b6ec5d100dfaf8436b5db4a7d752ab208f5c4d1203dee4c4305",
+        "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
+        "/characters/rig.js": "fc0c1d81f2695004894aa0dd4e12f9886d5ea6f5d375bce4dadc71026537bb5c",
+        "/characters/ui.js": "145b3db0740fcfd83535c2250edc0e52dcda7843c41ed62b2a394d5df934a7cd",
+        "/characters/model-tier.js": "f1c83eb8d91b243948aea6d45c04fcb19e4340a52fc63bb40c960885aa1e11a9",
+        "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
+        "/characters/review-controls.js": "dfdca6623c28089521b54872645e0783033bd7f7c892c2b143dc443e9a3c000d",
+        "/characters/sippy-expression.js": "5ad54467f42692d2bbd42a3abbdba2038e9dc9cae67a1c35bcd675eb88591e46",
+        "/characters/sippy-body.js": "2d5690035f0fbd2bd648d908db99524e3878357e1973d673655623ef6fc2ee8b",
+        "/characters/sippy-tailoring.js": "a3e917d000cc04c0f78f5e0956617669cba914067a6ba5ff084861c02b1ed1dc",
+        "/characters/sippy-explorer.js": "99a3d325033ddb551220398462bb28f92317ecea5b35dc02262906e70f38f172",
+        "/characters/secondary.js": "80ed341ab1b5bdc86164c46e3585f724c919c6fcb5a90a3b59f2a681bf47e24d",
+        "/characters/sippy-hips.js": "dde1e1080e348fdf994266e99515ef4af91c110333905746925f59d1ec894eb9",
+        "/characters/sippy-shoulders.js": "178d942fab123c16eabcd0ef8a3d948e9a121e68fe568364d0eaacbb14423b6e",
+        "/characters/sippy-skin.js": "a40f2bf5b900c4be94e6b9ced5a0c7a640ce27c2c2bddf96e0cac95cebe90a0f",
+        "/characters/axon-view.js": "5f23d23a18b6b8f457c823d13ef0b78c2ca6fed2ce260b15f2c8fe28f62d0928",
+        "/characters/assets/axon-sippy-mobile-sa.glb": "f144360549eb906cdbe295561fec5df7ce5e0d01b9d68486ad5c90be48fb8b45",
+        "/characters/assets/axon-sippy-mobile.glb": "58c9e1c88236a959c452beeb61805430edd6e22717a20e69d450ee9687fca72d",
+        "/characters/diagram-parts.js": "75dbeffee2d6e1ce336a9b1cf2c1300f2ba8a453564dfbb6a4966181f32845f9",
+        "/characters/diagram-view.js": "c640dd9acf19def06fbb70a6a1bb092a8a1df523a5fc2683cd1603adf53695ae",
+        "/characters/diagram-explode.js": "8b0c94d4ab040042039e28518820a1b23826c4107b8a83cfecfb7f5166af6b5c",
+        "/characters/diagram-baked-pack.js": "0d4848ee9e16c5457b3a928944c3cd98e482af8b67a99397a576f88edaaf4519",
+        "/characters/diagram-studio.js": "3e076c0a79b648a2ed66dfc9e2cb9b4344bd273660dabf57cf3d36c46b62e0a0",
+        "/characters/axon-view.css": "a1462c79925355218a1ce3c04de4f0e46f782902ebf416ced013d80a310bf66b",
+        "/characters/diagram-baked-material.js": "a27b68dab2e5821c445a7ab5c28eb7cbb19688c83c08615d874fe70679cdbad2",
+        "/characters/assets/axon-sippy-high-sa.glb": "4a09f98aef51fb4b2de4c7a95a22068f3cdd3a3c8c0133923798e42d58172772",
+        "/characters/assets/axon-sippy-high.glb": "427308defae04cd4ccbfcc10343ffcfd3a4fb6d3de4e53251fb0a9cd5b831050",
+        "/characters/main.js": "40ad46a5040fb0a96b9ac67ce21e562ad2ec74963409b28e8fac1dbb27d3f1b4"
+      }
+    },
+    "main": {
+      "stills": {
+        "phone/front": {
+          "drawingBuffer": [
+            382,
+            522
+          ],
+          "cssBox": [
+            382,
+            521.547
+          ],
+          "viewport": [
+            412,
+            915
+          ],
+          "devicePixelRatio": 2.5999999046325684,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 0.7318,
+            "positionIn": [
+              6.2342,
+              53.15753,
+              138.44414
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "mobile",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "f990b118b68e812fa0acec10ea679000722b176160697c248d1823e02a1aef06"
+        },
+        "phone/side": {
+          "drawingBuffer": [
+            382,
+            522
+          ],
+          "cssBox": [
+            382,
+            521.547
+          ],
+          "viewport": [
+            412,
+            915
+          ],
+          "devicePixelRatio": 2.5999999046325684,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 0.7318,
+            "positionIn": [
+              139.76378,
+              41.73228,
+              0
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "mobile",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "8c93d7b33cf76888d05f5e9be5cc02ef017dd62e81d3b9f78197e735d46bdd9e"
+        },
+        "phone/hand-front": {
+          "drawingBuffer": [
+            382,
+            522
+          ],
+          "cssBox": [
+            382,
+            521.547
+          ],
+          "viewport": [
+            412,
+            915
+          ],
+          "devicePixelRatio": 2.5999999046325684,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 0.7318,
+            "positionIn": [
+              25.69861,
+              35.4147,
+              10.81856
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "mobile",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "18bd8e52de3a922c94b8c8de6540085a3b49ea607fdafa197431e7845a6c4103"
+        },
+        "phone/hand-back": {
+          "drawingBuffer": [
+            382,
+            522
+          ],
+          "cssBox": [
+            382,
+            521.547
+          ],
+          "viewport": [
+            412,
+            915
+          ],
+          "devicePixelRatio": 2.5999999046325684,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 0.7318,
+            "positionIn": [
+              26.65591,
+              35.4147,
+              -4.90808
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "mobile",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "385bc0c7552ff7725af2600df9ce59686e7b9e48d95aba3026477629c631f513"
+        },
+        "desktop/front": {
+          "drawingBuffer": [
+            1095,
+            634
+          ],
+          "cssBox": [
+            1094.969,
+            633.594
+          ],
+          "viewport": [
+            1440,
+            960
+          ],
+          "devicePixelRatio": 1,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 1.72713,
+            "positionIn": [
+              6.2342,
+              53.15753,
+              138.44414
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "high",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "ffd9fa94fb0d7088d3c52b68712ed1488e327217b19eb2978e66ba6e85606268"
+        },
+        "desktop/side": {
+          "drawingBuffer": [
+            1095,
+            634
+          ],
+          "cssBox": [
+            1094.969,
+            633.594
+          ],
+          "viewport": [
+            1440,
+            960
+          ],
+          "devicePixelRatio": 1,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 1.72713,
+            "positionIn": [
+              139.76378,
+              41.73228,
+              0
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "high",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "be4f5a9aab6e6cbff7c5e2541c9bcc64bf663d833f8fe20a8fe340196e22260b"
+        },
+        "desktop/hand-front": {
+          "drawingBuffer": [
+            1095,
+            634
+          ],
+          "cssBox": [
+            1094.969,
+            633.594
+          ],
+          "viewport": [
+            1440,
+            960
+          ],
+          "devicePixelRatio": 1,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 1.72713,
+            "positionIn": [
+              25.69861,
+              35.4147,
+              10.81856
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "high",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "d173fd182f49ad95f640fb3032851d77adb8523727d459769ca7c138ce74c6f9"
+        },
+        "desktop/hand-back": {
+          "drawingBuffer": [
+            1095,
+            634
+          ],
+          "cssBox": [
+            1094.969,
+            633.594
+          ],
+          "viewport": [
+            1440,
+            960
+          ],
+          "devicePixelRatio": 1,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 1.72713,
+            "positionIn": [
+              26.65591,
+              35.4147,
+              -4.90808
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "high",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "00e5e0fb5e754abcb16328c045fb7817c05c2e7878834543f98cf97da25074a9"
+        }
+      },
+      "checkout": "e8c6ed6c932b841eb702d4a6ea5bf8ca14bdfd73",
+      "servedSha256": {
+        "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+        "/characters/sippy.js": "a07543aa15254e0f9dcd67340cbe41ee7c3f38873559c1fba62b63ad5c8f80f5",
+        "/characters/motion.js": "089200089c705e4b589653561215ee10807234f4e3a188c777ebf7fcd6188968",
+        "/characters/stage.js": "d206cbd7a4cfb063c1f86c41cbe345e133023021ef9a940650dc05a80fc4d112",
+        "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
+        "/characters/model-tier.js": "f1c83eb8d91b243948aea6d45c04fcb19e4340a52fc63bb40c960885aa1e11a9",
+        "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
+        "/characters/rig.js": "3e8373a52c7e6a5b2049b4da5b6fbc0a9c13fa0291f6b84b6f6f38252edea20c",
+        "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
+        "/characters/ui.js": "145b3db0740fcfd83535c2250edc0e52dcda7843c41ed62b2a394d5df934a7cd",
+        "/characters/source-asset-files.js": "72807e24212cffe795c732b5340c2782f5102c2a27754bd2a4d8da1f4c1b7d4b",
+        "/characters/avatar-builder.js": "7ea387b09b7a0564952641e0179a9c0a5cd562b230c17089eb7c27e04253e3fd",
+        "/characters/source-rig.js": "2797b1f579607a7fbc09336dff23a0f3bee52ec7a1f41eafb91066ef0862aaf3",
+        "/characters/source-landmarks.js": "f52aa6aa192045f70d2df2fa576fabbb6374fa52d754c970451cf298bf4cb393",
+        "/characters/review-controls.js": "39f770e7b184ae0da4ad4986b9901405c0d6d23126488278cbc571033dbdf267",
+        "/characters/sippy-tailoring.js": "de73f10db7d36935072f8bc5f27a193558299e0ed0d689599d8b59162e097fb0",
+        "/characters/secondary.js": "80ed341ab1b5bdc86164c46e3585f724c919c6fcb5a90a3b59f2a681bf47e24d",
+        "/characters/sippy-body.js": "e12fdae99a8a88cd9e1a8e6fcf578b4318f389cdf6eb495ca5307e912e22d61f",
+        "/characters/sippy-expression.js": "634337129e2b18fe0a0de36f365ca37edb21d0a2e6c21d66eab34acbb0bc0cb6",
+        "/characters/sippy-hips.js": "dde1e1080e348fdf994266e99515ef4af91c110333905746925f59d1ec894eb9",
+        "/characters/sippy-explorer.js": "50897737f914a86a5a84854384901cf2e9fa9afcbd1884f434148082f8f4d33c",
+        "/characters/sippy-exterior-data.js": "52861ff9f0f3032cd350788266547070a09d8491c4ad81cbbb52d814de8c7b60",
+        "/characters/human-exterior.js": "7a87b86caacd33c943b0bf331c0acf3a539434deb6b68eb81501954801b4cb20",
+        "/characters/sippy-skin.js": "a8a5282940d89b8e02f5d4ce65d76251aff1d707921769cca85874983ff1418f",
+        "/characters/assets/hair/sippy-mobile.glb.gz": "309c62556c73c2fe4a20b39c4247dd57ea5175ab2743362ca28ffcfbf3dd6868",
+        "/characters/hair-groom.js": "ca600049c20a6d6ec103fe52770fb94ff8e161a5a3972dc4091897288ac18b13",
+        "/characters/assets/bp3d-missing-muscles-mobile-meshopt.glb": "7e1313aaba287cdf90ed0d97d1cdb3955d92f18b781ea6ea839c2bc1af8fac59",
+        "/characters/assets/bp3d-muscles-mobile-meshopt.glb": "d36ce0b8138d204f4f52896b5f0dd71f1b348ade89e1fe6e52cd58d71c9d925a",
+        "/characters/assets/skeleton-male-mobile.glb": "f8c021ca66b42b788d78817c43b30dc5941c876861462b6a6dea5d9ce4cc21d8",
+        "/characters/assets/zanatomy-lats-rectus-mobile-meshopt.glb": "5415abf6a24b3ad14cf150bb1208089050895b4a9d5a7353930785ecee749e94",
+        "/characters/axon-view.js": "a2d57bd017110f9b54aece98da5072ea01aaadaa0573a08530ba603db84db9fa",
+        "/characters/diagram-parts.js": "03149cb407ea59aee8fe5b0c8bb509a5ac8a0bb2be163d3fa1bedee0bab3bdfe",
+        "/characters/diagram-view.js": "aed771f346548e2229d3e1754df9f23441e059da5cb855a76babe60787b546f5",
+        "/characters/diagram-explode.js": "e5ff06d8b13c318e445686416623c914516fd5314419272208e5fdda3d1aa264",
+        "/characters/axon-view.css": "3a618db342b6d85d4a9f1deee642a9f0b3fdaa7bc579b5239fabd8de763ee0fa",
+        "/characters/diagram-studio.js": "bde1a8de416f083c79796056e7520f63301649aed1a871515ad73f9e4c70d3bb",
+        "/characters/diagram-model.js": "b7c8a3c621a33c262c80509b5c4069fa62e1e6cecbcedf317a5c014869d9b59b",
+        "/characters/diagram-snapshot.js": "af3d0c61432db2e768f59b4e8d9d90631e40d82f0b95ef598d194b6e0fd3c1de",
+        "/characters/diagram-outer-parts.js": "253efd211923a63dab9f3445e70cc6f4e6e85022730674d0e869911f3d6df390",
+        "/characters/diagram-source-anatomy.js": "f8a01a57ec55d1a62effd303c38bad53d8fd92a1f1ffbdd2e375888dabd04936",
+        "/characters/diagram-scan-source.js": "79b1612675abfc6c8da84852ccbf669b6284d4f9999d6d6b3316ba18ac4d0f3a",
+        "/characters/diagram-muscle-names.js": "9f85c9b6894bc702cdd6ad3b104405f251d13411c7cadba4928b580286925836",
+        "/characters/diagram-source-pose.js": "1296bb8be0ee664e74855971a0525819d688845a81e768f98267dee6f5e3d6cf",
+        "/characters/diagram-source-tissue.js": "c4ae75708c25524b97d7b6600ba6a3bbab93c9b930b3068cefc8f8ccaee80b3a",
+        "/characters/diagram-fabricator.js": "88a00546828c8d1a243e89b40101cd1c2d3ea4a635b11913c62cb21d6c0c4532",
+        "/characters/diagram-scan-repairs.js": "06d57b70cb7727e1efc32f763334709e561cb0708901e974601a48d1340f75a9",
+        "/characters/assets/hair/sippy-high.glb.gz": "c95b8c930c8b3041354c8cc348c4628caca7988ae4de537e56c1ea03dc088cd4",
+        "/characters/assets/bp3d-muscles-high-meshopt.glb": "4a2d4840c04053271dd191834986543bd9f3a441630e1b4b1564309049cded8e",
+        "/characters/assets/bp3d-missing-muscles-high-meshopt.glb": "3973c7e17087f3742ca2ee1664786106ec1b3d954e800d3e24a3f80080919d93",
+        "/characters/assets/skeleton-male-high.glb": "268f599a01248b45ebb4ba0e2461d43f941f9ccd13cdab712dd06c437ffdb002",
+        "/characters/assets/zanatomy-lats-rectus-high-meshopt.glb": "9a90c6e8b8e27a22b5e1417c3d07cd72ba6dfec34719a03640ca8ddfacaeec9e",
+        "/characters/main.js": "bf9946cdca21a4ca6dc694df38915fa0dfa1bea6bbb363de14d92cbcd9505fd9"
+      }
+    },
+    "candidate": {
+      "stills": {
+        "phone/front": {
+          "drawingBuffer": [
+            573,
+            783
+          ],
+          "cssBox": [
+            382,
+            521.547
+          ],
+          "viewport": [
+            412,
+            915
+          ],
+          "devicePixelRatio": 2.5999999046325684,
+          "pixelRatio": 1.5,
+          "camera": {
+            "fov": 34,
+            "aspect": 0.7318,
+            "positionIn": [
+              6.2342,
+              53.15753,
+              138.44414
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "mobile",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "1c175ea53f046551922259cb8330f1ba7e03ed4d28326e61444949e321c835e3"
+        },
+        "phone/side": {
+          "drawingBuffer": [
+            573,
+            783
+          ],
+          "cssBox": [
+            382,
+            521.547
+          ],
+          "viewport": [
+            412,
+            915
+          ],
+          "devicePixelRatio": 2.5999999046325684,
+          "pixelRatio": 1.5,
+          "camera": {
+            "fov": 34,
+            "aspect": 0.7318,
+            "positionIn": [
+              139.76378,
+              41.73228,
+              0
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "mobile",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "04f704caed657c09067c72f41063a19efc20f2de6d64377d9f3e39cbe31a9625"
+        },
+        "phone/hand-front": {
+          "drawingBuffer": [
+            573,
+            783
+          ],
+          "cssBox": [
+            382,
+            521.547
+          ],
+          "viewport": [
+            412,
+            915
+          ],
+          "devicePixelRatio": 2.5999999046325684,
+          "pixelRatio": 1.5,
+          "camera": {
+            "fov": 34,
+            "aspect": 0.7318,
+            "positionIn": [
+              25.69861,
+              35.4147,
+              10.81856
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "mobile",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "0241f56742944c34dd49d68ea14a14fc3d4b78cb87dc7bdfae19313f25385db8"
+        },
+        "phone/hand-back": {
+          "drawingBuffer": [
+            573,
+            783
+          ],
+          "cssBox": [
+            382,
+            521.547
+          ],
+          "viewport": [
+            412,
+            915
+          ],
+          "devicePixelRatio": 2.5999999046325684,
+          "pixelRatio": 1.5,
+          "camera": {
+            "fov": 34,
+            "aspect": 0.7318,
+            "positionIn": [
+              26.65591,
+              35.4147,
+              -4.90808
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "mobile",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "44eb172faf8933acb49013e8ee278e44b552f09cceea87989bafe6d8dae21906"
+        },
+        "desktop/front": {
+          "drawingBuffer": [
+            1095,
+            634
+          ],
+          "cssBox": [
+            1094.969,
+            633.594
+          ],
+          "viewport": [
+            1440,
+            960
+          ],
+          "devicePixelRatio": 1,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 1.72713,
+            "positionIn": [
+              6.2342,
+              53.15753,
+              138.44414
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "high",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "7440ecfa7cca09e1d1d5e170c6964c80cf185584218364848e4964bdb58bdaca"
+        },
+        "desktop/side": {
+          "drawingBuffer": [
+            1095,
+            634
+          ],
+          "cssBox": [
+            1094.969,
+            633.594
+          ],
+          "viewport": [
+            1440,
+            960
+          ],
+          "devicePixelRatio": 1,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 1.72713,
+            "positionIn": [
+              139.76378,
+              41.73228,
+              0
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "high",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "a0ff94eea46d8a69cfd5888cb3c3ee57a9f97349048f70fc1797d53464bce163"
+        },
+        "desktop/hand-front": {
+          "drawingBuffer": [
+            1095,
+            634
+          ],
+          "cssBox": [
+            1094.969,
+            633.594
+          ],
+          "viewport": [
+            1440,
+            960
+          ],
+          "devicePixelRatio": 1,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 1.72713,
+            "positionIn": [
+              25.69861,
+              35.4147,
+              10.81856
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "high",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "db754c6d77b686b630a0a2f597341bcd1267c1697903dcb02ee2a03267402587"
+        },
+        "desktop/hand-back": {
+          "drawingBuffer": [
+            1095,
+            634
+          ],
+          "cssBox": [
+            1094.969,
+            633.594
+          ],
+          "viewport": [
+            1440,
+            960
+          ],
+          "devicePixelRatio": 1,
+          "pixelRatio": 1,
+          "camera": {
+            "fov": 34,
+            "aspect": 1.72713,
+            "positionIn": [
+              26.65591,
+              35.4147,
+              -4.90808
+            ]
+          },
+          "stageError": 0,
+          "png": null,
+          "floor": {
+            "name": "sippy",
+            "state": "idle",
+            "speed": 0,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "heading": 0,
+            "tier": "high",
+            "view": "front",
+            "emote": -1,
+            "visible": true,
+            "built": [
+              "sippy"
+            ],
+            "firstHeroPainted": true,
+            "hairAngles": [
+              [
+                "Sippy Forelock crest",
+                0
+              ],
+              [
+                "Sippy Broken wave",
+                0
+              ],
+              [
+                "Sippy Part-side temple",
+                0
+              ]
+            ]
+          },
+          "imageSha256": "c16bb35108834ff39ab9de29b2fc03673f511cc65659f9d2832b18759a81a3bc"
+        }
+      },
+      "video": {
+        "camera": "Real High simulator. Fixed idle pose, viewpoint orbits clockwise in 4 degree steps. Native stage height and trimmed canvas width.",
+        "movie": "sippy-turnaround.mp4",
+        "sha256": "13a9aacbc6af3f7ab9e34e12bd33edf0d46c3bc4f71725c2dc0b87e4e0230b80",
+        "frames": [
+          {
+            "yawDegrees": 0.0,
+            "sha256": "363decdbe027040a4f6b29899c92b2e1822984068decc63ff807f01cf2456479",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 4.0,
+            "sha256": "0be1f810343ca122ab2aca488e22f6e910a7b966f9e7ce8cbb798f2bbf7169f6",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 8.0,
+            "sha256": "57127ee15a1cf5c1a024c051e73292b3030b374e8016658dc7f01334f95bd75a",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 12.0,
+            "sha256": "64c61bc4bc00a67432c2a7adf6f4c77d13aa0a79ba79ed357d623f77a6cc8540",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 16.0,
+            "sha256": "7b31bb5582fd49ef68eef6c27a318c6adeaeccb0f31068e891e272efedd8ec76",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 20.0,
+            "sha256": "bbc9d5fc3590ebe899980581d06644e68c52f7b6624d3b56e03ae18428ccbc37",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 24.0,
+            "sha256": "4bbb88e56f7f6de55bcddedb5a4796c16423d69a9fe9123382b32c4bb9c8589f",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 28.0,
+            "sha256": "a6445e23f71483c0617e1cb5e7a0965879b57287d74ab3143a242da50395c888",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 32.0,
+            "sha256": "c9f08a94f794ed3e38d4b98e22adaafd9978233ff8df011b9f8d0356f13527ca",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 36.0,
+            "sha256": "9f6c176dfe12d8cee474e00e6265ed61a91f5a54e2b9a92edb6226474792e0bd",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 40.0,
+            "sha256": "926af2fa38ddf2e6d8420b0ba8f0792fe665e3b80e148b08a71966482a3bfd3e",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 44.0,
+            "sha256": "4a1c24f789449c3b377de6de1e574f7dffdbec66a34d28e9ba7807eadfa85832",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 48.0,
+            "sha256": "66c9920ec0eb8b10fd6d6d1139cd61da978812bf5440f29e9bc96016fc4561ff",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 52.0,
+            "sha256": "b4a371c8d170a945dccc92c84e3ed32a04bcd97dd2b2c80de83cc0d6a888963b",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 56.0,
+            "sha256": "0231c0e69c0cfd2d7f81cf8fca210b0d45f684f30340a39fe1b257397f8fa08f",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 60.0,
+            "sha256": "d948be7a666f34da8ac6d62d420bc13d1d8f47af360203a6cb99c9466e22e952",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 64.0,
+            "sha256": "915bddf86b0337fae943acc16f4932a2051d8b5b53a85c41175dc4a7ee03b514",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 68.0,
+            "sha256": "a98c7f1f36c876453fa6ffab324fe560a907b5a329ce21f0c9ccad52399b07f0",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 72.0,
+            "sha256": "c46bd328e94c48b54a0708b34501f039c90767aa7cc075a1c373cc7dfb952314",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 76.0,
+            "sha256": "54fc232997630cbcd18fc19a806aa205ce4a281786b64e326bf446e98a67b9d0",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 80.0,
+            "sha256": "0dec7a2d3fb15daf4833136d61b3d29814ce8de85e0b700a548a0c9be6747cc7",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 84.0,
+            "sha256": "2b8451810aca86b4b94c819129bdecf755eb1cb370deaad37e3aa18ed5cca2de",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 88.0,
+            "sha256": "23215e3825c826378eeb278713029a8487edad5618ebb6bc09510ae99feb45ec",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 92.0,
+            "sha256": "e21484eab4a8bcc6dc2a2840f47f9f6ad1c9a6567fdd285137505d3164314582",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 96.0,
+            "sha256": "85b1508f59ba4bcfd1a9f424ce5d90c0b168b939d89552d80276512477e14174",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 100.0,
+            "sha256": "21c6a933d8c5d1b04afec7afba984c21e6a0a9803cce4c0d98ffd8c03fab6e09",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 104.0,
+            "sha256": "21224e6263705cb6d4b393c77cecfa0a3a16c61f2199785bccc27e548636d8eb",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 108.0,
+            "sha256": "e1173ddb86de3f32c000719900e8ff876bddd4cde4566d18a9bdb44f3939ecff",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 112.0,
+            "sha256": "88e323e5d186494e02f080c8ada758c337409b400ad49bc23ff362ef8dd8640d",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 116.0,
+            "sha256": "e7f82e712b2376f54a57e1a45e72011306eaf0667dc87b3c0d4dd54ee3f5a5b2",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 120.0,
+            "sha256": "c40d397e1e06a6bd75d838a059df6e389b76a59859ed6fd8cd012ae483e64f41",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 124.0,
+            "sha256": "598ce2bdc81da5a6ef58603477a9851521adbc82d4c973ea71f15e9da25f8c32",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 128.0,
+            "sha256": "0975fcb40e2fda42bc82b2297700c15e1a6b7eab0ce17075474cb52d078b3090",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 132.0,
+            "sha256": "44e559c0221e5377be936a1a996bacf0dd991ff9bd41c5f9104ac3ecd9af51c8",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 136.0,
+            "sha256": "42116082fb18edd1dc20c4d4043ed78a0b3817a2115827ba40dfd65db88d9e46",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 140.0,
+            "sha256": "04cca764eee7de4f3b5cefd3f26573c9fc260315c4306d8d282e5ccba0e972ce",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 144.0,
+            "sha256": "ee238fbb57b971b53684bac797b2478b26a5d96b9e74a12086ecdad8ad6baeeb",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 148.0,
+            "sha256": "5e75cfe1bbda2fae14319b8bfeb32a1143a15f3b0575d8a2ba3d1f8bff1351d7",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 152.0,
+            "sha256": "b4e1e4b5cccfcae667e1cd12a2b04cffe81824ae82a8dee41096dfdb41121207",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 156.0,
+            "sha256": "fdf063839fd51fd0ee2eb4c350cd9ad404e94791e7e76d204d809fdb52406e46",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 160.0,
+            "sha256": "f810c6cd32db1538650a55cd5cf4d452eb1c50836c9df4bc8418b384159a487e",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 164.0,
+            "sha256": "a996ef28a5345b6f665a6a9b33b22285457af788c7c24143bb3c7cb6b8c29f1e",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 168.0,
+            "sha256": "32b0f3aa342c0dda426084c1390f09b6eae9fed24939a06a6effb0ad99d952d3",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 172.0,
+            "sha256": "4271e6d76c95b9305d4bad9585e1ebe36aef7ca9207da7a3e1e438bf3c232fe7",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 176.0,
+            "sha256": "38ed4ab05decddb477d3e11e180e91b2d0f40f3f875b82a9efcb6305a47eb48d",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 180.0,
+            "sha256": "c46f214cd4c3b033ce62ec8ed192888365bdf84e6daa6effd758d23d4b2d3a6b",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 184.0,
+            "sha256": "3f7c5afbbaef6394777a8ebe800a9bcc9a800108735e95f114f64b4032221e32",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 188.0,
+            "sha256": "d695e2011a33625598e72c6f8bf8909b0eeffa1a20f5178cb31da98b9100d403",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 192.0,
+            "sha256": "8f113ebf6d65c88cae796c6e1e3575cfe67965275e8a6c490238bcf94d5dcf2a",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 196.0,
+            "sha256": "9babdb49331b24fb1e74ddd83ca1bdad2a3f923760ed20061027ebd35d4516be",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 200.0,
+            "sha256": "440f16066f219a6218814f4f926a6b89869986ba5106f2b6b5c4fc23e9fbba65",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 204.0,
+            "sha256": "c5bde7f2578d44315368d56046425c812a29881a4086eb342c8d64a7455269e9",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 208.0,
+            "sha256": "05634dcf6015d6fca6dd1ca8da92db1b7f980a05a9afc43c7a346b1c6b548def",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 212.0,
+            "sha256": "af419aade5bda3eba0ad26d45daa3a8b88cffed587829d6c207aad9faa1d6e03",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 216.0,
+            "sha256": "6be8b6548b7ad355c005662d4f840403583e27bd0e3e787c79ab2650b977ab4b",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 220.0,
+            "sha256": "bccf346d24e9fcee282ad6f4a08acd01b98a2a5acdba46b9d2288df35620de8b",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 224.0,
+            "sha256": "a44160310780d287e7f4df09d88f593d55af57a01cdf016a6cc563a66f01d556",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 228.0,
+            "sha256": "f2d8dcd3e5ef424d06f935b4602656d23696d4261722d47a2ffd2755cd0f739c",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 232.0,
+            "sha256": "167c1ba9783f2828dc3587df78e49adb0833cf2f8dbbdac24a3f196cb96b5f58",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 236.0,
+            "sha256": "b4d436778439e24a02fc7d4d5f54f78b7a6592eb5e46b28e86339df0dd97a881",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 240.0,
+            "sha256": "78cfb32301ee426b92fb9115e6b49f1012b62ca242d05943e238413dd58912ad",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 244.0,
+            "sha256": "95f6ca2ad13794b0b2b7cc8755b9b3cdf18ac68987ca13d15223a03bb5286140",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 248.0,
+            "sha256": "43e0edf04d6a08185be4099616ef4fe1387a6f1dfdfae9c41fc804faf8372899",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 252.0,
+            "sha256": "2275cc8e41f11fd9dc38eff5ff9a2fe79e55fb322936a054fe8b7a343bc2a269",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 256.0,
+            "sha256": "6cc9b818a1031745d0e4c4a4b627f24708ed29791d69de2b50f76101e82232ed",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 260.0,
+            "sha256": "1f7f4835a2fe712441f033456630d0a82fc14bfc3001f835f2e1f8b47262b078",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 264.0,
+            "sha256": "f8dd396a1230238465e220ff4ac487adf29c8075ca90b4faf752e938ba52a80f",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 268.0,
+            "sha256": "35a56b81c7a46ecec563e5b00522eccbb19568fe74e4d76064f242a4606f3cf9",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 272.0,
+            "sha256": "43efb0afe94d50be146082df3f707a7a6c6dade0b1b9af76e6096f5c9dd238b1",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 276.0,
+            "sha256": "d8faf0d0031f7e632bb49ac151bb137a942d188e746c348f8aebbbfaa5252f35",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 280.0,
+            "sha256": "d4f908f78e43f500919d7efb0140831d71bc182409b9777b85441e26882e6f79",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 284.0,
+            "sha256": "2e4a0058fae2e0fb8daa0e1c285d066cfe088cb78b156b20cef78bbfd34fe7b0",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 288.0,
+            "sha256": "a38b8631b7b7baaf0ecb8493722cb4574ebb58758aec9879edd077dbd2a88e85",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 292.0,
+            "sha256": "d6c0944fb75598df1f90218ef3569387c1ef7417a5cf6e8fd7f4b4724761f086",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 296.0,
+            "sha256": "e20037627f21811854034d7f6f34832c46b0f754204d684dde676039d74f219f",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 300.0,
+            "sha256": "0156defc5d40ea9a4d2faf4dd7a72ebe9d527282c6d89e9f343e2db180198250",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 304.0,
+            "sha256": "2fa322e8a3fd4a4d5dd9ac93357c3f35028dc75ebd12d1a70b2f13982a393fec",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 308.0,
+            "sha256": "428902296f8ebd82125deb20290e4c55ac00f0a36ff00493fa2005c0b3f37170",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 312.0,
+            "sha256": "7f9a32061ee8917ccec308de5c3d2f480e9b552999f879c39ac54584bef6ce4c",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 316.0,
+            "sha256": "2bda90b2f8408db72462ee86129f15cada36a17249ef4c7023f5a2a8828b091d",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 320.0,
+            "sha256": "6d0e0e74abc07119311b8f7b612bda78207b14a4b16fced3d9c9e4d4c4505c49",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 324.0,
+            "sha256": "606bfee5cfe83ed4ec939250116f4e276095581673131109475327a1410539ba",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 328.0,
+            "sha256": "ae805c1635b8830f053c4e0af23aa192aca7b903fa10850026041c46cefa1e8b",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 332.0,
+            "sha256": "12a2400d7c34c23c37ff4b6616d5d0099a77faff8441825c3564a3ae026dbb35",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 336.0,
+            "sha256": "8151794e8f750fd27342079bb647dec821dbd66afa9e2faabde4a8cdfd7060cf",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 340.0,
+            "sha256": "e6af8facdc28271846f478feb6acee42fc4276abb8770fa482ba453f4bfb02c6",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 344.0,
+            "sha256": "5b882d8c738ea10809f0d76ccb8515fda07f6852eacde936b46c9cc90a4e41fd",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 348.0,
+            "sha256": "fdde0af0ff660d4756c7c313a00355ad4723e09f1bce462ee716cde9171cefc7",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 352.0,
+            "sha256": "7bcc91a67724eef6af04b7a08a33d800e48554657980d9574efc00145f91b9a7",
+            "stageError": 0
+          },
+          {
+            "yawDegrees": 356.0,
+            "sha256": "eac5bbad6710c825da79d3fbf68e5083124bb7c302a9fcc7b8dca4f4377fb9c3",
+            "stageError": 0
+          }
+        ]
+      },
+      "checkout": "9017de71207b6e2bb2956dbc61b38694169aa6dc",
+      "servedSha256": {
+        "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+        "/characters/motion.js": "089200089c705e4b589653561215ee10807234f4e3a188c777ebf7fcd6188968",
+        "/characters/stage.js": "641718e455aacc22f4e02423c48bc7a48ead56efb7ee6a534ccb2530e6a768c2",
+        "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
+        "/characters/sippy.js": "0cf15ccc0087ea9078373ae470a3765e28c2aef91bb7870b50a34b9726f7622d",
+        "/characters/model-tier.js": "f1c83eb8d91b243948aea6d45c04fcb19e4340a52fc63bb40c960885aa1e11a9",
+        "/characters/rig.js": "3e8373a52c7e6a5b2049b4da5b6fbc0a9c13fa0291f6b84b6f6f38252edea20c",
+        "/characters/ui.js": "145b3db0740fcfd83535c2250edc0e52dcda7843c41ed62b2a394d5df934a7cd",
+        "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
+        "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
+        "/characters/source-asset-files.js": "72807e24212cffe795c732b5340c2782f5102c2a27754bd2a4d8da1f4c1b7d4b",
+        "/characters/avatar-builder.js": "7ea387b09b7a0564952641e0179a9c0a5cd562b230c17089eb7c27e04253e3fd",
+        "/characters/source-rig.js": "2797b1f579607a7fbc09336dff23a0f3bee52ec7a1f41eafb91066ef0862aaf3",
+        "/characters/source-landmarks.js": "f52aa6aa192045f70d2df2fa576fabbb6374fa52d754c970451cf298bf4cb393",
+        "/characters/review-controls.js": "39f770e7b184ae0da4ad4986b9901405c0d6d23126488278cbc571033dbdf267",
+        "/characters/sippy-explorer.js": "68f5d2b1a9d23d7d2e09a026de9cff01e82b1da5ecf6c05c91dcab0d7aced447",
+        "/characters/sippy-tailoring.js": "075eaadb8bf9283c5518cd0b116c16cac4afeda7c07fb8a79f7a8e4e3734a75e",
+        "/characters/sippy-expression.js": "634337129e2b18fe0a0de36f365ca37edb21d0a2e6c21d66eab34acbb0bc0cb6",
+        "/characters/secondary.js": "80ed341ab1b5bdc86164c46e3585f724c919c6fcb5a90a3b59f2a681bf47e24d",
+        "/characters/sippy-body.js": "e9165e8159f59c8f4be5e7804e6b334e8a5d4bd2559fec3875506c462f970ee9",
+        "/characters/sippy-hips.js": "dde1e1080e348fdf994266e99515ef4af91c110333905746925f59d1ec894eb9",
+        "/characters/human-exterior.js": "7a87b86caacd33c943b0bf331c0acf3a539434deb6b68eb81501954801b4cb20",
+        "/characters/sippy-exterior-data.js": "acaa7b764dd01f2c184660e3098673801e2f9f5fd762e22fa2fc36c73a1831ac",
+        "/characters/sippy-skin.js": "a8a5282940d89b8e02f5d4ce65d76251aff1d707921769cca85874983ff1418f",
+        "/characters/assets/hair/sippy-mobile.glb.gz": "309c62556c73c2fe4a20b39c4247dd57ea5175ab2743362ca28ffcfbf3dd6868",
+        "/characters/hair-groom.js": "ca600049c20a6d6ec103fe52770fb94ff8e161a5a3972dc4091897288ac18b13",
+        "/characters/assets/skeleton-male-mobile.glb": "f8c021ca66b42b788d78817c43b30dc5941c876861462b6a6dea5d9ce4cc21d8",
+        "/characters/assets/bp3d-missing-muscles-mobile-meshopt.glb": "7e1313aaba287cdf90ed0d97d1cdb3955d92f18b781ea6ea839c2bc1af8fac59",
+        "/characters/assets/zanatomy-lats-rectus-mobile-meshopt.glb": "5415abf6a24b3ad14cf150bb1208089050895b4a9d5a7353930785ecee749e94",
+        "/characters/assets/bp3d-muscles-mobile-meshopt.glb": "d36ce0b8138d204f4f52896b5f0dd71f1b348ade89e1fe6e52cd58d71c9d925a",
+        "/characters/axon-view.js": "a2d57bd017110f9b54aece98da5072ea01aaadaa0573a08530ba603db84db9fa",
+        "/characters/diagram-parts.js": "03149cb407ea59aee8fe5b0c8bb509a5ac8a0bb2be163d3fa1bedee0bab3bdfe",
+        "/characters/diagram-view.js": "aed771f346548e2229d3e1754df9f23441e059da5cb855a76babe60787b546f5",
+        "/characters/diagram-explode.js": "e5ff06d8b13c318e445686416623c914516fd5314419272208e5fdda3d1aa264",
+        "/characters/diagram-model.js": "b7c8a3c621a33c262c80509b5c4069fa62e1e6cecbcedf317a5c014869d9b59b",
+        "/characters/axon-view.css": "3a618db342b6d85d4a9f1deee642a9f0b3fdaa7bc579b5239fabd8de763ee0fa",
+        "/characters/diagram-studio.js": "bde1a8de416f083c79796056e7520f63301649aed1a871515ad73f9e4c70d3bb",
+        "/characters/diagram-outer-parts.js": "253efd211923a63dab9f3445e70cc6f4e6e85022730674d0e869911f3d6df390",
+        "/characters/diagram-snapshot.js": "af3d0c61432db2e768f59b4e8d9d90631e40d82f0b95ef598d194b6e0fd3c1de",
+        "/characters/diagram-source-anatomy.js": "f8a01a57ec55d1a62effd303c38bad53d8fd92a1f1ffbdd2e375888dabd04936",
+        "/characters/diagram-fabricator.js": "88a00546828c8d1a243e89b40101cd1c2d3ea4a635b11913c62cb21d6c0c4532",
+        "/characters/diagram-muscle-names.js": "9f85c9b6894bc702cdd6ad3b104405f251d13411c7cadba4928b580286925836",
+        "/characters/diagram-scan-repairs.js": "06d57b70cb7727e1efc32f763334709e561cb0708901e974601a48d1340f75a9",
+        "/characters/diagram-source-pose.js": "1296bb8be0ee664e74855971a0525819d688845a81e768f98267dee6f5e3d6cf",
+        "/characters/diagram-source-tissue.js": "c4ae75708c25524b97d7b6600ba6a3bbab93c9b930b3068cefc8f8ccaee80b3a",
+        "/characters/diagram-scan-source.js": "79b1612675abfc6c8da84852ccbf669b6284d4f9999d6d6b3316ba18ac4d0f3a",
+        "/characters/assets/hair/sippy-high.glb.gz": "c95b8c930c8b3041354c8cc348c4628caca7988ae4de537e56c1ea03dc088cd4",
+        "/characters/assets/bp3d-muscles-high-meshopt.glb": "4a2d4840c04053271dd191834986543bd9f3a441630e1b4b1564309049cded8e",
+        "/characters/assets/zanatomy-lats-rectus-high-meshopt.glb": "9a90c6e8b8e27a22b5e1417c3d07cd72ba6dfec34719a03640ca8ddfacaeec9e",
+        "/characters/assets/bp3d-missing-muscles-high-meshopt.glb": "3973c7e17087f3742ca2ee1664786106ec1b3d954e800d3e24a3f80080919d93",
+        "/characters/assets/skeleton-male-high.glb": "268f599a01248b45ebb4ba0e2461d43f941f9ccd13cdab712dd06c437ffdb002",
+        "/characters/main.js": "bf9946cdca21a4ca6dc694df38915fa0dfa1bea6bbb363de14d92cbcd9505fd9"
+      }
+    }
+  },
+  "devicePixelCrops": {
+    "phoneHandCrop": [
+      22,
+      95,
+      953,
+      1188
+    ],
+    "desktopHandCrop": [
+      248,
+      38,
+      853,
+      607
+    ],
+    "phoneEdgeCropByRevision": {
+      "pr24": [
+        283,
+        427,
+        369,
+        535
+      ],
+      "main": [
+        291,
+        427,
+        377,
+        535
+      ],
+      "candidate": [
+        291,
+        427,
+        377,
+        535
+      ]
+    }
+  },
+  "videoEncoding": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "width": 648,
+        "height": 634,
+        "r_frame_rate": "18/1",
+        "nb_frames": "90"
+      }
+    ],
+    "format": {
+      "duration": "5.000000"
+    }
+  },
+  "files": {
+    "sippy-desktop-hands.png": "25eacd246c30892c760a6e33fb5afef4dfb2d0381741baca312c13476e071139",
+    "sippy-desktop-silhouette.png": "339b3c1ed030a0d09935e884a5ad849636f20eaf263bc01395b1e79ecfc5ecde",
+    "sippy-phone-hands.png": "fa8102ff779a36810bcb56c41f11fc44d89ef8058cb544a1a2f0201c7f270ce1",
+    "sippy-phone-silhouette.png": "e5c3f4c136e17d57f15e80c78c596566021898d867f1695e78ba0b83b2840bb4",
+    "sippy-phone-sleeve-edges.png": "7b60f86961c8b0e5ea62171972472b74989bce7e959d07aa079a1836b4844255",
+    "sippy-turnaround.mp4": "13a9aacbc6af3f7ab9e34e12bd33edf0d46c3bc4f71725c2dc0b87e4e0230b80"
+  }
+}
