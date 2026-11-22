@@ -269,6 +269,38 @@ export function addScanMuscles(rig, roma, parts, atlas, lm) {
   };
   thin.hasReserve = hasClearance;
   thin.inside = fit.inside;
-  fitAtlasMuscles(parts, rig, atlas, (part) =>
-    superficialTrunk.test(part.muscleNode) ? { fit: thin, thinSheet: true } : { fit });
+  // The broad costal and spinal roots retain their subcutaneous seat.
+  // As the humerus swings, the insertion ends of both axillary walls share
+  // the shoulder's deeper reserve across the narrowing chest-arm crease.
+  const foldEnvelopes = Object.fromEntries(['L', 'R'].map((side) => {
+    const arm = rig['upperArm' + side].rotation;
+    // Opposed arm swing twists the posterior sheet across Sippy's continuous
+    // back. A bilateral forward tuck folds the skin and sheet together.
+    const otherArm = rig[side === 'L' ? 'upperArmR' : 'upperArmL'].rotation;
+    const swing = roma
+      ? Math.hypot(arm.x, arm.y, Math.max(0, Math.abs(arm.z) - 0.09))
+      : Math.max(0, -arm.x) * Math.min(1, Math.max(0, otherArm.x) / 0.24);
+    const t = Math.min(1, Math.max(0, swing - 0.03) / 0.21);
+    const reserve = t * t * (3 - 2 * t);
+    const cutaneous = v(), deep = v();
+    const fitFold = (p) => {
+      if (!reserve) return thin(p);
+      // In the continuous shell a fibre already seated under the skin
+      // should retain its local relief over the posterior ribs.
+      if (!roma && hasClearance(p)) return p;
+      if (reserve === 1) return fit(p);
+      cutaneous.copy(p);
+      thin(cutaneous);
+      return p.lerpVectors(cutaneous, fit(deep.copy(p)), reserve);
+    };
+    fitFold.inside = fit.inside;
+    fitFold.hasReserve = hasClearance;
+    return [side, fitFold];
+  }));
+  fitAtlasMuscles(parts, rig, atlas, (part) => {
+    if (!superficialTrunk.test(part.muscleNode)) return { fit };
+    const crossesFold = part.region === 'axillary' && (roma || /latissimus/.test(part.muscleNode));
+    const fold = crossesFold && foldEnvelopes[part.muscleNode.startsWith('left_') ? 'L' : 'R'];
+    return { fit: fold || thin, thinSheet: true };
+  });
 }
