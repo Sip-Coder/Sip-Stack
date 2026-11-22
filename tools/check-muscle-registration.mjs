@@ -1,4 +1,4 @@
-// Audit the neutral production Axon snapshot, including tissue after envelope fitting.
+// Audit the neutral offline fit before packaging, including tissue after skin-envelope fitting.
 import { registerHooks } from 'node:module';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -22,10 +22,8 @@ if (process.env.THREE_ROOT) {
 }
 const { REVISION, Vector3, Triangle } = await import('three');
 if (REVISION !== '170') throw Error('Expected three@0.170.0');
-const { buildDiagramModel } = await import('../docs/characters/diagram-parts.js');
-const { loadMuscleAtlas, loadCharacterMuscles } = await import(
-  '../docs/characters/diagram-scan-source.js'
-);
+const { buildDiagramModel } = await import('../docs/characters/diagram-fit-model.js');
+const { loadMuscleAtlas, loadCharacterMuscles } = await import('../docs/characters/diagram-scan-source.js');
 const mapping = JSON.parse(
   await readFile(
     new URL('../docs/characters/review/scan-skeleton/female-muscle-mapping.json', import.meta.url),
@@ -33,6 +31,115 @@ const mapping = JSON.parse(
 );
 const inch = 0.0254;
 const selected = { supraspinatus: 'SCAPULA', gluteus_medius: 'HIP', adductor_magnus: 'FEMUR' };
+// Independent donor manifest from the supplied BP3D element and Z-Anatomy file lists.
+// Preserve the 76 previously approved female donors when a lower-limb label overlaps.
+const bp3dPairs = {
+  deltoid_acromial_part: 1467,
+  deltoid_clavicular_part: 1468,
+  deltoid_spinal_part: 1513,
+  pectoralis_major_clavicular_part: 1447,
+  pectoralis_major_sternocostal_part: 1464,
+  pectoralis_major_abdominal_part: 1446,
+  trapezius_descending_part: 1521,
+  trapezius_transverse_part: 1554,
+  trapezius_ascending_part: 1520,
+  biceps_brachii_long_head: 1478,
+  biceps_brachii_short_head: 1512,
+  rectus_femoris: 1433,
+  vastus_lateralis: 1442,
+  vastus_medialis: 1443,
+  vastus_intermedius: 1441,
+  gastrocnemius_medial_head: 1397,
+  gastrocnemius_lateral_head: 1394,
+};
+const surfaceDonors = new Map();
+for (const side of ['left', 'right']) {
+  for (const [group, fj] of Object.entries(bp3dPairs))
+    surfaceDonors.set(side + '_' + group, 'FJ' + fj + (side === 'left' ? 'M' : '') + '.obj');
+  for (const group of ['Latissimus_dorsi', 'Rectus_abdominis'])
+    surfaceDonors.set(side + '_' + group.toLowerCase(), group + '_muscle_' + side[0] + '.obj');
+}
+// Gross cortical targets only; the fitter independently chooses the precise triangle.
+function expectedBones(group) {
+  if (/deltoid/.test(group)) return [/clavicular/.test(group) ? 'CLAVICLE' : 'SCAPULA', 'HUMERUS'];
+  if (/pectoralis/.test(group))
+    return [/clavicular/.test(group) ? 'CLAVICLE' : /abdominal/.test(group) ? 'RIB' : 'STERNUM', 'HUMERUS'];
+  if (/trapezius/.test(group)) return ['VERTEBRA', /descending/.test(group) ? 'CLAVICLE' : 'SCAPULA'];
+  if (/biceps_brachii/.test(group)) return ['SCAPULA', 'RADIUS'];
+  if (/gastrocnemius/.test(group)) return ['FEMUR', 'CALCANEUS'];
+  if (/latissimus/.test(group)) return ['VERTEBRA', 'HIP', 'HUMERUS'];
+  if (/abdominis/.test(group)) return ['HIP', 'RIB', 'STERNUM'];
+  return [/rectus_femoris/.test(group) ? 'HIP' : 'FEMUR', 'PATELLA'];
+}
+function verifySurface(p, donor, problems, sheetTints) {
+  const side = p.muscleNode.split('_')[0];
+  const anchors = p.attachments || [];
+  for (const target of expectedBones(p.muscleNode)) {
+    if (!anchors.some((a) => a.bone.split('_')[0] === target))
+      problems.push('Missing ' + target + ' cortex on ' + p.muscleNode);
+  }
+  if (anchors.some((a) => a.bone.endsWith(side === 'left' ? '_RIGHT' : '_LEFT')))
+    problems.push('Contralateral anchor on ' + p.muscleNode);
+  if (Math.sign(centre(p.mesh.geometry).x) !== (side === 'left' ? 1 : -1))
+    problems.push('Contralateral belly on ' + p.muscleNode);
+  const { uv, color } = p.mesh.geometry.attributes;
+  if (!p.mesh.material.vertexColors || Math.abs(p.mesh.material.roughness - 0.3) > 0.001 || !uv || !color) {
+    problems.push('Missing tissue material or fibre attributes on ' + p.muscleNode);
+    return;
+  }
+  let min = Infinity,
+    max = -Infinity,
+    uMin = Infinity,
+    uMax = -Infinity,
+    vMin = Infinity,
+    vMax = -Infinity;
+  for (let i = 0; i < color.count; i++) {
+    min = Math.min(min, color.getY(i));
+    max = Math.max(max, color.getY(i));
+    uMin = Math.min(uMin, uv.getX(i));
+    uMax = Math.max(uMax, uv.getX(i));
+    vMin = Math.min(vMin, uv.getY(i));
+    vMax = Math.max(vMax, uv.getY(i));
+  }
+  if (!(max - min > 0.25 && uMax - uMin > 0.1 && vMax - vMin > 0.5))
+    problems.push('Lost tendon/belly or fibre variation on ' + p.muscleNode);
+  if (!/pectoralis_major|latissimus_dorsi|rectus_abdominis|trapezius/.test(p.muscleNode)) return;
+
+  // Sample the unchanged donor vertices so pose-dependent crease refinement
+  // cannot overweight the colour audit. Bin the paired rectus inscriptions
+  // through the middle of each belly, away from pubic and costal tendons.
+  let pale = 0,
+    dark = 0;
+  const bands = Array(56).fill(0);
+  for (let i = 0; i < donor.count; i++) {
+    const g = color.getY(i);
+    if (g < 0.12) dark++;
+    if (g < 0.22) continue;
+    pale++;
+    const x = Math.abs(donor.getX(i)),
+      y = donor.getY(i);
+    if (x >= 0.015 && x <= 0.042 && y >= 0.98 && y < 1.185) bands[Math.floor((y - 0.98) / 0.004)]++;
+  }
+  if (!pale || dark < donor.count * 0.45) problems.push('Lost red belly or pale band on ' + p.muscleNode);
+  const result = {
+    darkBellyFraction: +(dark / donor.count).toFixed(4),
+    paleBandFraction: +(pale / donor.count).toFixed(4),
+  };
+  if (p.muscleNode.endsWith('rectus_abdominis')) {
+    const peaks = [],
+      pitchIn = 0.004 / inch;
+    for (let i = 0; i < bands.length; i++) {
+      if (!bands[i]) continue;
+      const start = i;
+      while (i + 1 < bands.length && bands[i + 1]) i++;
+      peaks.push(+((i - start + 1) * pitchIn).toFixed(2));
+    }
+    result.centralInscriptionWidthsIn = peaks;
+    if (peaks.length !== 3 || peaks.some((width) => width > 0.65))
+      problems.push('Expected three narrow inscriptions on ' + p.muscleNode);
+  }
+  sheetTints[p.muscleNode] = result;
+}
 const point = new Vector3(),
   nearest = new Vector3(),
   tri = new Triangle();
@@ -89,9 +196,7 @@ for (const name of ['sippy', 'roma'])
       problems = [];
     const muscles = model.parts.filter((p) => p.layer === 'muscles'),
       atlas = new Map(muscles.map((p) => [p.muscleNode, p]));
-    const bones = new Map(
-      model.parts.filter((p) => p.scanNode).map((p) => [p.scanNode, p.mesh.geometry]),
-    );
+    const bones = new Map(model.parts.filter((p) => p.scanNode).map((p) => [p.scanNode, p.mesh.geometry]));
     const ids = new Set(),
       normalZeroParts = [],
       wrongSide = [];
@@ -174,8 +279,10 @@ for (const name of ['sippy', 'roma'])
         if (mobilePickers.get(name).get(p.muscleNode) !== p.id)
           problems.push('Picker changed across tiers ' + p.id);
     const registered = await loadCharacterMuscles(name, tier);
-    const spatialRetention = [];
+    const spatialRetention = [],
+      sheetTints = {};
     const expected = new Map([...base].map(([k, g]) => [k, g.userData.sourcePart]));
+    for (const [node, donor] of surfaceDonors) expected.set(node, donor);
     if (name === 'roma') for (const donor of mapping.mapping) expected.set(donor.node, donor.atlasId);
     if (atlas.size !== expected.size) problems.push('Wrong atlas size ' + atlas.size);
     for (const [id, expectedSource] of expected) {
@@ -186,6 +293,7 @@ for (const name of ['sippy', 'roma'])
         continue;
       }
       const input = registered.get(id).attributes.position;
+      if (surfaceDonors.has(id)) verifySurface(p, input, problems, sheetTints);
       const from = distinctPositions(input, input.count);
       const to = distinctPositions(p.mesh.geometry.attributes.position, input.count);
       spatialRetention.push({ node: id, source: from, posed: to, ratio: to / from });
@@ -244,6 +352,14 @@ for (const name of ['sippy', 'roma'])
       belowHalfDistinct: spatialRetention.filter((p) => p.ratio < 0.5),
       uniquePickerIds: ids.size,
       uniqueAtlasNodes: atlas.size,
+      sheetTints,
+      verifiedSuperficialNodes: [...surfaceDonors.keys()].filter((id) => atlas.has(id)).length,
+      observedBySource: Object.fromEntries(
+        [...new Set(muscles.map((p) => p.source))].map((source) => [
+          source,
+          muscles.filter((p) => p.source === source).length,
+        ]),
+      ),
       observedVhf: muscles.filter((p) => p.sourcePart.startsWith('VHF:')).length,
       atlasMismatch,
       withTwoOrMore: twoOrMore,

@@ -1,4 +1,5 @@
 // Save only the six paired neutral High bones used by the landmark audit.
+import { existsSync } from 'node:fs';
 import { registerHooks } from 'node:module';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -24,7 +25,9 @@ if (process.env.THREE_ROOT) {
 const { REVISION } = await import('three');
 if (REVISION !== '170') throw Error('Expected three@0.170.0');
 const component = (file) => pathToFileURL(resolve(checkout, 'docs/characters', file)).href;
-const { buildDiagramModel } = await import(component('diagram-parts.js'));
+const fitModule = existsSync(resolve(checkout, 'docs/characters/diagram-fit-model.js'))
+  ? 'diagram-fit-model.js' : 'diagram-parts.js';
+const { buildDiagramModel } = await import(component(fitModule));
 const { loadSkeletonScan } = await import(component('diagram-scan-source.js'));
 const selected = /^(FEMUR|CLAVICLE|TIBIA)_(LEFT|RIGHT)$/;
 function geometryBuffers(geometry) {
