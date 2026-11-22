@@ -174,4 +174,3 @@ export function shadeSourceMuscle(geometry, nodeName, authored = false) {
   if (!geometry.hasAttribute('uv')) geometry.setAttribute('uv', new Float32BufferAttribute(uv, 2));
   if (!geometry.hasAttribute('color')) geometry.setAttribute('color', new Float32BufferAttribute(colors, 3));
 }
-
