@@ -1,134 +1,134 @@
 {
-  "baseline": "c2604a71caaece7dbc7897bc2d2aa8a9a7cb7667",
+  "baseline": "d1168498fd73685b1b69a2f8fcd7ea6272df65a3",
   "resolution": 320,
   "results": [
     {
       "name": "sippy",
       "tier": "mobile",
       "yaw": 0,
-      "overlapPercent": 98.55,
-      "widthChangePercent": 0.1,
-      "heightChangePercent": -0.03
+      "overlapPercent": 91.02,
+      "widthChangePercent": -0.45,
+      "heightChangePercent": -1.04
     },
     {
       "name": "sippy",
       "tier": "mobile",
       "yaw": 45,
-      "overlapPercent": 98.93,
-      "widthChangePercent": 0.1,
-      "heightChangePercent": -0.03
+      "overlapPercent": 89.51,
+      "widthChangePercent": 1.09,
+      "heightChangePercent": -1.04
     },
     {
       "name": "sippy",
       "tier": "mobile",
       "yaw": 90,
-      "overlapPercent": 98.03,
-      "widthChangePercent": 0.72,
-      "heightChangePercent": -0.03
+      "overlapPercent": 88.86,
+      "widthChangePercent": 7.14,
+      "heightChangePercent": -1.04
     },
     {
       "name": "sippy",
       "tier": "mobile",
       "yaw": 180,
-      "overlapPercent": 98.55,
-      "widthChangePercent": 0.1,
-      "heightChangePercent": -0.03
+      "overlapPercent": 91.02,
+      "widthChangePercent": -0.45,
+      "heightChangePercent": -1.04
     },
     {
       "name": "sippy",
       "tier": "high",
       "yaw": 0,
-      "overlapPercent": 98.72,
-      "widthChangePercent": -0.3,
-      "heightChangePercent": -0.02
+      "overlapPercent": 91.03,
+      "widthChangePercent": -0.11,
+      "heightChangePercent": -1.5
     },
     {
       "name": "sippy",
       "tier": "high",
       "yaw": 45,
-      "overlapPercent": 98.96,
-      "widthChangePercent": -0.1,
-      "heightChangePercent": -0.02
+      "overlapPercent": 89.48,
+      "widthChangePercent": 0.7,
+      "heightChangePercent": -1.5
     },
     {
       "name": "sippy",
       "tier": "high",
       "yaw": 90,
-      "overlapPercent": 98.26,
-      "widthChangePercent": 0.78,
-      "heightChangePercent": -0.02
+      "overlapPercent": 89.03,
+      "widthChangePercent": 8,
+      "heightChangePercent": -1.5
     },
     {
       "name": "sippy",
       "tier": "high",
       "yaw": 180,
-      "overlapPercent": 98.72,
-      "widthChangePercent": -0.3,
-      "heightChangePercent": -0.02
+      "overlapPercent": 91.03,
+      "widthChangePercent": -0.11,
+      "heightChangePercent": -1.5
     },
     {
       "name": "roma",
       "tier": "mobile",
       "yaw": 0,
-      "overlapPercent": 93.92,
-      "widthChangePercent": 0.98,
-      "heightChangePercent": -0.65
+      "overlapPercent": 72.93,
+      "widthChangePercent": -0.26,
+      "heightChangePercent": -2.01
     },
     {
       "name": "roma",
       "tier": "mobile",
       "yaw": 45,
-      "overlapPercent": 93.94,
-      "widthChangePercent": -0.05,
-      "heightChangePercent": -0.65
+      "overlapPercent": 74.5,
+      "widthChangePercent": 10.61,
+      "heightChangePercent": -2.01
     },
     {
       "name": "roma",
       "tier": "mobile",
       "yaw": 90,
-      "overlapPercent": 93.28,
-      "widthChangePercent": 2.02,
-      "heightChangePercent": -0.65
+      "overlapPercent": 69.28,
+      "widthChangePercent": 0.76,
+      "heightChangePercent": -2.01
     },
     {
       "name": "roma",
       "tier": "mobile",
       "yaw": 180,
-      "overlapPercent": 93.92,
-      "widthChangePercent": 0.98,
-      "heightChangePercent": -0.65
+      "overlapPercent": 72.93,
+      "widthChangePercent": -0.26,
+      "heightChangePercent": -2.01
     },
     {
       "name": "roma",
       "tier": "high",
       "yaw": 0,
-      "overlapPercent": 93.2,
-      "widthChangePercent": 1.28,
-      "heightChangePercent": 0.04
+      "overlapPercent": 72.73,
+      "widthChangePercent": -1.09,
+      "heightChangePercent": -2.44
     },
     {
       "name": "roma",
       "tier": "high",
       "yaw": 45,
-      "overlapPercent": 93.72,
-      "widthChangePercent": 0.74,
-      "heightChangePercent": 0.04
+      "overlapPercent": 74.08,
+      "widthChangePercent": 10.05,
+      "heightChangePercent": -2.44
     },
     {
       "name": "roma",
       "tier": "high",
       "yaw": 90,
-      "overlapPercent": 93.34,
-      "widthChangePercent": 1.94,
-      "heightChangePercent": 0.04
+      "overlapPercent": 69.32,
+      "widthChangePercent": 0.64,
+      "heightChangePercent": -2.44
     },
     {
       "name": "roma",
       "tier": "high",
       "yaw": 180,
-      "overlapPercent": 93.2,
-      "widthChangePercent": 1.28,
-      "heightChangePercent": 0.04
+      "overlapPercent": 72.73,
+      "widthChangePercent": -1.09,
+      "heightChangePercent": -2.44
     }
   ]
 }

@@ -28,27 +28,18 @@ SKULL = (
     (0.128, .010, .010, -.008),
 )
 HEAD_CENTER = Vector((-.002, .075, -.004))
-CHOCOLATE = ('#39241b', '#4e2e20', '#523322', '#44291e', '#553422', '#45291e')
-
-# Shallow closed sections keep the overlapping fibres opaque from every angle.
-FIBRE_PROFILE = ((1, 0, 0), (.16, 1, .24), (-1, 0, .5), (0, -.37, .76), (1, 0, 1))
-FILL_PROFILE = ((1, 0, 0), (.13, 1, .25), (-1, -.20, .5), (1, 0, 1))
-
 
 def xyz(p):
     return (p[0], -p[2], p[1])
 
 
 def seat_crown(point):
-    # Compress only the loft above the vertex of the brow-to-crown shell.
-    # The cut retains the ear, frontal hairline and the source rig's stature.
+    # Allow a rounded lift at the front while keeping the hairstyle within
+    # the standing-height allowance. Rear and temple controls remain unchanged.
     x, y, z = point
-    loft = max(0, y-.126)
-    # Keep a slight asymmetric crest at the forelock instead of trimming
-    # the shape to a level shelf across the whole crown.
-    crown = math.exp(-((x+.012)/.043)**2-((z-.022)/.049)**2)
-    slope = .0019*(1-crown)*smooth(.0,.014,loft)
-    return (x, y-.795*loft-.0032*math.expm1(-loft/.004)-slope, z)
+    rise = max(0., y-.121)
+    loft = y-.46*(rise+.0024*math.expm1(-rise/.0024))
+    return x, loft-.0059*smooth(.127,.1406,loft), z
 
 
 def clip(v, lo=0, hi=1):
@@ -86,11 +77,13 @@ def border(a):
     f = max(0, math.cos(a))
     # Small asymmetry marks the recession, side part and first strands at
     # the forehead. The narrow sideburn drops in front of the open helix.
-    forehead = .037 + .072*((1+math.cos(a))*.5)**1.46
-    arc = .020*math.exp(-((side-1.56)/.25)**2)
-    temple = .013*math.exp(-((side-1.13)/.13)**2)
-    part = .0042*math.exp(-((a-.59)/.24)**2)
-    return forehead + arc - temple + part + f*(.0008*math.cos(9*a) + .0010*math.sin(18*a+.6))
+    forehead = .039 + .069*((1+math.cos(a))*.5)**1.52
+    arc = .018*math.exp(-((side-1.57)/.26)**2)
+    temple = .0105*math.exp(-((side-1.09)/.145)**2)
+    part = .0035*math.exp(-((a-.63)/.23)**2)
+    nape = (.0073*smooth(.18,1.03,math.pi-side)*smooth(1.69,2.37,side)
+            - .0028*math.exp(-((math.pi-side)/.55)**2))
+    return forehead + arc - temple + part + nape + .0007*f*math.cos(4*a+.5)
 
 
 def linear(s):
@@ -162,7 +155,7 @@ class Surface:
                 _, _, _, distance = tree.ray_cast(origin, direction, radius)
                 if distance is not None:
                     occlusion += 1 - smooth(.0003, radius, distance)
-            result.append(1 - occlusion*.074)
+            result.append(1 - occlusion*.054)
         return result
 
 
@@ -202,257 +195,169 @@ def resample(points, count):
     return out
 
 
-def strand_family(out, guide, width, depth, hex_color, steps, count, phase, taper=1, profile=FILL_PROFILE):
-    # Keep the bridge, whorl and taper guides as the outer envelope. Each
-    # strand has a separate section and tapered tip within that envelope.
-    points = resample(guide, 48)
-    albedo = ink(hex_color)
-    for lane in range(count):
-        offset = (2*lane + 1)/count - 1
-        wave = phase + lane*2.17
-        start = .027*(1 + math.sin(wave))
-        end = (1 if lane == count//2 else .963 + .028*math.cos(wave*1.41))
-        previous = None
-        for j in range(steps + 1):
-            t = j/steps
-            u = mix(start, end, t)
-            index = min(47, int(u*48))
-            center = points[index].lerp(points[index+1], u*48-index)
-            tangent = (points[min(48, index+2)]-points[max(0, index-1)]).normalized()
-            normal = center - HEAD_CENTER
-            normal -= tangent*normal.dot(tangent)
-            normal.normalize()
-            across = normal.cross(tangent).normalized()
-            breadth = (.27+.73*math.sin(math.pi*(.15+.85*u))**.53)*(1-.29*u*taper)
-            breadth *= max(.035, smooth(0,.24,1-u))
-            drift = (.15/count)*math.sin(u*7+wave)*math.sin(math.pi*t)
-            cross = offset + drift
-            loft = math.sqrt(max(0, 1-cross*cross))
-            variation = .96 + .065*math.sin(wave+.4)
-            tip = max(.018, smooth(0,.17,1-t))
-            spread = (1.36 - .27*smooth(.40,.95,t)) * variation
-            half_width = width * breadth * spread * tip / count
-            relief = min(half_width*.59, depth*breadth*.25)
-            seat = smooth(.01,.13,t)
-            center += across*(cross*width*breadth)
-            center += normal*(depth*breadth*loft*seat - relief)
-            envelope = (.60+.52*smooth(.02,.84,u))*(.91+.12*math.sin(wave+.9))
-            if j in (0, steps):
-                point = out.add(center, (u,.26), [c*envelope for c in albedo])
-                if previous:
-                    for left, right in zip(previous, previous[1:]):
-                        out.faces.append((left, right, point))
-                previous = [point]
-                continue
-            current = []
-            for side, lift, across_uv in profile:
-                p = center + across*(side*half_width) + normal*(lift*relief)
-                shade = envelope * (.88+.17*max(0, lift))
-                color = (albedo[0]*shade*(.94+.14*u), albedo[1]*shade, albedo[2]*shade*(1.05-.06*u))
-                current.append(out.add(p, (u, across_uv), color))
-            if len(previous) == 1:
-                for left, right in zip(current, current[1:]):
-                    out.faces.append((previous[0], right, left))
-            else:
-                out.strip(previous, current)
-            previous = current
+def swept_lock(out, guide, width, loft, color, high, *, flare=0, segments=None):
+    """A rounded, closed lock with the comb direction stored in the U axis."""
+    steps = segments or (22 if high else 16)
+    sides = 14 if high else 10
+    path = resample(guide, steps)
+    dye = ink(color)
+    previous = []
+    for j, center in enumerate(path):
+        u = j/steps
+        tangent = (path[min(steps, j+1)]-path[max(0, j-1)]).normalized()
+        normal = center - HEAD_CENTER
+        normal -= tangent*normal.dot(tangent)
+        normal.normalize()
+        across = normal.cross(tangent).normalized()
+        if flare:
+            twist = flare*math.sin(math.pi*u)
+            across, normal = (
+                across*math.cos(twist)+normal*math.sin(twist),
+                normal*math.cos(twist)-across*math.sin(twist),
+            )
+        brightness = .85 + .19*smooth(.02,.65,u) - .14*smooth(.86,1.,u)
+        rgb = [c*brightness for c in dye]
+        if j == 0 or j == steps:
+            end = out.add(center, (u,.25), rgb)
+            for left, right in zip(previous, previous[1:]):
+                out.faces.append((left, right, end))
+            previous = [end]
+            continue
+        fullness = math.sin(math.pi*u)**.48
+        breadth = fullness*(1-.16*smooth(.47,1.,u))
+        current = []
+        for i in range(sides+1):
+            v = i/sides
+            angle = math.tau*v
+            x, y = math.cos(angle), math.sin(angle)
+            # Convex outer face and a shallow buried return. Keeping the
+            # profile smooth leaves the individual fibres to the BRDF.
+            if y < 0:
+                y *= .42
+            point = center + across*(x*width*breadth) + normal*(y*loft*fullness)
+            shade = 1. + .055*y
+            current.append(out.add(point, (u,v), [c*shade for c in rgb]))
+        if len(previous) == 1:
+            for left, right in zip(current, current[1:]):
+                out.faces.append((previous[0], right, left))
+        else:
+            out.strip(previous, current)
+        previous = current
 
 
-def roots(out, high):
-    sectors, rows = (50, 10) if high else (40, 9)
-    albedo = ink('#3b251a')
-    previous = None
-    for j in range(rows):
-        u = j/rows
+def scalp_shell(out, high):
+    # Seat the temple, neckline and part with a continuous interior surface.
+    # The dark curved part runs back from the high right forehead into the crown.
+    rings, sectors = (23,88) if high else (16,64)
+    dye = ink('#3b251b')
+    previous = []
+    for j in range(rings):
+        u = j/rings
         current = []
         for i in range(sectors+1):
-            a = i*math.tau/sectors - math.pi
-            # Seat the edge a hair inside skin. Its radius then follows the
-            # existing skull rather than wrapping around a second head.
-            y = mix(border(a), .128, math.sin(u*math.pi*.5))
-            support = smooth(.36, .79, u)
-            margin = mix(-.00065, .0016, clip(u*12)) + (.0018 if high else .0032)*support
+            r = i/sectors
+            azimuth = r*math.tau-math.pi
+            turn = smooth(.08,.96,u)
+            a = azimuth - (.91*turn+.11*math.sin(math.pi*turn))*(.66-.34*math.cos(azimuth))
+            part = .64 - .83*u
+            part_bed = math.exp(-((a-part)/.17)**2)*(1-smooth(.56,.91,u))
+            support = smooth(.04,.23,u)
+            q = smooth(.38,.84,u)
+            y = mix(border(azimuth), .1285, math.sin(u*math.pi*.5))
+            # Low, broad swell along the side flow. Sculpting it into the
+            # same surface keeps the taper connected to the nape and whorl.
+            back = smooth(.92, 2.09, abs(azimuth))
+            sweep = smooth(.16,.46,u)*(1-smooth(.78,.99,u))
+            roll = 0.
+            for lane, width, weight in ((-1.12,.26,.77),(-.61,.29,1.),(-.04,.27,.90),
+                                        (.54,.25,.74),(1.11,.31,.62)):
+                separation = math.remainder(azimuth-math.pi-lane, math.tau)
+                roll += weight*math.exp(-(separation/width)**2)
+            rear_loft = .0108*back*roll*sweep
+            seat = math.exp(-((a-.57+.42*u)/.53)**2)
+            under_fold = .0038*seat*sweep*(1-.57*part_bed)
+            margin = (mix(-.00055, .0020, support) + q*(.0060 - .0026*part_bed)
+                      + rear_loft + under_fold)
             p = skull_point(a, y, margin)
             if u > .88:
                 crown = (1-u)/.12
                 p.x *= crown
-                p.z = mix(-.008, p.z, crown)
-                p.y += .001*(1-crown)
-            p.y += .0011*support
-            grain = i / 7 - .55*u + .13*math.sin(a*3-u*4)
-            across = 1 - abs(2*(grain % 1) - 1)
-            groove = math.sin(19*a - 9*u + 1.23*math.sin(5*a+3*u))
-            shade = (.77+.16*u+.12*groove)*(.95 + .05*math.cos(4*a))
-            current.append(out.add(p, (u, across), [c*shade for c in albedo]))
+                p.z = mix(-.008,p.z,crown)
+            front_lift = .0044 + .0051*(.5+.5*math.cos(a+.43))
+            p.y += front_lift*q + .23*rear_loft
+            shade = .88 + .10*u - .15*part_bed*support + .15*back*roll*sweep
+            # The UVs follow the wrap into the crown. This gentle skew also
+            # keeps the baseline aligned where sculpted lock edges blend in.
+            v = r + .065*math.sin(math.pi*r)*math.sin(math.pi*u)*math.sin(a+1.1)
+            u_flow = u + .11*math.sin(a+.7)*math.sin(math.pi*u)
+            current.append(out.add(p, (u_flow,v), [c*shade for c in dye]))
         if previous:
             out.strip(previous, current)
         previous = current
-    top = out.add(Vector((0, .1301, -.008)), (1,.5), [c*.74 for c in albedo])
-    for i in range(sectors):
-        out.faces.append((previous[i], previous[i+1], top))
+    crown = out.add(Vector((-.002,.138,-.004)), (1,.5), dye)
+    for left, right in zip(previous, previous[1:]):
+        out.faces.append((left, right, crown))
 
 
-def flat_clumps(curves, high):
+def base_locks(curves, high):
     steady = Surface()
-    roots(steady, high)
-    # Shift the row from the forehead into the back. The deepest rows feed
-    # the rear whorl. Offsets vary along the row, not by duplicating one lock.
-    forehead = ((.032,.109,.031),(.028,.121,.036),(.011,.131,.041),
-                (-.014,.137,.038),(-.036,.134,.024),(-.051,.119,.017),(-.054,.107,.011))
-    back = ((.035,.087,-.038),(.026,.103,-.044),(.016,.116,-.038),
-            (-.009,.126,-.036),(-.028,.120,-.042),(-.042,.107,-.042),(-.046,.092,-.035))
-    strands = 13 if high else 10
-    for i in range(strands):
-        u = i/(strands-1)
-        section = []
-        for k, (a, b) in enumerate(zip(forehead, back)):
-            v = k/(len(forehead)-1)
-            p = Vector(a).lerp(Vector(b), u)
-            p.x += .0034 * math.sin(u*10+.5) * math.sin(math.pi*v)
-            p.y += .0038*math.sin(math.pi*u)*math.sin(math.pi*v) + .0018*math.sin(u*21+5*v)
-            p.z += .0064 * math.sin(6*v+u*9)*math.sin(math.pi*v)
-            # Combed mid-layer hugs the sides at both ends; small offsets
-            # carry the layered comb from the part up and across the crest.
-            section.append(p)
-        guide = native_guide(f'Swept bridge {i+1:02}', section, curves)
-        steps = 10 if high and i < 8 else 8
-        strand_family(steady, guide, .0090+.0038*math.sin(math.pi*u), .0062+.0023*math.sin(math.pi*u),
-                      CHOCOLATE[i%len(CHOCOLATE)], steps, 5 if high else 4, i*.6,
-                      profile=FIBRE_PROFILE)
-
-    # Low frontal bridge locks run parallel to the upper fan. Their roots
-    # meet the part; their tips separate into the irregular hairline.
-    bed = ((.037,.106,.027),(.025,.111,.039),(.010,.114,.044),
-           (-.010,.117,.041),(-.027,.117,.036),(-.043,.112,.026),(-.050,.104,.018))
-    for i in range(7 if high else 6):
-        u = i/(6 if high else 5)
-        section = []
-        for j, xyz_value in enumerate(bed):
-            v = j/(len(bed)-1)
-            p = Vector(xyz_value)
-            p.x += .0032 * math.sin(i*1.3+v*4) * math.sin(v*math.pi)
-            p.y += (u*.018+.0032*math.sin(i*1.7+v*7))*math.sin(v*math.pi)
-            p.z += (.0023*math.sin(i*1.21+v*8)-.013*u)*math.sin(v*math.pi)
-            section.append(p)
-        guide = native_guide(f'Low hairline bridge {i+1:02}', section, curves)
-        strand_family(steady, guide, .0051+.002*math.sin(u*math.pi)+.00085*math.cos(i*2.1), .0044,
-                      CHOCOLATE[(i+2)%len(CHOCOLATE)], 8 if high else 7, 4 if high else 3, .73*i, .62)
-
-    # Temple panels fan backward a little above the ears, then tighten at
-    # the nape. The left/right flow spirals into an offset rear crown whorl.
-    branches = 14 if high else 12
-    for side in (-1,1):
-        for i in range(branches):
-            u = i/(branches-1)
-            tip_angle = side * mix(1.06, 3.17, u)
-            tip_y = border(tip_angle)+.0035*math.sin(i*1.2+side)+.0014*math.sin(i*2.7)
-            section = []
-            for j in range(6):
-                v = j/5
-                angle = (tip_angle-side*(1-v)*(.41-.56*math.sin(math.pi*u*.91))
-                         + .88*u**1.4*(1-v) + .20*math.sin(math.pi*v)*(u-.37))
-                y = mix(.116-.016*u, tip_y, v) + .004*math.sin(math.pi*v)
-                lift = .0007+(.0014+.0005*math.sin(i*2))*math.sin(math.pi*v) if j < 5 else -.00061
-                section.append(skull_point(angle, y, lift))
-            guide = native_guide(f'Taper {side:+} {i+1:02}', section, curves)
-            strand_family(steady, guide, .0053-.0011*u+.0006*math.sin(i*1.5), .0026-.0010*u,
-                          CHOCOLATE[(i+3*side)%len(CHOCOLATE)], 7 if high else 5, 4, .7*i)
-    for i in range(12 if high else 7):
-        u = i/(11 if high else 6)
-        a = mix(-4.15,-.54,u)
-        section = [skull_point(a-(1-t)*(.98+.32*math.cos(a)) + .22*math.sin(t*math.pi),
-                               mix(.125 - .007*math.sin(u*9), .077+.012*math.cos(a), t),
-                               .0019+.003*math.sin(t*math.pi)) for t in (0,.2,.4,.6,.8,1)]
-        guide = native_guide(f'Occipital turn {i+1:02}', section, curves)
-        strand_family(steady, guide, .0069, .0031, CHOCOLATE[(i+2)%len(CHOCOLATE)],
-                      7 if high else 6, 4 if high else 3, i)
-
-    # Guide children are narrow ribbons derived from nearby lanes of the
-    # same flow. Leave breathing room at the exposed forehead and side part.
-    children = 13 if high else 8
-    for i in range(children):
-        u = i/(children-1)
-        section = []
-        for k, (a, b) in enumerate(zip(forehead, back)):
-            v = k/(len(forehead)-1)
-            p = Vector(a).lerp(Vector(b), u)
-            p.x += .0037*math.sin(10*u+.5)*math.sin(math.pi*v) -.0014*math.sin(i*2.16)
-            p.y += (.0074+.0022*math.sin(23*u+i*.7))*math.sin(math.pi*v) + .003*math.sin(17*u+6*v)
-            p.z += .0071*math.sin(6*v+9*u)*math.sin(math.pi*v) + .0017*math.sin(i*2.2)
-            section.append(p)
-        parent = native_guide(f'Parent comb lane {i+1:02}', section, curves)
-        sampled = resample(parent, 32)
-        # Offset starts and fade lengths give visible feathered ends at
-        # different places along the surface rather than parallel piping.
-        begin = 2+(i*3)%6
-        end = 22+(i*7)%10
-        child = []
-        for j in range(begin,end+1,3):
-            t = (j-begin)/(end-begin)
-            p = sampled[j].copy()
-            radial = (p - HEAD_CENTER).normalized()
-            side = radial.cross(sampled[j+1]-sampled[j-1]).normalized()
-            p += radial*(-.0041+.0018*math.sin(math.pi*t))
-            p += side*(.0018*math.sin(t*5+i))
-            child.append(p)
-        guide = native_guide(f'Part sweep child {i+1:02}', child, curves)
-        strand_family(steady, guide, .0019+.00065*math.sin(i*2.7), .0014,
-                      CHOCOLATE[(i+4)%len(CHOCOLATE)], 8 if high else 7, 2, i*1.9, .89)
-
-    # The little diagonal locks along the frontal part frame the brows and
-    # meet the comb. Avoid a continuous raised ledge across the forehead.
-    details = (
-        ((.026,.116,.032),(.011,.122,.046),(-.011,.126,.048),(-.032,.126,.040),(-.049,.108,.024)),
-        ((.024,.123,.026),(.005,.130,.042),(-.019,.132,.043),(-.037,.125,.034),(-.056,.110,.014)),
-        ((-.017,.129,.040),(-.033,.124,.039),(-.038,.118,.037),(-.039,.111,.035),(-.036,.107,.035)),
-        ((.022,.124,.020),(.036,.123,.028),(.048,.113,.028),(.052,.110,.022),(.053,.102,.019)),
-        ((.010,.131,.043),(-.011,.138,.043),(-.027,.136,.039),(-.040,.129,.032),(-.043,.120,.029)),
+    scalp_shell(steady, high)
+    # A few distinct overlapping planes: a seated front fold, the curved
+    # crest cradle, a diagonal middle roll and two rear turning forms.
+    crown = (
+        ('Front fold', .0127, .0052, '#42281c', -.20,
+         ((.039,.106,.034),(.031,.117,.046),(.017,.131,.049),(.000,.136,.044),
+          (-.023,.135,.036),(-.041,.120,.027),(-.047,.108,.016))),
+        ('Quiff cradle', .0127, .0048, '#492d21', .21,
+         ((.040,.102,.017),(.030,.123,.032),(.015,.134,.038),(-.008,.141,.035),
+          (-.035,.134,.024),(-.048,.117,.014),(-.052,.105,.006))),
+        ('Part bridge', .0086, .0047, '#432a1f', -.14,
+         ((.055,.091,.025),(.047,.104,.030),(.037,.114,.035),(.033,.120,.036),
+          (.027,.130,.037),(.011,.137,.040))),
+        ('Middle turn', .0120, .0055, '#46291e', .26,
+         ((.039,.103,.005),(.028,.125,.013),(.003,.136,.014),(-.019,.137,.008),
+          (-.037,.129,-.006),(-.045,.114,-.012),(-.051,.101,-.009))),
+        ('Crown roll', .0128, .0047, '#492c20', -.23,
+         ((.042,.102,-.013),(.027,.122,-.008),(.007,.132,-.010),(-.020,.132,-.019),
+          (-.036,.117,-.030),(-.044,.107,-.031),(-.043,.098,-.029))),
     )
-    for i, points in enumerate(details[:5 if high else 4]):
-        guide = native_guide(f'Side part ribbon {i+1:02}', points, curves)
-        strand_family(steady, guide, .005+.0011*math.sin(i*2.1), .0031+.001*math.sin(i),
-                      CHOCOLATE[(i+3)%len(CHOCOLATE)], 8 if high else 7, 4 if high else 3, i*.61, .65,
-                      profile=FIBRE_PROFILE)
-        if high or i % 2 == 0:
-            # Short, fine feathers leave the guide near a tapered edge. Both
-            # ends tuck back into the underlying comb to avoid a loose arch.
-            parent = resample(guide, 12)
-            feather = []
-            for j in range(5, 11):
-                t = (j - 5) / 5
-                p = parent[j].copy()
-                outward = (p - HEAD_CENTER).normalized()
-                side = outward.cross(parent[j+1]-parent[j-1]).normalized()
-                p += outward*(.001+.0013*math.sin(math.pi*t))
-                p += side*(.0024+.0012*math.sin(math.pi*t+i))
-                feather.append(p)
-            strand_family(steady, native_guide(f'Seated edge feather {i+1:02}', feather, curves),
-                          .00035, .00031, CHOCOLATE[(i+1)%len(CHOCOLATE)], 6, 1, i)
+    for label, width, loft, color, flare, points in crown:
+        guide = native_guide(label, points, curves)
+        swept_lock(steady, guide, width, loft, color, high, flare=flare)
+
+    part_edge = (
+        ((.034,.108,.036),(.043,.106,.034),(.051,.099,.027),(.055,.091,.021),(.056,.087,.014)),
+        ((.038,.111,.021),(.047,.107,.018),(.055,.096,.016),(.058,.085,.010),(.057,.078,.004)),
+    )
+    for i, controls in enumerate(part_edge):
+        guide = native_guide(f'Part-side trim {i+1}', controls, curves)
+        swept_lock(steady, guide, .0049, .0015, '#40271b', high, flare=-.10,
+                   segments=14 if high else 10)
     return steady
 
 
 def strategic_clumps(curves, material, high):
-    # Three small, independent islands. The mid-length and tip knots give
-    # the runtime two bones per lock. The shell stays rigid with the head.
+    # Two lifted crest rolls and a short temple sweep ride the existing
+    # two-bone chains. End caps stay aligned to the authored guide tips.
     islands = (
-        ('Forelock crest', 'quiff', .0074, .0053, '#4d2e21',
-         ((.024,.116,.032),(.010,.131,.042),(-.012,.139,.042),(-.031,.138,.027),
-          (-.043,.128,.021),(-.051,.117,.018),(-.052,.111,.015))),
-        ('Broken wave', 'quiff', .0060, .0043, '#48291e',
-         ((.007,.128,.029),(-.014,.142,.031),(-.033,.143,.025),(-.045,.137,.012),
-          (-.052,.129,.010),(-.056,.117,.008),(-.057,.110,.002))),
-        ('Part-side temple', 'temple', .0046, .0033, '#48291e',
-         ((.032,.113,.030),(.043,.116,.028),(.051,.111,.025),(.055,.102,.023),
-          (.057,.096,.021),(.058,.090,.018),(.057,.085,.015))),
+        ('Forelock crest', 'quiff', .0125, .0063, '#4e3124', .33,
+         ((.036,.108,.036),(.032,.118,.048),(.019,.130,.050),(.007,.142,.044),
+          (-.011,.149,.031),(-.029,.144,.023),(-.041,.131,.022),
+          (-.046,.121,.024),(-.046,.113,.021))),
+        ('Broken wave', 'quiff', .0113, .0055, '#482d21', -.24,
+         ((.034,.106,.015),(.030,.122,.027),(.015,.134,.031),(-.005,.142,.024),
+          (-.026,.143,.011),(-.040,.133,-.001),(-.050,.121,-.004),
+          (-.054,.111,.000),(-.054,.108,.005))),
+        ('Part-side temple', 'temple', .0046, .0024, '#41291e', .12,
+         ((.036,.107,.034),(.043,.110,.032),(.050,.105,.029),
+          (.054,.098,.024),(.056,.091,.018),(.058,.082,.013))),
     )
     meshes = []
-    for i, (label, feature, width, depth, color, points) in enumerate(islands):
+    for label, feature, width, loft, color, flare, points in islands:
         surface = Surface()
         guide = native_guide(label, points, curves)
-        strand_family(surface, guide, width, depth, color, 12 if high else 10,
-                      5 if high else 4, i*1.8, .78, profile=FIBRE_PROFILE)
-        chain = resample(guide, 2)
-        meshes.append(surface.bake(f'Sippy {label}', material, feature, chain))
+        swept_lock(surface, guide, width, loft, color, high, flare=flare)
+        meshes.append(surface.bake(f'Sippy {label}', material, feature, resample(guide,2)))
     return meshes
 
 
@@ -472,7 +377,7 @@ def build(output, tier, edit=None):
     vertex_color.layer_name = 'Chocolate'
     mat.node_tree.links.new(vertex_color.outputs['Color'], bsdf.inputs['Base Color'])
     high = tier == 'high'
-    static = flat_clumps(guides, high).bake('Sippy scalp, comb and nape', mat, 'crown')
+    static = base_locks(guides, high).bake('Sippy scalp, comb and nape', mat, 'crown')
     models = [static, *strategic_clumps(guides, mat, high)]
     guides.hide_render = True
     guides.hide_viewport = True
