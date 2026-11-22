@@ -4,9 +4,10 @@ import { secondaryMotion } from './secondary.js';
 import { outfitExplorer, quiltFinish } from './sippy-explorer.js';
 import { fitExpression } from './sippy-expression.js';
 import { fitHipSeams } from './sippy-hips.js';
-import { makeSippyBody } from './sippy-body.js';
+import { buildExplorerHands } from './sippy-body.js';
 import { cutExplorerLayers, fitLimb, anatomyRegions, fitOpenings } from './sippy-tailoring.js';
-import { setSleeveHeads } from './sippy-shoulders.js';
+import { addExteriorShell, attachExteriorProfile, seatExplorerHead, shapeExplorerCrown } from './human-exterior.js';
+import { sippyExterior } from './sippy-exterior-data.js';
 
 const tau = Math.PI * 2;
 const vec = (x, y, z) => new T.Vector3(x, y, z);
@@ -297,8 +298,7 @@ function eyelid(parent, skin, lash, upper) {
 
 // Pinstripes follow the cut of each pattern piece. Filter their footprint on
 export function buildSippy(rig) {
-  // Garment patterns are in standing-height units; keep a full-length torso and legs.
-  rig.root.scale.set(0.91, 1.005, 0.88).multiplyScalar(rig.height);
+  attachExteriorProfile(rig, sippyExterior);
   const skin = surface('#dfa071', 0.54),
     blush = surface('#c78669', 0.62);
   const hair = surface('#2d1605', 0.44, { specularIntensity: 0.38 }),
@@ -354,24 +354,11 @@ export function buildSippy(rig) {
     mat.userData.blueprintId = id;
   const head = rig.head,
     chest = rig.chest;
-  chest.scale.set(0.9, 0.935, 0.91);
-  chest.position.y -= 0.0155;
-  chest.position.z = -0.008;
-  head.scale.set(1 / chest.scale.x, 1 / chest.scale.y, 1 / chest.scale.z);
-  head.position.z = -chest.position.z / chest.scale.z;
-  for (const arm of [rig.upperArmL, rig.upperArmR]) {
-    arm.scale.set(0.944, 1.027, 1);
-    arm.position.y = 0.135;
-  }
   quiltFinish(suit);
-  for (const [side, s] of [
-    ['L', 1],
-    ['R', -1],
-  ])
-    rig['thigh' + side].position.x = s * 0.059;
-  const headSkin = group(head, 0, -0.026, 0.002);
+  const headSkin = group(head);
   headSkin.name = 'sippy-head';
-  headSkin.scale.set(1.29, 1.02, 1.34);
+  seatExplorerHead(rig, headSkin, { width: 0.138, depth: 0.111, baseWidth: 0.116,
+    baseDepth: 0.104, height: 0.122, middle: 0.067, front: 0.003 });
   const cheekRows = [
     [0.006, 0.01, 0.016, 0.004],
     [0.012, 0.03, 0.031, 0.004],
@@ -911,19 +898,20 @@ export function buildSippy(rig) {
     pad,
     button,
   };
+  const hands = buildExplorerHands(rig, skin);
   for (const [side, s] of [
     ['L', 1],
     ['R', -1],
   ]) {
-    const upper = rig['upperArm' + side],
-      hand = rig['hand' + side];
-    upper.position.x = s * 0.149;
+    const hand = rig['hand' + side];
     fitLimb(tailoring, side, false, materials);
     fitLimb(tailoring, side, true, materials);
     // The thumb opposes the fingers; the shorter index and pinkie curve
     // separately toward the stem. A flat nail plate follows each distal joint.
     const palm = group(hand);
-    palm.scale.set(1.14, 1.06, 1.14);
+    const skinHand = hands[side];
+    palm.position.copy(skinHand.position);
+    palm.scale.set(1.14 * Math.abs(skinHand.scale.x), 1.06 * skinHand.scale.y, 1.14 * skinHand.scale.z);
     const nail = surface('#c48366', 0.43);
     nail.userData.blueprintId = 'flush';
     for (let j = 0; j < 4; j++) {
@@ -985,18 +973,18 @@ export function buildSippy(rig) {
     }
   }
   const banks = styleQuiff(headSkin, grooms);
+  shapeExplorerCrown(rig, headSkin);
   rig.secondary ??= {};
   // Keep the actual face and collar surfaces available to the review tools.
   const faceSkin = headSkin.children
     .filter((part) => part.isMesh && part.material === skin)
     .concat(orbitalRims);
   fitOpenings(tailoring)();
-  setSleeveHeads(tailoring);
   fitHipSeams(tailoring);
   explorer.bakeFit();
   const g = tailoring.surfaces;
-  const body = makeSippyBody(rig, skin);
-  g.body = [body.mesh];
+  const body = addExteriorShell(rig, skin.color);
+  g.body = body.meshes;
   g['body-head'] = [skullMesh];
   tailoring.beneath('collar', 'body-head');
   tailoring.beneath('collar', 'body');
@@ -1012,8 +1000,6 @@ export function buildSippy(rig) {
     faceSkin,
     collarSkin,
     neckSkin: [],
-    body: body.mesh,
-    bodyRegions: body.regions,
     upperBack: tailoring.surfaces['quilted-vest'],
     bodyParts: anatomyRegions(tailoring, neck),
   };
@@ -1031,7 +1017,7 @@ export function buildSippy(rig) {
       feature('Outer shoulder sleeve head ' + s, ...g['shoulder-' + s], g['sleeve-' + s][0]),
     ),
     knee: ['L', 'R'].map((s) =>
-      feature('Patella equator ' + s, { mesh: body.mesh, vertices: body.knees[s] }),
+      feature('Patella equator ' + s, body.knees[s]),
     ),
     ankleCuff: ['L', 'R'].map((s) =>
       feature('Lower trouser cuff ' + s, edgeBinding(g['trousers-' + s][0], 0, rig.garments.hips.columns)),
@@ -1083,9 +1069,7 @@ export function buildSippy(rig) {
     rig.upperArmL.rotation.z += 0.092 * focus;
     rig.head.rotation.y += 0.32 * focus;
     rig.head.rotation.x += 0.18 * focus;
-    rig.head.position.y = 0.24 + 0.04 * Math.max(0, Math.sin(rig.head.rotation.x));
     for (let i = 0; i < tailoring.updates.length; i++) tailoring.updates[i]();
-    body.update();
     secondary(f);
   };
 }

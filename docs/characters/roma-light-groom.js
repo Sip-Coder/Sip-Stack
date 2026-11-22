@@ -209,20 +209,20 @@ function waveCluster(head, material, side, bank) {
       const t = j / 12,
         fullness = Math.sin(Math.PI * t) ** 0.68,
         fringe = bank === 0;
-      const radius = 0.053 + 0.025 * ease(t, 0, 0.32) + 0.005 * ease(t, 0.66, 1);
-      const zRadius = 0.046 + 0.017 * ease(t, 0, 0.4);
+      const radius = 0.053 + 0.031 * ease(t, 0, 0.32) + 0.007 * ease(t, 0.66, 1);
+      const zRadius = 0.046 + 0.022 * ease(t, 0, 0.4);
       const p = v(side * radius * sa, T.MathUtils.lerp(rootY, fall, t), -0.011 + zRadius * ca);
-      const swell = Math.sin(1.35 * TAU * t + phase);
-      p.addScaledVector(across, (0.0095 * swell + 0.003 * Math.sin(2.15 * TAU * t + phase)) * fullness);
-      p.addScaledVector(outward, (0.0065 * Math.cos(1.35 * TAU * t + phase) + 0.0035) * fullness);
+      const curl = 1.55 * TAU * t + phase;
+      p.addScaledVector(across, (0.011 * Math.sin(curl) + 0.0035 * Math.sin(2.15 * TAU * t + phase)) * fullness);
+      p.addScaledVector(outward, (0.008 * Math.cos(curl) + 0.0045) * fullness);
       // The front sweep stays in front of the pinna. Side waves fall behind
       // it, leaving a clear break for the gold hoop between the two layers.
       if (fringe) p.z += 0.012 * ease(t, 0, 0.29) + 0.003 * Math.sin(Math.PI * t);
       else if (bank === 1) p.z -= 0.014 * ease(t, 0.03, 0.42);
-      const endTurn = ease(t, 0.66, 1);
-      p.x += side * 0.0045 * Math.cos(phase + TAU * endTurn) * endTurn;
-      p.y -= 0.007 * Math.sin(TAU * endTurn) * endTurn;
-      p.z += 0.005 * Math.sin(phase + Math.PI * endTurn) * endTurn;
+      const endTurn = ease(t, 0.60, 1);
+      p.x += side * 0.0065 * Math.cos(phase + TAU * endTurn) * endTurn;
+      p.y -= 0.009 * Math.sin(TAU * endTurn) * endTurn;
+      p.z += 0.006 * Math.sin(phase + Math.PI * endTurn) * endTurn;
       path.push(p.sub(pivot));
     }
     const w = bank === 0 ? 0.0127 : bank === 1 ? 0.0166 : 0.019;

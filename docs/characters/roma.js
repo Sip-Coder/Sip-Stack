@@ -5,6 +5,9 @@ import * as T from 'three';
 import { secondaryMotion } from './secondary.js';
 import { romaForms } from './roma-forms.js';
 import { buildRomaHair } from './roma-light-groom.js';
+import { addExteriorShell, attachExteriorProfile, coverExterior, explorerLimb, explorerTorso, sampleExterior, seatExplorerHead, shapeExplorerCrown, sneakerRoom, torsoStation } from './human-exterior.js';
+import { romaExterior } from './roma-exterior-data.js';
+import { addRomaFat } from './roma-soft-tissue.js';
 
 const tau = 2 * Math.PI;
 const c = {
@@ -32,7 +35,7 @@ const c = {
   gold: '#dbb05b',
 };
 const hairMaterial = new T.MeshStandardMaterial({
-  color: '#644337',
+  color: '#503229',
   vertexColors: true,
   roughness: 0.57,
   side: T.DoubleSide,
@@ -234,6 +237,16 @@ function face(head, h) {
 function clothes(rig, h) {
   const { loft, face: surface, thread, oval, ring, group } = h;
   const { chest, hips } = rig;
+  const torsoGrade = ([x, y, z], ease) => explorerTorso(rig,
+    [x, y + 0.044 * (1 - T.MathUtils.smoothstep(y, 0.49, 0.635)), z], ease, 0.49, 0.758);
+  const hipOrigin = rig.anatomy.joints.hips;
+  const hipGrade = (ease) => ([x, y, z]) => {
+    const a = Math.atan2(x, z), hem = 1 - T.MathUtils.smoothstep(y, -0.051, 0.019);
+    const rise = y + (0.021 * Math.abs(Math.sin(a)) - 0.007 * Math.max(0, -Math.cos(a))) * hem;
+    return coverExterior(rig, 'torso',
+      [hipOrigin.x + x, hipOrigin.y + rise, hipOrigin.z + z], ease, [hipOrigin.x, hipOrigin.z])
+      .map((value, i) => value - hipOrigin.getComponent(i));
+  };
   const skinLoft = (rows, color, options = {}) =>
     loft(null, rows, color, { columns: 22, skinned: true, ...options });
   const trunk = [
@@ -247,7 +260,7 @@ function clothes(rig, h) {
     [0.766, 0.099, 0.049, -0.003, 0, c.mustard, chest],
     [0.775, 0.062, 0.037, -0.002, 0, c.mustard, chest],
   ];
-  skinLoft(trunk, c.mustard, { from: 0.36, to: tau - 0.36, columns: 32 });
+  skinLoft(trunk, c.mustard, { from: 0.36, to: tau - 0.36, columns: 32, transform: (p) => torsoGrade(p, 0.011) });
   skinLoft(
     trunk.map((row) => [
       row[0] + 0.0012,
@@ -259,7 +272,7 @@ function clothes(rig, h) {
       ...row.slice(6),
     ]),
     c.cream,
-    { columns: 28 },
+    { columns: 28, transform: (p) => torsoGrade(p, 0.0055) },
   );
   // Rolled hood with a front notch, two overlapping lobes and a back fall.
   surface(chest, 32, 8, (u, v) => {
@@ -285,16 +298,6 @@ function clothes(rig, h) {
       v < 0.16 ? '#ddcbb1' : v > 0.87 ? '#dbc8b0' : c.cream,
     ];
   });
-  loft(
-    chest,
-    [
-      [0.145, 0.031, 0.028, 0],
-      [0.165, 0.036, 0.032, 0.002],
-      [0.189, 0.03, 0.029, 0.003],
-      [0.233, 0.029, 0.029, 0.006],
-    ],
-    c.skin,
-  );
   for (const s of [-1, 1]) {
     thread(
       chest,
@@ -311,6 +314,7 @@ function clothes(rig, h) {
     oval(chest, c.brass, s * 0.019, 0.061, 0.069, 0.0017, 0.0041, 0.00175, 0, 0, 0, true, 10);
     const b = rig[s === 1 ? 'upperArmL' : 'upperArmR'],
       e = rig[s === 1 ? 'forearmL' : 'forearmR'];
+    const side = s > 0 ? 'L' : 'R';
     const limb = [
       [0.452, 0.026, 0.025, 0, 0.132, c.edge, e],
       [0.459, 0.029, 0.027, 0, 0.132, c.mustard, e],
@@ -330,7 +334,14 @@ function clothes(rig, h) {
     skinLoft(
       limb.map((r) => [r[0], r[1], r[2], r[3], r[4] * s, ...r.slice(5)]),
       c.mustard,
-      { columns: 20, profile: (a, j) => (j === 3 || j === 6 ? 0.0014 * Math.cos(3 * a + 0.55 * j) : 0) },
+      {
+        columns: 20,
+        profile: (a, j) => (j === 3 || j === 6 ? 0.0014 * Math.cos(3 * a + 0.55 * j) : 0),
+        transform: ([x, y, z]) => {
+          const axis = T.MathUtils.lerp(0.121, 0.133, T.MathUtils.clamp((0.758 - y) / 0.305, 0, 1));
+          return explorerLimb(rig, side, false, [x - s * axis, y - 0.758, z], 0.008, 0.164, 0.147);
+        },
+      },
     );
     const thigh = rig[s === 1 ? 'thighL' : 'thighR'],
       shin = rig[s === 1 ? 'shinL' : 'shinR'];
@@ -357,10 +368,12 @@ function clothes(rig, h) {
       {
         columns: 22,
         profile: (a, j) => (j === 2 || j === 4 || j === 8 ? 0.0018 * Math.sin(2 * a + 0.73 * j) : 0),
+        transform: ([x, y, z]) => explorerLimb(rig, side, true, [x - s * 0.0535, y - 0.49, z], 0.010, 0.231, 0.212),
       },
     );
     // The bellows and fold-over flap follow the thigh through a long stride.
-    const pocket = group(thigh, 'pocket ' + s, s * 0.049, -0.107, 0.006);
+    const pocketPoint = explorerLimb(rig, side, true, [s * 0.049, -0.107, 0.006], 0.011, 0.231, 0.212);
+    const pocket = group(thigh, 'pocket ' + s, ...pocketPoint.map((value, i) => value - rig.anatomy.joints[thigh.name].getComponent(i)));
     loft(
       pocket,
       [
@@ -494,29 +507,37 @@ function clothes(rig, h) {
   loft(
     hips,
     [
+      [-0.075, 0.041, 0.038, 0],
+      [-0.064, 0.064, 0.055, 0],
+      [-0.051, 0.084, 0.057, 0],
+      [-0.034, 0.090, 0.061, 0],
       [0.004, 0.087, 0.058, 0],
       [0.014, 0.09, 0.06, 0],
       [0.034, 0.086, 0.057, 0],
+      [0.062, 0.077, 0.053, 0],
+      [0.077, 0.075, 0.052, 0],
     ],
     c.pants,
+    { transform: hipGrade(0.010) },
   );
   loft(
     hips,
     [
-      [0.023, 0.087, 0.058, 0],
-      [0.035, 0.087, 0.058, 0],
+      [0.062, 0.079, 0.055, 0],
+      [0.076, 0.077, 0.054, 0],
     ],
     c.leather,
+    { transform: hipGrade(0.012) },
   );
   thread(
     hips,
     c.brass,
     [
-      [-0.013, 0.025, 0.059],
-      [-0.013, 0.036, 0.059],
-      [0.013, 0.036, 0.059],
-      [0.013, 0.024, 0.059],
-      [-0.013, 0.024, 0.059],
+      [-0.013, 0.062, 0.077],
+      [-0.013, 0.077, 0.077],
+      [0.013, 0.077, 0.077],
+      [0.013, 0.062, 0.077],
+      [-0.013, 0.062, 0.077],
     ],
     0.0018,
     { metal: true, sides: 5 },
@@ -665,7 +686,8 @@ function fieldKit(rig, h) {
     const side = (u - 0.5) * 0.011;
     p.addScaledVector(across, side);
     const weight = T.MathUtils.smoothstep(p.y, 0.503, 0.643);
-    return [p.x, p.y, p.z + 0.0004 * Math.sin(u * Math.PI), c.dark, rig.hips, chest, weight];
+    const base = explorerTorso(rig, [p.x, p.y, p.z + 0.0004 * Math.sin(u * Math.PI)], 0.017, 0.49, 0.758);
+    return [...base, c.dark, rig.hips, chest, weight];
   });
   thread(
     chest,
@@ -698,29 +720,34 @@ function fieldKit(rig, h) {
 }
 
 export function buildRoma(rig) {
-  rig.hips.position.y = 0.49;
-  rig.chest.position.y = 0.12;
-  rig.head.position.y = 0.22;
-  for (const [side, sign] of [
-    ['L', 1],
-    ['R', -1],
-  ]) {
-    rig['upperArm' + side].position.set(sign * 0.121, 0.15, -0.002);
-    rig['forearm' + side].position.set(sign * 0.01, -0.164, 0.001);
-    rig['hand' + side].position.set(sign * 0.002, -0.147, 0.002);
-    rig['thigh' + side].position.set(sign * 0.0535, 0, 0);
-    rig['shin' + side].position.set(0, -0.231, 0);
-    rig['foot' + side].position.set(0, -0.212, 0);
+  attachExteriorProfile(rig, romaExterior);
+  const chestPoint = rig.anatomy.joints.chest;
+  rig.chest.userData.resolvePattern = ([x, y, z]) => {
+    const nextY = torsoStation(rig, y + 0.61, 0.49, 0.758);
+    const profile = rig.exterior.torso;
+    const [, center, front] = sampleExterior(profile, nextY, 0);
+    const raise = Math.max(0, center + front + 0.026 - chestPoint.z - 0.093);
+    return [0.88 * x, nextY - chestPoint.y,
+      z + 0.024 + raise * T.MathUtils.smoothstep(z, 0.015, 0.062)];
+  };
+  for (const side of ['L', 'R']) {
+    const foot = rig['foot' + side];
+    const room = sneakerRoom(rig, side, { x: 1.10, z: 1.05, halfWidth: 0.033, toe: 0.087 });
+    foot.userData.resolvePattern = ([x, y, z]) => [x * room.x, y + 0.047 + room.floor, room.z * z + 0.003];
   }
   const forms = romaForms(rig);
-  const head = forms.group(rig.head, 'face and band', 0, -0.009, -0.0065);
-  head.scale.set(1.1, 1.075, 0.94);
+  const head = forms.group(rig.head, 'face and band');
+  seatExplorerHead(rig, head, { width: 0.138, depth: 0.115, baseWidth: 0.134,
+    baseDepth: 0.112, height: 0.148, middle: 0.076, front: 0.003 });
   const facial = face(head, forms);
   const waves = buildRomaHair(head, hairMaterial);
   clothes(rig, forms);
   const bag = fieldKit(rig, forms);
   bag.rotation.x = 0.035;
   forms.finish();
+  shapeExplorerCrown(rig, head);
+  addExteriorShell(rig, c.skin);
+  addRomaFat(rig);
   const secondary = secondaryMotion(rig, './roma-secondary.js', { waves, bag });
   return function poseRoma(f) {
     const t = f.time,

@@ -60,16 +60,16 @@ export function romaForms(rig) {
   function batch(parent, metal = false) {
     let pair = coloured.get(parent);
     if (!pair) coloured.set(parent, (pair = new Map()));
-    if (!pair.has(metal)) pair.set(metal, buffers());
+    if (!pair.has(metal)) pair.set(metal, { ...buffers(), transform: parent.userData.resolvePattern });
     return pair.get(metal);
   }
-  function patch(data, cols, rows, sample) {
+  function patch(data, cols, rows, sample, transform = data.transform) {
     if (cached) return;
     const first = data.position.length / 3;
     for (let j = 0; j <= rows; j++)
       for (let i = 0; i <= cols; i++) {
         const [x, y, z, c, bone, other, weight = 0] = sample(i / cols, j / rows);
-        data.position.push(x, y, z);
+        data.position.push(...(transform?.([x, y, z], bone) ?? [x, y, z]));
         const tone = paint(c);
         data.color.push(tone.r, tone.g, tone.b);
         if (bone !== undefined) {
@@ -103,7 +103,7 @@ export function romaForms(rig) {
   // Rows in joint space are [height, half width, half depth, centre Z, centre X,
   // optional colour, primary joint, secondary joint, secondary weight].
   function loft(parent, rows, color, opts = {}) {
-    const { columns = 22, from = 0, to = tau, profile, skinned = false, metal = false } = opts;
+    const { columns = 22, from = 0, to = tau, profile, skinned = false, metal = false, transform } = opts;
     patch(skinned ? skin : batch(parent, metal), columns, rows.length - 1, (u, v) => {
       const j = Math.round(v * (rows.length - 1)),
         r = rows[j],
@@ -118,7 +118,7 @@ export function romaForms(rig) {
         r[7],
         r[8],
       ];
-    });
+    }, transform);
   }
   function oval(parent, color, x, y, z, rx, ry, rz, ax = 0, ay = 0, az = 0, metal = false, segments = 16) {
     q.setFromEuler(rot.set(ax, ay, az));
