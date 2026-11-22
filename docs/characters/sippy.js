@@ -493,55 +493,10 @@ export function buildSippy(rig, attachGroom) {
     pad,
     button,
   };
-  const hands = buildExplorerHands(rig, skin);
-  for (const [side, s] of [
-    ['L', 1],
-    ['R', -1],
-  ]) {
-    const hand = rig['hand' + side];
+  buildExplorerHands(rig, skin);
+  for (const side of ['L', 'R']) {
     fitLimb(tailoring, side, false, materials);
     fitLimb(tailoring, side, true, materials);
-    // The thumb opposes the fingers; the shorter index and pinkie curve
-    // separately toward the stem. A flat nail plate follows each distal joint.
-    const palm = group(hand);
-    const skinHand = hands[side];
-    palm.position.copy(skinHand.position);
-    palm.scale.set(1.14 * Math.abs(skinHand.scale.x), 1.06 * skinHand.scale.y, 1.14 * skinHand.scale.z);
-    const nail = surface('#c48366', 0.43);
-    nail.userData.blueprintId = 'flush';
-    for (let j = 0; j < 4; j++) {
-      const z = 0.0143 - j * 0.0096,
-        len = [0.02, 0.025, 0.023, 0.017][j],
-        base = -0.03 + 0.002 * Math.abs(j - 1);
-      const x0 = s * (0.006 - 0.0015 * Math.abs(j - 1)),
-        d = 0.0048 - 0.00035 * Math.abs(j - 1);
-      const tip = [x0 - s * (0.011 + 0.001 * j), base - len * 0.98, z + 0.0052];
-      const plate = ellipsoid(
-        palm,
-        nail,
-        tip[0] + s * 0.002,
-        tip[1] - 0.0021,
-        tip[2] - 0.0004,
-        0.0042,
-        0.00125,
-        0.00205,
-      );
-      plate.rotation.z = s * 0.37;
-      const fold = stroke(
-        palm,
-        blush,
-        [
-          [x0 + s * d * 0.8, base - 0.006, z - 0.0014],
-          [x0 + s * d * 0.98, base - 0.0068, z + 0.0001],
-          [x0 + s * d * 0.77, base - 0.006, z + 0.0016],
-        ],
-        0.00032,
-        5,
-      );
-      fold.userData.highDetail = true;
-    }
-    const thumbNail = ellipsoid(palm, nail, -s * 0.0083, -0.03, 0.03, 0.0039, 0.0025, 0.0012);
-    thumbNail.rotation.z = s * 0.25;
   }
   const explorer = outfitExplorer(rig, tailoring, exploreMats, {
     group,

@@ -152,7 +152,15 @@ function skinRadius(rig, region, rows, j, i) {
   } else if (region.startsWith('leg')) minimum = 0.016;
   const waist = rig.name === 'roma' && region === 'torso'
     ? Math.exp(-(((row.point.y - rig.anatomy.joints.hips.y - 0.111) / 0.039) ** 2)) : 0;
-  const offset = region === 'torso' ? 0.0075 - 0.0045 * waist : region.startsWith('foot') ? 0.004 : 0.0050;
+  let offset = region === 'torso' ? 0.0075 - 0.0045 * waist : region.startsWith('foot') ? 0.004 : 0.0050;
+  if (rig.name === 'sippy' && region === 'torso') {
+    const midsection = Math.exp(-(((row.point.y - rig.anatomy.joints.chest.y + 0.023) / 0.125) ** 2));
+    offset -= 0.0043 * midsection;
+  }
+  if (rig.name === 'sippy' && region.startsWith('arm')) {
+    const shoulder = rig.anatomy.joints['upperArm' + region.at(-1)].y;
+    offset -= 0.0020 * Math.exp(-(((row.point.y - shoulder) / 0.067) ** 2));
+  }
   const exact = row.profile[i];
   const previous = rows[max(0, j - 1)].profile[i];
   const next = rows[min(rows.length - 1, j + 1)].profile[i];

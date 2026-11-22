@@ -296,18 +296,20 @@ export function outfitExplorer(rig, tailoring, m, h) {
       0.00085,
     );
     bead(pack, m.gold, x, -0.105, -0.069, 0.0019);
-    const points = [
-      [sign * 0.08, 0.031, -0.06],
-      [sign * 0.086, 0.081, -0.069],
-      [sign * 0.087, 0.125, -0.078],
-      [sign * 0.093, 0.16, -0.061],
-      [sign * 0.088, 0.171, -0.012],
-      [sign * 0.089, 0.158, 0.048],
-      [sign * 0.086, 0.116, 0.07],
-      [sign * 0.088, 0.065, 0.079],
-      [sign * 0.08, 0.019, 0.091],
-    ];
-    const curve = new T.CatmullRomCurve3(points.map(([x, y, z]) => vec(x * 0.86, torsoY(y), z)));
+    const vestPoint = (x, y, z) => vec(...torsoPoint(y, Math.atan2(sign * x, z), 1, 0.004));
+    // The webbing bends across the sewn shoulder crest before following the
+    // vest. The lower rear point still joins the pack's hardware.
+    const curve = new T.CatmullRomCurve3([
+      vec(sign * 0.069, torsoY(0.031), -0.06),
+      vestPoint(0.08, 0.081, -0.069),
+      vestPoint(0.083, 0.129, -0.078),
+      vestPoint(0.078, 0.173, -0.061),
+      vec(sign * 0.078, torsoY(0.218), -0.001),
+      vestPoint(0.076, 0.174, 0.048),
+      vestPoint(0.081, 0.116, 0.07),
+      vestPoint(0.083, 0.065, 0.079),
+      vestPoint(0.078, 0.019, 0.091),
+    ]);
     const rows = 28,
       cols = 8,
       join = 0.64;
