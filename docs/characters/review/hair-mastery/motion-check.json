@@ -1,0 +1,3047 @@
+{
+  "results": [
+    {
+      "name": "sippy",
+      "tier": "mobile",
+      "boneCount": 6,
+      "colliders": [
+        "scalp",
+        "cheeks and jaw",
+        "ear R",
+        "shoulder R",
+        "collar R",
+        "ear L",
+        "shoulder L",
+        "collar L",
+        "neck",
+        "upper back and rear collar"
+      ],
+      "reducedFrontAngleAfterToggleDegrees": 0,
+      "scenarios": {
+        "idle": {
+          "maxAngleDegrees": 1.5757879499777296,
+          "maxFrontAngleDegrees": 1.2388945561879265,
+          "maxAngleAfterStopDegrees": 1.2388945561879265,
+          "maxFrontAngleVsQuietDegrees": 1.2388945561871998,
+          "maxRootTravelIn": 2.4849532455487205e-13,
+          "maxBoneStretchIn": 1.235123114890546e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 1.131977734373966,
+              "maxAngleAfterStop": 0.9545950422974595,
+              "quietAngleDifference": 1.1319777343739932,
+              "tipPenetrations": 0,
+              "clearance": 0.06645075096792441,
+              "minimum": {
+                "tick": 209,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.005331040984352219,
+              "maxTipTravelIn": 0.0631825802533781
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 1.2388945561879265,
+              "maxAngleAfterStop": 1.2388945561879265,
+              "quietAngleDifference": 1.2388945561871998,
+              "tipPenetrations": 0,
+              "clearance": 0.07844678693700513,
+              "minimum": {
+                "tick": 186,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.00381915948843856,
+              "maxTipTravelIn": 0.056575333612753964
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 1.5757879499777296,
+              "maxAngleAfterStop": 1.2364689740580457,
+              "quietAngleDifference": 1.575787949974672,
+              "tipPenetrations": 0,
+              "clearance": 0.044794582872274,
+              "minimum": {
+                "tick": 17,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.003711689603797135,
+              "maxTipTravelIn": 0.048105372216982765
+            }
+          ]
+        },
+        "walk": {
+          "maxAngleDegrees": 2.6972597359805173,
+          "maxFrontAngleDegrees": 2.6127109729346967,
+          "maxAngleAfterStopDegrees": 2.4468276525197985,
+          "maxFrontAngleVsQuietDegrees": 2.612710972934796,
+          "maxRootTravelIn": 1.8801951975145573e-13,
+          "maxBoneStretchIn": 1.2497111831766549e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 2.411568005214295,
+              "maxAngleAfterStop": 2.3244664476591477,
+              "quietAngleDifference": 2.41156800521327,
+              "tipPenetrations": 0,
+              "clearance": 0.05240582197573196,
+              "minimum": {
+                "tick": 38,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.005331040984359662,
+              "maxTipTravelIn": 0.1345965697984657
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 2.6127109729346967,
+              "maxAngleAfterStop": 2.4468276525197985,
+              "quietAngleDifference": 2.612710972934796,
+              "tipPenetrations": 0,
+              "clearance": 0.07100891254001396,
+              "minimum": {
+                "tick": 37,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.003819159488424442,
+              "maxTipTravelIn": 0.11930399321001812
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 2.6972597359805173,
+              "maxAngleAfterStop": 2.679050598784906,
+              "quietAngleDifference": 2.6972597359776684,
+              "tipPenetrations": 0,
+              "clearance": 0.03574674663716215,
+              "minimum": {
+                "tick": 24,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.00371168960380375,
+              "maxTipTravelIn": 0.08233645372932603
+            }
+          ]
+        },
+        "walkingTurn": {
+          "maxAngleDegrees": 5.225274810489558,
+          "maxFrontAngleDegrees": 5.225274810489558,
+          "maxAngleAfterStopDegrees": 1.3089189719409375,
+          "maxFrontAngleVsQuietDegrees": 5.225274810489532,
+          "maxRootTravelIn": 1.870511724392952e-13,
+          "maxBoneStretchIn": 1.171908152317408e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 5.154542189525144,
+              "maxAngleAfterStop": 0.5964592239425854,
+              "quietAngleDifference": 5.154542189525606,
+              "tipPenetrations": 0,
+              "clearance": 0.022031757910716987,
+              "minimum": {
+                "tick": 90,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.00533104098445805,
+              "maxTipTravelIn": 0.28761409722227266
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 5.225274810489558,
+              "maxAngleAfterStop": 1.3089189719409375,
+              "quietAngleDifference": 5.225274810489532,
+              "tipPenetrations": 0,
+              "clearance": 0.049436919526701706,
+              "minimum": {
+                "tick": 90,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.003819159488424442,
+              "maxTipTravelIn": 0.23853925677909643
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 3.6096356431690784,
+              "maxAngleAfterStop": 1.6082467748498586,
+              "quietAngleDifference": 3.6096356431700274,
+              "tipPenetrations": 0,
+              "clearance": 0.03574674663716215,
+              "minimum": {
+                "tick": 24,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.0037116896038739146,
+              "maxTipTravelIn": 0.11017956016271924
+            }
+          ]
+        },
+        "headTurn": {
+          "maxAngleDegrees": 1.9299258114659508,
+          "maxFrontAngleDegrees": 1.9299258114659508,
+          "maxAngleAfterStopDegrees": 1.2376045425580888,
+          "maxFrontAngleVsQuietDegrees": 1.929925811464797,
+          "maxRootTravelIn": 2.4849532455487205e-13,
+          "maxBoneStretchIn": 1.2205350466044374e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 1.9299258114659508,
+              "maxAngleAfterStop": 0.5389132047614826,
+              "quietAngleDifference": 1.929925811464797,
+              "tipPenetrations": 0,
+              "clearance": 0.07283679963309075,
+              "minimum": {
+                "tick": 184,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.005331040984367084,
+              "maxTipTravelIn": 0.10771758791490076
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 1.589895603915816,
+              "maxAngleAfterStop": 1.2376045425580888,
+              "quietAngleDifference": 1.589895603915477,
+              "tipPenetrations": 0,
+              "clearance": 0.07846279445927062,
+              "minimum": {
+                "tick": 184,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.0038191594884227683,
+              "maxTipTravelIn": 0.07260322533270806
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 1.893976335573321,
+              "maxAngleAfterStop": 1.6713739704036321,
+              "quietAngleDifference": 1.8939763355727015,
+              "tipPenetrations": 0,
+              "clearance": 0.044794582872274,
+              "minimum": {
+                "tick": 17,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.00371168960380812,
+              "maxTipTravelIn": 0.0578181600277572
+            }
+          ]
+        },
+        "run": {
+          "maxAngleDegrees": 1.9409221381114024,
+          "maxFrontAngleDegrees": 1.9409221381114024,
+          "maxAngleAfterStopDegrees": 1.4806149241129187,
+          "maxFrontAngleVsQuietDegrees": 1.9409221381121398,
+          "maxRootTravelIn": 1.8994140465120876e-13,
+          "maxBoneStretchIn": 1.2497111831766549e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 1.596984243455285,
+              "maxAngleAfterStop": 1.422059762880061,
+              "quietAngleDifference": 1.5969842434549153,
+              "tipPenetrations": 0,
+              "clearance": 0.06977821458380129,
+              "minimum": {
+                "tick": 5,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.0053310409843853965,
+              "maxTipTravelIn": 0.08913599348446735
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 1.9409221381114024,
+              "maxAngleAfterStop": 1.4806149241129187,
+              "quietAngleDifference": 1.9409221381121398,
+              "tipPenetrations": 0,
+              "clearance": 0.08308266203096482,
+              "minimum": {
+                "tick": 19,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.003819159488418529,
+              "maxTipTravelIn": 0.08863159958460584
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 1.7238499642744123,
+              "maxAngleAfterStop": 1.20889681547304,
+              "quietAngleDifference": 1.723849964275956,
+              "tipPenetrations": 0,
+              "clearance": 0.046305342656770554,
+              "minimum": {
+                "tick": 64,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.003711689603823853,
+              "maxTipTravelIn": 0.052625056535302174
+            }
+          ]
+        },
+        "jump": {
+          "maxAngleDegrees": 2.3971786174136223,
+          "maxFrontAngleDegrees": 2.3971786174136223,
+          "maxAngleAfterStopDegrees": 2.339081375694009,
+          "maxFrontAngleVsQuietDegrees": 2.39717861741286,
+          "maxRootTravelIn": 1.2583189618372014e-13,
+          "maxBoneStretchIn": 1.239985804319249e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 2.339081375694009,
+              "maxAngleAfterStop": 2.339081375694009,
+              "quietAngleDifference": 2.3390813756926856,
+              "tipPenetrations": 0,
+              "clearance": 0.06912079603245846,
+              "minimum": {
+                "tick": 12,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.0053310409843512095,
+              "maxTipTravelIn": 0.13055145244004715
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 2.3971786174136223,
+              "maxAngleAfterStop": 2.1213536604157257,
+              "quietAngleDifference": 2.39717861741286,
+              "tipPenetrations": 0,
+              "clearance": 0.08831769368849907,
+              "minimum": {
+                "tick": 11,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.003819159488368913,
+              "maxTipTravelIn": 0.1094636583186172
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 1.7398579941440773,
+              "maxAngleAfterStop": 1.7019346547787766,
+              "quietAngleDifference": 1.7398579941422199,
+              "tipPenetrations": 0,
+              "clearance": 0.0406522905593425,
+              "minimum": {
+                "tick": 38,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.0037116896038003784,
+              "maxTipTravelIn": 0.05311370639299922
+            }
+          ]
+        },
+        "roll": {
+          "maxAngleDegrees": 9.649383692880553,
+          "maxFrontAngleDegrees": 8.361247165551623,
+          "maxAngleAfterStopDegrees": 8.35908952438316,
+          "maxFrontAngleVsQuietDegrees": 8.36124716555217,
+          "maxRootTravelIn": 1.878987492520544e-13,
+          "maxBoneStretchIn": 1.2253977360331401e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 7.220034381398783,
+              "maxAngleAfterStop": 7.220034381398783,
+              "quietAngleDifference": 7.220034381398971,
+              "tipPenetrations": 0,
+              "clearance": 0.03241683804371531,
+              "minimum": {
+                "tick": 46,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.0053310409843628954,
+              "maxTipTravelIn": 0.40273411283815896
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 8.361247165551623,
+              "maxAngleAfterStop": 8.35908952438316,
+              "quietAngleDifference": 8.36124716555217,
+              "tipPenetrations": 0,
+              "clearance": 0.048264197046194335,
+              "minimum": {
+                "tick": 45,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.003819159488413231,
+              "maxTipTravelIn": 0.3814932603513802
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 9.649383692880553,
+              "maxAngleAfterStop": 9.649306329819888,
+              "quietAngleDifference": 9.649383692880415,
+              "tipPenetrations": 0,
+              "clearance": 0.037817523667491804,
+              "minimum": {
+                "tick": 73,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.003711689603797498,
+              "maxTipTravelIn": 0.2942359259530524
+            }
+          ]
+        },
+        "reducedMotion": {
+          "maxAngleDegrees": 0.0000012074182697257333,
+          "maxFrontAngleDegrees": 0.0000012074182697257333,
+          "maxAngleAfterStopDegrees": 0.0000012074182697257333,
+          "maxFrontAngleVsQuietDegrees": 0,
+          "maxRootTravelIn": 1.8946276112351922e-13,
+          "maxBoneStretchIn": 1.254573872605358e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 8.537736462515939e-7,
+              "maxAngleAfterStop": 8.537736462515939e-7,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 0.0811186656358942,
+              "minimum": {
+                "tick": 84,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.005331040984405708,
+              "maxTipTravelIn": 1.8771004725218509e-13
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 0.0000012074182697257333,
+              "maxAngleAfterStop": 0.0000012074182697257333,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 0.091221745074195,
+              "minimum": {
+                "tick": 101,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.0038191594883927285,
+              "maxTipTravelIn": 1.8946276112351922e-13
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 8.537736462515939e-7,
+              "maxAngleAfterStop": 8.537736462515939e-7,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 0.05360837129492935,
+              "minimum": {
+                "tick": 13,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.003711689603825816,
+              "maxTipTravelIn": 1.875359711075225e-13
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "sippy",
+      "tier": "high",
+      "boneCount": 6,
+      "colliders": [
+        "scalp",
+        "cheeks and jaw",
+        "ear R",
+        "shoulder R",
+        "collar R",
+        "ear L",
+        "shoulder L",
+        "collar L",
+        "neck",
+        "upper back and rear collar"
+      ],
+      "reducedFrontAngleAfterToggleDegrees": 0,
+      "scenarios": {
+        "idle": {
+          "maxAngleDegrees": 1.5777100176334709,
+          "maxFrontAngleDegrees": 1.2403835048892276,
+          "maxAngleAfterStopDegrees": 1.2403835048892276,
+          "maxFrontAngleVsQuietDegrees": 1.2403835048903182,
+          "maxRootTravelIn": 2.4849532455487205e-13,
+          "maxBoneStretchIn": 1.235123114890546e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 1.133384332442234,
+              "maxAngleAfterStop": 0.9604484091823239,
+              "quietAngleDifference": 1.133384332444147,
+              "tipPenetrations": 0,
+              "clearance": 0.06659987548589386,
+              "minimum": {
+                "tick": 209,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.0045422590573156564,
+              "maxTipTravelIn": 0.06326108851059098
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 1.2403835048892276,
+              "maxAngleAfterStop": 1.2403835048892276,
+              "quietAngleDifference": 1.2403835048903182,
+              "tipPenetrations": 0,
+              "clearance": 0.07831409742330586,
+              "minimum": {
+                "tick": 186,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.00420956394844743,
+              "maxTipTravelIn": 0.0566433252599065
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 1.5777100176334709,
+              "maxAngleAfterStop": 1.2301125927888452,
+              "quietAngleDifference": 1.5777100176307124,
+              "tipPenetrations": 0,
+              "clearance": 0.04468780492818225,
+              "minimum": {
+                "tick": 17,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.0033489868580311648,
+              "maxTipTravelIn": 0.04816404504863945
+            }
+          ]
+        },
+        "walk": {
+          "maxAngleDegrees": 2.907914198366272,
+          "maxFrontAngleDegrees": 2.751813957144993,
+          "maxAngleAfterStopDegrees": 2.6084753168624197,
+          "maxFrontAngleVsQuietDegrees": 2.751813957145308,
+          "maxRootTravelIn": 1.8801951975145573e-13,
+          "maxBoneStretchIn": 1.2497111831766549e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 2.5507830182408635,
+              "maxAngleAfterStop": 2.478440920015025,
+              "quietAngleDifference": 2.550783018240744,
+              "tipPenetrations": 0,
+              "clearance": 0.04987170346466452,
+              "minimum": {
+                "tick": 38,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.004542259057273782,
+              "maxTipTravelIn": 0.14236531307832168
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 2.751813957144993,
+              "maxAngleAfterStop": 2.6084753168624197,
+              "quietAngleDifference": 2.751813957145308,
+              "tipPenetrations": 0,
+              "clearance": 0.06884347032647264,
+              "minimum": {
+                "tick": 37,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.004209563948419564,
+              "maxTipTravelIn": 0.12565465047546853
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 2.907914198366272,
+              "maxAngleAfterStop": 2.8859247228287472,
+              "quietAngleDifference": 2.9079141983670707,
+              "tipPenetrations": 0,
+              "clearance": 0.034619410961335584,
+              "minimum": {
+                "tick": 24,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.003348986858026067,
+              "maxTipTravelIn": 0.08876555391736295
+            }
+          ]
+        },
+        "walkingTurn": {
+          "maxAngleDegrees": 5.513443673923226,
+          "maxFrontAngleDegrees": 5.513443673923226,
+          "maxAngleAfterStopDegrees": 1.3806985018840625,
+          "maxFrontAngleVsQuietDegrees": 5.513443673923143,
+          "maxRootTravelIn": 1.870511724392952e-13,
+          "maxBoneStretchIn": 1.171908152317408e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 5.421954174130386,
+              "maxAngleAfterStop": 0.5716702152297882,
+              "quietAngleDifference": 5.42195417413034,
+              "tipPenetrations": 0,
+              "clearance": 0.018778779703653603,
+              "minimum": {
+                "tick": 90,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.004542259057273782,
+              "maxTipTravelIn": 0.3025243388796448
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 5.513443673923226,
+              "maxAngleAfterStop": 1.3806985018840625,
+              "quietAngleDifference": 5.513443673923143,
+              "tipPenetrations": 0,
+              "clearance": 0.04672366301218989,
+              "minimum": {
+                "tick": 90,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.004209563948413941,
+              "maxTipTravelIn": 0.2516845794366501
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 3.8055209807120103,
+              "maxAngleAfterStop": 1.6820589324623694,
+              "quietAngleDifference": 3.8055209807122052,
+              "tipPenetrations": 0,
+              "clearance": 0.034619410961335584,
+              "minimum": {
+                "tick": 24,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.003348986858027197,
+              "maxTipTravelIn": 0.11615657057922872
+            }
+          ]
+        },
+        "headTurn": {
+          "maxAngleDegrees": 1.9615538814673694,
+          "maxFrontAngleDegrees": 1.9615538814673694,
+          "maxAngleAfterStopDegrees": 1.2397935414743972,
+          "maxFrontAngleVsQuietDegrees": 1.961553881467828,
+          "maxRootTravelIn": 2.4849532455487205e-13,
+          "maxBoneStretchIn": 1.2205350466044374e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 1.9615538814673694,
+              "maxAngleAfterStop": 0.5477480481621354,
+              "quietAngleDifference": 1.961553881467828,
+              "tipPenetrations": 0,
+              "clearance": 0.07294247032201606,
+              "minimum": {
+                "tick": 184,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.004542259057282423,
+              "maxTipTravelIn": 0.10948271759281458
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 1.6090277058245792,
+              "maxAngleAfterStop": 1.2397935414743972,
+              "quietAngleDifference": 1.6090277058252294,
+              "tipPenetrations": 0,
+              "clearance": 0.07832347643237081,
+              "minimum": {
+                "tick": 184,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.004209563948427128,
+              "maxTipTravelIn": 0.07347684342122619
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 1.9077301210560174,
+              "maxAngleAfterStop": 1.6642113871240616,
+              "quietAngleDifference": 1.9077301210581645,
+              "tipPenetrations": 0,
+              "clearance": 0.04468780492818225,
+              "minimum": {
+                "tick": 17,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.0033489868580311648,
+              "maxTipTravelIn": 0.05823798859232062
+            }
+          ]
+        },
+        "run": {
+          "maxAngleDegrees": 2.0718675655727026,
+          "maxFrontAngleDegrees": 2.0718675655727026,
+          "maxAngleAfterStopDegrees": 1.5687385298122853,
+          "maxFrontAngleVsQuietDegrees": 2.071867565572718,
+          "maxRootTravelIn": 1.8994140465120876e-13,
+          "maxBoneStretchIn": 1.2497111831766549e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 1.700268056952689,
+              "maxAngleAfterStop": 1.4963564937513425,
+              "quietAngleDifference": 1.7002680569527537,
+              "tipPenetrations": 0,
+              "clearance": 0.06921023018294958,
+              "minimum": {
+                "tick": 19,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.004542259057269189,
+              "maxTipTravelIn": 0.09490038989027566
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 2.0718675655727026,
+              "maxAngleAfterStop": 1.5687385298122853,
+              "quietAngleDifference": 2.071867565572718,
+              "tipPenetrations": 0,
+              "clearance": 0.08210066981394482,
+              "minimum": {
+                "tick": 19,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.0042095639484313165,
+              "maxTipTravelIn": 0.09461055038448149
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 1.7889804749704776,
+              "maxAngleAfterStop": 1.30780779308015,
+              "quietAngleDifference": 1.7889804749721439,
+              "tipPenetrations": 0,
+              "clearance": 0.04571217805003225,
+              "minimum": {
+                "tick": 90,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.0033489868580464034,
+              "maxTipTravelIn": 0.054613178172471744
+            }
+          ]
+        },
+        "jump": {
+          "maxAngleDegrees": 2.4263842634305317,
+          "maxFrontAngleDegrees": 2.4263842634305317,
+          "maxAngleAfterStopDegrees": 2.416518884480502,
+          "maxFrontAngleVsQuietDegrees": 2.4263842634305637,
+          "maxRootTravelIn": 1.2583189618372014e-13,
+          "maxBoneStretchIn": 1.239985804319249e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 2.416518884480502,
+              "maxAngleAfterStop": 2.416518884480502,
+              "quietAngleDifference": 2.4165188844809258,
+              "tipPenetrations": 0,
+              "clearance": 0.06881603541148062,
+              "minimum": {
+                "tick": 12,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.004542259057234047,
+              "maxTipTravelIn": 0.1348728517376291
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 2.4263842634305317,
+              "maxAngleAfterStop": 2.199273147669917,
+              "quietAngleDifference": 2.4263842634305637,
+              "tipPenetrations": 0,
+              "clearance": 0.0880320637062526,
+              "minimum": {
+                "tick": 11,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.0042095639484028315,
+              "maxTipTravelIn": 0.11079709334661209
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 1.7994200024481941,
+              "maxAngleAfterStop": 1.7994200024481941,
+              "quietAngleDifference": 1.7994200024490354,
+              "tipPenetrations": 0,
+              "clearance": 0.04044571780229278,
+              "minimum": {
+                "tick": 38,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.003348986858011896,
+              "maxTipTravelIn": 0.05493184517623113
+            }
+          ]
+        },
+        "roll": {
+          "maxAngleDegrees": 9.649373623392668,
+          "maxFrontAngleDegrees": 8.452869875053823,
+          "maxAngleAfterStopDegrees": 8.435978738693072,
+          "maxFrontAngleVsQuietDegrees": 8.452869875054015,
+          "maxRootTravelIn": 1.878987492520544e-13,
+          "maxBoneStretchIn": 1.2253977360331401e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 7.300213379510539,
+              "maxAngleAfterStop": 7.291866647575066,
+              "quietAngleDifference": 7.300213379510489,
+              "tipPenetrations": 0,
+              "clearance": 0.031943209553465746,
+              "minimum": {
+                "tick": 46,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.004542259057231194,
+              "maxTipTravelIn": 0.4072004852165162
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 8.452869875053823,
+              "maxAngleAfterStop": 8.435978738693072,
+              "quietAngleDifference": 8.452869875054015,
+              "tipPenetrations": 0,
+              "clearance": 0.047543309373872855,
+              "minimum": {
+                "tick": 45,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.004209563948407855,
+              "maxTipTravelIn": 0.38566612710065373
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 9.649373623392668,
+              "maxAngleAfterStop": 9.649299682781333,
+              "quietAngleDifference": 9.649373623392682,
+              "tipPenetrations": 0,
+              "clearance": 0.036652772395994626,
+              "minimum": {
+                "tick": 73,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.003348986858043852,
+              "maxTipTravelIn": 0.294235619633046
+            }
+          ]
+        },
+        "reducedMotion": {
+          "maxAngleDegrees": 0.0000012074182697257333,
+          "maxFrontAngleDegrees": 0.0000012074182697257333,
+          "maxAngleAfterStopDegrees": 0.0000012074182697257333,
+          "maxFrontAngleVsQuietDegrees": 0,
+          "maxRootTravelIn": 1.8946276112351922e-13,
+          "maxBoneStretchIn": 1.254573872605358e-13,
+          "samples": [
+            {
+              "name": "Sippy Forelock crest",
+              "region": "quiff",
+              "maxAngle": 8.537736462515939e-7,
+              "maxAngleAfterStop": 8.537736462515939e-7,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 0.08136147799663851,
+              "minimum": {
+                "tick": 127,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.00454225905727093,
+              "maxTipTravelIn": 1.8771004725218509e-13
+            },
+            {
+              "name": "Sippy Broken wave",
+              "region": "quiff",
+              "maxAngle": 0.0000012074182697257333,
+              "maxAngleAfterStop": 0.0000012074182697257333,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 0.09110344051479857,
+              "minimum": {
+                "tick": 86,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.004209563948413691,
+              "maxTipTravelIn": 1.8946276112351922e-13
+            },
+            {
+              "name": "Sippy Part-side temple",
+              "region": "temple",
+              "maxAngle": 8.537736462515939e-7,
+              "maxAngleAfterStop": 8.537736462515939e-7,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 0.053704931913526543,
+              "minimum": {
+                "tick": 13,
+                "collider": "scalp"
+              },
+              "maxCapRadiusIn": 0.0033489868580393344,
+              "maxTipTravelIn": 1.875359711075225e-13
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "roma",
+      "tier": "mobile",
+      "boneCount": 24,
+      "colliders": [
+        "scalp",
+        "cheeks and jaw",
+        "ear R",
+        "shoulder R",
+        "collar R",
+        "ear L",
+        "shoulder L",
+        "collar L",
+        "neck",
+        "upper back and rear collar",
+        "headband"
+      ],
+      "reducedFrontAngleAfterToggleDegrees": 0.0000034150945850063755,
+      "scenarios": {
+        "idle": {
+          "maxAngleDegrees": 7.632532094249266,
+          "maxFrontAngleDegrees": 2.553815646622337,
+          "maxAngleAfterStopDegrees": 2.4913918271093456,
+          "maxFrontAngleVsQuietDegrees": 1.9355924992764764,
+          "maxRootTravelIn": 2.556445743394911e-13,
+          "maxBoneStretchIn": 1.1795026897397641e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 2.553815646622337,
+              "maxAngleAfterStop": 2.4913918271093456,
+              "quietAngleDifference": 1.9355924992764764,
+              "tipPenetrations": 0,
+              "clearance": 0.020093192912210567,
+              "minimum": {
+                "tick": 20,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.12952563167532477,
+              "maxTipTravelIn": 0.1677544487306619
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 2.4293791276974686,
+              "maxAngleAfterStop": 2.414268551522912,
+              "quietAngleDifference": 1.7809615189422392,
+              "tipPenetrations": 0,
+              "clearance": 0.31762134445414714,
+              "minimum": {
+                "tick": 35,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.11411829140740003,
+              "maxTipTravelIn": 0.16335639662558502
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 2.001126612223841,
+              "maxAngleAfterStop": 1.6517187657327235,
+              "quietAngleDifference": 1.4926641019887947,
+              "tipPenetrations": 0,
+              "clearance": 1.170442689410315,
+              "minimum": {
+                "tick": 141,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.10226219842473569,
+              "maxTipTravelIn": 0.208683913423107
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 5.38119769713192,
+              "maxAngleAfterStop": 4.74201455019595,
+              "quietAngleDifference": 2.3784328616962584,
+              "tipPenetrations": 0,
+              "clearance": 0.003031510196966458,
+              "minimum": {
+                "tick": 209,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11347862782553611,
+              "maxTipTravelIn": 0.46216510352405366
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 2.3968775696321205,
+              "maxAngleAfterStop": 2.3839951794210106,
+              "quietAngleDifference": 1.7493988119952986,
+              "tipPenetrations": 0,
+              "clearance": 0.6372507304836734,
+              "minimum": {
+                "tick": 181,
+                "collider": "collar R"
+              },
+              "maxCapRadiusIn": 0.10795677612657974,
+              "maxTipTravelIn": 0.2000072352448494
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 1.6095556812195164,
+              "maxAngleAfterStop": 1.4126214562506791,
+              "quietAngleDifference": 1.240731650886172,
+              "tipPenetrations": 0,
+              "clearance": 1.1961837323570617,
+              "minimum": {
+                "tick": 146,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.10498273241257595,
+              "maxTipTravelIn": 0.1945496776874895
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 7.632532094249266,
+              "maxAngleAfterStop": 7.299656659139662,
+              "quietAngleDifference": 2.9207794647233256,
+              "tipPenetrations": 0,
+              "clearance": 0.002939070996484938,
+              "minimum": {
+                "tick": 209,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12038533171075882,
+              "maxTipTravelIn": 0.6119698188381214
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 2.3566377680966317,
+              "maxAngleAfterStop": 2.3542824776815805,
+              "quietAngleDifference": 1.737877597031846,
+              "tipPenetrations": 0,
+              "clearance": 0.18617171728304194,
+              "minimum": {
+                "tick": 209,
+                "collider": "collar L"
+              },
+              "maxCapRadiusIn": 0.11231814452495698,
+              "maxTipTravelIn": 0.19957722981310536
+            }
+          ]
+        },
+        "walk": {
+          "maxAngleDegrees": 10.922408135140316,
+          "maxFrontAngleDegrees": 10.862694937196302,
+          "maxAngleAfterStopDegrees": 10.034582392642106,
+          "maxFrontAngleVsQuietDegrees": 8.027475021672828,
+          "maxRootTravelIn": 2.3608808395286446e-13,
+          "maxBoneStretchIn": 1.1749131851104264e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 10.862694937196302,
+              "maxAngleAfterStop": 10.034582392642106,
+              "quietAngleDifference": 8.027475021672828,
+              "tipPenetrations": 0,
+              "clearance": 0.020081686034364443,
+              "minimum": {
+                "tick": 41,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.12952563167534312,
+              "maxTipTravelIn": 0.7285317361375632
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 8.734193092736797,
+              "maxAngleAfterStop": 8.586522268824758,
+              "quietAngleDifference": 6.286843240477398,
+              "tipPenetrations": 0,
+              "clearance": 0.2225322719752474,
+              "minimum": {
+                "tick": 21,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.11411829140735906,
+              "maxTipTravelIn": 0.5936897979376157
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 8.331263224086007,
+              "maxAngleAfterStop": 7.416296611694887,
+              "quietAngleDifference": 6.327179844330707,
+              "tipPenetrations": 0,
+              "clearance": 1.1239286218878606,
+              "minimum": {
+                "tick": 60,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.10226219842468322,
+              "maxTipTravelIn": 0.8668652010427838
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 10.922408135140316,
+              "maxAngleAfterStop": 10.922408135140316,
+              "quietAngleDifference": 4.448101154502779,
+              "tipPenetrations": 0,
+              "clearance": 0.0030008944298853812,
+              "minimum": {
+                "tick": 26,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11347862782558954,
+              "maxTipTravelIn": 1.1494542890445785
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 9.278829644003006,
+              "maxAngleAfterStop": 8.256613437598393,
+              "quietAngleDifference": 6.537111209786501,
+              "tipPenetrations": 0,
+              "clearance": 0.5876522280247951,
+              "minimum": {
+                "tick": 22,
+                "collider": "collar R"
+              },
+              "maxCapRadiusIn": 0.10795677612658425,
+              "maxTipTravelIn": 0.7909395770504666
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 5.871925447049425,
+              "maxAngleAfterStop": 5.236578692058003,
+              "quietAngleDifference": 4.702999496101966,
+              "tipPenetrations": 0,
+              "clearance": 1.1379588476399034,
+              "minimum": {
+                "tick": 22,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.10498273241252915,
+              "maxTipTravelIn": 0.6925630979491013
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 10.479201589358002,
+              "maxAngleAfterStop": 10.479201589358002,
+              "quietAngleDifference": 4.681592752562853,
+              "tipPenetrations": 0,
+              "clearance": 0.0028845682039091436,
+              "minimum": {
+                "tick": 8,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12038533171077648,
+              "maxTipTravelIn": 1.0853595292704568
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 7.952446068585782,
+              "maxAngleAfterStop": 7.8445439397427545,
+              "quietAngleDifference": 5.889262323706839,
+              "tipPenetrations": 0,
+              "clearance": 0.13327511279760884,
+              "minimum": {
+                "tick": 10,
+                "collider": "collar L"
+              },
+              "maxCapRadiusIn": 0.11231814452496527,
+              "maxTipTravelIn": 0.6785297246036668
+            }
+          ]
+        },
+        "walkingTurn": {
+          "maxAngleDegrees": 12.116032677271187,
+          "maxFrontAngleDegrees": 10.862694937196302,
+          "maxAngleAfterStopDegrees": 4.844152275101427,
+          "maxFrontAngleVsQuietDegrees": 8.027475021672828,
+          "maxRootTravelIn": 1.9967786969406516e-13,
+          "maxBoneStretchIn": 1.2208082314038026e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 10.862694937196302,
+              "maxAngleAfterStop": 4.844152275101427,
+              "quietAngleDifference": 8.027475021672828,
+              "tipPenetrations": 0,
+              "clearance": 0.020081686034364443,
+              "minimum": {
+                "tick": 41,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.12952563167534312,
+              "maxTipTravelIn": 0.7285317361375632
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 9.897026638480522,
+              "maxAngleAfterStop": 3.491976744649602,
+              "quietAngleDifference": 6.934989207073243,
+              "tipPenetrations": 0,
+              "clearance": 0.2225322719752474,
+              "minimum": {
+                "tick": 21,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.11411829140732607,
+              "maxTipTravelIn": 0.6877748925411976
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 8.546086087092663,
+              "maxAngleAfterStop": 1.913280160475149,
+              "quietAngleDifference": 7.005087499601372,
+              "tipPenetrations": 0,
+              "clearance": 1.1032284707676574,
+              "minimum": {
+                "tick": 85,
+                "collider": "shoulder R"
+              },
+              "maxCapRadiusIn": 0.10226219842469327,
+              "maxTipTravelIn": 0.8668652010427838
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 10.860301264100844,
+              "maxAngleAfterStop": 6.5540987815584835,
+              "quietAngleDifference": 4.520714798456224,
+              "tipPenetrations": 0,
+              "clearance": 0.002990614719582174,
+              "minimum": {
+                "tick": 153,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11347862782558954,
+              "maxTipTravelIn": 1.1494542890445785
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 9.278829644003006,
+              "maxAngleAfterStop": 4.8293471379158275,
+              "quietAngleDifference": 6.634968828850551,
+              "tipPenetrations": 0,
+              "clearance": 0.5876522280247951,
+              "minimum": {
+                "tick": 22,
+                "collider": "collar R"
+              },
+              "maxCapRadiusIn": 0.10795677612656476,
+              "maxTipTravelIn": 0.7909395770504666
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 6.786830948827347,
+              "maxAngleAfterStop": 3.1984888026355303,
+              "quietAngleDifference": 6.196410551751009,
+              "tipPenetrations": 0,
+              "clearance": 1.1101136825274036,
+              "minimum": {
+                "tick": 95,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.1049827324125256,
+              "maxTipTravelIn": 0.6925630979491013
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 12.116032677271187,
+              "maxAngleAfterStop": 7.653396446096527,
+              "quietAngleDifference": 4.681592752562853,
+              "tipPenetrations": 0,
+              "clearance": 0.0028845682039091436,
+              "minimum": {
+                "tick": 8,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12038533171084033,
+              "maxTipTravelIn": 1.2893734213676036
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 9.17169737268064,
+              "maxAngleAfterStop": 2.343341256111196,
+              "quietAngleDifference": 6.076883464190253,
+              "tipPenetrations": 0,
+              "clearance": 0.13327511279760884,
+              "minimum": {
+                "tick": 10,
+                "collider": "collar L"
+              },
+              "maxCapRadiusIn": 0.11231814452496527,
+              "maxTipTravelIn": 0.8292611861930878
+            }
+          ]
+        },
+        "headTurn": {
+          "maxAngleDegrees": 21.958841920722808,
+          "maxFrontAngleDegrees": 3.4655514110894567,
+          "maxAngleAfterStopDegrees": 2.414839256976794,
+          "maxFrontAngleVsQuietDegrees": 2.4749706189936402,
+          "maxRootTravelIn": 2.0044224712216793e-13,
+          "maxBoneStretchIn": 1.2804717915851914e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 3.4655514110894567,
+              "maxAngleAfterStop": 1.8895167210575237,
+              "quietAngleDifference": 2.4749706189936402,
+              "tipPenetrations": 0,
+              "clearance": 0.020085564369424436,
+              "minimum": {
+                "tick": 41,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.12952563167526926,
+              "maxTipTravelIn": 0.23709254123814336
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 2.53958266112949,
+              "maxAngleAfterStop": 2.414839256976794,
+              "quietAngleDifference": 1.7849101022430451,
+              "tipPenetrations": 0,
+              "clearance": 0.3194623306894899,
+              "minimum": {
+                "tick": 28,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.11411829140735755,
+              "maxTipTravelIn": 0.18423197864161314
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 1.8849060020651027,
+              "maxAngleAfterStop": 1.8849060020651027,
+              "quietAngleDifference": 1.6507181032017568,
+              "tipPenetrations": 0,
+              "clearance": 0.9252823992787103,
+              "minimum": {
+                "tick": 110,
+                "collider": "shoulder R"
+              },
+              "maxCapRadiusIn": 0.10226219842478279,
+              "maxTipTravelIn": 0.20186748371258442
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 8.725564826832048,
+              "maxAngleAfterStop": 3.9893252295043258,
+              "quietAngleDifference": 7.1794558312151695,
+              "tipPenetrations": 0,
+              "clearance": 0.0028733524094242124,
+              "minimum": {
+                "tick": 83,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11347862782557126,
+              "maxTipTravelIn": 0.7113160250610122
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 3.087621337718963,
+              "maxAngleAfterStop": 2.31777638613998,
+              "quietAngleDifference": 2.541667945684042,
+              "tipPenetrations": 0,
+              "clearance": 0.06294694731382267,
+              "minimum": {
+                "tick": 71,
+                "collider": "collar R"
+              },
+              "maxCapRadiusIn": 0.10795677612658997,
+              "maxTipTravelIn": 0.24915179486826955
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 2.1781330654708273,
+              "maxAngleAfterStop": 1.956117268572012,
+              "quietAngleDifference": 1.927223375750616,
+              "tipPenetrations": 0,
+              "clearance": 0.5740849039567208,
+              "minimum": {
+                "tick": 47,
+                "collider": "shoulder L"
+              },
+              "maxCapRadiusIn": 0.10498273241253156,
+              "maxTipTravelIn": 0.22669753008691634
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 17.631976771871887,
+              "maxAngleAfterStop": 7.50405901402467,
+              "quietAngleDifference": 12.635846510886145,
+              "tipPenetrations": 0,
+              "clearance": 0.002880772826001854,
+              "minimum": {
+                "tick": 67,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12038533171076309,
+              "maxTipTravelIn": 1.4486839504816416
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 21.958841920722808,
+              "maxAngleAfterStop": 2.209668361313378,
+              "quietAngleDifference": 21.553027388009795,
+              "tipPenetrations": 0,
+              "clearance": 0.0073314045935835015,
+              "minimum": {
+                "tick": 66,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11231814452495471,
+              "maxTipTravelIn": 1.451131376128066
+            }
+          ]
+        },
+        "run": {
+          "maxAngleDegrees": 7.505390038220118,
+          "maxFrontAngleDegrees": 4.744549338694263,
+          "maxAngleAfterStopDegrees": 4.550971664604588,
+          "maxFrontAngleVsQuietDegrees": 3.491076630595746,
+          "maxRootTravelIn": 2.815555421036916e-13,
+          "maxBoneStretchIn": 1.1749131851104264e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 4.744549338694263,
+              "maxAngleAfterStop": 4.550971664604588,
+              "quietAngleDifference": 3.491076630595746,
+              "tipPenetrations": 0,
+              "clearance": 0.02008665072782656,
+              "minimum": {
+                "tick": 116,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.12952563167526115,
+              "maxTipTravelIn": 0.3232430180847024
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 4.2150544009932105,
+              "maxAngleAfterStop": 3.848596315474793,
+              "quietAngleDifference": 3.0056860316102627,
+              "tipPenetrations": 0,
+              "clearance": 0.3339491487937132,
+              "minimum": {
+                "tick": 10,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.11411829140736739,
+              "maxTipTravelIn": 0.2893581079347768
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 4.407646688477938,
+              "maxAngleAfterStop": 3.1124112911213997,
+              "quietAngleDifference": 3.619629338514278,
+              "tipPenetrations": 0,
+              "clearance": 1.0476449206240153,
+              "minimum": {
+                "tick": 64,
+                "collider": "shoulder R"
+              },
+              "maxCapRadiusIn": 0.1022621984247202,
+              "maxTipTravelIn": 0.42420016325547855
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 7.505390038220118,
+              "maxAngleAfterStop": 7.034711294595173,
+              "quietAngleDifference": 2.9902020828186506,
+              "tipPenetrations": 0,
+              "clearance": 0.0029475721155840517,
+              "minimum": {
+                "tick": 11,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11347862782554094,
+              "maxTipTravelIn": 0.7516409363261749
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 3.9924376466775424,
+              "maxAngleAfterStop": 2.9998072067497534,
+              "quietAngleDifference": 3.0090527342600497,
+              "tipPenetrations": 0,
+              "clearance": 0.5990615514387712,
+              "minimum": {
+                "tick": 12,
+                "collider": "collar R"
+              },
+              "maxCapRadiusIn": 0.10795677612656684,
+              "maxTipTravelIn": 0.3525808803555521
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 4.168280187165832,
+              "maxAngleAfterStop": 2.4883321323940444,
+              "quietAngleDifference": 3.4002323064410076,
+              "tipPenetrations": 0,
+              "clearance": 1.1407089068260778,
+              "minimum": {
+                "tick": 76,
+                "collider": "shoulder L"
+              },
+              "maxCapRadiusIn": 0.10498273241250411,
+              "maxTipTravelIn": 0.44146492564958684
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 6.635715373484656,
+              "maxAngleAfterStop": 6.635715373484656,
+              "quietAngleDifference": 3.4099947662613888,
+              "tipPenetrations": 0,
+              "clearance": 0.002869526773541242,
+              "minimum": {
+                "tick": 16,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12038533171078815,
+              "maxTipTravelIn": 0.6330687940343142
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 4.673252519322153,
+              "maxAngleAfterStop": 3.17994663136469,
+              "quietAngleDifference": 3.476537472280325,
+              "tipPenetrations": 0,
+              "clearance": 0.12453084569475403,
+              "minimum": {
+                "tick": 17,
+                "collider": "collar L"
+              },
+              "maxCapRadiusIn": 0.11231814452496205,
+              "maxTipTravelIn": 0.39044695325331435
+            }
+          ]
+        },
+        "jump": {
+          "maxAngleDegrees": 15.224412668694152,
+          "maxFrontAngleDegrees": 15.224412668694152,
+          "maxAngleAfterStopDegrees": 14.51672890536956,
+          "maxFrontAngleVsQuietDegrees": 11.477627698065957,
+          "maxRootTravelIn": 2.1137860923837877e-13,
+          "maxBoneStretchIn": 1.1795026897397641e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 14.753395199718476,
+              "maxAngleAfterStop": 14.24524188427149,
+              "quietAngleDifference": 10.921336748097366,
+              "tipPenetrations": 0,
+              "clearance": 0.02007764059192385,
+              "minimum": {
+                "tick": 22,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.1295256316752781,
+              "maxTipTravelIn": 0.9885940455865269
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 15.224412668694152,
+              "maxAngleAfterStop": 14.51672890536956,
+              "quietAngleDifference": 11.477627698065957,
+              "tipPenetrations": 0,
+              "clearance": 0.10926528589287687,
+              "minimum": {
+                "tick": 47,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.11411829140733759,
+              "maxTipTravelIn": 0.9980248771075755
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 10.170683215210671,
+              "maxAngleAfterStop": 9.324325238318423,
+              "quietAngleDifference": 7.817705475618719,
+              "tipPenetrations": 0,
+              "clearance": 1.1421287466860908,
+              "minimum": {
+                "tick": 14,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.1022621984247129,
+              "maxTipTravelIn": 1.0353028513516631
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 14.143666563208447,
+              "maxAngleAfterStop": 13.193866395265621,
+              "quietAngleDifference": 7.126413458067383,
+              "tipPenetrations": 0,
+              "clearance": 0.00295149798593064,
+              "minimum": {
+                "tick": 25,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11347862782553374,
+              "maxTipTravelIn": 1.5061375131917818
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 11.64706729369573,
+              "maxAngleAfterStop": 11.042293172682355,
+              "quietAngleDifference": 8.391654461186851,
+              "tipPenetrations": 0,
+              "clearance": 0.5515072298330872,
+              "minimum": {
+                "tick": 37,
+                "collider": "collar R"
+              },
+              "maxCapRadiusIn": 0.10795677612660896,
+              "maxTipTravelIn": 0.9893124128491797
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 7.506012837438277,
+              "maxAngleAfterStop": 7.290092284058784,
+              "quietAngleDifference": 5.8522542380638445,
+              "tipPenetrations": 0,
+              "clearance": 1.0863506664639702,
+              "minimum": {
+                "tick": 49,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.10498273241257033,
+              "maxTipTravelIn": 0.9056928208166816
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 11.815578705617764,
+              "maxAngleAfterStop": 11.730972510659802,
+              "quietAngleDifference": 9.387485934221537,
+              "tipPenetrations": 0,
+              "clearance": 0.002885015030613003,
+              "minimum": {
+                "tick": 11,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12038533171075409,
+              "maxTipTravelIn": 1.2214493147761667
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 12.201033553758617,
+              "maxAngleAfterStop": 11.650771937941458,
+              "quietAngleDifference": 9.080885459892151,
+              "tipPenetrations": 0,
+              "clearance": 0.1362635974555808,
+              "minimum": {
+                "tick": 13,
+                "collider": "collar L"
+              },
+              "maxCapRadiusIn": 0.11231814452494279,
+              "maxTipTravelIn": 1.0265960224676431
+            }
+          ]
+        },
+        "roll": {
+          "maxAngleDegrees": 24.657978022752452,
+          "maxFrontAngleDegrees": 21.411916534410643,
+          "maxAngleAfterStopDegrees": 21.411916534410643,
+          "maxFrontAngleVsQuietDegrees": 17.404873761014365,
+          "maxRootTravelIn": 1.9742793216031034e-13,
+          "maxBoneStretchIn": 1.0142805230836103e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 21.411916534410643,
+              "maxAngleAfterStop": 21.411916534410643,
+              "quietAngleDifference": 17.404873761014365,
+              "tipPenetrations": 0,
+              "clearance": 0.020086870045768368,
+              "minimum": {
+                "tick": 81,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.12952563167525014,
+              "maxTipTravelIn": 1.4125008564723267
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 16.368089390809157,
+              "maxAngleAfterStop": 16.368089390809157,
+              "quietAngleDifference": 13.083058870763402,
+              "tipPenetrations": 0,
+              "clearance": 0.18742268969092857,
+              "minimum": {
+                "tick": 69,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.11411829140733679,
+              "maxTipTravelIn": 1.0949590229525814
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 22.498150970786234,
+              "maxAngleAfterStop": 22.498150970786234,
+              "quietAngleDifference": 17.030628355469194,
+              "tipPenetrations": 0,
+              "clearance": 0.20490723675511213,
+              "minimum": {
+                "tick": 28,
+                "collider": "shoulder R"
+              },
+              "maxCapRadiusIn": 0.10226219842471149,
+              "maxTipTravelIn": 2.057534352190592
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 24.657978022752452,
+              "maxAngleAfterStop": 24.657978022752452,
+              "quietAngleDifference": 18.51724352031003,
+              "tipPenetrations": 0,
+              "clearance": 0.0029028545019913476,
+              "minimum": {
+                "tick": 60,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11347862782554011,
+              "maxTipTravelIn": 2.7467744230051325
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 21.985943622348568,
+              "maxAngleAfterStop": 21.985943622348568,
+              "quietAngleDifference": 17.88722736800741,
+              "tipPenetrations": 0,
+              "clearance": 0.3970322756881681,
+              "minimum": {
+                "tick": 53,
+                "collider": "collar R"
+              },
+              "maxCapRadiusIn": 0.10795677612656171,
+              "maxTipTravelIn": 1.9326792423024373
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 19.61197220618393,
+              "maxAngleAfterStop": 19.61197220618393,
+              "quietAngleDifference": 14.780331689849001,
+              "tipPenetrations": 0,
+              "clearance": 0.40979184729150386,
+              "minimum": {
+                "tick": 29,
+                "collider": "shoulder L"
+              },
+              "maxCapRadiusIn": 0.10498273241256441,
+              "maxTipTravelIn": 1.9265460845806075
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 17.341895709637217,
+              "maxAngleAfterStop": 17.341895709637217,
+              "quietAngleDifference": 15.701730599083115,
+              "tipPenetrations": 0,
+              "clearance": 0.002883655495113935,
+              "minimum": {
+                "tick": 61,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12038533171078017,
+              "maxTipTravelIn": 1.7555852722911536
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 21.512161328683778,
+              "maxAngleAfterStop": 21.512161328683778,
+              "quietAngleDifference": 15.750174573824767,
+              "tipPenetrations": 0,
+              "clearance": 0.07228581185285887,
+              "minimum": {
+                "tick": 53,
+                "collider": "collar L"
+              },
+              "maxCapRadiusIn": 0.11231814452494289,
+              "maxTipTravelIn": 1.7557151731127387
+            }
+          ]
+        },
+        "reducedMotion": {
+          "maxAngleDegrees": 7.54485464268284,
+          "maxFrontAngleDegrees": 0.7355873334779697,
+          "maxAngleAfterStopDegrees": 0.7355873334764831,
+          "maxFrontAngleVsQuietDegrees": 0.0000034150945850063755,
+          "maxRootTravelIn": 1.9967786969406516e-13,
+          "maxBoneStretchIn": 1.2667032776971787e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 0.7355873334779697,
+              "maxAngleAfterStop": 0.7355873334764831,
+              "quietAngleDifference": 0.0000034150945850063755,
+              "tipPenetrations": 0,
+              "clearance": 0.020093782118943748,
+              "minimum": {
+                "tick": 41,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.1295256316753294,
+              "maxTipTravelIn": 0.03954139159016431
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 8.537736462515939e-7,
+              "maxAngleAfterStop": 8.537736462515939e-7,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 0.3584568175020051,
+              "minimum": {
+                "tick": 48,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.11411829140738147,
+              "maxTipTravelIn": 1.9169465878931486e-13
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 0,
+              "maxAngleAfterStop": 0,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 1.1938879653215473,
+              "minimum": {
+                "tick": 65,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.10226219842469791,
+              "maxTipTravelIn": 1.8211866983429302e-13
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 5.402087155077727,
+              "maxAngleAfterStop": 5.244727378434308,
+              "quietAngleDifference": 2.016117117330147,
+              "tipPenetrations": 0,
+              "clearance": 0.0030641167192497765,
+              "minimum": {
+                "tick": 136,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11347862782555301,
+              "maxTipTravelIn": 0.4638770691828926
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 0.0000012074182697257333,
+              "maxAngleAfterStop": 0.0000012074182697257333,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 0.6555875473173618,
+              "minimum": {
+                "tick": 92,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.10795677612656752,
+              "maxTipTravelIn": 1.9271220091832273e-13
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 0.0000012074182697257333,
+              "maxAngleAfterStop": 0.0000012074182697257333,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 1.2217369437955905,
+              "minimum": {
+                "tick": 72,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.1049827324125253,
+              "maxTipTravelIn": 2.258531787155226e-13
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 7.54485464268284,
+              "maxAngleAfterStop": 7.54485464268284,
+              "quietAngleDifference": 2.2235713589168404,
+              "tipPenetrations": 0,
+              "clearance": 0.0029790827319913227,
+              "minimum": {
+                "tick": 107,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12038533171078877,
+              "maxTipTravelIn": 0.6337781633832856
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 8.537736462515939e-7,
+              "maxAngleAfterStop": 8.537736462515939e-7,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 0.18781995947939434,
+              "minimum": {
+                "tick": 51,
+                "collider": "collar L"
+              },
+              "maxCapRadiusIn": 0.11231814452496307,
+              "maxTipTravelIn": 1.633227617803008e-13
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "roma",
+      "tier": "high",
+      "boneCount": 24,
+      "colliders": [
+        "scalp",
+        "cheeks and jaw",
+        "ear R",
+        "shoulder R",
+        "collar R",
+        "ear L",
+        "shoulder L",
+        "collar L",
+        "neck",
+        "upper back and rear collar",
+        "headband"
+      ],
+      "reducedFrontAngleAfterToggleDegrees": 0.0000017075472925031877,
+      "scenarios": {
+        "idle": {
+          "maxAngleDegrees": 7.624878095622088,
+          "maxFrontAngleDegrees": 2.556740685070481,
+          "maxAngleAfterStopDegrees": 2.4986919913486028,
+          "maxFrontAngleVsQuietDegrees": 1.937447406897743,
+          "maxRootTravelIn": 2.556445743394911e-13,
+          "maxBoneStretchIn": 1.1795026897397641e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 2.556740685070481,
+              "maxAngleAfterStop": 2.4986919913486028,
+              "quietAngleDifference": 1.937447406897743,
+              "tipPenetrations": 0,
+              "clearance": 0.02010190060299366,
+              "minimum": {
+                "tick": 19,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.12921349027944704,
+              "maxTipTravelIn": 0.16803563777467037
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 2.44471947674366,
+              "maxAngleAfterStop": 2.4196174306099545,
+              "quietAngleDifference": 1.7910918032569243,
+              "tipPenetrations": 0,
+              "clearance": 0.3180301622385384,
+              "minimum": {
+                "tick": 34,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.11207412482732662,
+              "maxTipTravelIn": 0.16431691160659812
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 2.004783578023055,
+              "maxAngleAfterStop": 1.6445704011025546,
+              "quietAngleDifference": 1.494830056652219,
+              "tipPenetrations": 0,
+              "clearance": 1.1692377340747186,
+              "minimum": {
+                "tick": 140,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.10398904873670516,
+              "maxTipTravelIn": 0.2091229065812887
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 5.415379239476966,
+              "maxAngleAfterStop": 4.778658305825751,
+              "quietAngleDifference": 2.377967236464336,
+              "tipPenetrations": 0,
+              "clearance": 0.003029044301195327,
+              "minimum": {
+                "tick": 209,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11576515575804362,
+              "maxTipTravelIn": 0.46508497134441196
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 2.403945321477949,
+              "maxAngleAfterStop": 2.3885879671914996,
+              "quietAngleDifference": 1.7534885966998275,
+              "tipPenetrations": 0,
+              "clearance": 0.634860670744477,
+              "minimum": {
+                "tick": 181,
+                "collider": "collar R"
+              },
+              "maxCapRadiusIn": 0.10972938038894892,
+              "maxTipTravelIn": 0.20056317711154406
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 1.6125626147256045,
+              "maxAngleAfterStop": 1.4084054051126509,
+              "quietAngleDifference": 1.2425887894347305,
+              "tipPenetrations": 0,
+              "clearance": 1.1935564885588645,
+              "minimum": {
+                "tick": 145,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.10881732852347774,
+              "maxTipTravelIn": 0.19496860132950633
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 7.624878095622088,
+              "maxAngleAfterStop": 7.2936516521397206,
+              "quietAngleDifference": 2.917204123768995,
+              "tipPenetrations": 0,
+              "clearance": 0.0029384984397893277,
+              "minimum": {
+                "tick": 209,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12014841381388679,
+              "maxTipTravelIn": 0.6118696093909323
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 2.3608597449842863,
+              "maxAngleAfterStop": 2.3586680703656486,
+              "quietAngleDifference": 1.7399510507487403,
+              "tipPenetrations": 0,
+              "clearance": 0.18334447942541243,
+              "minimum": {
+                "tick": 209,
+                "collider": "collar L"
+              },
+              "maxCapRadiusIn": 0.11550944778037392,
+              "maxTipTravelIn": 0.20002921572391585
+            }
+          ]
+        },
+        "walk": {
+          "maxAngleDegrees": 11.540021790436686,
+          "maxFrontAngleDegrees": 11.503528724389856,
+          "maxAngleAfterStopDegrees": 10.656435646866125,
+          "maxFrontAngleVsQuietDegrees": 8.420961879311845,
+          "maxRootTravelIn": 2.3608808395286446e-13,
+          "maxBoneStretchIn": 1.1749131851104264e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 11.503528724389856,
+              "maxAngleAfterStop": 10.656435646866125,
+              "quietAngleDifference": 8.420961879311845,
+              "tipPenetrations": 0,
+              "clearance": 0.020095219030405564,
+              "minimum": {
+                "tick": 78,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.12921349027946213,
+              "maxTipTravelIn": 0.7747542316718612
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 9.211044241261972,
+              "maxAngleAfterStop": 9.087756207708443,
+              "quietAngleDifference": 6.589748002674385,
+              "tipPenetrations": 0,
+              "clearance": 0.214323329927399,
+              "minimum": {
+                "tick": 21,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.11207412482727946,
+              "maxTipTravelIn": 0.6290386207867565
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 8.890186593767348,
+              "maxAngleAfterStop": 7.8600806023190275,
+              "quietAngleDifference": 6.706995029825026,
+              "tipPenetrations": 0,
+              "clearance": 1.116817706031151,
+              "minimum": {
+                "tick": 60,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.10398904873673505,
+              "maxTipTravelIn": 0.9236761292879863
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 11.540021790436686,
+              "maxAngleAfterStop": 11.520877787493195,
+              "quietAngleDifference": 4.781239122375568,
+              "tipPenetrations": 0,
+              "clearance": 0.0030237204285203934,
+              "minimum": {
+                "tick": 16,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11576515575807692,
+              "maxTipTravelIn": 1.2237334586180404
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 9.909745420892145,
+              "maxAngleAfterStop": 8.787675592735747,
+              "quietAngleDifference": 6.933992839208775,
+              "tipPenetrations": 0,
+              "clearance": 0.5834765608744694,
+              "minimum": {
+                "tick": 22,
+                "collider": "collar R"
+              },
+              "maxCapRadiusIn": 0.10972938038896114,
+              "maxTipTravelIn": 0.8482110166086471
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 6.209101078327817,
+              "maxAngleAfterStop": 5.535546322688819,
+              "quietAngleDifference": 4.960413120366038,
+              "tipPenetrations": 0,
+              "clearance": 1.1289472809840184,
+              "minimum": {
+                "tick": 22,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.1088173285234626,
+              "maxTipTravelIn": 0.7356539253977
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 11.131839034416451,
+              "maxAngleAfterStop": 11.131839034416451,
+              "quietAngleDifference": 4.830579748597457,
+              "tipPenetrations": 0,
+              "clearance": 0.0028843774949109946,
+              "minimum": {
+                "tick": 8,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12014841381388927,
+              "maxTipTravelIn": 1.1577454844074828
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 8.45263345944051,
+              "maxAngleAfterStop": 8.342857771673561,
+              "quietAngleDifference": 6.2127787653576085,
+              "tipPenetrations": 0,
+              "clearance": 0.1302031202068148,
+              "minimum": {
+                "tick": 10,
+                "collider": "collar L"
+              },
+              "maxCapRadiusIn": 0.11550944778037615,
+              "maxTipTravelIn": 0.7253779049978396
+            }
+          ]
+        },
+        "walkingTurn": {
+          "maxAngleDegrees": 12.965025901306625,
+          "maxFrontAngleDegrees": 11.503528724389856,
+          "maxAngleAfterStopDegrees": 5.180393394609122,
+          "maxFrontAngleVsQuietDegrees": 8.420961879311845,
+          "maxRootTravelIn": 1.9967786969406516e-13,
+          "maxBoneStretchIn": 1.2208082314038026e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 11.503528724389856,
+              "maxAngleAfterStop": 5.180393394609122,
+              "quietAngleDifference": 8.420961879311845,
+              "tipPenetrations": 0,
+              "clearance": 0.020095692578113056,
+              "minimum": {
+                "tick": 77,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.12921349027946213,
+              "maxTipTravelIn": 0.7747542316718612
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 10.476182140125415,
+              "maxAngleAfterStop": 3.851954000764259,
+              "quietAngleDifference": 7.290800262215635,
+              "tipPenetrations": 0,
+              "clearance": 0.214323329927399,
+              "minimum": {
+                "tick": 21,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.11207412482727946,
+              "maxTipTravelIn": 0.7309340580849062
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 9.058880826465812,
+              "maxAngleAfterStop": 2.0958289478118126,
+              "quietAngleDifference": 7.3481242841152445,
+              "tipPenetrations": 0,
+              "clearance": 1.0881289803959389,
+              "minimum": {
+                "tick": 85,
+                "collider": "shoulder R"
+              },
+              "maxCapRadiusIn": 0.10398904873673505,
+              "maxTipTravelIn": 0.9236761292879863
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 11.56972639255096,
+              "maxAngleAfterStop": 7.050019658117588,
+              "quietAngleDifference": 4.781239122375568,
+              "tipPenetrations": 0,
+              "clearance": 0.0029705879000712088,
+              "minimum": {
+                "tick": 153,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11576515575807692,
+              "maxTipTravelIn": 1.2237334586180404
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 9.909745420892145,
+              "maxAngleAfterStop": 5.13034828628644,
+              "quietAngleDifference": 7.004548314979608,
+              "tipPenetrations": 0,
+              "clearance": 0.5834765608744694,
+              "minimum": {
+                "tick": 22,
+                "collider": "collar R"
+              },
+              "maxCapRadiusIn": 0.10972938038896114,
+              "maxTipTravelIn": 0.8482110166086471
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 7.158250916767111,
+              "maxAngleAfterStop": 3.4067893101308395,
+              "quietAngleDifference": 6.46550862567037,
+              "tipPenetrations": 0,
+              "clearance": 1.1002705711073708,
+              "minimum": {
+                "tick": 95,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.1088173285234626,
+              "maxTipTravelIn": 0.7356539253977
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 12.965025901306625,
+              "maxAngleAfterStop": 7.714183981644369,
+              "quietAngleDifference": 4.851261785050687,
+              "tipPenetrations": 0,
+              "clearance": 0.0028835329246661434,
+              "minimum": {
+                "tick": 137,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12014841381396427,
+              "maxTipTravelIn": 1.3797524864948016
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 9.72995003814763,
+              "maxAngleAfterStop": 2.6261941545862246,
+              "quietAngleDifference": 6.39883167638156,
+              "tipPenetrations": 0,
+              "clearance": 0.1302031202068148,
+              "minimum": {
+                "tick": 10,
+                "collider": "collar L"
+              },
+              "maxCapRadiusIn": 0.11550944778039239,
+              "maxTipTravelIn": 0.8829900630796954
+            }
+          ]
+        },
+        "headTurn": {
+          "maxAngleDegrees": 21.173348784128695,
+          "maxFrontAngleDegrees": 3.5031908933132154,
+          "maxAngleAfterStopDegrees": 2.419809178087162,
+          "maxFrontAngleVsQuietDegrees": 2.498072453203375,
+          "maxRootTravelIn": 2.0044224712216793e-13,
+          "maxBoneStretchIn": 1.2804717915851914e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 3.5031908933132154,
+              "maxAngleAfterStop": 1.9036475582383297,
+              "quietAngleDifference": 2.498072453203375,
+              "tipPenetrations": 0,
+              "clearance": 0.02009398650292149,
+              "minimum": {
+                "tick": 41,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.12921349027944148,
+              "maxTipTravelIn": 0.2397421511142961
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 2.5681418190068235,
+              "maxAngleAfterStop": 2.419809178087162,
+              "quietAngleDifference": 1.79397494851929,
+              "tipPenetrations": 0,
+              "clearance": 0.3195669223226718,
+              "minimum": {
+                "tick": 27,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.11207412482736251,
+              "maxTipTravelIn": 0.18716263536584227
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 1.888314784891936,
+              "maxAngleAfterStop": 1.888314784891936,
+              "quietAngleDifference": 1.7083773011049164,
+              "tipPenetrations": 0,
+              "clearance": 0.9226478827282516,
+              "minimum": {
+                "tick": 110,
+                "collider": "shoulder R"
+              },
+              "maxCapRadiusIn": 0.10398904873676129,
+              "maxTipTravelIn": 0.2029444163916551
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 8.797966018686035,
+              "maxAngleAfterStop": 4.02702818775705,
+              "quietAngleDifference": 7.243728041496755,
+              "tipPenetrations": 0,
+              "clearance": 0.002872016662170296,
+              "minimum": {
+                "tick": 83,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11576515575807138,
+              "maxTipTravelIn": 0.7170370870907385
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 3.121984501308867,
+              "maxAngleAfterStop": 2.327210177926351,
+              "quietAngleDifference": 2.5824180413555937,
+              "tipPenetrations": 0,
+              "clearance": 0.0626360494295175,
+              "minimum": {
+                "tick": 71,
+                "collider": "collar R"
+              },
+              "maxCapRadiusIn": 0.10972938038894774,
+              "maxTipTravelIn": 0.2511342452904853
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 2.2068922720223845,
+              "maxAngleAfterStop": 1.9606842402351896,
+              "quietAngleDifference": 1.9590853146161826,
+              "tipPenetrations": 0,
+              "clearance": 0.571359378565387,
+              "minimum": {
+                "tick": 47,
+                "collider": "shoulder L"
+              },
+              "maxCapRadiusIn": 0.10881732852350479,
+              "maxTipTravelIn": 0.2285956623553677
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 17.607390250085146,
+              "maxAngleAfterStop": 7.498826086957183,
+              "quietAngleDifference": 12.622521903295562,
+              "tipPenetrations": 0,
+              "clearance": 0.0028806812164148266,
+              "minimum": {
+                "tick": 67,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12014841381388276,
+              "maxTipTravelIn": 1.4460797765146387
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 21.173348784128695,
+              "maxAngleAfterStop": 2.2207160742664045,
+              "quietAngleDifference": 20.82105521510004,
+              "tipPenetrations": 0,
+              "clearance": 0.0074001169088506735,
+              "minimum": {
+                "tick": 66,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.1155094477803438,
+              "maxTipTravelIn": 1.3971629900604303
+            }
+          ]
+        },
+        "run": {
+          "maxAngleDegrees": 8.044312299210672,
+          "maxFrontAngleDegrees": 5.008987994851473,
+          "maxAngleAfterStopDegrees": 4.7811882864312745,
+          "maxFrontAngleVsQuietDegrees": 3.5933230837483285,
+          "maxRootTravelIn": 2.815555421036916e-13,
+          "maxBoneStretchIn": 1.1749131851104264e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 5.008987994851473,
+              "maxAngleAfterStop": 4.7811882864312745,
+              "quietAngleDifference": 3.5933230837483285,
+              "tipPenetrations": 0,
+              "clearance": 0.02009016550210685,
+              "minimum": {
+                "tick": 3,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.12921349027940457,
+              "maxTipTravelIn": 0.34177511833889224
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 4.362338913835427,
+              "maxAngleAfterStop": 3.986764728087263,
+              "quietAngleDifference": 3.1236539601502007,
+              "tipPenetrations": 0,
+              "clearance": 0.33297028601484047,
+              "minimum": {
+                "tick": 11,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.11207412482731607,
+              "maxTipTravelIn": 0.300875409994277
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 4.555024770242104,
+              "maxAngleAfterStop": 3.2008090281862973,
+              "quietAngleDifference": 3.721368503619135,
+              "tipPenetrations": 0,
+              "clearance": 1.0413876708874268,
+              "minimum": {
+                "tick": 64,
+                "collider": "shoulder R"
+              },
+              "maxCapRadiusIn": 0.10398904873671586,
+              "maxTipTravelIn": 0.44072958897138936
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 8.044312299210672,
+              "maxAngleAfterStop": 7.776437021342749,
+              "quietAngleDifference": 3.0864348736923954,
+              "tipPenetrations": 0,
+              "clearance": 0.002942777592885415,
+              "minimum": {
+                "tick": 11,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11576515575808066,
+              "maxTipTravelIn": 0.7710718590202902
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 4.173870872240028,
+              "maxAngleAfterStop": 3.1011384790997454,
+              "quietAngleDifference": 3.102948416569744,
+              "tipPenetrations": 0,
+              "clearance": 0.5897215676131564,
+              "minimum": {
+                "tick": 12,
+                "collider": "collar R"
+              },
+              "maxCapRadiusIn": 0.10972938038896775,
+              "maxTipTravelIn": 0.3768007265312446
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 4.284003125378486,
+              "maxAngleAfterStop": 2.5397032873847456,
+              "quietAngleDifference": 3.4819602877400775,
+              "tipPenetrations": 0,
+              "clearance": 1.1403525020892982,
+              "minimum": {
+                "tick": 76,
+                "collider": "shoulder L"
+              },
+              "maxCapRadiusIn": 0.10881732852351345,
+              "maxTipTravelIn": 0.4555008116115438
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 7.0840769208291565,
+              "maxAngleAfterStop": 7.0840769208291565,
+              "quietAngleDifference": 3.6169314562644392,
+              "tipPenetrations": 0,
+              "clearance": 0.0028757886862862403,
+              "minimum": {
+                "tick": 16,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12014841381391547,
+              "maxTipTravelIn": 0.6694946066479739
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 4.769988200710183,
+              "maxAngleAfterStop": 3.2626081973969407,
+              "quietAngleDifference": 3.5279749843498833,
+              "tipPenetrations": 0,
+              "clearance": 0.12092009007525162,
+              "minimum": {
+                "tick": 17,
+                "collider": "collar L"
+              },
+              "maxCapRadiusIn": 0.11550944778037926,
+              "maxTipTravelIn": 0.4000416976425533
+            }
+          ]
+        },
+        "jump": {
+          "maxAngleDegrees": 15.399361529341098,
+          "maxFrontAngleDegrees": 15.399361529341098,
+          "maxAngleAfterStopDegrees": 14.496695137412114,
+          "maxFrontAngleVsQuietDegrees": 11.601542357308896,
+          "maxRootTravelIn": 2.1137860923837877e-13,
+          "maxBoneStretchIn": 1.1795026897397641e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 14.9256263739611,
+              "maxAngleAfterStop": 14.231475225077977,
+              "quietAngleDifference": 11.046664722175711,
+              "tipPenetrations": 0,
+              "clearance": 0.020085164490464047,
+              "minimum": {
+                "tick": 80,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.12921349027944692,
+              "maxTipTravelIn": 1.0002291128076322
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 15.399361529341098,
+              "maxAngleAfterStop": 14.496695137412114,
+              "quietAngleDifference": 11.601542357308896,
+              "tipPenetrations": 0,
+              "clearance": 0.10697135041686812,
+              "minimum": {
+                "tick": 45,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.1120741248272603,
+              "maxTipTravelIn": 1.0094160486626496
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 10.351531396752545,
+              "maxAngleAfterStop": 9.2976692182334,
+              "quietAngleDifference": 7.950063393024056,
+              "tipPenetrations": 0,
+              "clearance": 1.13855989639764,
+              "minimum": {
+                "tick": 14,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.10398904873670926,
+              "maxTipTravelIn": 1.0536795089527347
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 14.338754931628863,
+              "maxAngleAfterStop": 13.163459458494518,
+              "quietAngleDifference": 7.246163170500927,
+              "tipPenetrations": 0,
+              "clearance": 0.002947817455368318,
+              "minimum": {
+                "tick": 25,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11576515575802825,
+              "maxTipTravelIn": 1.5278457542333952
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 11.828038094756055,
+              "maxAngleAfterStop": 11.0237422284661,
+              "quietAngleDifference": 8.522766875491133,
+              "tipPenetrations": 0,
+              "clearance": 0.5487203904497016,
+              "minimum": {
+                "tick": 36,
+                "collider": "collar R"
+              },
+              "maxCapRadiusIn": 0.10972938038892692,
+              "maxTipTravelIn": 1.0050621019855617
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 7.601746399148795,
+              "maxAngleAfterStop": 7.287338654803873,
+              "quietAngleDifference": 5.927316900600358,
+              "tipPenetrations": 0,
+              "clearance": 1.0820038657383049,
+              "minimum": {
+                "tick": 47,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.10881732852348032,
+              "maxTipTravelIn": 0.9171900220871457
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 11.860501808544559,
+              "maxAngleAfterStop": 11.747514091909416,
+              "quietAngleDifference": 9.438880026318042,
+              "tipPenetrations": 0,
+              "clearance": 0.0028847847038808716,
+              "minimum": {
+                "tick": 11,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12014841381388158,
+              "maxTipTravelIn": 1.22961107690093
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 12.364557283809283,
+              "maxAngleAfterStop": 11.63928474013595,
+              "quietAngleDifference": 9.198721316873836,
+              "tipPenetrations": 0,
+              "clearance": 0.1329502783986427,
+              "minimum": {
+                "tick": 13,
+                "collider": "collar L"
+              },
+              "maxCapRadiusIn": 0.11550944778034607,
+              "maxTipTravelIn": 1.0405832831715243
+            }
+          ]
+        },
+        "roll": {
+          "maxAngleDegrees": 24.767124313887468,
+          "maxFrontAngleDegrees": 21.486636240575912,
+          "maxAngleAfterStopDegrees": 21.486636240575912,
+          "maxFrontAngleVsQuietDegrees": 17.41292777372883,
+          "maxRootTravelIn": 1.98309090847474e-13,
+          "maxBoneStretchIn": 1.0142805230836103e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 21.486636240575912,
+              "maxAngleAfterStop": 21.486636240575912,
+              "quietAngleDifference": 17.41292777372883,
+              "tipPenetrations": 0,
+              "clearance": 0.020095725926067898,
+              "minimum": {
+                "tick": 81,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.12921349027939444,
+              "maxTipTravelIn": 1.4224925878196306
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 16.60455261046488,
+              "maxAngleAfterStop": 16.60455261046488,
+              "quietAngleDifference": 13.264789008017319,
+              "tipPenetrations": 0,
+              "clearance": 0.18060931138762282,
+              "minimum": {
+                "tick": 69,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.11207412482723984,
+              "maxTipTravelIn": 1.112032641334609
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 22.853190154776822,
+              "maxAngleAfterStop": 22.853190154776822,
+              "quietAngleDifference": 17.25933889475984,
+              "tipPenetrations": 0,
+              "clearance": 0.21976090266891002,
+              "minimum": {
+                "tick": 27,
+                "collider": "shoulder R"
+              },
+              "maxCapRadiusIn": 0.10398904873672697,
+              "maxTipTravelIn": 2.090673874337172
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 24.767124313887468,
+              "maxAngleAfterStop": 24.767124313887468,
+              "quietAngleDifference": 18.556582838705253,
+              "tipPenetrations": 0,
+              "clearance": 0.0028874647760785965,
+              "minimum": {
+                "tick": 61,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11576515575804461,
+              "maxTipTravelIn": 2.7682043790737847
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 22.067593782005574,
+              "maxAngleAfterStop": 22.067593782005574,
+              "quietAngleDifference": 17.8898617678878,
+              "tipPenetrations": 0,
+              "clearance": 0.39595782497481924,
+              "minimum": {
+                "tick": 53,
+                "collider": "collar R"
+              },
+              "maxCapRadiusIn": 0.1097293803889337,
+              "maxTipTravelIn": 1.9470450101941887
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 19.86960185360031,
+              "maxAngleAfterStop": 19.86960185360031,
+              "quietAngleDifference": 14.958722397456413,
+              "tipPenetrations": 0,
+              "clearance": 0.42201943203807857,
+              "minimum": {
+                "tick": 29,
+                "collider": "shoulder L"
+              },
+              "maxCapRadiusIn": 0.1088173285234865,
+              "maxTipTravelIn": 1.9525492501783748
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 17.539466409918056,
+              "maxAngleAfterStop": 17.539466409918056,
+              "quietAngleDifference": 15.910774775539284,
+              "tipPenetrations": 0,
+              "clearance": 0.0028846830154156677,
+              "minimum": {
+                "tick": 11,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12014841381391043,
+              "maxTipTravelIn": 1.7899283745960577
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 21.796769342205238,
+              "maxAngleAfterStop": 21.796769342205238,
+              "quietAngleDifference": 15.934119059971751,
+              "tipPenetrations": 0,
+              "clearance": 0.07017580685843239,
+              "minimum": {
+                "tick": 53,
+                "collider": "collar L"
+              },
+              "maxCapRadiusIn": 0.11550944778038225,
+              "maxTipTravelIn": 1.7801268594502244
+            }
+          ]
+        },
+        "reducedMotion": {
+          "maxAngleDegrees": 7.541508931833164,
+          "maxFrontAngleDegrees": 0.7297371383408247,
+          "maxAngleAfterStopDegrees": 0.7297371383408247,
+          "maxFrontAngleVsQuietDegrees": 0.0000024148365394514667,
+          "maxRootTravelIn": 1.9967786969406516e-13,
+          "maxBoneStretchIn": 1.2667032776971787e-13,
+          "samples": [
+            {
+              "name": "Roma Swept forehead left",
+              "region": "front",
+              "maxAngle": 0.7297371383408247,
+              "maxAngleAfterStop": 0.7297371383408247,
+              "quietAngleDifference": 0.0000024148365394514667,
+              "tipPenetrations": 0,
+              "clearance": 0.020102492775774472,
+              "minimum": {
+                "tick": 41,
+                "collider": "headband 1"
+              },
+              "maxCapRadiusIn": 0.12921349027945003,
+              "maxTipTravelIn": 0.039226919457932725
+            },
+            {
+              "name": "Roma Swept forehead right",
+              "region": "front",
+              "maxAngle": 8.537736462515939e-7,
+              "maxAngleAfterStop": 8.537736462515939e-7,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 0.3591537785001335,
+              "minimum": {
+                "tick": 41,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.11207412482730723,
+              "maxTipTravelIn": 1.9169465878931486e-13
+            },
+            {
+              "name": "Roma Right wave 01",
+              "region": "temple",
+              "maxAngle": 0,
+              "maxAngleAfterStop": 0,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 1.1927314748842766,
+              "minimum": {
+                "tick": 65,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.10398904873669462,
+              "maxTipTravelIn": 1.8211866983429302e-13
+            },
+            {
+              "name": "Roma Right wave 11",
+              "region": "cascade",
+              "maxAngle": 5.4364748146376645,
+              "maxAngleAfterStop": 5.279165183556932,
+              "quietAngleDifference": 2.0151768255202787,
+              "tipPenetrations": 0,
+              "clearance": 0.0030619922494188323,
+              "minimum": {
+                "tick": 136,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.11576515575805656,
+              "maxTipTravelIn": 0.46682772780599047
+            },
+            {
+              "name": "Roma Right wave 15",
+              "region": "nape",
+              "maxAngle": 0.0000012074182697257333,
+              "maxAngleAfterStop": 0.0000012074182697257333,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 0.6541139472637203,
+              "minimum": {
+                "tick": 92,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.10972938038895243,
+              "maxTipTravelIn": 1.9271220091832273e-13
+            },
+            {
+              "name": "Roma Left wave 01",
+              "region": "temple",
+              "maxAngle": 0.0000012074182697257333,
+              "maxAngleAfterStop": 0.0000012074182697257333,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 1.2191586198266866,
+              "minimum": {
+                "tick": 72,
+                "collider": "cheeks and jaw"
+              },
+              "maxCapRadiusIn": 0.10881732852347376,
+              "maxTipTravelIn": 2.258531787155226e-13
+            },
+            {
+              "name": "Roma Left wave 11",
+              "region": "cascade",
+              "maxAngle": 7.541508931833164,
+              "maxAngleAfterStop": 7.541508931833164,
+              "quietAngleDifference": 2.2235507298939794,
+              "tipPenetrations": 0,
+              "clearance": 0.0029791350089298785,
+              "minimum": {
+                "tick": 28,
+                "collider": "upper back and rear collar"
+              },
+              "maxCapRadiusIn": 0.12014841381392294,
+              "maxTipTravelIn": 0.63349752503519
+            },
+            {
+              "name": "Roma Left wave 15",
+              "region": "nape",
+              "maxAngle": 8.537736462515939e-7,
+              "maxAngleAfterStop": 8.537736462515939e-7,
+              "quietAngleDifference": 0,
+              "tipPenetrations": 0,
+              "clearance": 0.1850051024048731,
+              "minimum": {
+                "tick": 51,
+                "collider": "collar L"
+              },
+              "maxCapRadiusIn": 0.1155094477803741,
+              "maxTipTravelIn": 1.633227617803008e-13
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "failures": []
+}
