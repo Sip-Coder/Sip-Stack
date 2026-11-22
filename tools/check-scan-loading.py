@@ -1,11 +1,15 @@
 """Check baked Axon demand, genuine worker streaming, cancellation and recovery."""
 
 import argparse
+import gzip
+import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import runpy
 from urllib.parse import urlsplit
+from urllib.request import urlopen
 
 from playwright.sync_api import sync_playwright
 
@@ -250,18 +254,57 @@ def recovery(browser, url, three, fonts, hero, filename, missing_bake=None):
     finally:
         ctx.close()
 
+def compare_worker(browser, url, three, fonts):
+    # Use the served application's own import map (including offline mirrors)
+    # with a blank body. The UI and streamed selection are exercised by verify.
+    base = url.rstrip("/") + "/"
+    with urlopen(base) as response:
+        data = response.read()
+        if response.headers.get("Content-Encoding") == "gzip":
+            data = gzip.decompress(data)
+    marker = re.search(r'(<script type="importmap">)(.*?)(</script>)', data.decode(), re.S)
+    assert marker and json.loads(marker[2])["imports"]["three"]
+    html = marker[0]
+    probe = (TOOLS / "check-axon-worker.js").read_text()
+    rows = []
+    for name in ("sippy", "roma"):
+        for tier in ("mobile", "high"):
+            ctx = fresh(browser, three, fonts)
+            try:
+                page = ctx.new_page()
+                workers = []
+                page.on("worker", lambda worker: workers.append(worker.url))
+                page.route("**/__axon_parity.html", lambda route: route.fulfill(content_type="text/html", body=html))
+                page.goto(base + "__axon_parity.html")
+                row = page.evaluate(probe, {"name": name, "tier": tier, "base": base})
+                assert len(workers) == 1 and row["previewParts"] == 170, row
+                row["packSha256"] = {}
+                for suffix in ("", "-sa"):
+                    file = f"axon-{name}-{tier}{suffix}.glb"
+                    response = ctx.request.get(base + "characters/assets/" + file)
+                    assert response.ok
+                    row["packSha256"][file] = hashlib.sha256(response.body()).hexdigest()
+                rows.append(row)
+                print(f"{name} {tier}: {row['vertices']:,} vertices compared, "
+                      f"max drift {row['maxVertexIn']:.6f} in.", flush=True)
+            finally:
+                ctx.close()
+    return {"workerGeometry": rows}
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("url")
     parser.add_argument("--system-fonts", action="store_true")
     parser.add_argument("--report", type=Path)
+    parser.add_argument("--worker-parity", action="store_true", help="compare the browser Worker with all four release GLB pairs")
     args = parser.parse_args()
     three = Path(os.environ["THREE_ROOT"]) if os.getenv("THREE_ROOT") else None
     with sync_playwright() as pw:
         browser = stage["launch"](pw)
         try:
-            evidence = verify(browser, args.url, three, args.system_fonts)
+            run = compare_worker if args.worker_parity else verify
+            evidence = run(browser, args.url, three, args.system_fonts)
         finally:
             browser.close()
     if args.report:

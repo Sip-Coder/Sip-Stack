@@ -18,11 +18,11 @@ function publish(name, parts, partial) {
     }
     return materialIds.get(material);
   }
-  const packet = parts.map(({ mesh, layer, name, source, scanNode, muscleNode, atlasNode, region }) => {
+  const packet = parts.map(({ mesh, layer, name, source, scanNode, muscleNode, atlasNode, sourcePart, region, attachments }) => {
     const g = mesh.geometry;
     if (!g.boundingBox) g.computeBoundingBox();
     return {
-      name, layer, source, scanNode, muscleNode, atlasNode, region,
+      name, layer, source, scanNode, muscleNode, atlasNode, sourcePart, region, attachments,
       material: Array.isArray(mesh.material) ? mesh.material.map(materialId) : materialId(mesh.material),
       renderOrder: mesh.renderOrder, groups: g.groups,
       bounds: [g.boundingBox.min.toArray(), g.boundingBox.max.toArray()],

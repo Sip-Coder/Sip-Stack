@@ -12,8 +12,7 @@ function unpack({ name, finishes, parts, partial }) {
   try {
     return {
       name, fitPath: 'worker', partial, dispose,
-      parts: parts.map(({ name, layer, source, scanNode, muscleNode, atlasNode, region,
-        attributes, index, groups, bounds, material, renderOrder }) => {
+      parts: parts.map(({ attributes, index, groups, bounds, material, renderOrder, attachments, ...metadata }) => {
         const g = new BufferGeometry();
         geometries.push(g);
         for (const [k, attr] of Object.entries(attributes)) g.setAttribute(k, attribute(attr));
@@ -21,9 +20,15 @@ function unpack({ name, finishes, parts, partial }) {
         g.groups = groups;
         g.boundingBox = new Box3(new Vector3(...bounds[0]), new Vector3(...bounds[1]));
         const mesh = new Mesh(g, Array.isArray(material) ? material.map((id) => materials[id]) : materials[material]);
-        mesh.name = name;
+        mesh.name = metadata.name;
         mesh.renderOrder = renderOrder;
-        return { id: layer + '/' + name, name, layer, source, scanNode, muscleNode, atlasNode, region, mesh };
+        if (metadata.scanNode) g.userData.scanNode = metadata.scanNode;
+        const part = { ...metadata, id: metadata.layer + '/' + metadata.name, mesh };
+        if (attachments) part.attachments = attachments.map(({ index, role, bone, source, target, delta }) => ({
+          index, role, bone,
+          source: new Vector3().copy(source), target: new Vector3().copy(target), delta: new Vector3().copy(delta),
+        }));
+        return part;
       }),
     };
   } catch (error) {

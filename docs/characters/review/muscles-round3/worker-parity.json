@@ -1,0 +1,64 @@
+{
+  "workerGeometry": [
+    {
+      "name": "sippy",
+      "tier": "mobile",
+      "parts": 636,
+      "previewParts": 170,
+      "vertices": 177541,
+      "triangles": 341488,
+      "landmarks": 743,
+      "maxVertexIn": 0.001709213541756056,
+      "maxMuscleRgbError": 0.003315668036966697,
+      "packSha256": {
+        "axon-sippy-mobile.glb": "58c9e1c88236a959c452beeb61805430edd6e22717a20e69d450ee9687fca72d",
+        "axon-sippy-mobile-sa.glb": "f144360549eb906cdbe295561fec5df7ce5e0d01b9d68486ad5c90be48fb8b45"
+      }
+    },
+    {
+      "name": "sippy",
+      "tier": "high",
+      "parts": 636,
+      "previewParts": 170,
+      "vertices": 289423,
+      "triangles": 564778,
+      "landmarks": 746,
+      "maxVertexIn": 0.0017087696503035935,
+      "maxMuscleRgbError": 0.0033150969781785165,
+      "packSha256": {
+        "axon-sippy-high.glb": "427308defae04cd4ccbfcc10343ffcfd3a4fb6d3de4e53251fb0a9cd5b831050",
+        "axon-sippy-high-sa.glb": "4a09f98aef51fb4b2de4c7a95a22068f3cdd3a3c8c0133923798e42d58172772"
+      }
+    },
+    {
+      "name": "roma",
+      "tier": "mobile",
+      "parts": 621,
+      "previewParts": 170,
+      "vertices": 146114,
+      "triangles": 282226,
+      "landmarks": 741,
+      "maxVertexIn": 0.001695097237245773,
+      "maxMuscleRgbError": 0.003315668036966697,
+      "packSha256": {
+        "axon-roma-mobile.glb": "aebc90c3a66024f17872978af0bee1d3623fb0f3d88b4b020661f7f76fa60b29",
+        "axon-roma-mobile-sa.glb": "b70a0898e4d18b5c4d3ff330a78690b4800f14fd0eeafdadd23a62027bb2726b"
+      }
+    },
+    {
+      "name": "roma",
+      "tier": "high",
+      "parts": 621,
+      "previewParts": 170,
+      "vertices": 246336,
+      "triangles": 482830,
+      "landmarks": 745,
+      "maxVertexIn": 0.001695097237245773,
+      "maxMuscleRgbError": 0.0033150969781785165,
+      "packSha256": {
+        "axon-roma-high.glb": "7c05218ccc2463096fc3efe6122475ea3728946580db8d5dc641a6427a85e345",
+        "axon-roma-high-sa.glb": "e7d0b2557a62fafe1ec5423d685e83353eedfef2bba81fdd1a001e42d80844d0"
+      }
+    }
+  ]
+}
