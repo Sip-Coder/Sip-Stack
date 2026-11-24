@@ -1,0 +1,128 @@
+#bots.active {
+  animation: none;
+}
+
+#bots .bots-shell {
+  max-width: 1140px;
+  margin: 0 auto 2rem;
+  padding: clamp(.9rem, 3.2vw, 2.15rem) clamp(.75rem, 3vw, 1.8rem) 0;
+}
+
+#bots .bots-header {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  column-gap: .95rem;
+  margin-bottom: .85rem;
+}
+
+#bots .bots-header h1 {
+  margin: 0;
+  font: 500 clamp(1.9rem, 5.2vw, 3.35rem)/1.06 var(--serif);
+  letter-spacing: -.025em;
+}
+
+#bots .bots-header p {
+  margin: 0;
+  color: #584b46;
+  font-size: .9rem;
+}
+
+#bots .bots-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  height: clamp(390px, 70vh, 720px);
+  height: clamp(360px, 70svh, 720px);
+  border: 1px solid #14282a;
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at 46% 25%, #c1e6db32, transparent 61%),
+    linear-gradient(166deg, #2c494b, #17292e 73%, #283534);
+  box-shadow: 0 21px 38px -30px #221910a6;
+}
+
+#bots .bots-stage[data-bots-ready="true"] {
+  cursor: grab;
+}
+
+#bots .bots-stage[data-bots-ready="true"]:active {
+  cursor: grabbing;
+}
+
+#bots .bots-stage::before {
+  position: absolute;
+  content: "";
+  bottom: 0;
+  width: min(54%, 17rem);
+  height: 10%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, #09191caa 9%, #09191c00 68%);
+  pointer-events: none;
+}
+
+#bots .bots-stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+#bots .bots-stage .bots-status {
+  z-index: 1;
+  margin: 0;
+  padding: 0 .8rem;
+  color: #edf5ef;
+  text-align: center;
+}
+
+#bots .bots-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .45rem;
+  margin-top: .85rem;
+}
+
+#bots .bots-controls button {
+  min-height: 44px;
+  padding: .55rem .82rem;
+  border: 1px solid #304547;
+  border-radius: 8px;
+  background: var(--card);
+  color: #253d3c;
+  font: 600 .85rem/1.25 var(--sans);
+  cursor: pointer;
+}
+
+#bots .bots-controls button:not(:disabled):hover {
+  background: #e3ece0;
+}
+
+#bots .bots-controls button[aria-pressed="true"],
+#bots .bots-controls button[aria-pressed="true"]:hover {
+  background: #255455;
+  color: white;
+}
+
+#bots .bots-controls button:disabled {
+  opacity: .56;
+  cursor: default;
+}
+
+#bots :is(.bots-stage, .bots-controls button):focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 3px;
+}
+
+@media (max-width: 680px) {
+  #bots .bots-stage {
+    height: clamp(340px, 62vh, 575px);
+    height: clamp(340px, 62svh, 575px);
+    border-radius: 10px;
+  }
+}
