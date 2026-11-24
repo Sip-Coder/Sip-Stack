@@ -128,7 +128,8 @@ function rollHull(rig) {
     const source = { mesh, parent, position, skinIndex, skinWeight, matrices, transform, kept: new Set() };
     const indices = mesh.userData.rollContactIndices;
     if (indices) contactRings.push({ index: indices, sample: indices.map(() => source) });
-    const count = Math.min(position.count, 576);
+    // Keep small support points on the fitted rigid clothing batches.
+    const count = Math.min(position.count, rig.anatomy && !matrices ? 1152 : 576);
     const rigid = !matrices && group(parent);
     for (let k = 0; k < count; k++) {
       const i = Math.floor((k * position.count) / count);
@@ -290,7 +291,8 @@ export function createController(rig, x = 0, z = 0) {
     worldFoot = new T.Quaternion();
   const axisX = new T.Vector3(1, 0, 0),
     sample = new T.Vector3();
-  const rollFloor = rollHull(rig);
+  let rollFloor = rig.anatomy ? null : rollHull(rig);
+  let rollDetail;
   let travel = 0.25,
     heading = 0,
     speed = 0,
@@ -747,6 +749,12 @@ export function createController(rig, x = 0, z = 0) {
   function finishPose() {
     if (frame.state !== 'roll') return;
     root.updateMatrixWorld(true);
+    // The wrapped skin has distinct silhouettes at each detail tier.
+    // Sample the active surfaces after batching and tier selection.
+    if (rig.anatomy && (!rollFloor || rollDetail !== root.userData.detailTier)) {
+      rollDetail = root.userData.detailTier;
+      rollFloor = rollHull(rig);
+    }
     const lowest = rig.groom?.group ? posedHairFloor(rig.groom.group, sample, rollFloor()) : rollFloor();
     if (Number.isFinite(lowest)) {
       // A finite directional hull inscribes the curved boot, pack and helmet.

@@ -4,7 +4,8 @@ import { secondaryMotion } from './secondary.js';
 import { outfitExplorer, quiltFinish } from './sippy-explorer.js';
 import { fitExpression } from './sippy-expression.js';
 import { fitHipSeams } from './sippy-hips.js';
-import { buildExplorerHands } from './sippy-body.js';
+import { buildExplorerHands } from './human-hands.js';
+import { handProfiles } from './sippy-hand-data.js';
 import { cutExplorerLayers, fitLimb, anatomyRegions, fitOpenings } from './sippy-tailoring.js';
 import { addExteriorShell, attachExteriorProfile, seatExplorerHead, shapeExplorerCrown } from './human-exterior.js';
 import { sippyExterior } from './sippy-exterior-data.js';
@@ -493,7 +494,7 @@ export function buildSippy(rig, attachGroom) {
     pad,
     button,
   };
-  buildExplorerHands(rig, skin);
+  buildExplorerHands(rig, skin, handProfiles);
   for (const side of ['L', 'R']) {
     fitLimb(tailoring, side, false, materials);
     fitLimb(tailoring, side, true, materials);

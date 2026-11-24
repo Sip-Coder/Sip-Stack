@@ -29,6 +29,7 @@ export function mountStudy(section, stage, chooseHero) {
   body.innerHTML = `
     <div class="ax-toolbar"><label>Character <select data-axon-hero>${names.map((n, i) => `<option value="${n}">${labels[i]}</option>`).join('')}</select></label>
       <label data-human-setting>Layout <select data-axon-layout><option value="axial">Axial</option><option value="side">Side by side</option></select></label>
+      <label data-human-setting>Skin fit <select data-skin-fit disabled><option value="off">Off</option><option value="heatmap">Gap heatmap</option><option value="overlay">Skin over muscle</option></select></label>
       <label class="ax-spread"><span>Explode <output data-spread-value>0%</output></span>
         <input data-explode type="range" min="0" max="1" step="0.01" value="0"></label></div>
     <div class="ax-layout"><div class="ax-figure">
@@ -46,6 +47,7 @@ export function mountStudy(section, stage, chooseHero) {
       <label data-human-setting class="ax-ghost"><input data-ghost type="checkbox"> Ghost skin</label>
       <label class="ax-part-label">Inspect part <select data-part><option value="">Select a part</option></select></label>
       <div data-measure aria-live="polite"></div>
+      <div class="ax-fit-results" data-skin-fit-state="off" aria-live="polite" hidden></div>
     </aside></div>
     <details class="ax-help" data-human-setting data-scan-credit><summary>Skeleton and muscle credits · BoneHub, BodyParts3D, Visible Human Female and Z-Anatomy</summary></details>
     <details class="ax-help"><summary>Diagram controls</summary><p>Click or tap a part to measure it. Ghost skin reveals the anatomy below the skin, fat and clothes. Drag to orbit. Pinch or scroll to zoom. On the diagram, use the arrow keys to orbit, + or − to zoom and Home to reset.</p>
@@ -62,6 +64,10 @@ export function mountStudy(section, stage, chooseHero) {
   const spread = get('[data-explode]'),
     status = get('.ax-status'),
     measure = get('[data-measure]');
+  const fitPicker = get('[data-skin-fit]'), fitOutput = get('[data-skin-fit-state]');
+  const fitLockedControls = body.querySelectorAll(
+    '[data-axon-layout], [data-explode], .ax-layers input, .ax-layers button, [data-ghost], [data-part]',
+  );
   const rows = layers.map((l) => get('[data-layer="' + l.key + '"]'));
   let hero,
     tier,
@@ -73,6 +79,7 @@ export function mountStudy(section, stage, chooseHero) {
     loading,
     previewPaint,
     generation = 0;
+  let fitRequest, fitResult;
   let ghostOpen = false;
   const restoreLayers = new Set();
   function applyGhost(enabled) {
@@ -115,9 +122,98 @@ export function mountStudy(section, stage, chooseHero) {
       delete section.dataset.progress;
       status.textContent = '';
       section.dataset.ready = key;
+      fitPicker.disabled = hero === 'hummin';
+      if (stats.skinFit === fitPicker.value && stats.skinFit !== 'off' && fitResult) {
+        fitOutput.dataset.skinFitState = 'ready';
+      } else if (fitPicker.value !== 'off' && fitOutput.dataset.skinFitState !== 'error') {
+        refreshSkinFit();
+      }
     },
     onError: showError,
   });
+  function resetSkinFit(clear = false) {
+    fitRequest?.abort();
+    fitRequest = undefined;
+    if (clear) fitResult = undefined;
+    view.setSkinFit('off');
+    for (const control of fitLockedControls) control.disabled = false;
+    fitOutput.hidden = true;
+    fitOutput.dataset.skinFitState = 'off';
+  }
+  function showSkinFit(result, mode) {
+    const { data, distances, module } = result;
+    fitOutput.hidden = false;
+    fitOutput.dataset.skinFitState = 'rendering';
+    const entries = [
+      'Muscle gap · Mean ' + data.muscle.meanIn.toFixed(3) + ' in · Max ' + data.muscle.maxIn.toFixed(3) + ' in',
+      'Nearest support · Mean ' + data.support.meanIn.toFixed(3) + ' in · Max ' + data.support.maxIn.toFixed(3) + ' in',
+    ].map((text) => {
+      const line = document.createElement('p');
+      line.textContent = text;
+      return line;
+    });
+    const legend = document.createElement('div');
+    legend.className = 'ax-fit-scale';
+    if (mode === 'heatmap') module.fitScale.forEach(({ color }, i) => {
+      const swatch = document.createElement('span');
+      swatch.style.borderColor = color;
+      swatch.textContent = ['0', '1/16', '3/8', '3/4', '1½+ in'][i];
+      legend.append(swatch);
+    });
+    const detail = document.createElement('details');
+    const summary = document.createElement('summary');
+    summary.textContent = 'How the gap is measured';
+    const method = document.createElement('p');
+    method.textContent = 'Nearest triangles in the neutral pose, with an area-weighted mean and largest sampled gap. Support includes bone, muscle and Roma’s soft-tissue pads. Face and hair are outside the map. Gaps are unsigned.';
+    const exposure = document.createElement('p');
+    const count = data.projectedExposure;
+    exposure.textContent = 'Six-view depth check · ' + count.exposedPixels.toLocaleString() +
+      ' of ' + count.overlappingPixels.toLocaleString() + ' overlapping samples show support outside the skin by more than ' + count.toleranceIn + ' in.';
+    detail.append(summary, method, exposure);
+    fitOutput.replaceChildren(...entries, legend, detail);
+    for (const control of fitLockedControls) control.disabled = true;
+    view.setSkinFit(mode, module, distances);
+  }
+  async function refreshSkinFit() {
+    const mode = fitPicker.value;
+    if (mode === 'off') {
+      resetSkinFit();
+      return;
+    }
+    if (!active || hero === 'hummin' || !model || model.partial || section.dataset.ready !== key) return;
+    if (fitResult?.model === model) {
+      showSkinFit(fitResult, mode);
+      return;
+    }
+    if (fitRequest) return;
+    const request = new AbortController();
+    fitRequest = request;
+    const seen = model, quality = tier;
+    fitOutput.hidden = false;
+    fitOutput.dataset.skinFitState = 'loading';
+    fitOutput.textContent = 'Loading skin fit measurements…';
+    try {
+      const module = await import('./diagram-skin-fit.js');
+      const result = await module.loadSkinFit(seen, quality, request.signal);
+      if (request.signal.aborted || model !== seen || !active) return;
+      fitResult = { ...result, module, model: seen };
+      showSkinFit(fitResult, fitPicker.value);
+    } catch (error) {
+      if (request.signal.aborted || model !== seen || !active) return;
+      fitOutput.dataset.skinFitState = 'error';
+      fitOutput.textContent = 'Skin fit measurements could not load.';
+      // The optional measurements use the same stale-deployment recovery as
+      // the rest of Axon View while leaving its successful photograph visible.
+      import('../assets/sip-recover.js')
+        .then(({ recover }) => {
+          if (!request.signal.aborted && active && model === seen)
+            return recover('Axon skin fit', error, error.assetURL ? [error.assetURL] : []);
+        })
+        .catch(() => {});
+    } finally {
+      if (fitRequest === request) fitRequest = undefined;
+    }
+  }
   async function showError(error) {
     const id = generation;
     previewPaint?.();
@@ -263,6 +359,7 @@ export function mountStudy(section, stage, chooseHero) {
     tier = quality;
     if (changed) {
       generation++;
+      resetSkinFit(true);
       view.setModel(null, tier);
       model?.dispose();
       model = null;
@@ -272,6 +369,8 @@ export function mountStudy(section, stage, chooseHero) {
       open.hidden = true;
       heroPicker.value = name;
       const human = name !== 'hummin';
+      if (!human) fitPicker.value = 'off';
+      fitPicker.disabled = true;
       for (const setting of body.querySelectorAll('[data-human-setting]')) setting.hidden = !human;
       view.setLayout(human ? get('[data-axon-layout]').value : 'side');
       rows.forEach((row, i) => {
@@ -291,6 +390,7 @@ export function mountStudy(section, stage, chooseHero) {
     view.setVisible(active);
     if (!active) {
       loading?.abort();
+      resetSkinFit();
       generation++;
       cancelAnimationFrame(padFrame);
       padFrame = 0;
@@ -300,13 +400,14 @@ export function mountStudy(section, stage, chooseHero) {
         open.hidden = true;
         status.textContent = 'Preparing ' + labels[names.indexOf(hero)] + '…';
         load(++generation, hero, tier);
-      }
+      } else if (fitPicker.value !== 'off') refreshSkinFit();
       startPad();
     }
   }
   open.addEventListener('click', () => {
     open.hidden = true;
     if (active) {
+      resetSkinFit(true);
       view.setModel(null, tier);
       model?.dispose();
       model = null;
@@ -316,6 +417,7 @@ export function mountStudy(section, stage, chooseHero) {
   heroPicker.addEventListener('change', () => chooseHero(heroPicker.value));
   get('[data-axon-layout]').onchange = (e) => view.setLayout(e.target.value);
   get('[data-ghost]').onchange = (e) => applyGhost(e.target.checked);
+  fitPicker.onchange = refreshSkinFit;
   spread.addEventListener('input', () => {
     const percent = Math.round(100 * Number(spread.value)) + '%';
     get('[data-spread-value]').textContent = percent;
@@ -431,6 +533,11 @@ export function mountStudy(section, stage, chooseHero) {
   section.axonInspector = {
     inventory: () => records,
     stats: () => ({ ...view.stats, fitPath: model?.fitPath ?? (model ? 'procedural' : null), partial: !!model?.partial }),
+    skinFit: () => {
+      if (!fitResult) return null;
+      const { parts, ...summary } = fitResult.data;
+      return { ...summary, mode: fitPicker.value };
+    },
   };
   return { sync };
 }

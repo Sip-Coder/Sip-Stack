@@ -38,7 +38,7 @@ export function quiltFinish(material) {
 export function outfitExplorer(rig, tailoring, m, h) {
   const { group, mesh, ellipsoid, rings, stroke, vec } = h;
   const chest = rig.chest,
-    { surfaces, torsoPoint, torsoY, neckPoint } = tailoring;
+    { surfaces, pointOnVest, torsoY, neckPoint } = tailoring;
   const add = (id, obj) => {
     obj.userData.patternPiece = true;
     (surfaces[id] ??= []).push(obj);
@@ -97,7 +97,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
     );
   }
   // The zipper tapes and two drawcords stay clearly legible through the open fronts.
-  const drawcord = group(chest, ...torsoPoint(0.135, 0, 1, 0.01));
+  const drawcord = group(chest, ...pointOnVest(0.135, 0, 0.0025));
   drawcord.name = 'Sippy hood drawcords';
   for (const side of [-1, 1]) {
     const sx = side * 0.012;
@@ -119,12 +119,12 @@ export function outfitExplorer(rig, tailoring, m, h) {
     const a = mix(0.3, tau - 0.3, u),
       cs = Math.cos(a);
     const y = mix(-0.009 + 0.002 * cs - 0.009 * Math.max(0, -cs), 0.012 + 0.006 * cs, v);
-    return neckPoint(a, y, 0.051 + (1 - v) * 0.01, 0.040 + (1 - v) * 0.02,
-      (inner ? 0.001 : 0.003) + 0.0045 * Math.sin(v * Math.PI));
+    const fold = 0.005 + 0.004 * (1 - v) + 0.0045 * Math.sin(v * Math.PI);
+    return neckPoint(a, y, fold + (inner ? 0.001 : 0.003));
   });
   hoodShape.name = 'Sippy folded burgundy hood';
   // Band curves behind the neck and forward at either end to the padded earcups.
-  const headphones = group(chest, ...torsoPoint(0.122, 0, 1, 0.012));
+  const headphones = group(chest, ...pointOnVest(0.122, 0, 0.01));
   headphones.scale.z = 0.81;
   headphones.name = 'Sippy burgundy studio headphones';
   const band = h.sweep(
@@ -296,7 +296,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
       0.00085,
     );
     bead(pack, m.gold, x, -0.105, -0.069, 0.0019);
-    const vestPoint = (x, y, z) => vec(...torsoPoint(y, Math.atan2(sign * x, z), 1, 0.004));
+    const vestPoint = (x, y, z) => vec(...pointOnVest(y, Math.atan2(sign * x, z), 0.004));
     // The webbing bends across the sewn shoulder crest before following the
     // vest. The lower rear point still joins the pack's hardware.
     const curve = new T.CatmullRomCurve3([
@@ -304,7 +304,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
       vestPoint(0.08, 0.081, -0.069),
       vestPoint(0.083, 0.129, -0.078),
       vestPoint(0.078, 0.173, -0.061),
-      vec(sign * 0.078, torsoY(0.218), -0.001),
+      vestPoint(0.078, 0.177, -0.001),
       vestPoint(0.076, 0.174, 0.048),
       vestPoint(0.081, 0.116, 0.07),
       vestPoint(0.083, 0.065, 0.079),
@@ -426,7 +426,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
       foot = rig['foot' + side];
     // The sleeve uses the same grape drawing as the headphone enamel,
     // worked in low relief across the cylinder of the sleeve.
-    const badge = group(upper, ...tailoring.limbs['arm' + side].place([s * 0.042, -0.093, 0.017], 0.0105));
+    const badge = group(upper, ...tailoring.limbs['arm' + side].place([s * 0.042, -0.093, 0.017], 0.0065));
     badge.name = 'Embroidered sleeve vine';
     badge.rotation.y = s * (Math.PI / 2 - .32);
     const berryCenters = [[-.009,.002], [.0005,.0025], [.008,.003], [-.006,-.004],
@@ -549,50 +549,32 @@ export function outfitExplorer(rig, tailoring, m, h) {
       }
       item.geometry.computeVertexNormals();
     }
-    // A rib-knit cuff continues the burgundy sleeve into the wrist.
-    const cuff = mesh(
-      fore,
-      rings(
-        [
-          [-0.145, 0.0235, 0.024, 0],
-          [-0.141, 0.026, 0.0255, 0],
-          [-0.119, 0.03, 0.031, 0],
-          [-0.113, 0.029, 0.031, 0],
-        ],
-        28,
-      ),
-      m.knit,
-    );
-    const wristY = rig['hand' + side].position.y;
-    cuff.position.y = wristY + 0.143;
-    for (const y of [-0.14, -0.133, -0.123])
-      mesh(
-        fore,
-        rings(
-          [
-            [y - 0.0008, 0.027, 0.0285, 0],
-            [y + 0.0008, 0.0271, 0.0286, 0],
-          ],
-          28,
-        ),
-        m.waistcoat, 0, wristY + 0.143,
-      );
+    // Continue the sleeve over the measured wrist. The knit and narrow ribs
+    // share a profile so neither floats beyond the cuff on a slimmer shell.
+    const arm = tailoring.limbs['arm' + side];
+    const wristPoint = (y, a, ease) =>
+      arm.place([Math.sin(a), y, Math.cos(a)], ease)
+        .map((value, i) => value - fore.position.getComponent(i));
+    const cuffBand = (bottom, top, ease, material, rows) =>
+      mesh(fore, shell(rows, 24, (v, u, inner) =>
+        wristPoint(mix(bottom, top, v), u * tau, ease - (inner ? 0.0012 : 0)),
+      true), material);
+    cuffBand(-0.322, -0.291, 0.0063, m.knit, 6);
+    for (const y of [-0.315, -0.307, -0.299])
+      cuffBand(y - 0.0007, y + 0.0007, 0.0068, m.waistcoat, 1);
     if (side === 'L') {
-      const watch = group(fore, 0, wristY, 0);
-      watch.rotation.y = 0.61;
+      const watch = group(fore);
+      const watchAngle = Math.PI / 2 + 0.61;
       const strap = shell(
         3,
         32,
-        (v, u, inward) => [
-          (0.0335 - (inward ? 0.0012 : 0)) * Math.sin(u * tau),
-          mix(-0.005, 0.006, v),
-          (0.0335 - (inward ? 0.0012 : 0)) * Math.cos(u * tau),
-        ],
+        (v, u, inward) =>
+          wristPoint(mix(-0.327, -0.316, v), u * tau, 0.0075 - (inward ? 0.0012 : 0)),
         true,
       );
       add('watch', mesh(watch, strap, m.saddle));
-      const wface = group(watch, 0.034, 0, 0.001);
-      wface.rotation.y = Math.PI / 2;
+      const wface = group(watch, ...wristPoint(-0.3215, watchAngle, 0.0083));
+      wface.rotation.y = watchAngle;
       ellipsoid(wface, m.gold, 0, 0, 0, 0.0128, 0.0144, 0.0027);
       ellipsoid(wface, m.button, 0, 0, 0.0027, 0.0108, 0.0123, 0.0009);
       for (let i = 0; i < 12; i++) {
@@ -737,7 +719,7 @@ export function outfitExplorer(rig, tailoring, m, h) {
     packPoints.array.set(packRest);
     pack.position.z = -0.077;
     pack.updateMatrix();
-    let displace = 0;
+    let displace = 0.027;
     for (let i = 0; i < packPoints.count; i += 2) {
       packProbe.fromBufferAttribute(packPoints, i).applyMatrix4(pack.matrix);
       const { x, y, z } = packProbe;

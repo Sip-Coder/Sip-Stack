@@ -1,7 +1,7 @@
 // Each pattern follows the same reference body. Inner cloth faces and joined
 // edge strips give the cutaway fronts, hems, and cuffs a real thickness.
 import * as T from 'three';
-import { explorerTorso, explorerLimb, torsoStation, limbStation } from './human-exterior.js';
+import { exteriorPoint, exteriorSkinWeights, hipExteriorPoint, explorerLimb, torsoStation, limbStation } from './human-exterior.js';
 import { articulatedSleeve, bindCloth } from './sippy-skin.js';
 
 const tau = 2 * Math.PI;
@@ -81,59 +81,7 @@ export function shell(along, around, point, closed = false) {
   return g;
 }
 
-function interpolate(rows, y, i) {
-  let j = 1;
-  while (j + 1 < rows.length && rows[j][0] < y) j++;
-  const a = rows[j - 1],
-    b = rows[j],
-    t = T.MathUtils.clamp((y - a[0]) / (b[0] - a[0]), 0, 1);
-  // Cubic Hermite interpolation with central differences; preserve fitted
-  // straight pattern edges as well as the softly padded shoulders.
-  const prev = rows[Math.max(0, j - 2)],
-    next = rows[Math.min(rows.length - 1, j + 1)];
-  const d0 = ((b[i] - prev[i]) * (b[0] - a[0])) / (b[0] - prev[0]),
-    d1 = ((next[i] - a[i]) * (b[0] - a[0])) / (next[0] - a[0]);
-  return (
-    a[i] * (1 - t) * (1 - t) * (1 + 2 * t) +
-    b[i] * t * t * (3 - 2 * t) +
-    d0 * t * (1 - t) * (1 - t) -
-    d1 * t * t * (1 - t)
-  );
-}
-
-const torso = [
-  [-0.149, 0.105, 0.066, -0.003],
-  [-0.115, 0.109, 0.07, 0.001],
-  [-0.058, 0.105, 0.078, 0.004],
-  [0, 0.105, 0.077, 0.007],
-  [0.058, 0.119, 0.077, 0.006],
-  [0.103, 0.128, 0.075, 0.001],
-  [0.133, 0.134, 0.066, -0.003],
-  [0.15, 0.121, 0.05, -0.003],
-  [0.162, 0.071, 0.038, -0.002],
-  [0.171, 0.035, 0.027, 0.001],
-  [0.179, 0.028, 0.026, 0.002],
-];
-function draftTorso(y, a, scale, lift = 0) {
-  const sx = Math.sin(a),
-    cz = Math.cos(a);
-  const w = interpolate(torso, y, 1),
-    depth = interpolate(torso, y, 2),
-    z = interpolate(torso, y, 3);
-  // Pectoral volume under the vest, collarbone and the hollow beside the
-  // spine. These landmarks persist through each successive fitted layer.
-  const chest =
-    0.0041 * gauss(y, 0.105, 0.039) * gauss(Math.abs(sx), 0.51, 0.34) +
-    0.0024 * gauss(y, 0.151 - 0.014 * Math.abs(sx), 0.008) * gauss(Math.abs(sx), 0.5, 0.34);
-  const back = 0.0019 * gauss(y, 0.078, 0.063) * gauss(Math.abs(sx), 0.49, 0.33);
-  return [
-    sx * ((1 + 0.11 * (1 - smooth(y, 0.01, 0.066))) * scale * w + lift),
-    y,
-    z +
-      cz * (scale * (depth + (cz > 0 ? chest : back)) + lift) +
-      Math.max(0, cz) ** 3 * (0.012 + 0.012 * (1 - smooth(y, -0.055, 0.032))) * (1 - smooth(y, 0.06, 0.115)),
-  ];
-}
+const shirtEase = 0.0025, hoodieEase = 0.0051, vestEase = 0.008;
 function jacketY(v, a) {
   const hem = -0.126 + 0.014 * Math.cos(a) - 0.007 * Math.sin(a) ** 2;
   const y = lerp(hem, 0.181 - 0.027 * Math.sin(a) ** 2, v);
@@ -146,7 +94,7 @@ function waistY(v, a) {
   const hem = -0.094 - 0.012 * c + 0.002 * c * gauss(side, 0, 0.16);
   const neckline = 0.216 - 0.05 * c ** 3;
   const y = lerp(hem, neckline, v);
-  return y - 0.023 * (1 - smooth(y, -0.077, 0.02));
+  return y - 0.030 * (1 - smooth(y, -0.077, 0.02));
 }
 function clothStrip(parent, name, mat, line, radius) {
   const curve = new T.CatmullRomCurve3(line.map((p) => new T.Vector3(...p)));
@@ -162,20 +110,13 @@ export function cutExplorerLayers(rig, mats) {
   const chestOrigin = rig.anatomy.joints.chest;
   const oldHip = -0.1045, oldShoulder = 0.135;
   const torsoY = (y) => torsoStation(rig, y, oldHip, oldShoulder) - chestOrigin.y;
-  const torsoPoint = (y, a, scale, lift = 0) => {
-    const original = draftTorso(y, a, scale, lift);
-    const waist = gauss(y, -0.025, 0.08);
-    const x = original[0] * (0.86 - 0.085 * waist);
-    const z = original[2] * (0.91 - 0.025 * waist);
-    const clearance = 0.0024 + (0.044 + 0.017 * Math.max(0, Math.cos(a))) * Math.max(0, scale - 0.892) + lift;
-    const measured = explorerTorso(rig, [x, y, z], clearance, oldHip, oldShoulder);
-    return [measured[0] - chestOrigin.x, measured[1] - chestOrigin.y, measured[2] - chestOrigin.z];
-  };
-  const collarSeat = torsoY(0.157);
-  const neckPoint = (a, y, radius, depth, lift = 0) => [
-    Math.sin(a) * (radius + lift), collarSeat + y,
-    rig.anatomy.joints.head.z - chestOrigin.z + Math.cos(a) * (depth + lift),
-  ];
+  const chestSpace = p => p.map((value, i) => value - chestOrigin.getComponent(i));
+  const torsoPoint = (y, a, ease) =>
+    chestSpace(hipExteriorPoint(rig, torsoStation(rig, y, oldHip, oldShoulder), a, ease));
+  const pointOnVest = (y, a, trim = 0) => torsoPoint(y, a, vestEase + trim);
+  const collarSeat = torsoY(0.233);
+  const neckPoint = (a, y, ease) =>
+    chestSpace(exteriorPoint(rig, 'torso', chestOrigin.y + collarSeat + y, a, ease));
   const surfaces = {},
     pairs = [],
     updates = [];
@@ -184,14 +125,24 @@ export function cutExplorerLayers(rig, mats) {
     (surfaces[name] ??= []).push(m);
     return m;
   };
+  const torsoBones = ['chest', 'hips', 'head'];
+  const wrap = (name, parent, geometry, material) => {
+    const garment = add(name, parent, geometry, material, true);
+    bindCloth(garment, torsoBones.map(key => rig[key]), (i, g) => {
+      const y = chestOrigin.y + g.attributes.position.getY(i);
+      const [upper, lower, onUpper] = exteriorSkinWeights(rig, 'torso', y);
+      return [torsoBones.indexOf(lower), torsoBones.indexOf(upper), onUpper];
+    });
+    return garment;
+  };
   const beneath = (outer, inner) => pairs.push({ outer, inner });
-  add(
+  wrap(
     'shirt',
     chest,
     shell(
       15,
       24,
-      (v, u, inner) => torsoPoint(lerp(-0.076, 0.171, v), u * tau, 0.892, inner ? -0.00125 : 0),
+      (v, u, inner) => torsoPoint(lerp(-0.076, 0.171, v), u * tau, shirtEase - (inner ? 0.00125 : 0)),
       true,
     ),
     white,
@@ -199,19 +150,19 @@ export function cutExplorerLayers(rig, mats) {
   beneath('shirt', 'body');
   // The trouser rise closes the fork between both legs. It sits under the
   // hoodie, with a small lip above the waistband for the tucked shirt.
-  add(
+  wrap(
     'trouser-rise',
     chest,
     shell(
       14,
       28,
-      (v, u, inner) => torsoPoint(lerp(-0.163, -0.0628, v), u * tau, 0.9255, inner ? -0.00135 : 0),
+      (v, u, inner) => torsoPoint(lerp(-0.165, -0.053, v), u * tau, 0.0064 - (inner ? 0.00135 : 0)),
       true,
     ),
     trousers,
   );
   beneath('trouser-rise', 'body');
-  add(
+  wrap(
     'hoodie',
     chest,
     shell(
@@ -219,7 +170,8 @@ export function cutExplorerLayers(rig, mats) {
       28,
       (v, u, inner) => {
         const a = u * tau;
-        return torsoPoint(waistY(v, a), a, 0.947, inner ? -0.00135 : 0);
+        const hemTurn = 0.0026 * (1 - smooth(v, 0, 0.15));
+        return torsoPoint(waistY(v, a), a, hoodieEase + hemTurn - (inner ? 0.00135 : 0));
       },
       true,
     ),
@@ -230,9 +182,9 @@ export function cutExplorerLayers(rig, mats) {
     const open = 0.205 + 0.185 * smooth(v, 0.41, 0.9) + 0.076 * gauss(v, 0.985, 0.12);
     const a = lerp(open, tau - open, u),
       y = jacketY(v, a);
-    return torsoPoint(y, a, 1, inside ? -0.0016 : 0);
+    return pointOnVest(y, a, inside ? -0.0016 : 0);
   }
-  add('quilted-vest', chest, shell(24, 36, jacketPoint), suit);
+  wrap('quilted-vest', chest, shell(24, 36, jacketPoint), suit);
   beneath('quilted-vest', 'hoodie');
   beneath('quilted-vest', 'shirt');
   for (const side of [-1, 1]) {
@@ -240,9 +192,9 @@ export function cutExplorerLayers(rig, mats) {
     const slope = (v, u, inside) => {
       const open = 0.205 + 0.185 * smooth(v, 0.41, 0.9) + 0.076 * gauss(v, 0.985, 0.12);
       const a = side * (open + 0.015 + 0.056 * u);
-      return torsoPoint(jacketY(v, a), a, 1, inside ? 0.0029 : 0.0047);
+      return pointOnVest(jacketY(v, a), a, inside ? 0.0012 : 0.003);
     };
-    add('zipper-plackets', chest, shell(20, 4, slope), lapel);
+    wrap('zipper-plackets', chest, shell(20, 4, slope), lapel);
     const line = [];
     for (let i = 0; i <= 44; i++) line.push(slope(i / 44, 0.87, false));
     clothStrip(chest, 'lapel-topstitch', edge, line, 0.00043);
@@ -255,10 +207,10 @@ export function cutExplorerLayers(rig, mats) {
   const collarPoint = (v, u, inner) => {
     const a = lerp(0.48, tau - 0.48, u);
     const top = waistY(1, a);
-    return torsoPoint(lerp(top - 0.013, top + 0.015, v), a, 0.947,
-      (inner ? 0.0015 : 0.0032) + 0.0015 * Math.sin(Math.PI * v));
+    return torsoPoint(lerp(top - 0.013, top + 0.015, v), a,
+      hoodieEase + (inner ? 0.0015 : 0.0032) + 0.0015 * Math.sin(Math.PI * v));
   };
-  add('collar', chest, shell(6, 32, collarPoint), waistcoat);
+  wrap('collar', chest, shell(6, 32, collarPoint), waistcoat);
   beneath('collar', 'shirt');
   beneath('collar', 'hoodie');
   const tails = [];
@@ -272,7 +224,7 @@ export function cutExplorerLayers(rig, mats) {
       const a = Math.PI + s * lerp(0.035, 0.89, u);
       const hem = -0.155 - 0.026 * Math.sin(u * Math.PI * 0.78),
         y = lerp(hem, -0.061, v);
-      const p = torsoPoint(Math.max(-0.125, y), a, 1.02, inner ? 0.0039 : 0.0055);
+      const p = pointOnVest(Math.max(-0.125, y), a, inner ? 0.003 : 0.0046);
       p[1] = torsoY(y) - pivot.position.y;
       p[2] -= 0.014 * (1 - v) * (1 - v);
       return p;
@@ -281,7 +233,7 @@ export function cutExplorerLayers(rig, mats) {
   }
   beneath('split-back', 'quilted-vest');
   rig.garments = { surfaces, pairs, seams: [] };
-  return { add, beneath, surfaces, tails, updates, rig, limbs: {}, torsoPoint, torsoY, neckPoint };
+  return { add, beneath, surfaces, tails, updates, rig, limbs: {}, pointOnVest, torsoY, neckPoint };
 }
 
 // A single articulated pattern runs across each elbow and knee. Slices
@@ -292,41 +244,6 @@ export function fitLimb(suit, side, leg, mats) {
   const joint = rig[(leg ? 'thigh' : 'upperArm') + side],
     lower = rig[(leg ? 'shin' : 'forearm') + side];
   const oldUpper = leg ? 0.245 : 0.176, oldLower = leg ? 0.228 : 0.143;
-  const pivot = -oldUpper;
-  const rows = leg
-    ? [
-        [-0.435, 0.026, 0.03, 0.001],
-        [-0.424, 0.027, 0.031, -0.002],
-        [-0.41, 0.038, 0.041, -0.005],
-        [-0.37, 0.038, 0.045, -0.005],
-        [-0.312, 0.041, 0.047, -0.008],
-        [-0.278, 0.038, 0.045, -0.008],
-        [-0.257, 0.04, 0.051, -0.008],
-        [-0.235, 0.043, 0.051, -0.009],
-        [-0.17, 0.048, 0.056, -0.015],
-        [-0.104, 0.0555, 0.064, -0.013],
-        [-0.062, 0.054, 0.064, -0.007],
-        [-0.032, 0.043, 0.051, -0.004],
-      ]
-    : [
-        [-0.322, 0.03, 0.03, 0.0],
-        [-0.314, 0.03, 0.031, 0.0],
-        [-0.295, 0.029, 0.028, 0.0],
-        [-0.264, 0.028, 0.029, 0.001],
-        [-0.227, 0.031, 0.034, 0.001],
-        [-0.195, 0.031, 0.035, 0.0],
-        [-0.177, 0.031, 0.033, -0.0],
-        [-0.158, 0.032, 0.035, 0.0],
-        [-0.112, 0.036, 0.037, 0.001],
-        [-0.071, 0.039, 0.041, 0.001],
-        [-0.043, 0.041, 0.045, -0.001],
-        [-0.016, 0.041, 0.044, -0.001],
-        [0.0, 0.036, 0.039, -0.002],
-        [0.01, 0.02, 0.026, -0.002],
-        [0.015, 0.014, 0.018, -0.001],
-        [0.03, 0.009, 0.011, 0],
-        [0.042, 0.0012, 0.0016, 0],
-      ];
   const binder = articulatedSleeve(joint, lower, leg);
   const origin = rig.anatomy.joints[joint.name];
   const place = (xyz, clearance = 0.006) => {
@@ -338,25 +255,16 @@ export function fitLimb(suit, side, leg, mats) {
   suit.limbs[(leg ? 'leg' : 'arm') + side] = binder;
   updates.push(binder.step);
   const key = (leg ? 'trousers-' : 'sleeve-') + side;
-  function tube(name, mat, shrink, y0, y1, thick, n, nr) {
+  const ease = leg
+    ? (y, a) => 0.006 + 0.0014 * gauss(y, -0.25, 0.07) * Math.max(0, Math.cos(a))
+    : (y, a) => 0.0043 + 0.0011 * gauss(y, -0.18, 0.052) * (0.5 + 0.5 * Math.cos(a));
+  function tube(name, mat, allowance, y0, y1, thick, n, nr) {
     const shape = shell(
       n,
       nr,
       (v, u, inner) => {
-        const y = lerp(y0, y1, v),
-          a = tau * u,
-          cs = Math.cos(a),
-          sn = Math.sin(a);
-        const radius = inner ? -thick : 0,
-          gx = interpolate(rows, y, 1) * shrink + radius,
-          gz = interpolate(rows, y, 2) * shrink + radius;
-        const knee = leg ? 0.0025 * gauss(y, pivot, 0.029) * Math.max(0, cs) : 0;
-        const sleeveCurve = leg ? 1 : lerp(0.89, 1, smooth(y, -0.14, -0.019));
-        return place([
-          Math.sign(sn) * Math.abs(sn) ** sleeveCurve * gx,
-          y,
-          interpolate(rows, y, 3) + Math.sign(cs) * Math.abs(cs) ** sleeveCurve * (gz + knee),
-        ], (leg ? 0.010 : shrink < 1 ? 0.0035 : 0.008 - 0.003 * smooth(y, -0.12, -0.025)) + radius);
+        const y = lerp(y0, y1, v), a = tau * u;
+        return place([Math.sin(a), y, Math.cos(a)], allowance(y, a) - (inner ? thick : 0));
       },
       true,
     );
@@ -365,27 +273,27 @@ export function fitLimb(suit, side, leg, mats) {
     return m;
   }
   if (leg) {
-    tube(key, mats.trousers, 1, rows[0][0], -0.048, 0.00145, 22, 28);
+    tube(key, mats.trousers, ease, -0.435, -0.048, 0.00145, 25, 28);
     beneath(key, 'body');
   } else {
     const sh = 'shirtsleeve-' + side;
     // Keep the three wrist bands as a cuff facing tucked under the sleeve.
-    tube(sh, mats.white, 0.808, -0.317, -0.2625, 0.00125, 3, 16);
+    tube(sh, mats.white, () => 0.0019, -0.317, -0.2625, 0.00125, 3, 20);
     beneath(sh, 'body');
-    tube(key, mats.waistcoat, 1, -0.312, 0.042, 0.00145, 28, 20);
-    const { x, y, z } = joint.position, sign = side === 'L' ? 1 : -1;
-    const crown = shell(11, 20, (t, u, inner) => {
-      const a = tau * u, sideEase = Math.sin(Math.PI * t);
-      const r = inner ? -0.002 : 0;
-      return [
-        x + sign * lerp(-0.056, 0.033, t),
-        y + 0.020 - 0.046 * t ** 1.55 + 0.012 * gauss(t, 0.61, 0.22) +
-          Math.sin(a) * (0.009 + 0.018 * sideEase + r),
-        z + Math.cos(a) * (0.016 + 0.026 * sideEase + r),
-      ];
+    tube(key, mats.waistcoat, ease, -0.312, 0.030, 0.00145, 29, 24);
+    const [, skinTopX, skinTopZ] = rig.exterior['arm' + side].at(-1);
+    const crown = shell(7, 24, (t, u, inner) => {
+      const a = u * tau, y = lerp(0.028, 0.039, t);
+      const p = place([Math.sin(a), y, Math.cos(a)], ease(y, a) - (inner ? 0.00145 : 0));
+      // Follow the wrapped deltoid to its top, then close the fabric head.
+      // This hides the end rim while keeping the contour at the sleeve seam.
+      const closed = smooth(y, 0.031, 0.039) * 0.995;
+      p[0] = lerp(p[0], skinTopX - origin.x, closed);
+      p[2] = lerp(p[2], skinTopZ - origin.z, closed);
+      return p;
     }, true);
-    const yoke = add('shoulder-' + side, rig.chest, crown, mats.waistcoat, true);
-    bindCloth(yoke, [rig.chest, joint], (i, g) => [0, 1, smooth(g.attributes.uv.getY(i), 0.12, 0.88)]);
+    const yoke = add('shoulder-' + side, joint, crown, mats.waistcoat, true);
+    binder.bind(yoke);
     beneath(key, sh);
     beneath(key, 'body');
   }

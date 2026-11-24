@@ -186,6 +186,31 @@
 .ax-ghost input {
   accent-color: #23655b;
 }
+.ax-fit-results {
+  margin-top: 12px;
+  color: #29483f;
+  font-size: 12px;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+}
+.ax-fit-results p {
+  margin: 5px 0;
+}
+.ax-fit-results summary {
+  margin-top: 8px;
+  cursor: pointer;
+}
+.ax-fit-scale {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+.ax-fit-scale span {
+  border-top: 4px solid;
+  padding: 2px 3px 0;
+  white-space: nowrap;
+}
 [data-human-setting][hidden],
 .ax-layer[hidden] {
   display: none;

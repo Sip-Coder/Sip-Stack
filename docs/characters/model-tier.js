@@ -1,5 +1,6 @@
 export function setModelDetail(root, tier) {
   const high = tier === 'high';
+  root.userData.detailTier = tier;
   root.traverse((node) => {
     if (!node.isMesh) return;
     if (node.userData.highDetail) node.visible = high;

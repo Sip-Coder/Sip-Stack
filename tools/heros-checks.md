@@ -1,5 +1,11 @@
 # Heros regression checks
 
+## Body layer order
+
+Build every hero body from the inside out. Establish the bones and their joint landmarks first. Wrap the muscles around the bones, then derive the skin from the muscle and the underlying bony landmarks. For a mechanical hero, follow the same order with the frame, actuators and shell.
+
+Keep the skin close to the anatomy so the silhouette and surface relief follow it. Add fullness only where the character design deliberately calls for it. Fit the clothing over the finished skin with its own ease. Before approving a body pass, inspect the layer overlay and clearance in Axon View.
+
 ## Playable speed rigs
 
 Use Node 22.15 or newer with the same Three.js 0.170.0 package as the site. The command builds the original procedural models, applies production batching and selects each detail tier in the same order as the tab. It exercises all three heroes on High and Mobile without opening Chromium or using a GPU.
