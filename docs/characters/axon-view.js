@@ -145,7 +145,7 @@ export function mountStudy(section, stage, chooseHero) {
     }
   }
   function resetSkinFit(clear = false) {
-    fitRequest?.abort();
+    fitRequest?.controller.abort();
     fitRequest = undefined;
     view.setSkinFit('off');
     if (clear) {
@@ -229,40 +229,43 @@ export function mountStudy(section, stage, chooseHero) {
       return;
     }
     if (!active || hero === 'hummin' || !model || model.partial || section.dataset.ready !== key) return;
-    if (fitResult?.model === model && (!mode.startsWith('face-') || fitResult.face)) {
+    const face = mode.startsWith('face-');
+    if (fitRequest && fitRequest.face !== face) {
+      fitRequest.controller.abort();
+      fitRequest = undefined;
+    }
+    if (fitResult?.model === model && (!face || fitResult.face)) {
       showSkinFit(fitResult, mode);
       return;
     }
     if (fitRequest) return;
-    const request = new AbortController();
+    const controller = new AbortController();
+    const { signal } = controller;
+    const request = { controller, face };
     fitRequest = request;
     const seen = model, quality = tier;
     fitOutput.hidden = false;
     fitOutput.dataset.skinFitState = 'loading';
-    fitOutput.textContent = mode.startsWith('face-') ? 'Loading face anatomy and measurements…' :
-      'Loading skin fit measurements…';
+    fitOutput.textContent = face ? 'Loading face anatomy and measurements…' : 'Loading skin fit measurements…';
     try {
       const module = await import('./diagram-skin-fit.js');
       const result = fitResult?.model === seen ? fitResult : {
-        ...await module.loadSkinFit(seen, quality, request.signal), module, model: seen,
+        ...await module.loadSkinFit(seen, quality, signal), module, model: seen,
       };
-      if (fitPicker.value.startsWith('face-') && !result.face)
-        result.face = await module.loadFaceFit(seen, result.data, request.signal);
-      if (request.signal.aborted || model !== seen || !active) return;
+      if (signal.aborted || model !== seen || !active) return;
       fitResult = result;
-      showSkinFit(fitResult, fitPicker.value);
+      if (face && !result.face) result.face = await module.loadFaceFit(seen, result.data, signal);
+      if (signal.aborted || model !== seen || !active) return;
+      showSkinFit(result, fitPicker.value);
     } catch (error) {
-      if (request.signal.aborted || model !== seen || !active) return;
+      if (signal.aborted || model !== seen || !active) return;
       fitOutput.dataset.skinFitState = 'error';
       fitOutput.textContent = 'Skin fit measurements could not load.';
       // The optional measurements use the same stale-deployment recovery as
       // the rest of Axon View while leaving its successful photograph visible.
-      import('../assets/sip-recover.js')
-        .then(({ recover }) => {
-          if (!request.signal.aborted && active && model === seen)
-            return recover('Axon skin fit', error, error.assetURL ? [error.assetURL] : []);
-        })
-        .catch(() => {});
+      const recovery = await import('../assets/sip-recover.js').catch(() => null);
+      if (!signal.aborted && fitRequest === request && active && model === seen)
+        await recovery?.recover('Axon skin fit', error, error.assetURL ? [error.assetURL] : []).catch(() => {});
     } finally {
       if (fitRequest === request) fitRequest = undefined;
     }

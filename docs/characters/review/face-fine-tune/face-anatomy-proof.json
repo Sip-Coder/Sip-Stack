@@ -1,0 +1,174 @@
+[
+  {
+    "hero": "sippy",
+    "tier": "mobile",
+    "file": "skeleton-male-mobile.glb",
+    "sha256": "f8c021ca66b42b788d78817c43b30dc5941c876861462b6a6dea5d9ce4cc21d8",
+    "bones": [
+      {
+        "node": "SKULL_CRANIAL_MAXILLA",
+        "positionsSha256": "3f6b363c4f195f5a754f87c5951b94e5ac2164d15da737522ecfa049a65f6808",
+        "indicesSha256": "b89d3afbe6de19d144a3c19c2e8b19227150a749e80b060f3419ded9ba85a073",
+        "vertices": 3626,
+        "triangles": 7410,
+        "maxEdgeResidualInches": 8.19554398099279e-15
+      },
+      {
+        "node": "SKULL_MANDIBLE",
+        "positionsSha256": "f1ea549278f203d770a444d67ebf46a164005d4ab9ffcbfcf0d3707b7660452a",
+        "indicesSha256": "c89db016beade3bef5c1582a5628d377aa7a90d6f65ebaf86350218c8705fe2c",
+        "vertices": 436,
+        "triangles": 868,
+        "maxEdgeResidualInches": 1.857656635691699e-14
+      }
+    ],
+    "skullDimensionsInches": [
+      5.347854,
+      8.593981,
+      7.96442
+    ],
+    "jawClosureDegrees": -1.008405719430249,
+    "hingeDisplacementInches": {
+      "L": 5.791335363263999e-9,
+      "R": 6.654872017184271e-9
+    },
+    "centralIncisorVerticalGapInches": {
+      "open": 0.068023,
+      "closed": 0.01354
+    }
+  },
+  {
+    "hero": "sippy",
+    "tier": "high",
+    "file": "skeleton-male-high.glb",
+    "sha256": "268f599a01248b45ebb4ba0e2461d43f941f9ccd13cdab712dd06c437ffdb002",
+    "bones": [
+      {
+        "node": "SKULL_CRANIAL_MAXILLA",
+        "positionsSha256": "4910205292e0a78af03b4e0ced824909970bfbdba3212d689457c241c2997c12",
+        "indicesSha256": "22b3207b5780b81f25360c9f824dd5e5b57d2d6e3e7690a6716b1e9775a217b2",
+        "vertices": 15461,
+        "triangles": 31164,
+        "maxEdgeResidualInches": 8.639469279963232e-15
+      },
+      {
+        "node": "SKULL_MANDIBLE",
+        "positionsSha256": "14013574179fe42fdf8598418f35c0fbb9dc114353ad6e6bbcb7d8d521feb92d",
+        "indicesSha256": "16c6befc19025d5e8eabecb8bce4093f567f2d8a93a1403a3d901a38a88237df",
+        "vertices": 1823,
+        "triangles": 3642,
+        "maxEdgeResidualInches": 1.8457048007194177e-14
+      }
+    ],
+    "skullDimensionsInches": [
+      5.347854,
+      8.593981,
+      7.96442
+    ],
+    "jawClosureDegrees": -1.008405719430249,
+    "hingeDisplacementInches": {
+      "L": 5.791335363263999e-9,
+      "R": 6.654872017184271e-9
+    },
+    "centralIncisorVerticalGapInches": {
+      "open": 0.068023,
+      "closed": 0.01354
+    }
+  },
+  {
+    "hero": "sippy",
+    "muscles": 35,
+    "triangles": 656998,
+    "file": "sippy-face-bp3d-meshopt.glb",
+    "sha256": "f9bd2df0e82469840c5d8f5f338fd973ba1aa1f6608b31f493e082fa8ab007f4",
+    "bytes": 3655392,
+    "placement": {
+      "atlasScaleHeadLocal": 0.537638651674989
+    }
+  },
+  {
+    "hero": "roma",
+    "tier": "mobile",
+    "file": "skeleton-female-mobile.glb",
+    "sha256": "05587c4a9c096909d55de20f5b8bdb7c81eaea5b9c6aac29b526628271553bde",
+    "bones": [
+      {
+        "node": "SKULL_CRANIAL_MAXILLA",
+        "positionsSha256": "ad6502387e7cc9a0f9df52e2d51295299877b18f18f8b76bd344deb764b71d4d",
+        "indicesSha256": "a3b790a04cf58aa20f78c9d8b6184103eeaf1ed7ee3522074ef729ad29063149",
+        "vertices": 4077,
+        "triangles": 8212,
+        "maxEdgeResidualInches": 8.315062330715601e-15
+      },
+      {
+        "node": "SKULL_MANDIBLE",
+        "positionsSha256": "1345d13c722814f7c4b3d62d81e86707103ecf228c4eae275ee78e972899b4f1",
+        "indicesSha256": "6049bd2ad38bf84f301a2230d4266f96b241f509f6d1beb148e47142413cc12a",
+        "vertices": 368,
+        "triangles": 746,
+        "maxEdgeResidualInches": 1.8439973957233777e-14
+      }
+    ],
+    "skullDimensionsInches": [
+      5.633921,
+      7.716121,
+      7.730359
+    ],
+    "jawClosureDegrees": -13.97444062324078,
+    "hingeDisplacementInches": {
+      "L": 1.3619166219109884e-7,
+      "R": 8.862862329788821e-8
+    },
+    "centralIncisorVerticalGapInches": {
+      "open": 0.793264,
+      "closed": 0.013992
+    }
+  },
+  {
+    "hero": "roma",
+    "tier": "high",
+    "file": "skeleton-female-high.glb",
+    "sha256": "ede7162eea26e78d9c4b608ad6b9eaf89fdf2de464b8042d9d43637fed3072f6",
+    "bones": [
+      {
+        "node": "SKULL_CRANIAL_MAXILLA",
+        "positionsSha256": "427ade86acda88b2a804456f376fa3da1bd7bb8f19970b36d937dfe605efa957",
+        "indicesSha256": "9aba15bae28739e6fe667d97b2678d7e91a3f7a4e90422592124fa217f48b688",
+        "vertices": 16971,
+        "triangles": 34012,
+        "maxEdgeResidualInches": 8.605321180042429e-15
+      },
+      {
+        "node": "SKULL_MANDIBLE",
+        "positionsSha256": "bbdaff5add928b439684cb3f628ecd0cad5385648d26760860a97ec44fbd9686",
+        "indicesSha256": "649b0a566b5e13cd496ecfd0251d316ec7fa485a74c22b947c459c47598f07f1",
+        "vertices": 1531,
+        "triangles": 3100,
+        "maxEdgeResidualInches": 1.8038733783164338e-14
+      }
+    ],
+    "skullDimensionsInches": [
+      5.633921,
+      7.716121,
+      7.730359
+    ],
+    "jawClosureDegrees": -13.97444062324078,
+    "hingeDisplacementInches": {
+      "L": 1.3619166219109884e-7,
+      "R": 8.862862329788821e-8
+    },
+    "centralIncisorVerticalGapInches": {
+      "open": 0.793264,
+      "closed": 0.013992
+    }
+  },
+  {
+    "hero": "roma",
+    "muscles": 35,
+    "triangles": 656998,
+    "file": "roma-face-bp3d-meshopt.glb",
+    "sha256": "7745615e8ee8ddbdc6d238f6d920072a7d7e43bafe04e410016abe0b626bae2a",
+    "bytes": 3893400,
+    "placement": "regional landmark adaptation"
+  }
+]
