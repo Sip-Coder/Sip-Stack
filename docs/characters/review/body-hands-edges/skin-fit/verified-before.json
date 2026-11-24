@@ -1,0 +1,37 @@
+{
+  "Sippy Mobile cold": {
+    "sourceCapture": "final-mobile.json",
+    "revisionMeasured": "9017de71207b6e2bb2956dbc61b38694169aa6dc",
+    "revisionWithMatchingFiles": "ff47e216e2b35f063b4a7da5dd0cee15c45ca841",
+    "verifiedFiles": 34,
+    "samples": 3
+  },
+  "Sippy High cold": {
+    "sourceCapture": "final-high.json",
+    "revisionMeasured": "9017de71207b6e2bb2956dbc61b38694169aa6dc",
+    "revisionWithMatchingFiles": "ff47e216e2b35f063b4a7da5dd0cee15c45ca841",
+    "verifiedFiles": 33,
+    "samples": 1
+  },
+  "Village Mobile cold": {
+    "sourceCapture": "cold-candidate.json",
+    "revisionMeasured": "a34b0060bc81dc40a0d3a2c5a5bf53ed2c7e2d74",
+    "revisionWithMatchingFiles": "ff47e216e2b35f063b4a7da5dd0cee15c45ca841",
+    "verifiedFiles": 61,
+    "samples": 5
+  },
+  "Village High cold": {
+    "sourceCapture": "high-candidate.json",
+    "revisionMeasured": "a34b0060bc81dc40a0d3a2c5a5bf53ed2c7e2d74",
+    "revisionWithMatchingFiles": "ff47e216e2b35f063b4a7da5dd0cee15c45ca841",
+    "verifiedFiles": 61,
+    "samples": 1
+  },
+  "Sippy Mobile motion": {
+    "sourceCapture": "final-frame.json",
+    "revisionMeasured": "9017de71207b6e2bb2956dbc61b38694169aa6dc",
+    "revisionWithMatchingFiles": "ff47e216e2b35f063b4a7da5dd0cee15c45ca841",
+    "verifiedFiles": 35,
+    "samples": 3
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "implementation": "7b9df6857eabf0ee695e2a999c9497d370f82402",
+  "runs": [
+    {
+      "device": "phone",
+      "tier": "mobile",
+      "humminTier": "mobile",
+      "requests": [
+        "/characters/diagram-skin-fit.js",
+        "/characters/assets/skin-wrap-gap-sippy-mobile.json",
+        "/characters/assets/skin-wrap-gap-roma-mobile.json"
+      ],
+      "frames": {
+        "sippy-heatmap": "75124dbd43e53b9c0042a934a59fff5fa57f8d5fc2775f6c11f2dd035e983683",
+        "sippy-overlay": "519676d783f693659b6325db6e0f19ff3e3b373b7b61e5566455f9fe1025e35e",
+        "roma-heatmap": "970f398bc42c9d0cd5305bce24483817da98615a1937ccb1c6ebb10e98aab71a",
+        "roma-overlay": "349ffdf4c0762021ac0ae48f4aded2acf4aa0ee627b854803c702017cc24bc67"
+      },
+      "glError": 0
+    },
+    {
+      "device": "desktop",
+      "tier": "high",
+      "humminTier": "mobile",
+      "requests": [
+        "/characters/diagram-skin-fit.js",
+        "/characters/assets/skin-wrap-gap-sippy-high.json",
+        "/characters/assets/skin-wrap-gap-roma-high.json",
+        "/characters/assets/skin-wrap-gap-sippy-high.json",
+        "/characters/assets/skin-wrap-gap-sippy-mobile.json"
+      ],
+      "frames": {
+        "sippy-heatmap": "b09499d6c18bc990b6796beebc1af734fcf517b60b5effaf46c7d9fd8f40c19d",
+        "sippy-overlay": "a5ee4cdae75265c8d28e0427dfb72762d57a35e2b81aee7ebb681de47987eebb",
+        "roma-heatmap": "578600d06f152b87abdc2ca4262c2e4da22a2a0113c9549786cd87c17dd6d58f",
+        "roma-overlay": "ef7d9bfd9a26f78b5a5619aee2cca0a2a5a209497a92302e957391642da08d3e"
+      },
+      "glError": 0
+    }
+  ]
+}
