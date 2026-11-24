@@ -1,6 +1,6 @@
 import {
   Bone, BufferAttribute, BufferGeometry, Group, Matrix4, Mesh, MeshPhysicalMaterial,
-  ShaderChunk, Skeleton, SkinnedMesh, Vector2,
+  ShaderChunk, Skeleton, SkinnedMesh, Vector2, Vector3,
 } from 'three';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
@@ -165,16 +165,94 @@ export async function decodeHair(buffer, name, tier) {
       skin.joints.map((_, j) => new Matrix4().fromArray(data.array, j * 16))), new Matrix4());
   });
   if (!nodes.some(n => n.isSkinnedMesh)) throw new Error('Missing strategic hair locks');
-  return { scene, tier };
+  return { scene, name, tier };
 }
 
-export function attachHair(head, asset, groom = { head, version: 0 }) {
+// Fit the authored bind frame to each real-size scalp. All locks, strand
+// attributes, bone lengths and the Roma band remain in the original GLB.
+const scalpBind = {
+  sippy: { scale: [0.7210, 0.8653, 1.0706], offset: [0.00372, -0.02821, 0.01445], tilt: -0.1332 },
+  roma: { scale: [0.6753, 0.8607, 0.9684], offset: [0.00122, -0.03992, -0.01371], tilt: 0.1986 },
+};
+
+// Blender's scalp-root strip precedes the comb meshes in Sippy's packed
+// primitive. Roma's scalp is a separate primitive. Only these backing strips
+// follow the new section radii. The visible curls and fibers keep their shape.
+const sippyScalpVertices = { high: 714, mobile: 520 };
+function seatScalp(asset, mount) {
+  const rows = mount.parent.userData.faceShell;
+  if (asset.seatedScalp || !rows) return asset.seatedScalp;
+  const sippy = asset.name === 'sippy';
+  const name = sippy ? 'Sippy scalp, comb and nape' : 'Roma scalp underlay';
+  const mesh = asset.scene.getObjectByName(name);
+  const source = mesh.geometry, a = source.attributes.position;
+  const n = sippy ? sippyScalpVertices[asset.tier] : a.count;
+  const apex = rows.at(-1), sectors = apex.length - 3;
+  const lastY = apex[0] / 1e5;
+  const { uv } = source.attributes;
+  const v = new Vector3(), mix = (a, b, f) => a + (b - a) * f;
+  const positions = new BufferAttribute(new Float32Array(a.count * 3), 3);
+  asset.scene.updateMatrixWorld(true);
+  mount.updateMatrix();
+  const toMesh = mount.matrix.clone().multiply(mesh.matrixWorld).invert();
+  for (let i = 0; i < n; i++) {
+    v.fromBufferAttribute(a, i).applyMatrix4(mesh.matrixWorld);
+    const along = uv.getX(i);
+    const crownFan = along >= 0.995 && (sippy || (Math.abs(v.x) < 0.0001 && v.y > 0.1526));
+    if (crownFan) {
+      v.set(apex[1] / 1e5, lastY + 0.0007, apex[2] / 1e5);
+    } else {
+      const azimuth = Math.atan2(v.x, v.z + 0.006);
+      v.applyMatrix4(mount.matrix);
+      // The occipital edge and ear opening sit lower on the true skull.
+      // Keep the cloth and decorative strands in their approved bind.
+      const rear = (1 - Math.cos(azimuth)) / 2;
+      const edge = Math.max(0, 1 - along * 2) ** 2;
+      v.y -= edge * (sippy ? 0.007 * rear : 0.003 * (1 - rear));
+      const y = Math.min(v.y, lastY - 0.0008) * 1e5;
+      const next = rows.findIndex(row => row[0] >= y);
+      const lo = rows[Math.max(0, next - 1)], hi = rows[next];
+      const f = lo === hi ? 0 : (y - lo[0]) / (hi[0] - lo[0]);
+      const x = mix(lo[1], hi[1], f) / 1e5, z = mix(lo[2], hi[2], f) / 1e5;
+      const angle = Math.atan2(v.x - x, v.z - z);
+      const sector = (angle / (2 * Math.PI) * sectors + sectors) % sectors;
+      const first = Math.floor(sector), second = (first + 1) % sectors, t = sector - first;
+      const radius = mix(mix(lo[3 + first], lo[3 + second], t), mix(hi[3 + first], hi[3 + second], t), f) / 1e5;
+      // The thin offset clears the finer skin triangulation at the root seat.
+      const lift = mix(0.00025, sippy ? 0.0024 : 0.0019, Math.min(along * 10, 1));
+      const nape = sippy ? 0.0045 * rear ** 6 * Math.min(along * 20, 1) * Math.max(0, 1 - along * 3) : 0;
+      v.set(x + (radius + lift + nape) * Math.sin(angle), y / 1e5, z + (radius + lift + nape) * Math.cos(angle));
+    }
+    v.applyMatrix4(toMesh);
+    positions.setXYZ(i, v.x, v.y, v.z);
+  }
+  for (let i = n; i < a.count; i++) positions.setXYZ(i, a.getX(i), a.getY(i), a.getZ(i));
+  const geometry = new BufferGeometry();
+  geometry.setIndex(source.index);
+  for (const [key, attribute] of Object.entries(source.attributes)) geometry.setAttribute(key, attribute);
+  geometry.setAttribute('position', positions);
+  return asset.seatedScalp = { mesh, geometry };
+}
+
+export function attachHair(head, asset, groom) {
+  if (!groom) {
+    const bind = scalpBind[asset.name];
+    const mount = new Group();
+    mount.name = 'Scalp hair bind';
+    mount.position.fromArray(bind.offset);
+    mount.rotation.x = bind.tilt;
+    mount.scale.fromArray(bind.scale);
+    head.add(mount);
+    groom = { head: mount, version: 0 };
+  }
   const group = asset.scene.clone(true), copies = new Map();
   function pair(from, to) {
     copies.set(from, to);
     from.children.forEach((child, i) => pair(child, to.children[i]));
   }
   pair(asset.scene, group);
+  const scalp = seatScalp(asset, groom.head);
+  if (scalp) copies.get(scalp.mesh).geometry = scalp.geometry;
   const bindings = [];
   let band;
   for (const [original, mesh] of copies) {
@@ -193,6 +271,6 @@ export function attachHair(head, asset, groom = { head, version: 0 }) {
   }
   groom.group?.removeFromParent();
   groom.bindings?.forEach(({ mesh }) => mesh.skeleton.dispose());
-  head.add(group);
+  groom.head.add(group);
   return Object.assign(groom, { group, bindings, band, tier: asset.tier, version: groom.version + 1 });
 }

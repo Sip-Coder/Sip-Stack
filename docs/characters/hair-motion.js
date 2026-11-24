@@ -286,7 +286,9 @@ function groomSolver(rig, groom) {
           // Changing their orientation shortens the drape without stretching it.
           gust.y += pace * Math.max(0, swing) * share * (roma ? 0.046 : 0.012);
           if (!reduced) {
-            gust.addScaledVector(ac.crossVectors(angular, base), share * (roma ? 0.047 : 0.023));
+            // The tighter Roma bind shortens temple-tip travel in inches.
+            // Preserve its head-turn lag while retaining the original springs.
+            gust.addScaledVector(ac.crossVectors(angular, base), share * (roma ? 0.051 : 0.023));
             gust.addScaledVector(inertia, share * (roma ? 0.0047 : 0.0018));
             gust.addScaledVector(gravity, share * (roma ? 0.24 : 0.067));
           }

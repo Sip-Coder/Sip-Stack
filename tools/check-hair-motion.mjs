@@ -1,5 +1,6 @@
 // THREE_ROOT=/path/to/three@0.170.0 node tools/check-hair-motion.mjs
 // Samples the deployed GLBs through the actual actor and fixed-tick pose path.
+// Optionally pass a checkout directory to measure the same scenes before a change.
 import { registerHooks } from 'node:module';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -20,12 +21,14 @@ if (process.env.THREE_ROOT) {
 }
 
 const T = await import('three');
-const { loadAvatar } = await import('../docs/characters/avatar-builder.js');
-const { createActor } = await import('../docs/characters/rig.js');
-const { createController, FIXED_DT } = await import('../docs/characters/motion.js');
-const { names, heights } = await import('../docs/characters/ui.js');
-const { optimizeCharacter } = await import('../docs/characters/render-batches.js');
-const { setModelDetail } = await import('../docs/characters/model-tier.js');
+const checkout = process.argv[2] ? pathToFileURL(resolve(process.argv[2]) + '/') : new URL('../', import.meta.url);
+const characterModule = name => import(new URL('docs/characters/' + name, checkout));
+const { loadAvatar } = await characterModule('avatar-builder.js');
+const { createActor } = await characterModule('rig.js');
+const { createController, FIXED_DT } = await characterModule('motion.js');
+const { names, heights } = await characterModule('ui.js');
+const { optimizeCharacter } = await characterModule('render-batches.js');
+const { setModelDetail } = await characterModule('model-tier.js');
 const neutral = { x: 0, z: 0, run: false, roll: false, jump: false, emote: false };
 const degree = 180 / Math.PI, inchesPerUnit = 39.37007874;
 const failures = [];
@@ -47,7 +50,7 @@ function tiltCue(i) {
   return [-0.52 * Math.min(1, i / 32), 0, 0];
 }
 
-function ringDown(moving, still, chainIndex, inchesPerLocalUnit) {
+function ringDown(moving, still, chainIndex) {
   const offsets = moving.slice(shakeStop).map((tips, i) =>
     tips[chainIndex].clone().sub(still[shakeStop + i][chainIndex]));
   // Project one lock along its strongest early response. Crossing that
@@ -69,9 +72,9 @@ function ringDown(moving, still, chainIndex, inchesPerLocalUnit) {
     }
   }
   return {
-    peakTipLagIn: peak * inchesPerLocalUnit,
+    peakTipLagIn: peak,
     rebounds: rebounds.map(({ tick, value }) =>
-      ({ seconds: tick * FIXED_DT, signedLagIn: value * inchesPerLocalUnit })),
+      ({ seconds: tick * FIXED_DT, signedLagIn: value })),
     settledWithinSeconds: (signed.findLastIndex(value => Math.abs(value) > 0.035 * peak) + 1) * FIXED_DT,
   };
 }
@@ -121,6 +124,11 @@ async function measure(name, tier) {
   reduced = true;
   controller.reset(-10, 0);
   tick();
+  // The authored frame is scaled independently on each axis at the mount.
+  // Compare tips in physical inches in that moving frame, without head motion.
+  const inchesPerAxis = groom.head.getWorldScale(new T.Vector3()).multiplyScalar(inchesPerUnit);
+  const physical = new T.Vector3();
+  const distanceInches = (a, b) => physical.subVectors(a, b).multiply(inchesPerAxis).length();
   const { chains, shapes, clearance } = groom.motion;
   const front = name === 'sippy' ? 'quiff' : 'front';
   check(chains.length === (name === 'sippy' ? 3 : 8), 'strategic lock count');
@@ -148,8 +156,8 @@ async function measure(name, tier) {
     controller.reset(-10, 0);
     const samples = metrics.map(({ chain }) => ({
       name: chain.mesh.name, region: chain.region, maxAngle: 0, maxAngleAfterStop: 0,
-      maxRootTravel: 0, maxBoneStretch: 0, maxCapRadius: 0, quietAngleDifference: 0,
-      tipPenetrations: 0, clearance: Infinity, furthest: 0, minimum: null,
+      maxRootTravelIn: 0, maxBoneStretch: 0, maxCapRadius: 0, maxCapRadiusIn: 0,
+      quietAngleDifference: 0, tipPenetrations: 0, clearance: Infinity, maxTipTravelIn: 0, minimum: null,
     }));
     for (let i = 0; i < ticks; i++) {
       tick(input(i), cue(i));
@@ -158,7 +166,7 @@ async function measure(name, tier) {
         const { chain, tip } = metrics[k], sample = samples[k];
         const { links, points, mesh } = chain;
         root.set(0, 0, 0).applyMatrix4(links[0].bone.matrixWorld).applyMatrix4(inverse);
-        sample.maxRootTravel = Math.max(sample.maxRootTravel, root.distanceTo(points[0]));
+        sample.maxRootTravelIn = Math.max(sample.maxRootTravelIn, distanceInches(root, points[0]));
         for (let j = 1; j < links.length; j++) {
           origin.set(0, 0, 0).applyMatrix4(links[j].bone.matrixWorld).applyMatrix4(inverse);
           sample.maxBoneStretch = Math.max(sample.maxBoneStretch,
@@ -175,12 +183,13 @@ async function measure(name, tier) {
         const angle = degree * last.dir.angleTo(direction);
         sample.maxAngle = Math.max(sample.maxAngle, angle);
         if (i >= ticks - 40) sample.maxAngleAfterStop = Math.max(sample.maxAngleAfterStop, angle);
-        sample.furthest = Math.max(sample.furthest, centre.distanceTo(end));
+        sample.maxTipTravelIn = Math.max(sample.maxTipTravelIn, distanceInches(centre, end));
         fromMesh.multiplyMatrices(inverse, mesh.matrixWorld);
         let capRadius = 0;
         for (const index of tip) {
           mesh.getVertexPosition(index, posed).applyMatrix4(fromMesh);
           capRadius = Math.max(capRadius, posed.distanceTo(centre));
+          sample.maxCapRadiusIn = Math.max(sample.maxCapRadiusIn, distanceInches(posed, centre));
         }
         sample.maxCapRadius = Math.max(sample.maxCapRadius, capRadius);
         for (const [label, contact] of clearance(centre, capRadius)) {
@@ -198,8 +207,8 @@ async function measure(name, tier) {
       maxAngleAfterStopDegrees: Math.max(...samples.filter(s => s.region === front).map(s => s.maxAngleAfterStop)),
       maxFrontAngleVsQuietDegrees: Math.max(...samples.filter(s => s.region === front)
         .map(s => s.quietAngleDifference)),
-      maxRootTravelIn: Math.max(...samples.map(s => s.maxRootTravel)) * height * inchesPerUnit,
-      maxBoneStretchIn: Math.max(...samples.map(s => s.maxBoneStretch)) * height * inchesPerUnit,
+      maxRootTravelIn: Math.max(...samples.map(s => s.maxRootTravelIn)),
+      maxBoneStretchIn: Math.max(...samples.map(s => s.maxBoneStretch)) * Math.max(...inchesPerAxis.toArray()),
       samples,
     };
   }
@@ -211,7 +220,8 @@ async function measure(name, tier) {
       inverse.copy(groom.head.matrixWorld).invert();
       return chains.map(chain => {
         const { dir, length, bone } = chain.links.at(-1);
-        return dir.clone().multiplyScalar(length).applyMatrix4(bone.matrixWorld).applyMatrix4(inverse);
+        return dir.clone().multiplyScalar(length).applyMatrix4(bone.matrixWorld)
+          .applyMatrix4(inverse).multiply(inchesPerAxis);
       });
     });
   }
@@ -231,12 +241,11 @@ async function measure(name, tier) {
     jump: scenario(100, i => ({ z: 0.6, jump: i === 15 })),
     roll: scenario(82, i => ({ z: 0.65, roll: i === 15 })),
   };
-  const inchesPerLocalUnit = height * inchesPerUnit;
   const quietTrack = track(shakeTicks, () => restHead);
   const shakeTrack = track(shakeTicks, shakeCue);
   const rings = chains.map((chain, i) => ({
     name: chain.mesh.name, region: chain.region,
-    ...ringDown(shakeTrack, quietTrack, i, inchesPerLocalUnit),
+    ...ringDown(shakeTrack, quietTrack, i),
   }));
   const selected = rings.filter(row => row.region === (name === 'sippy' ? 'quiff' : 'temple'))
     .reduce((best, row) => row.peakTipLagIn > best.peakTipLagIn ? row : best);
@@ -247,7 +256,7 @@ async function measure(name, tier) {
   for (const [i, row] of shakeTrack.entries()) {
     for (let a = 0; a < row.length; a++) for (let b = a + 1; b < row.length; b++) {
       const rest = quietTrack[i][a].distanceTo(quietTrack[i][b]);
-      maxFanIn = Math.max(maxFanIn, (row[a].distanceTo(row[b]) - rest) * inchesPerLocalUnit);
+      maxFanIn = Math.max(maxFanIn, row[a].distanceTo(row[b]) - rest);
     }
   }
   check(maxFanIn > (name === 'sippy' ? 0.06 : 0.2), 'shake misses neighboring guide separation');
@@ -255,7 +264,7 @@ async function measure(name, tier) {
   const backTilt = chains.map((chain, i) => ({
     name: chain.mesh.name,
     region: chain.region,
-    finalTipTravelIn: tiltTrack.at(-1)[i].distanceTo(quietTrack[109][i]) * inchesPerLocalUnit,
+    finalTipTravelIn: tiltTrack.at(-1)[i].distanceTo(quietTrack[109][i]),
   }));
   if (name === 'roma') check(backTilt.some(row => row.region === 'nape' && row.finalTipTravelIn > 0.45),
     'back tilt misses nape response');
@@ -264,7 +273,7 @@ async function measure(name, tier) {
   const reducedQuiet = track(shakeTicks, () => restHead);
   const reducedTrack = track(shakeTicks, shakeCue);
   const reducedReboundIn = Math.max(...reducedTrack.slice(shakeStop).map((row, i) =>
-    Math.max(...row.map((point, j) => point.distanceTo(reducedQuiet[shakeStop + i][j]))))) * inchesPerLocalUnit;
+    Math.max(...row.map((point, j) => point.distanceTo(reducedQuiet[shakeStop + i][j])))));
   check(reducedReboundIn < 0.01, 'shake bounces with reduced motion');
   scenarios.reducedMotion = scenario(155, i => i < 115 ? { z: 1, x: i < 60 ? 0 : 0.55 } : neutral);
   reduced = false;
@@ -295,11 +304,8 @@ async function measure(name, tier) {
         ' ' + row.tipPenetrations + ' samples, worst ' + row.clearance);
       check(row.maxCapRadius < metrics[i].chain.pads.at(-1),
         phase + ' ' + row.name + ' actual skinned tip exceeds protected cap radius');
-      row.maxCapRadiusIn = row.maxCapRadius * height * inchesPerUnit;
-      row.maxTipTravelIn = row.furthest * height * inchesPerUnit;
       delete row.maxCapRadius;
-      delete row.furthest;
-      delete row.maxRootTravel;
+      delete row.maxRootTravelIn;
       delete row.maxBoneStretch;
     }
   }

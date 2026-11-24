@@ -15,4 +15,4 @@ These GLBs match the supplied Mobile and High exports byte for byte. The supplie
 | Roma | [Female, Mobile](skeleton-female-mobile.glb) | 143 | 73,066 |
 | Roma | [Female, High](skeleton-female-high.glb) | 143 | 250,916 |
 
-[Per-mesh source and draw checks](../review/source-true-anatomy/source-geometry-proof.json)
+For the face inspection, each source mandible rotates about its two CT condyles. The cranium and maxilla keep their donor pose and the same character scale. [Per-mesh source and draw checks](../review/source-true-anatomy/source-geometry-proof.json) · [Facial landmarks and jaw verification](../review/face-fine-tune/anatomy.md)

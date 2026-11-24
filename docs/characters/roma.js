@@ -4,8 +4,9 @@
 import * as T from 'three';
 import { secondaryMotion } from './secondary.js';
 import { romaForms } from './roma-forms.js';
-import { buildRomaFace, poseRomaFace } from './roma-face.js';
-import { addExteriorShell, attachExteriorProfile, exteriorSkinWeights, hipExteriorPoint, explorerLimb, explorerTorso, sampleExterior, seatExplorerHead, shapeExplorerCrown, sneakerRoom, torsoStation } from './human-exterior.js';
+import { buildExplorerFace } from './explorer-face.js';
+import { faceShell, skullLandmarks } from './roma-face-shell.js';
+import { addExteriorShell, attachExteriorProfile, exteriorSkinWeights, hipExteriorPoint, explorerLimb, explorerTorso, sampleExterior, sneakerRoom, torsoStation } from './human-exterior.js';
 import { romaExterior } from './roma-exterior-data.js';
 import { buildExplorerHands } from './human-hands.js';
 import { handProfiles } from './roma-hand-data.js';
@@ -13,7 +14,7 @@ import { addRomaFat } from './roma-soft-tissue.js';
 
 const tau = 2 * Math.PI;
 const c = {
-  skin: '#d5956e',
+  skin: '#bb8663',
   cream: '#eee1cd',
   white: '#fff2da',
   mustard: '#c19543',
@@ -540,16 +541,12 @@ export function buildRoma(rig, attachGroom) {
     foot.userData.resolvePattern = ([x, y, z]) => [x * room.x, y + 0.047 + room.floor, room.z * z + 0.003];
   }
   const forms = romaForms(rig);
-  const head = forms.group(rig.head, 'face and band');
-  seatExplorerHead(rig, head, { width: 0.138, depth: 0.115, baseWidth: 0.134,
-    baseDepth: 0.112, height: 0.148, middle: 0.076, front: 0.003 });
-  const facial = buildRomaFace(head, forms, c);
+  const facial = buildExplorerFace(rig, 'roma', c.skin, faceShell, skullLandmarks);
   clothes(rig, forms);
   const bag = fieldKit(rig, forms);
   bag.rotation.x = 0.035;
   forms.finish();
-  shapeExplorerCrown(rig, head);
-  const groom = attachGroom?.(head);
+  const groom = attachGroom?.(rig.head);
   rig.groom = groom;
   addExteriorShell(rig, c.skin);
   buildExplorerHands(rig, c.skin, handProfiles);
@@ -567,7 +564,7 @@ export function buildRoma(rig, attachGroom) {
       rig.head.rotation.y += 0.32 * lift;
       rig.head.rotation.z -= 0.07 * lift;
     }
-    poseRomaFace(facial, f, lift);
+    facial.pose(f, lift);
     secondary(f);
   };
 }

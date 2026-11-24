@@ -200,6 +200,21 @@
   margin-top: 8px;
   cursor: pointer;
 }
+.ax-fit-regions {
+  width: 100%;
+  margin-top: 6px;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+.ax-fit-regions th,
+.ax-fit-regions td {
+  border-bottom: 1px solid #c6cfc4;
+  padding: 3px 4px 3px 0;
+}
+.ax-fit-regions td {
+  white-space: nowrap;
+}
 .ax-fit-scale {
   display: flex;
   flex-wrap: wrap;

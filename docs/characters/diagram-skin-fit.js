@@ -1,5 +1,5 @@
 // Loaded only when a reader opens an Axon skin fit study.
-import { Color, MeshBasicMaterial } from 'three';
+import { Box3, Color, MeshBasicMaterial, Vector3 } from 'three';
 
 export const fitScale = [
   { inches: 0, color: '#263e7d' },
@@ -10,6 +10,31 @@ export const fitScale = [
 ];
 
 export const fitLimitIn = fitScale.at(-1).inches;
+
+const faceSurface = /^(?:Face(?: skin| to neck join)?|(?:Left|Right) (?:ear|(?:upper|lower) eyelid|orbital rim)|(?:Upper|Lower) lip|Neck)$/i;
+const cervical = /^(?:SPINE_)?(?:CERVICAL|VERTEBRA_C)[_ -]?[1-4]$/i;
+
+export function faceStudyParts(model, added = []) {
+  const skull = model.parts.filter((part) => part.layer === 'skeleton' &&
+    (/^SKULL_/.test(part.scanNode ?? part.sourceNode ?? '') || cervical.test(part.scanNode ?? '') ||
+     /^(?:Atlas|Axis|Cervical vertebra [1-4])$/i.test(part.name)));
+  const muscle = model.parts.filter((part) => part.layer === 'muscles' && part.joint === 'head');
+  const skin = model.parts.filter((part) => part.layer === 'skin' &&
+    (faceSurface.test(part.name) || part.name === 'Subcutaneous torso and neck'));
+  return { skull, muscle: [...muscle, ...added], skin };
+}
+
+export function faceStudyFocus(skull) {
+  const cranium = skull.find((part) => /CRANIAL/.test(part.scanNode ?? part.sourceNode ?? ''));
+  if (!cranium) throw new Error('Missing source cranium for the face study');
+  const box = cranium.bounds ?? new Box3().setFromBufferAttribute(cranium.mesh.geometry.attributes.position)
+    .applyMatrix4(cranium.sourceMatrix);
+  const target = box.getCenter(new Vector3());
+  target.y -= 1.05 * 0.0254;
+  target.z += 0.55 * 0.0254;
+  // Frame both editions against the same cranium, independent of the skin fit.
+  return { target: target.toArray(), height: 13.25 * 0.0254 };
+}
 
 export function fitFingerprint(geometry) {
   const { position } = geometry.attributes;
@@ -29,21 +54,40 @@ export async function loadSkinFit(model, tier, signal) {
     const data = await response.json();
     if (data.name !== model.name || data.tier !== tier || data.colorLimitIn !== fitLimitIn)
       throw new Error('Skin fit measurements belong to a different model');
-    const parts = new Map(model.parts.filter((p) => p.layer === 'skin').map((p) => [p.id, p]));
-    const distances = new Map();
-    for (const { id, bytes, fingerprint } of data.parts) {
-      const part = parts.get(id);
-      const values = atob(bytes);
-      if (!part || values.length !== part.mesh.geometry.attributes.position.count ||
-          fitFingerprint(part.mesh.geometry) !== fingerprint)
-        throw new Error('Skin fit measurements belong to an older skin surface');
-      distances.set(id, values);
-    }
-    return { data, distances };
+    return { data, distances: measuredParts(model, data.parts) };
   } catch (error) {
     if (!signal.aborted) error.assetURL = url.href;
     throw error;
   }
+}
+
+function measuredParts(model, input) {
+  const parts = new Map(model.parts.filter((p) => p.layer === 'skin').map((p) => [p.id, p]));
+  const distances = new Map();
+  for (const { id, bytes, fingerprint } of input) {
+    const part = parts.get(id);
+    const values = atob(bytes);
+    if (!part || values.length !== part.mesh.geometry.attributes.position.count ||
+        fitFingerprint(part.mesh.geometry) !== fingerprint)
+      throw new Error('Skin fit measurements belong to an older skin surface');
+    distances.set(id, values);
+  }
+  return distances;
+}
+
+export async function loadFaceFit(model, data, signal) {
+  if (!data.face) throw new Error('Face fit measurements are unavailable');
+  const distances = measuredParts(model, data.face.parts);
+  const added = await model.loadFaceAnatomy?.(signal) ?? [];
+  signal.throwIfAborted();
+  const { skull, muscle, skin } = faceStudyParts(model, added);
+  return {
+    distances,
+    model: {
+      name: model.name, faceFocus: data.face.focus,
+      parts: [...skull, ...muscle, ...skin.filter((part) => distances.has(part.id))],
+    },
+  };
 }
 
 export function createHeatMaterial() {

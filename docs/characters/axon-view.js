@@ -29,7 +29,7 @@ export function mountStudy(section, stage, chooseHero) {
   body.innerHTML = `
     <div class="ax-toolbar"><label>Character <select data-axon-hero>${names.map((n, i) => `<option value="${n}">${labels[i]}</option>`).join('')}</select></label>
       <label data-human-setting>Layout <select data-axon-layout><option value="axial">Axial</option><option value="side">Side by side</option></select></label>
-      <label data-human-setting>Skin fit <select data-skin-fit disabled><option value="off">Off</option><option value="heatmap">Gap heatmap</option><option value="overlay">Skin over muscle</option></select></label>
+      <label data-human-setting>Skin fit <select data-skin-fit disabled><option value="off">Off</option><option value="heatmap">Gap heatmap</option><option value="overlay">Skin over muscle</option><option value="face-heatmap">Face gap heatmap</option><option value="face-overlay">Face layer overlay</option></select></label>
       <label class="ax-spread"><span>Explode <output data-spread-value>0%</output></span>
         <input data-explode type="range" min="0" max="1" step="0.01" value="0"></label></div>
     <div class="ax-layout"><div class="ax-figure">
@@ -79,7 +79,7 @@ export function mountStudy(section, stage, chooseHero) {
     loading,
     previewPaint,
     generation = 0;
-  let fitRequest, fitResult;
+  let fitRequest, fitResult, faceView, outerSelection;
   let ghostOpen = false;
   const restoreLayers = new Set();
   function applyGhost(enabled) {
@@ -112,7 +112,7 @@ export function mountStudy(section, stage, chooseHero) {
       // An opaque 2D context starts black. Reveal only after the first readback
       // has been copied, then keep that photograph through later replacements.
       if (canvas.style.visibility) canvas.style.visibility = '';
-      if (!model || stats.parts !== model.parts.length || !stats.ready) return;
+      if (!model || stats.parts !== (faceView ?? model).parts.length || !stats.ready) return;
       if (model.partial) {
         section.dataset.progress = 'available-layers';
         status.textContent = 'Loading original female lower-limb muscles…';
@@ -131,17 +131,59 @@ export function mountStudy(section, stage, chooseHero) {
     },
     onError: showError,
   });
+  function switchFaceView(next) {
+    if (faceView === next) return;
+    if (next) outerSelection = model.parts[Number.parseInt(partPicker.value, 10)];
+    view.setSkinFit('off');
+    faceView = next;
+    view.setModel(faceView ?? model, tier);
+    if (next) inspect(null);
+    else {
+      view.select(outerSelection);
+      inspect(outerSelection);
+      outerSelection = undefined;
+    }
+  }
   function resetSkinFit(clear = false) {
     fitRequest?.abort();
     fitRequest = undefined;
-    if (clear) fitResult = undefined;
     view.setSkinFit('off');
+    if (clear) {
+      fitResult = undefined;
+      faceView = undefined;
+      outerSelection = undefined;
+    } else switchFaceView();
     for (const control of fitLockedControls) control.disabled = false;
     fitOutput.hidden = true;
     fitOutput.dataset.skinFitState = 'off';
   }
+  const gapText = (gap) => gap.meanIn.toFixed(3) + ' / ' + gap.maxIn.toFixed(3);
+  function faceRegionTable(regions) {
+    const table = document.createElement('table');
+    table.className = 'ax-fit-regions';
+    const header = table.createTHead().insertRow();
+    for (const text of ['Region', 'Muscle', 'Support']) {
+      const th = document.createElement('th');
+      th.scope = 'col';
+      th.textContent = text;
+      header.append(th);
+    }
+    const body = table.createTBody();
+    for (const region of regions) {
+      const row = body.insertRow();
+      const name = document.createElement('th');
+      name.textContent = region.label;
+      name.scope = 'row';
+      row.append(name);
+      for (const metric of ['muscle', 'support']) row.insertCell().textContent = gapText(region[metric]);
+    }
+    return table;
+  }
   function showSkinFit(result, mode) {
-    const { data, distances, module } = result;
+    const face = mode.startsWith('face-');
+    const data = face ? result.data.face : result.data;
+    const next = face ? result.face : undefined;
+    switchFaceView(next?.model);
     fitOutput.hidden = false;
     fitOutput.dataset.skinFitState = 'rendering';
     const entries = [
@@ -154,7 +196,7 @@ export function mountStudy(section, stage, chooseHero) {
     });
     const legend = document.createElement('div');
     legend.className = 'ax-fit-scale';
-    if (mode === 'heatmap') module.fitScale.forEach(({ color }, i) => {
+    if (mode.endsWith('heatmap')) result.module.fitScale.forEach(({ color }, i) => {
       const swatch = document.createElement('span');
       swatch.style.borderColor = color;
       swatch.textContent = ['0', '1/16', '3/8', '3/4', '1½+ in'][i];
@@ -164,15 +206,21 @@ export function mountStudy(section, stage, chooseHero) {
     const summary = document.createElement('summary');
     summary.textContent = 'How the gap is measured';
     const method = document.createElement('p');
-    method.textContent = 'Nearest triangles in the neutral pose, with an area-weighted mean and largest sampled gap. Support includes bone, muscle and Roma’s soft-tissue pads. Face and hair are outside the map. Gaps are unsigned.';
-    const exposure = document.createElement('p');
-    const count = data.projectedExposure;
-    exposure.textContent = 'Six-view depth check · ' + count.exposedPixels.toLocaleString() +
-      ' of ' + count.overlappingPixels.toLocaleString() + ' overlapping samples show support outside the skin by more than ' + count.toleranceIn + ' in.';
-    detail.append(summary, method, exposure);
+    if (face) {
+      summary.textContent = 'Region gaps · mean / max in';
+      method.textContent = 'Unsigned distances to the nearest neutral muscle triangles. Support includes skull and upper neck bones. The means are area-weighted. Areas with sparse muscle coverage may show larger values.';
+      detail.append(summary, faceRegionTable(data.regions), method);
+    } else {
+      method.textContent = 'Nearest triangles in the neutral pose, with an area-weighted mean and largest sampled gap. Support includes bone, muscle and Roma’s soft-tissue pads. This map covers the body. Gaps are unsigned.';
+      const exposure = document.createElement('p');
+      const count = data.projectedExposure;
+      exposure.textContent = 'Six-view depth check · ' + count.exposedPixels.toLocaleString() +
+        ' of ' + count.overlappingPixels.toLocaleString() + ' overlapping samples show support outside the skin by more than ' + count.toleranceIn + ' in.';
+      detail.append(summary, method, exposure);
+    }
     fitOutput.replaceChildren(...entries, legend, detail);
     for (const control of fitLockedControls) control.disabled = true;
-    view.setSkinFit(mode, module, distances);
+    view.setSkinFit(mode, result.module, next?.distances ?? result.distances);
   }
   async function refreshSkinFit() {
     const mode = fitPicker.value;
@@ -181,7 +229,7 @@ export function mountStudy(section, stage, chooseHero) {
       return;
     }
     if (!active || hero === 'hummin' || !model || model.partial || section.dataset.ready !== key) return;
-    if (fitResult?.model === model) {
+    if (fitResult?.model === model && (!mode.startsWith('face-') || fitResult.face)) {
       showSkinFit(fitResult, mode);
       return;
     }
@@ -191,12 +239,17 @@ export function mountStudy(section, stage, chooseHero) {
     const seen = model, quality = tier;
     fitOutput.hidden = false;
     fitOutput.dataset.skinFitState = 'loading';
-    fitOutput.textContent = 'Loading skin fit measurements…';
+    fitOutput.textContent = mode.startsWith('face-') ? 'Loading face anatomy and measurements…' :
+      'Loading skin fit measurements…';
     try {
       const module = await import('./diagram-skin-fit.js');
-      const result = await module.loadSkinFit(seen, quality, request.signal);
+      const result = fitResult?.model === seen ? fitResult : {
+        ...await module.loadSkinFit(seen, quality, request.signal), module, model: seen,
+      };
+      if (fitPicker.value.startsWith('face-') && !result.face)
+        result.face = await module.loadFaceFit(seen, result.data, request.signal);
       if (request.signal.aborted || model !== seen || !active) return;
-      fitResult = { ...result, module, model: seen };
+      fitResult = result;
       showSkinFit(fitResult, fitPicker.value);
     } catch (error) {
       if (request.signal.aborted || model !== seen || !active) return;
@@ -237,12 +290,25 @@ export function mountStudy(section, stage, chooseHero) {
     partPicker.value = i < 0 ? '' : String(i);
     describePart(part);
   }
+  function partRecord(part) {
+    let bounds = part.bounds, triangles = part.triangles;
+    if (!bounds || triangles === undefined) {
+      const geometry = part.mesh.geometry;
+      if (!geometry.boundingBox) geometry.computeBoundingBox();
+      bounds = geometry.boundingBox;
+      triangles = (geometry.index?.count ?? geometry.attributes.position.count) / 3;
+    }
+    return {
+      name: part.name, layer: part.layer, triangles,
+      sizeInches: ['x', 'y', 'z'].map((k) => (bounds.max[k] - bounds.min[k]) / 0.0254),
+    };
+  }
   function describePart(part) {
     const i = model?.parts.indexOf(part) ?? -1;
     measure.replaceChildren();
-    if (i < 0) return;
-    const info = records[i],
-      heading = document.createElement('strong');
+    if (!part || (i < 0 && !faceView?.parts.includes(part))) return;
+    const info = records[i] ?? partRecord(part);
+    const heading = document.createElement('strong');
     heading.textContent = info.name;
     const size = info.sizeInches.map((n) => n.toFixed(2)).join(' × ');
     const details = document.createElement('p');
@@ -302,21 +368,7 @@ export function mountStudy(section, stage, chooseHero) {
       const previous = model;
       const selected = partPicker.value === '' ? null : previous?.parts[Number(partPicker.value)]?.id;
       model = next;
-      records = model.parts.map((part) => {
-        let bounds = part.bounds, triangles = part.triangles;
-        if (!bounds || triangles === undefined) {
-          const geometry = part.mesh.geometry;
-          if (!geometry.boundingBox) geometry.computeBoundingBox();
-          bounds = geometry.boundingBox;
-          triangles = (geometry.index?.count ?? geometry.attributes.position.count) / 3;
-        }
-        return {
-          name: part.name,
-          layer: part.layer,
-          triangles,
-          sizeInches: ['x', 'y', 'z'].map((k) => (bounds.max[k] - bounds.min[k]) / 0.0254),
-        };
-      });
+      records = model.parts.map(partRecord);
       fillParts();
       view.setModel(model, quality);
       if (previous?.dispose !== next.dispose) previous?.dispose();
@@ -535,8 +587,8 @@ export function mountStudy(section, stage, chooseHero) {
     stats: () => ({ ...view.stats, fitPath: model?.fitPath ?? (model ? 'procedural' : null), partial: !!model?.partial }),
     skinFit: () => {
       if (!fitResult) return null;
-      const { parts, ...summary } = fitResult.data;
-      return { ...summary, mode: fitPicker.value };
+      const { parts, face, ...summary } = fitResult.data;
+      return { ...summary, face: face ? { ...face, parts: undefined } : undefined, mode: fitPicker.value };
     },
   };
   return { sync };

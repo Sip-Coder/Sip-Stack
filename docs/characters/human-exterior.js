@@ -220,65 +220,6 @@ export function addExteriorShell(rig, tone) {
   return { meshes: anatomy, knees };
 }
 
-export function seatExplorerHead(rig, head, shape) {
-  const box = rig.anatomy.skullBounds;
-  const center = box.getCenter(new T.Vector3()).sub(rig.anatomy.joints.head);
-  const extent = box.getSize(new T.Vector3());
-  // The scan fixes the jaw-to-crown height and depth. Keep the art-directed
-  // fullness of the face, expressive eyes and oversized sweep of the hair.
-  head.scale.set(
-    Math.max(shape.width, extent.x * 1.31) / shape.baseWidth,
-    (extent.y + 0.025) / shape.height,
-    Math.max(shape.depth, extent.z * 1.18) / shape.baseDepth,
-  );
-  head.position.set(center.x, center.y - shape.middle * head.scale.y, center.z + shape.front);
-}
-
-export function shapeExplorerCrown(rig, head) {
-  rig.root.updateMatrixWorld(true);
-  const worldToRoot = rig.root.matrixWorld.clone().invert();
-  const former = rig.anatomy.skullBounds.max.y - 0.018;
-  const target = rig.anatomy.skullBounds.max.y + 0.018;
-  const point = new T.Vector3(), transform = new T.Matrix4();
-  let peak = -Infinity;
-  head.traverse((mesh) => {
-    if (!mesh.isMesh) return;
-    transform.multiplyMatrices(worldToRoot, mesh.matrixWorld);
-    const a = mesh.geometry.attributes.position;
-    for (let i = 0; i < a.count; i++)
-      peak = Math.max(peak, point.fromBufferAttribute(a, i).applyMatrix4(transform).y);
-  });
-  if (peak <= target) return;
-  const shrink = (target - former) / (peak - former);
-  const reverse = new T.Matrix4();
-  head.traverse((mesh) => {
-    if (!mesh.isMesh || mesh.name === 'sippy-face-sculpt') return;
-    transform.multiplyMatrices(worldToRoot, mesh.matrixWorld);
-    reverse.copy(transform).invert();
-    for (const slot of ['geometry', 'mobileGeometry']) {
-      const holder = slot === 'geometry' ? mesh : mesh.userData;
-      const input = holder[slot];
-      if (!input) continue;
-      // The groom shares its original source geometry across live/authored
-      // views. Carry both LODs in this actor's own geometry.
-      let g;
-      const a = input.attributes.position;
-      for (let i = 0; i < a.count; i++) {
-        point.fromBufferAttribute(a, i).applyMatrix4(transform);
-        if (point.y <= former) continue;
-        g ??= input.clone();
-        point.y = former + (point.y - former) * shrink;
-        point.applyMatrix4(reverse);
-        g.attributes.position.setXYZ(i, point.x, point.y, point.z);
-      }
-      if (!g) continue;
-      g.computeVertexNormals();
-      g.computeBoundingSphere();
-      holder[slot] = g;
-    }
-  });
-}
-
 // Hem and cuff stations follow the actual hinge positions. Existing textile
 // ease, panel folds, stitching and authored local ornaments are kept.
 export function limbStation(rig, side, leg, y, oldUpper, oldLower) {

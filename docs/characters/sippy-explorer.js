@@ -123,6 +123,11 @@ export function outfitExplorer(rig, tailoring, m, h) {
     return neckPoint(a, y, fold + (inner ? 0.001 : 0.003));
   });
   hoodShape.name = 'Sippy folded burgundy hood';
+  // Tip the existing fold around its rear neckline to clear the smaller jaw.
+  const rearFold = vec(...neckPoint(Math.PI, 0, 0));
+  hoodShape.rotation.x = 0.42;
+  hoodShape.position.copy(rearFold).sub(rearFold.clone().applyEuler(hoodShape.rotation));
+  hoodShape.position.y -= 0.018;
   // Band curves behind the neck and forward at either end to the padded earcups.
   const headphones = group(chest, ...pointOnVest(0.122, 0, 0.01));
   headphones.scale.z = 0.81;

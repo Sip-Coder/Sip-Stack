@@ -101,16 +101,32 @@ export async function snapshotDiagramModel(rig, tier, inspect, interior) {
     inspect?.(landmarks);
     registerParts(parts);
     let disposed = false;
-    return {
+    let faceParts;
+    const model = {
       name,
       parts,
       fitPath: name === 'hummin' ? 'procedural' : 'source geometry',
       dispose() {
         if (disposed) return;
         disposed = true;
-        resources.dispose(parts);
+        resources.dispose(faceParts ? [...parts, ...faceParts] : parts);
       },
     };
+    if (name !== 'hummin') {
+      model.headFrame = rig.head.matrixWorld.clone();
+      model.loadFaceAnatomy = async (signal) => {
+        signal?.throwIfAborted();
+        if (disposed) throw new Error('Axon model is disposed');
+        if (faceParts) return faceParts;
+        const { loadHeadMuscleParts } = await import('./diagram-face-anatomy.js');
+        const loaded = await loadHeadMuscleParts(name, model.headFrame, signal);
+        if (disposed) throw new Error('Axon model is disposed');
+        if (faceParts) return faceParts;
+        registerParts(loaded);
+        return (faceParts = loaded);
+      };
+    }
+    return model;
   } catch (error) {
     resources.dispose(parts);
     throw error;

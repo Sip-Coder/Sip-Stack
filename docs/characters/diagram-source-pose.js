@@ -1,6 +1,7 @@
 // The source values remain in metres. The whole actor owns a single scale;
 // each matrix below carries an entire source part into a rotating joint frame.
 import { Matrix4, Quaternion, Vector3 } from 'three';
+import { faceLandmarks } from './source-face-landmarks.js';
 
 const vector = (x = 0, y = 0, z = 0) => new Vector3(x, y, z);
 const down = vector(0, -1, 0);
@@ -148,9 +149,17 @@ export function sourcePose(rig) {
   const chest = inUprightFrame(rig, 'chest', empty, trunk, atlas.shoulderMid);
   const hips = inUprightFrame(rig, 'hips', empty, pelvis, atlas.pelvisMid);
   const head = bindFor(rig, 'head', atlas.head, empty);
+  const jaw = faceLandmarks[rig.name].jaw;
+  const jawPivot = vector(...jaw.pivot).multiplyScalar(height).add(original.head);
+  const closedJaw = new Matrix4().makeTranslation(jawPivot)
+    .multiply(new Matrix4().makeRotationAxis(vector(...jaw.axis).normalize(), jaw.angle))
+    .multiply(new Matrix4().makeTranslation(jawPivot.clone().negate()));
 
   function bone(name) {
     const joint = boneJoint(name);
+    if (name === 'SKULL_MANDIBLE') {
+      return { joint, matrix: matrices.head.clone().multiply(closedJaw) };
+    }
     const level = /^VERTEBRA_([CL])([1-9])$/.exec(name);
     if (level) {
       const [, region, index] = level;

@@ -1,13 +1,21 @@
 // Compare the neutral hair silhouettes exported on either side of a groom edit.
+// For an unchanged groom with a new bind, add --mounted /path/to/baseline/checkout.
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { registerHooks } from 'node:module';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { gunzipSync } from 'node:zlib';
 
-const [baseline, archiveDirectory = 'docs/characters/assets/hair'] = process.argv.slice(2);
-if (!baseline) throw new Error('Supply the baseline commit and optional candidate archive directory.');
+const [baseline, option, priorCheckout] = process.argv.slice(2);
+const mounted = option === '--mounted';
+const archiveDirectory = mounted || !option ? 'docs/characters/assets/hair' : option;
+if (!baseline || (mounted && !priorCheckout))
+  throw new Error('Supply a baseline commit and an optional archive directory or --mounted <baseline checkout>.');
+if (mounted && execFileSync('git', ['-C', priorCheckout, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim() !==
+    execFileSync('git', ['rev-parse', baseline], { encoding: 'utf8' }).trim())
+  throw new Error('The mounted baseline checkout must match the baseline commit.');
 if (process.env.THREE_ROOT) {
   const three = process.env.THREE_ROOT;
   registerHooks({
@@ -23,24 +31,46 @@ if (process.env.THREE_ROOT) {
   });
 }
 
-const { Vector3 } = await import('three');
+const { Box3, Vector3 } = await import('three');
 const { decodeHair } = await import('../../docs/characters/hair-groom.js');
-const size = 320;
+const size = 320, inchesPerMeter = 39.37007874;
 
 async function surface(bytes, hero, tier) {
   const glb = gunzipSync(bytes);
   const buffer = glb.buffer.slice(glb.byteOffset, glb.byteOffset + glb.byteLength);
   const { scene } = await decodeHair(buffer, hero, tier);
+  scene.updateMatrixWorld(true);
+  return collect(scene, new Vector3(), 1);
+}
+
+function collect(scene, origin, unit) {
   const parts = [];
   const p = new Vector3();
-  scene.updateMatrixWorld(true);
   scene.traverse(mesh => {
-    if (!mesh.isMesh || mesh.userData.hairPart === 'headband') return;
+    if (!mesh.isMesh) return;
     const points = Array.from({ length: mesh.geometry.attributes.position.count }, (_, i) =>
-      mesh.getVertexPosition(i, p).applyMatrix4(mesh.matrixWorld).clone());
-    parts.push({ points, indices: mesh.geometry.index.array });
+      mesh.getVertexPosition(i, p).applyMatrix4(mesh.matrixWorld).sub(origin).multiplyScalar(unit).clone());
+    parts.push({ points, indices: mesh.geometry.index.array, band: mesh.userData.hairPart === 'headband' });
   });
   return parts;
+}
+
+async function mountedSurface(checkout, hero, tier) {
+  const root = pathToFileURL(resolve(checkout) + '/docs/characters/');
+  const [{ loadAvatar }, { createActor }, { names, heights }] = await Promise.all(
+    ['avatar-builder.js', 'rig.js', 'ui.js'].map(name => import(new URL(name, root))));
+  const build = await loadAvatar(hero, tier);
+  const rig = createActor(hero, heights[names.indexOf(hero)]);
+  build(rig);
+  rig.root.updateMatrixWorld(true);
+  return collect(rig.groom.group, rig.head.getWorldPosition(new Vector3()), inchesPerMeter);
+}
+
+function dimensions(parts, band) {
+  const points = parts.filter(part => part.band === band).flatMap(part => part.points);
+  if (!points.length) return undefined;
+  const box = new Box3().setFromPoints(points);
+  return box.getSize(new Vector3()).toArray().map(value => +value.toFixed(3));
 }
 
 function project(parts, yaw) {
@@ -84,11 +114,20 @@ function coverage({ patches }, left, bottom, scale) {
 }
 
 const percent = value => +(100 * value).toFixed(2);
-const results = [];
+const digest = bytes => createHash('sha256').update(bytes).digest('hex');
+const assets = [], results = [];
 for (const name of ['sippy', 'roma']) for (const tier of ['mobile', 'high']) {
   const path = `docs/characters/assets/hair/${name}-${tier}.glb.gz`;
-  const old = await surface(execFileSync('git', ['show', `${baseline}:${path}`]), name, tier);
-  const now = await surface(await readFile(resolve(archiveDirectory, `${name}-${tier}.glb.gz`)), name, tier);
+  const oldBytes = execFileSync('git', ['show', `${baseline}:${path}`]);
+  const newBytes = await readFile(resolve(archiveDirectory, `${name}-${tier}.glb.gz`));
+  const [before, after] = await Promise.all(mounted
+    ? [mountedSurface(priorCheckout, name, tier), mountedSurface('.', name, tier)]
+    : [surface(oldBytes, name, tier), surface(newBytes, name, tier)]);
+  const glbSha256 = { before: digest(gunzipSync(oldBytes)), after: digest(gunzipSync(newBytes)) };
+  const measure = parts => ({ hair: dimensions(parts, false), band: dimensions(parts, true) });
+  assets.push({ name, tier, transferBytes: { before: oldBytes.length, after: newBytes.length },
+    glbSha256, ...(mounted && { dimensionsInchesXYZ: { before: measure(before), after: measure(after) } }) });
+  const old = before.filter(part => !part.band), now = after.filter(part => !part.band);
   for (const yaw of [0, 45, 90, 180]) {
     const a = project(old, yaw), b = project(now, yaw);
     const left = Math.min(a.bounds[0], b.bounds[0]), bottom = Math.min(a.bounds[1], b.bounds[1]);
@@ -108,4 +147,4 @@ for (const name of ['sippy', 'roma']) for (const tier of ['mobile', 'high']) {
     });
   }
 }
-console.log(JSON.stringify({ baseline, resolution: size, results }, null, 2));
+console.log(JSON.stringify({ baseline, mounted, resolution: size, assets, results }, null, 2));

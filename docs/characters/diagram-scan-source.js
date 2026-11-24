@@ -134,6 +134,13 @@ export function loadMuscleAtlas(tier, signal) {
   return loadAtlas('muscles-' + tier, 'bp3d-muscles-' + tier + '-meshopt.glb', 323, signal);
 }
 
+export function loadFaceMuscleAtlas(name, signal) {
+  if (!['sippy', 'roma'].includes(name)) throw new Error('Unknown human face atlas');
+  const credit = name === 'roma' ? ' · adapted from male atlas' : '';
+  return loadAtlas('face-' + name, name + '-face-bp3d-meshopt.glb', 35, signal,
+    'BodyParts3D v3 · DBCLS' + credit);
+}
+
 export function loadFemaleMuscles(signal) {
   return loadAtlas('female', femaleMuscleFile, 76, signal, 'Andreassen et al. · Visible Human Female');
 }

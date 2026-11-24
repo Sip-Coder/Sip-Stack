@@ -20,6 +20,7 @@ export function describeRoma(rig, mesh, c) {
   if (mesh.userData.hairPart === 'crown') return skin('Parted crown and fringe');
   if (mesh.userData.hairPart === 'waves')
     return skin(sideName(anatomicalX(rig, c.worldCenter)) + ' ' + (mesh.userData.hairRegion ?? 'cascade') + ' waves');
+  if (mesh.userData.faceAccessory) return kit(mesh.name);
   const fat = mesh.userData.anatomicalFat;
   if (fat) {
     const layer = /breast/i.test(fat) ? 'breast' : /gluteal/i.test(fat) ? 'gluteal-fat' : 'hip-fat';
@@ -29,30 +30,13 @@ export function describeRoma(rig, mesh, c) {
   const id = mesh.name.replace(/^Roma /, ''),
     { index: i, color, objectCenter: p } = c;
   const side = sideName(anatomicalX(rig, c.worldCenter));
-  if (id.startsWith('eye ')) {
-    const labels = id.startsWith('eye iris ')
-      ? ['iris', 'pupil', 'catchlights', 'catchlights']
-      : ['sclera', 'upper eyelash', 'lower eyelid', 'upper eyelid'];
-    const eyeSide = sideName(Number(id.split(' ').at(-1)));
-    return skin(eyeSide + ' ' + labels[i]);
-  }
-  if (id.startsWith('brow ')) return skin(side + ' eyebrow');
-  if (id.startsWith('closed eyelid ')) return skin(sideName(Number(id.split(' ').at(-1))) + ' closed eyelid');
-  if (id === 'smile') return skin(['Mouth opening', 'Teeth', 'Lower lip', 'Upper lip'][i]);
-  if (id === 'face and band') {
-    if (c.material.metalness > 0.1) return kit(side + ' hoop earring');
-    if (color === '713f34') return skin('Nostrils');
-    return skin(Math.abs(p.x) > 0.05 ? side + ' ear' : 'Face');
-  }
-  if (id.startsWith('hand'))
-    return color === 'd5956e' ? skin(side + ' hand') : kit(side + ' beaded bracelet');
+  if (id.startsWith('hand')) return kit(side + ' beaded bracelet');
   if (id.startsWith('upperArm')) return kit(side + ' sleeve embroidery');
   if (id === 'field backpack') {
     if (c.material.metalness > 0.1) return kit(i < 2 ? side + ' pack fastener' : 'Pack badges');
     return kit(['Backpack case', 'Backpack flap', 'Right pack tab', 'Left pack tab', 'Backpack handle'][i]);
   }
   if (id === 'chest') {
-    if (color === 'd5956e') return skin('Neck');
     if (color === '855932') return kit(side + ' shoulder strap');
     if (color === 'ddcbb1') return kit('Rolled hood');
     if ((color === 'eee1cd' || color === 'b18e53') && Math.abs(p.x) > 0.012)
@@ -106,26 +90,6 @@ export function sippyCatalog(rig) {
     const path = named.join('/'),
       name = mesh.name;
     if (id === 'body') return skin('Continuous body, limbs and hands');
-    if (id === 'body-head') return skin('Face');
-    if (path.includes('sippy-head/')) {
-      // The head can turn across the actor's midline during a tucked roll.
-      // Its local lateral coordinate identifies the eye independently of pose.
-      const side = sideName(rig.head.worldToLocal(p.clone()).x);
-      if (path.includes('sippy-brow')) return skin(side + ' eyebrow');
-      if (mat === 'hair') return skin(Math.abs(x) > 0.1 ? side + ' sideburn' : 'Scalp and crest');
-      if (mat === 'sclera')
-        return skin(c.material.userData.blueprintSamples ? side + ' cornea and iris' : 'Teeth');
-      if (mat === 'mouth') return skin('Mouth opening');
-      if (mat === 'lips') return skin(c.objectCenter.y > 0.033 ? 'Upper lip' : 'Lower lip');
-      if (Array.isArray(mesh.material))
-        return skin(
-          side + (mesh.material[0].userData.blueprintId === 'pupil' ? ' upper eyelid' : ' lower eyelid'),
-        );
-      if (mesh.parent.parent?.name === 'sippy-head') return skin(side + ' orbital rim');
-      if (Math.abs(x) > 0.1) return skin(side + ' ear');
-      if (Math.abs(x) < 0.027) return skin(mat === 'flush' ? 'Nostrils' : 'Nose');
-      return skin(side + ' cheek freckles');
-    }
     if (named.some((n) => /^hand[LR]$/.test(n))) return skin(side + ' fingernails and knuckles');
     if (label[id]) return kit(label[id]);
     if (id === 'cargo-pockets') return kit(side + ' cargo pocket');

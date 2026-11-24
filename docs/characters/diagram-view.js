@@ -257,8 +257,10 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     const layer = layers.get(id);
     if (!layer) return;
     const state = layerState(id);
+    const overlay = fitMode.endsWith('overlay');
     const visible = fitMode === 'off' ? state.visible : id === 'skin' ||
-      (fitMode === 'overlay' && ['muscles', 'breast', 'gluteal-fat', 'hip-fat'].includes(id));
+      (overlay && ['muscles', 'breast', 'gluteal-fat', 'hip-fat'].includes(id)) ||
+      (fitMode === 'face-overlay' && id === 'skeleton');
     const opacity = fitMode === 'off' ? state.opacity : 1;
     layer.group.visible = visible && opacity > 0;
     for (const mesh of layer.group.children) {
@@ -425,7 +427,11 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
         .multiplyScalar((minX + maxX) * 0.5)
         .addScaledVector(up, (minY + maxY) * 0.5)
         .addScaledVector(direction, (minD + maxD) * 0.5);
-      const half = (0.535 * Math.max(0.08, maxY - minY, (maxX - minX) / aspect)) / mag;
+      const focus = model?.faceFocus;
+      if (focus) centre.fromArray(focus.target);
+      const span = focus ? 0.5 * focus.height / Math.min(1, aspect) :
+        0.535 * Math.max(0.08, maxY - minY, (maxX - minX) / aspect);
+      const half = span / mag;
       camera.left = -half * aspect;
       camera.right = half * aspect;
       camera.top = half;
@@ -615,25 +621,29 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     if (mode === fitMode) return;
     const skin = layers.get('skin');
     if (mode !== 'off' && (!skin || model.partial || !stats.studio)) return;
-    if (mode === 'heatmap' && !heatMaterial) {
+    const isHeatmap = mode.endsWith('heatmap');
+    if (isHeatmap && !heatMaterial) {
       heatMaterial = fitModule.createHeatMaterial();
       for (const mesh of skin.group.children) {
         const gaps = new Float32Array(mesh.geometry.attributes.position.count).fill(-1);
         for (const { number, lo, hi, sourceLo } of mesh.userData.sourceSpans) {
           const value = distances.get(model.parts[number].id);
           if (!value) continue;
-          for (let i = 0; i <= hi - lo; i++)
-            gaps[lo + i] = fitModule.fitLimitIn * value.charCodeAt(sourceLo + i) / 255;
+          for (let i = 0; i <= hi - lo; i++) {
+            const sample = value.charCodeAt(sourceLo + i);
+            if (!model.faceFocus) gaps[lo + i] = fitModule.fitLimitIn * sample / 255;
+            else if (sample) gaps[lo + i] = fitModule.fitLimitIn * (sample - 1) / 254;
+          }
         }
         mesh.geometry.setAttribute('axonSkinGap', new T.BufferAttribute(gaps, 1));
       }
     }
     fitMode = mode;
     stats.skinFit = mode;
-    ghost.value = Number(mode === 'overlay' || (mode === 'off' && ordinaryGhost));
+    ghost.value = Number(mode.endsWith('overlay') || (mode === 'off' && ordinaryGhost));
     stats.ghost = stats.studio && !!ghost.value;
     for (const mesh of skin?.group.children ?? [])
-      mesh.material = mode === 'heatmap' ? heatMaterial : mesh.userData.studyMaterial;
+      mesh.material = isHeatmap ? heatMaterial : mesh.userData.studyMaterial;
     for (const id of layers.keys()) syncLayer(id);
     sequence++;
     changed();

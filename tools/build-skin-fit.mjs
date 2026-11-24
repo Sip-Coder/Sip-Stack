@@ -1,11 +1,13 @@
 // Bake the Axon diagnostic against the shipped triangle buffers and poses.
 // THREE_ROOT and MESH_BVH_ROOT can point to Three r170 and three-mesh-bvh 0.8.3.
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { registerHooks } from 'node:module';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-const [checkout = '.', output = 'docs/characters/assets', selected, quality] = process.argv.slice(2);
+const args = process.argv.slice(2);
+const faceOnly = args.includes('--face');
+const [checkout = '.', output = 'docs/characters/assets', selected, quality] = args.filter((arg) => arg !== '--face');
 const { THREE_ROOT, MESH_BVH_ROOT } = process.env;
 if (THREE_ROOT || MESH_BVH_ROOT) {
   registerHooks({ resolve(name, context, next) {
@@ -17,8 +19,8 @@ if (THREE_ROOT || MESH_BVH_ROOT) {
     return file ? { url: pathToFileURL(file).href, shortCircuit: true } : next(name, context);
   } });
 }
-const [{ BufferAttribute, BufferGeometry, Box3, Vector3 }, { MeshBVH },
-  { fitFingerprint, fitLimitIn }, { depthViews, raster }] = await Promise.all([
+const [{ BufferAttribute, BufferGeometry, Box3, DoubleSide, Ray, Vector3 }, { MeshBVH },
+  { faceStudyFocus, faceStudyParts, fitFingerprint, fitLimitIn }, { depthViews, raster }] = await Promise.all([
     import('three'), import('three-mesh-bvh'), import('../docs/characters/diagram-skin-fit.js'), import('./axon-depth.mjs'),
   ]);
 const modelURL = pathToFileURL(resolve(checkout, 'docs/characters/diagram-parts.js'));
@@ -127,11 +129,208 @@ function depthCheck(skin, parts) {
     maxDepthIn: round(worst) };
 }
 
+const faceRegions = [
+  'Forehead', 'Orbit', 'Cheek', 'Nose', 'Lips', 'Jaw', 'Chin', 'Ears', 'Neck join', 'Scalp',
+];
+const coreFace = /^Face(?: skin)?$/i;
+const neck = /^(?:Neck|(?:Face to |Subcutaneous torso and )neck(?: join)?)$/i;
+const lids = /^(?:Left|Right) (?:(?:upper|lower) eyelid|orbital rim)$/i;
+const lips = /^(?:Upper|Lower) lip$/i;
+
+function bounds(parts) {
+  const box = new Box3();
+  for (const { mesh: { geometry } } of parts) {
+    if (!geometry.boundingBox) geometry.computeBoundingBox();
+    box.union(geometry.boundingBox);
+  }
+  return box;
+}
+
+function faceClassifier(model, skin, skull) {
+  const shell = bounds(skin.filter((part) => coreFace.test(part.name)));
+  const head = bounds(skull.filter((part) => /^SKULL_/.test(part.scanNode ?? part.sourceNode)));
+  const headX = head.getCenter(new Vector3()).x, halfHead = (head.max.x - head.min.x) / 2;
+  const neckFloor = head.min.y - 1.75 * inch;
+  const sizes = shell.getSize(new Vector3());
+  const eyeSurface = model.parts.filter(({ name }) => /^(?:Left|Right) (?:sclera|cornea and iris|eyeball|eye|eye globe)$/i.test(name));
+  const lidSurface = skin.filter(({ name }) => lids.test(name));
+  const eyes = bounds(eyeSurface.length ? eyeSurface : lidSurface);
+  const mouth = bounds(skin.filter(({ name }) => lips.test(name)));
+
+  function classify(p, name) {
+    if (/^(?:Left|Right) ear$/i.test(name)) return 'Ears';
+    if (lips.test(name)) return 'Lips';
+    if (lids.test(name)) return 'Orbit';
+    if (neck.test(name)) {
+      return !/^Subcutaneous/i.test(name) || (p.y >= neckFloor && Math.abs(p.x - headX) < 0.95 * halfHead) ?
+        'Neck join' : undefined;
+    }
+    const side = Math.abs(p.x - headX) / sizes.x;
+    const back = p.z < shell.min.z + 0.6 * sizes.z;
+    if (back) return p.y >= eyes.min.y ? 'Scalp' : 'Neck join';
+    if (p.y >= eyes.max.y + 0.10 * inch) return 'Forehead';
+    if (p.y <= mouth.min.y - 0.08 * inch) return side <= 0.20 ? 'Chin' : 'Jaw';
+    if (p.y >= mouth.max.y + 0.10 * inch && side < 0.13) return 'Nose';
+    if (p.y >= eyes.min.y - 0.08 * inch && p.x >= eyes.min.x - 0.1 * inch && p.x <= eyes.max.x + 0.1 * inch)
+      return 'Orbit';
+    return p.y >= mouth.min.y + 0.06 * inch ? 'Cheek' : 'Jaw';
+  }
+  return { classify, shell, head };
+}
+
+function dimensionsIn(box) {
+  const size = box.getSize(new Vector3()).divideScalar(inch);
+  return { width: round(size.x), height: round(size.y), depth: round(size.z) };
+}
+
+async function landmarkDepths(model, scope, skull, muscle) {
+  if (!model.headFrame) return undefined;
+  const { faceLandmarks } = await import('../docs/characters/source-face-landmarks.js');
+  const at = faceLandmarks[model.name], frame = model.headFrame;
+  const inchesPerUnit = new Vector3().setFromMatrixScale(frame).x / inch;
+  const toHead = frame.clone().invert();
+  const axis = (coordinate, sense) => {
+    const p = new Vector3(), out = new Vector3();
+    const cranium = skull.find((part) => part.scanNode === 'SKULL_CRANIAL_MAXILLA');
+    const xyz = cranium.mesh.geometry.attributes.position;
+    let extreme = -Infinity;
+    for (let i = 0; i < xyz.count; i++) {
+      p.fromBufferAttribute(xyz, i).applyMatrix4(toHead);
+      if (p[coordinate] * sense <= extreme) continue;
+      extreme = p[coordinate] * sense;
+      out.copy(p);
+    }
+    return out.toArray();
+  };
+  const surface = tree(scope.skin.filter((p) => coreFace.test(p.name)));
+  const cheeks = tree(muscle.filter((p) => /Masseter|Buccinator/i.test(p.name))) ?? false;
+  const earSurface = tree(scope.skin.filter((p) => / ear$/i.test(p.name)));
+  const front = [0, 0, 1];
+  const ray = new Ray(), origin = new Vector3();
+  const sample = (label, landmark, mark, direction, targetIn, targetSurface = surface, nearest = null) => {
+    origin.fromArray(mark).applyMatrix4(frame);
+    ray.direction.fromArray(direction).transformDirection(frame);
+    const earRoot = targetSurface && targetSurface === earSurface;
+    ray.origin.copy(origin);
+    if (!earRoot) {
+      // Trace inward to see the outer surface even over exposed bone.
+      ray.origin.addScaledVector(ray.direction, 3.5 * inch);
+      ray.direction.negate();
+    }
+    const contact = targetSurface?.raycastFirst(ray, DoubleSide, 0, (earRoot ? 2 : 4.5) * inch);
+    const surfaceDepth = contact ? round(earRoot ? contact.distance / inch : 3.5 - contact.distance / inch) : null;
+    const muscleDistance = nearest !== null;
+    return {
+      label, landmark, targetIn,
+      originHeadIn: mark.map((value) => round(value * inchesPerUnit)),
+      depthIn: muscleDistance ? (nearest && contact ? round(nearest.closestPointToPoint(contact.point, hit).distance / inch) : null)
+        : surfaceDepth,
+      method: muscleDistance ? 'nearest masseter or buccinator from skin contact' :
+        earRoot ? 'first outward ear contact' : 'directional surface offset',
+    };
+  };
+  function lipDepth(label, landmark, mark) {
+    const geometry = scope.skin.find((p) => p.name === label)?.mesh.geometry;
+    const xyz = geometry?.attributes.position;
+    let depth = -Infinity;
+    for (let i = 0; xyz && i < xyz.count; i++) {
+      point.fromBufferAttribute(xyz, i).applyMatrix4(toHead);
+      if (Math.abs(point.x - mark[0]) * inchesPerUnit <= 0.10)
+        depth = Math.max(depth, (point.z - mark[2]) * inchesPerUnit);
+    }
+    return {
+      label, landmark, targetIn: [0.45, 0.55],
+      originHeadIn: mark.map((value) => round(value * inchesPerUnit)),
+      depthIn: Number.isFinite(depth) ? round(depth) : null,
+      method: 'forward projection from incisor plane to central lip crest',
+    };
+  }
+  const samples = [
+    sample('Crown', 'Superior cranium extremum', axis('y', 1), [0, 1, 0], [0.2, 0.3]),
+    sample('Back of scalp', 'Posterior cranium extremum', axis('z', -1), [0, 0, -1], [0.2, 0.3]),
+    sample('Forehead', 'Glabella', at.glabella, front, [0.2, 0.25]),
+    sample('Nasion', 'Nasion', at.nasion, front, [0.25, 0.25]),
+    sample('Chin', 'Pogonion', at.pogonion, front, [0.4, 0.45]),
+    sample('Under-chin', 'Menton', at.menton, [0, -0.82, 0.57], [0.3, 0.3]),
+    lipDepth('Upper lip', 'Upper incisor', at.upperIncisor),
+    lipDepth('Lower lip', 'Lower incisor', at.incisor),
+  ];
+  for (const [side, sign, display] of [['L', 1, 'left'], ['R', -1, 'right']]) {
+    const malar = at.malar[side], gonion = at.gonion[side];
+    const midCheek = new Vector3(...malar).lerp(new Vector3(...gonion), 0.54).toArray();
+    samples.push(
+      sample('Brow ridge, ' + display, 'Superior orbital rim', at.orbit[side].superior, front, [0.2, 0.25]),
+      sample('Cheekbone, ' + display, 'Malar point', malar, [0.67 * sign, 0, 0.74], [0.2, 0.3]),
+      sample('Mid-cheek, ' + display, 'Probe between malar and gonion', midCheek, [0.65 * sign, 0, 0.76],
+        [0.45, 0.6], surface, cheeks),
+      sample('Jaw angle, ' + display, 'Gonion', gonion, [0.8 * sign, -0.1, 0.6], [0.4, 0.4]),
+      sample('Ear, ' + display, 'External auditory meatus', at.meatus[side], [sign, 0, 0.12], [0.4, 0.8],
+        earSurface),
+    );
+  }
+  return samples;
+}
+
+async function measureFace(model) {
+  const added = await model.loadFaceAnatomy?.(new AbortController().signal) ?? [];
+  const scope = faceStudyParts(model, added);
+  const skull = scope.skull.map(posed), muscle = scope.muscle.map(posed);
+  const muscleTree = tree(muscle), boneTree = tree(skull);
+  const { classify, shell, head } = faceClassifier(model, scope.skin, skull);
+  const regions = new Map(faceRegions.map((label) => [label, { label, samples: 0,
+    muscle: { weighted: 0, maximum: 0, area: 0 }, support: { weighted: 0, maximum: 0, area: 0 },
+  }]));
+  const parts = scope.skin.map(({ id, name, mesh }) => {
+    const g = mesh.geometry, positions = g.attributes.position;
+    const map = Buffer.alloc(positions.count);
+    const weights = areaWeights(g);
+    for (let i = 0; i < positions.count; i++) {
+      if (!weights[i]) continue;
+      const label = classify(point.fromBufferAttribute(positions, i), name);
+      if (!label) continue;
+      const nearestMuscle = muscleTree.closestPointToPoint(point, hit).distance / inch;
+      const bone = boneTree.closestPointToPoint(point, hit, 0, nearestMuscle * inch);
+      const nearestSupport = bone ? Math.min(nearestMuscle, bone.distance / inch) : nearestMuscle;
+      const region = regions.get(label);
+      region.samples++;
+      for (const [metric, distance] of [['muscle', nearestMuscle], ['support', nearestSupport]]) {
+        const stats = region[metric];
+        stats.weighted += distance * weights[i];
+        stats.maximum = Math.max(stats.maximum, distance);
+        stats.area += weights[i];
+      }
+      // Zero marks vertices outside the sampled face and upper neck.
+      map[i] = 1 + Math.round(254 * Math.min(1, nearestMuscle / fitLimitIn));
+    }
+    return { id, vertices: positions.count, fingerprint: fitFingerprint(g), bytes: map.toString('base64') };
+  });
+  const groups = Array.from(regions.values());
+  if (groups.some((region) => !region.samples)) throw new Error('Missing a face region on ' + model.name);
+  return {
+    focus: faceStudyFocus(scope.skull),
+    samples: groups.reduce((sum, region) => sum + region.samples, 0),
+    headDimensionsIn: { skin: dimensionsIn(shell), skull: dimensionsIn(head) },
+    muscle: all(groups, 'muscle'), support: all(groups, 'support'),
+    landmarks: await landmarkDepths(model, scope, skull, muscle),
+    regions: groups.map(({ label, samples, muscle, support }) =>
+      ({ label, samples, muscle: report(muscle), support: report(support) })),
+    parts,
+  };
+}
+
 await mkdir(output, { recursive: true });
 for (const name of selected ? [selected] : ['sippy', 'roma']) {
   for (const tier of quality ? [quality] : ['mobile', 'high']) {
     const model = await buildDiagramModel(name, tier);
     try {
+      const file = `skin-wrap-gap-${name}-${tier}.json`;
+      if (faceOnly) {
+        const data = JSON.parse(await readFile(resolve(checkout, 'docs/characters/assets', file), 'utf8'));
+        data.face = await measureFace(model);
+        await writeFile(resolve(output, file), JSON.stringify(data) + '\n');
+        console.log(JSON.stringify({ name, tier, ...data.face, parts: undefined }));
+        continue;
+      }
       const skin = model.parts.filter((p) => p.layer === 'skin' && wrapped.test(p.name));
       if (skin.length !== 9) throw new Error('Missing a wrapped skin part on ' + name + '/' + tier);
       const muscles = model.parts.filter((p) => p.layer === 'muscles').map(posed);
@@ -161,7 +360,7 @@ for (const name of selected ? [selected] : ['sippy', 'roma']) {
         projectedExposure: depthCheck(skin, [...muscles, ...other]),
         parts: parts.map((p) => ({ ...p, muscle: report(p.muscle), support: report(p.support) })),
       };
-      await writeFile(resolve(output, `skin-wrap-gap-${name}-${tier}.json`), JSON.stringify(data) + '\n');
+      await writeFile(resolve(output, file), JSON.stringify(data) + '\n');
       console.log(JSON.stringify({ ...data, parts: undefined }));
     } finally {
       model.dispose();
