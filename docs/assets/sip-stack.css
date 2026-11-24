@@ -484,7 +484,7 @@ body[data-mode="village"] .hero h1 { font-size: clamp(1.4rem, 3vw, 2rem); }
 .seg button:hover:not([aria-selected="true"]) { color: var(--clay); }
 .seg button:focus-visible { outline: 2px solid var(--clay); outline-offset: 1px; }
 .hero .lede { font-size: 1.04rem; color: #4a424d; max-width: 44rem; }
-.modes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .6rem; margin: .95rem 0 .2rem; max-width: 72rem; }
+.modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; margin: .95rem 0 .2rem; max-width: 72rem; }
 .modes a {
   display: flex; flex-direction: column; gap: .15rem; text-decoration: none; color: var(--ink);
   background: var(--card); background-image: var(--grain); border: 1.3px solid var(--line); border-radius: 8px;

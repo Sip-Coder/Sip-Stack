@@ -1,15 +1,3 @@
-# Heros
-
-Sippy, Roma and Hummin stand beside a three-foot ruler in their explorer outfits. The films below use the same Three.js models as the Heros tab. [Lineup](lineup.jpg)
-
-| Hero | Movement film | Garment turnaround |
-| --- | --- | --- |
-| Sippy | [Watch](sippy.mp4) | [Nine poses and views](sippy-garment-turnaround.jpg) |
-| Roma | [Watch](roma.mp4) | [Nine poses and views](roma-garment-turnaround.jpg) |
-| Hummin | [Watch](hummin.mp4) | [Nine poses and views](hummin-garment-turnaround.jpg) |
-
-Each hero has an original seven-view blueprint, an identically framed model sheet and measured silhouette overlays. [Blueprint gallery and measurements](blueprints/)
-
 # Living characters
 
 The 14-second portrait reel follows a porter, a harvester, the Village rower, a gull, a trout, a kingfisher and the Creek cooper. [Watch the MP4](living-characters-portrait.mp4)
@@ -57,3 +45,7 @@ The stills use the live scene geometry, lighting, water and postprocessing. A ca
 | Dragonflies | [View](after-creek-dragonflies-desktop.jpg) | [View](after-creek-dragonflies-portrait.jpg) |
 | Skiff | [View](after-creek-skiff-desktop.jpg) | [View](after-creek-skiff-portrait.jpg) |
 | Fireflies | [View](after-creek-fireflies-desktop.jpg) | [View](after-creek-fireflies-portrait.jpg) |
+
+## Hero body guardrail
+
+For future hero bodies, establish the bones and joint landmarks first. Wrap muscle around the bones, then wrap skin around the muscle and underlying bony landmarks. Keep the skin close to the anatomy and add fullness only where the character design calls for it. Fit clothing over the finished skin with its own ease. For a mechanical hero, follow the same order with the frame, actuators and shell.

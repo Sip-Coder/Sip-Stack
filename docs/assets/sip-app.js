@@ -100,11 +100,18 @@ async function showChart(mode, id, pin, visit) {
 function route() {
   const visit = ++navigation;
   const hash = location.hash.slice(1);
-  // The character router replaces old bookmarks in place and mounts the actor.
+  const retired = /^(?:heros|characters)(?:\/|$)/;
   const debug = !hash && new URLSearchParams(location.search).get('debug');
-  if (hash === 'heros' || hash === 'characters' || debug === 'heros' || debug === 'characters') {
-    setMode('heros');
-    return;
+  if (retired.test(hash) || retired.test(debug)) {
+    // Replace old bookmarks in place so Back and Forward retain one stop.
+    const url = new URL(location.href);
+    url.hash = '';
+    for (const key of ['debug', 'review']) {
+      if (retired.test(url.searchParams.get(key))) url.searchParams.delete(key);
+    }
+    history.replaceState(history.state, '', url);
+    scrollTo({ top: 0, behavior: 'instant' });
+    return showChart('world', null, null, visit);
   }
   const place = hash.match(/^village(?:\/([a-z-]+))?$/);
   if (place) return showVillage(place[1], visit);
