@@ -1,5 +1,5 @@
 import {
-  Bone, BufferAttribute, BufferGeometry, Group, Matrix4, Mesh, MeshPhysicalMaterial,
+  Bone, BufferAttribute, BufferGeometry, Group, MathUtils, Matrix4, Mesh, MeshPhysicalMaterial,
   ShaderChunk, Skeleton, SkinnedMesh, Vector2, Vector3,
 } from 'three';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
@@ -179,6 +179,15 @@ const scalpBind = {
 // primitive. Roma's scalp is a separate primitive. Only these backing strips
 // follow the new section radii. The visible curls and fibers keep their shape.
 const sippyScalpVertices = { high: 714, mobile: 520 };
+const { smoothstep } = MathUtils;
+const romaTempleSweep = 0.013;
+function reseatedGeometry(source, positions) {
+  const geometry = new BufferGeometry();
+  geometry.setIndex(source.index);
+  for (const [key, attribute] of Object.entries(source.attributes)) geometry.setAttribute(key, attribute);
+  return geometry.setAttribute('position', positions);
+}
+
 function seatScalp(asset, mount) {
   const rows = mount.parent.userData.faceShell;
   if (asset.seatedScalp || !rows) return asset.seatedScalp;
@@ -209,6 +218,12 @@ function seatScalp(asset, mount) {
       const rear = (1 - Math.cos(azimuth)) / 2;
       const edge = Math.max(0, 1 - along * 2) ** 2;
       v.y -= edge * (sippy ? 0.007 * rear : 0.003 * (1 - rear));
+      // Recede the backing toward the fibers at the temple and beneath the
+      // curls across Roma's forehead; the nape retains its existing seat.
+      const temple = Math.abs(azimuth);
+      v.y += edge * (sippy
+        ? 0.008 * smoothstep(temple, 0.7, 1.1) * (1 - smoothstep(temple, 1.55, 2.1))
+        : (0.008 + 0.0018 * Math.sin(5 * azimuth)) * (1 - smoothstep(temple, 0.45, 1.32)));
       const y = Math.min(v.y, lastY - 0.0008) * 1e5;
       const next = rows.findIndex(row => row[0] >= y);
       const lo = rows[Math.max(0, next - 1)], hi = rows[next];
@@ -219,7 +234,7 @@ function seatScalp(asset, mount) {
       const first = Math.floor(sector), second = (first + 1) % sectors, t = sector - first;
       const radius = mix(mix(lo[3 + first], lo[3 + second], t), mix(hi[3 + first], hi[3 + second], t), f) / 1e5;
       // The thin offset clears the finer skin triangulation at the root seat.
-      const lift = mix(0.00025, sippy ? 0.0024 : 0.0019, Math.min(along * 10, 1));
+      const lift = mix(0.00035, sippy ? 0.0015 : 0.0019, Math.min(along * 10, 1));
       const nape = sippy ? 0.0045 * rear ** 6 * Math.min(along * 20, 1) * Math.max(0, 1 - along * 3) : 0;
       v.set(x + (radius + lift + nape) * Math.sin(angle), y / 1e5, z + (radius + lift + nape) * Math.cos(angle));
     }
@@ -227,11 +242,39 @@ function seatScalp(asset, mount) {
     positions.setXYZ(i, v.x, v.y, v.z);
   }
   for (let i = n; i < a.count; i++) positions.setXYZ(i, a.getX(i), a.getY(i), a.getZ(i));
-  const geometry = new BufferGeometry();
-  geometry.setIndex(source.index);
-  for (const [key, attribute] of Object.entries(source.attributes)) geometry.setAttribute(key, attribute);
-  geometry.setAttribute('position', positions);
-  return asset.seatedScalp = { mesh, geometry };
+  return asset.seatedScalp = { mesh, geometry: reseatedGeometry(source, positions) };
+}
+
+function seatRomaWaves(asset, mount) {
+  if (asset.seatedWaves) return asset.seatedWaves;
+  const result = new Map(), p = new Vector3(), shift = new Matrix4().makeTranslation(0, 0, -romaTempleSweep);
+  asset.scene.updateMatrixWorld(true);
+  mount.updateMatrix();
+  for (const mesh of asset.scene.children) {
+    const region = mesh.userData.hairRegion;
+    const temple = region === 'temple', fixed = mesh.name.startsWith('Roma fixed ');
+    if (!temple && region !== 'front' && !fixed) continue;
+    const matrix = mount.matrix.clone();
+    if (temple) matrix.multiply(shift);
+    if (mesh.isSkinnedMesh) {
+      const { bones, boneInverses } = mesh.skeleton;
+      matrix.multiply(bones[0].matrixWorld).multiply(boneInverses[0]);
+    } else matrix.multiply(mesh.matrixWorld);
+    const inverse = matrix.clone().invert();
+    const source = mesh.geometry.attributes.position;
+    const positions = new BufferAttribute(new Float32Array(source.count * 3), 3);
+    for (let i = 0; i < source.count; i++) {
+      p.fromBufferAttribute(source, i).applyMatrix4(matrix);
+      // Keep the crown and ends. The curved drape clears the outside of the
+      // eye without moving the patterned band or narrowing the full groom.
+      const eyeLevel = smoothstep(p.y, 0.005, 0.019) * (1 - smoothstep(p.y, 0.036, 0.067));
+      p.z -= Math.max(0, p.z - 0.025) * eyeLevel * smoothstep(Math.abs(p.x), 0.024, 0.036);
+      p.applyMatrix4(inverse);
+      positions.setXYZ(i, p.x, p.y, p.z);
+    }
+    result.set(mesh, reseatedGeometry(mesh.geometry, positions));
+  }
+  return asset.seatedWaves = result;
 }
 
 export function attachHair(head, asset, groom) {
@@ -253,6 +296,8 @@ export function attachHair(head, asset, groom) {
   pair(asset.scene, group);
   const scalp = seatScalp(asset, groom.head);
   if (scalp) copies.get(scalp.mesh).geometry = scalp.geometry;
+  if (asset.name === 'roma')
+    for (const [source, shape] of seatRomaWaves(asset, groom.head)) copies.get(source).geometry = shape;
   const bindings = [];
   let band;
   for (const [original, mesh] of copies) {
@@ -262,10 +307,15 @@ export function attachHair(head, asset, groom) {
     if (!mesh.isSkinnedMesh) continue;
     const skeleton = original.skeleton;
     mesh.bind(new Skeleton(skeleton.bones.map(bone => copies.get(bone)), skeleton.boneInverses), original.bindMatrix);
+    let points = mesh.userData.hairChain;
+    if (asset.name === 'roma' && mesh.userData.hairRegion === 'temple') {
+      mesh.skeleton.bones[0].position.z -= romaTempleSweep;
+      points = points.map(([x, y, z]) => [x, y, z - romaTempleSweep]);
+    }
     bindings.push({
       mesh,
       bones: mesh.skeleton.bones,
-      points: mesh.userData.hairChain,
+      points,
       region: mesh.userData.hairRegion,
     });
   }

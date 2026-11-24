@@ -272,13 +272,19 @@ async function landmarkDepths(model, scope, skull, muscle) {
 }
 
 async function measureFace(model) {
-  const added = await model.loadFaceAnatomy?.(new AbortController().signal) ?? [];
+  const { signal } = new AbortController();
+  const added = (await Promise.all([model.loadFaceAnatomy?.(signal), model.loadFaceFat?.(signal)]))
+    .flatMap(parts => parts ?? []);
   const scope = faceStudyParts(model, added);
   const skull = scope.skull.map(posed), muscle = scope.muscle.map(posed);
-  const muscleTree = tree(muscle), boneTree = tree(skull);
+  const craniumOrJaw = part => /^SKULL_/.test(part.scanNode ?? part.sourceNode);
+  const muscleTree = tree(muscle), skullTree = tree(skull.filter(craniumOrJaw));
+  const cervicalTree = tree(skull.filter(part => !craniumOrJaw(part)));
+  const fatTree = tree(scope.fat.map(posed));
   const { classify, shell, head } = faceClassifier(model, scope.skin, skull);
   const regions = new Map(faceRegions.map((label) => [label, { label, samples: 0,
     muscle: { weighted: 0, maximum: 0, area: 0 }, support: { weighted: 0, maximum: 0, area: 0 },
+    bone: { weighted: 0, maximum: 0, area: 0 },
   }]));
   const parts = scope.skin.map(({ id, name, mesh }) => {
     const g = mesh.geometry, positions = g.attributes.position;
@@ -289,11 +295,15 @@ async function measureFace(model) {
       const label = classify(point.fromBufferAttribute(positions, i), name);
       if (!label) continue;
       const nearestMuscle = muscleTree.closestPointToPoint(point, hit).distance / inch;
-      const bone = boneTree.closestPointToPoint(point, hit, 0, nearestMuscle * inch);
-      const nearestSupport = bone ? Math.min(nearestMuscle, bone.distance / inch) : nearestMuscle;
+      const nearestBone = skullTree.closestPointToPoint(point, hit).distance / inch;
+      let nearestSupport = Math.min(nearestMuscle, nearestBone);
+      for (const additionalSupport of [cervicalTree, fatTree]) {
+        const contact = additionalSupport?.closestPointToPoint(point, hit, 0, nearestSupport * inch);
+        if (contact) nearestSupport = Math.min(nearestSupport, contact.distance / inch);
+      }
       const region = regions.get(label);
       region.samples++;
-      for (const [metric, distance] of [['muscle', nearestMuscle], ['support', nearestSupport]]) {
+      for (const [metric, distance] of [['muscle', nearestMuscle], ['support', nearestSupport], ['bone', nearestBone]]) {
         const stats = region[metric];
         stats.weighted += distance * weights[i];
         stats.maximum = Math.max(stats.maximum, distance);
@@ -308,12 +318,13 @@ async function measureFace(model) {
   if (groups.some((region) => !region.samples)) throw new Error('Missing a face region on ' + model.name);
   return {
     focus: faceStudyFocus(scope.skull),
+    facialFatPads: scope.fat.length,
     samples: groups.reduce((sum, region) => sum + region.samples, 0),
     headDimensionsIn: { skin: dimensionsIn(shell), skull: dimensionsIn(head) },
-    muscle: all(groups, 'muscle'), support: all(groups, 'support'),
+    muscle: all(groups, 'muscle'), support: all(groups, 'support'), bone: all(groups, 'bone'),
     landmarks: await landmarkDepths(model, scope, skull, muscle),
-    regions: groups.map(({ label, samples, muscle, support }) =>
-      ({ label, samples, muscle: report(muscle), support: report(support) })),
+    regions: groups.map(({ label, samples, muscle, support, bone }) =>
+      ({ label, samples, muscle: report(muscle), support: report(support), bone: report(bone) })),
     parts,
   };
 }

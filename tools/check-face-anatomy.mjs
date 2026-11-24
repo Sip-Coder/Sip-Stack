@@ -17,12 +17,12 @@ if (process.env.THREE_ROOT) {
   });
 }
 
-const { Vector3 } = await import('three');
-const { createActor } = await import('../docs/characters/rig.js');
+const { Box3, Vector3 } = await import('three');
+const { createActor, heroHeadScale } = await import('../docs/characters/rig.js');
 const { heights, names } = await import('../docs/characters/ui.js');
 const { sourcePose } = await import('../docs/characters/diagram-source-pose.js');
 const { loadSkeletonScan } = await import('../docs/characters/diagram-scan-source.js');
-const { loadHeadMuscleParts } = await import('../docs/characters/diagram-face-anatomy.js');
+const { loadFaceFatParts, loadHeadMuscleParts } = await import('../docs/characters/diagram-face-anatomy.js');
 const { faceLandmarks } = await import('../docs/characters/source-face-landmarks.js');
 const { sourceAssetFiles } = await import('../docs/characters/source-asset-files.js');
 const { files } = JSON.parse(await readFile(new URL('../docs/characters/review/source-true-anatomy/source-files.json', import.meta.url), 'utf8'));
@@ -36,29 +36,37 @@ const evidence = [];
 
 for (const hero of ['sippy', 'roma']) {
   const height = heights[names.indexOf(hero)];
+  const headScale = heroHeadScale[hero];
   const rig = createActor(hero, height);
   rig.root.updateMatrixWorld(true);
-  const headFrame = rig.head.matrixWorld.clone();
+  const headFrame = rig.headAssembly.matrixWorld.clone();
   const unposed = headFrame.clone().multiply(rig.anatomy.restPose.head);
+  const originalFrame = rig.head.matrixWorld.clone().multiply(rig.anatomy.restPose.head);
   const pose = sourcePose(rig);
   const c = faceLandmarks[hero];
   const origin = rig.anatomy.original.head;
   const donorHeight = rig.anatomy.height;
-  const donorToWorldScale = height / donorHeight;
+  const donorToWorldScale = height * headScale / donorHeight;
+  assert(headScale >= 1 && headScale <= 1.35, 'Unexpected production head scale');
+  const c1 = point(rig.anatomy.donor.spine.C1);
+  const atlasDisplacementInches = c1.clone().applyMatrix4(originalFrame).distanceTo(c1.clone().applyMatrix4(unposed)) / metresPerInch;
+  assert(atlasDisplacementInches < 1e-8, 'Scaling displaced the atlas pivot');
   for (const tier of ['mobile', 'high']) {
     const [file] = sourceAssetFiles(hero, tier);
     const hash = createHash('sha256').update(await readFile(new URL('../docs/characters/assets/' + file, import.meta.url))).digest('hex');
     assert.equal(hash, files[file].sha256, 'Changed BoneHub source file');
     const source = await loadSkeletonScan(hero, tier);
-    const bones = [];
+    const bones = [], bounds = new Box3();
     for (const node of ['SKULL_CRANIAL_MAXILLA', 'SKULL_MANDIBLE']) {
       const { matrix } = pose.bone(node);
       if (node === 'SKULL_CRANIAL_MAXILLA') assert(matrix.equals(unposed), 'Cranium or maxilla pose changed');
       const { index, attributes: { position } } = source.get(node);
-      // Compare every indexed source edge against its posed distance, with the
-      // common standing-height conversion divided out before taking residuals.
-      let maxEdgeResidualInches = 0;
       const a = new Vector3(), b = new Vector3();
+      for (let i = 0; i < position.count; i++)
+        bounds.expandByPoint(a.fromBufferAttribute(position, i).applyMatrix4(matrix));
+      // Compare every indexed source edge against its posed distance, with the
+      // common standing-height and head scales divided out before taking residuals.
+      let maxEdgeResidualInches = 0;
       for (let i = 0; i < index.count; i += 3) {
         for (let j = 0; j < 3; j++) {
           a.fromBufferAttribute(position, index.getX(i + j));
@@ -78,18 +86,20 @@ for (const hero of ['sippy', 'roma']) {
       return [side, v.clone().applyMatrix4(unposed).distanceTo(v.clone().applyMatrix4(pivot)) / metresPerInch];
     }));
     assert(Math.max(...Object.values(hingeDisplacementInches)) < 1e-6, 'Condyle moved during hinge rotation');
-    const dimensions = point(c.skull.max).sub(point(c.skull.min)).multiplyScalar(height / metresPerInch).toArray().map(inch);
+    const dimensions = bounds.getSize(new Vector3()).divideScalar(metresPerInch).toArray().map(inch);
     const open = c.jaw.openInches * donorToWorldScale, closed = c.jaw.closedInches * donorToWorldScale;
     assert(open > closed && closed > 0 && closed < .02, 'Central incisor gap failed to close');
     evidence.push({ hero, tier, file, sha256: hash, bones, skullDimensionsInches: dimensions,
+      headScale, atlasDisplacementInches,
       jawClosureDegrees: c.jaw.angle * 180 / Math.PI, hingeDisplacementInches,
       centralIncisorVerticalGapInches: { open: inch(open), closed: inch(closed) } });
   }
   let uniform;
-  const atlas = await loadHeadMuscleParts(hero);
+  const atlas = await loadHeadMuscleParts(hero, headFrame);
   const parts = registration.positions[hero];
   assert.equal(atlas.length, Object.keys(parts).length);
   for (const part of atlas) {
+    assert(part.sourceMatrix.equals(headFrame), 'Facial muscle detached from the shared head frame');
     const { matrix } = Object.values(parts).find(({ id }) => id === part.sourceNode);
     const [x, y, z] = matrix.slice(0, 3).map((row) => point(row));
     assert(x.dot(y.clone().cross(z)) > 0, 'Improper muscle registration');
@@ -104,8 +114,13 @@ for (const hero of ['sippy', 'roma']) {
   evidence.push({ hero, muscles: atlas.length, triangles: atlas.reduce((sum, part) => sum + part.triangles, 0),
     file, sha256: createHash('sha256').update(packed).digest('hex'), bytes: packed.byteLength,
     placement: uniform ? { atlasScaleHeadLocal: uniform } : 'regional landmark adaptation' });
+  const fat = await loadFaceFatParts(hero, headFrame);
+  assert(fat.length > 0 && fat.every(part => part.layer === 'face-fat' && part.sourceMatrix.equals(headFrame)),
+    'Facial fat detached from the shared head frame');
+  evidence.push({ hero, facialFatPads: fat.map(part => ({ name: part.name, triangles: part.triangles })), headScale });
 }
 
 const output = process.argv[2];
 if (output) await writeFile(output, JSON.stringify(evidence, null, 2) + '\n');
-for (const item of evidence) console.log(item.hero, item.tier ?? 'muscles', item.centralIncisorVerticalGapInches ?? item.muscles);
+for (const item of evidence) console.log(item.hero, item.tier ?? 'head layers',
+  item.centralIncisorVerticalGapInches ?? item.muscles ?? item.facialFatPads.length);

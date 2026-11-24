@@ -1,16 +1,92 @@
 import * as T from 'three';
 
-// Follow the cheek surface at rest and at both expression endpoints so the lip
-// and upper teeth stay set into the face throughout a smile or a focus.
-export function seatSippyMouth(parent, field, incisor) {
-  const make = (color, roughness) => new T.MeshStandardMaterial({ color, roughness });
-  const mouth = make('#5a2b25', 0.56), enamel = make('#f5e7d6', 0.39), lip = make('#be7c63', 0.58);
-  // Rebind the original sculpt and its morph endpoints as a single uniform fit.
-  const scale = 0.76;
-  function depth(x, y) {
-    const z = field.front(x, y);
-    return (Number.isFinite(z) ? z : incisor[2]) + field.nose(x, y) + 0.00135;
+// Recover the anterior support from the 94deb9d sculpture. Only the five
+// lower-face sections needed by the original expression paths are sampled.
+function originalLipSupport() {
+  const rows = [
+    [0.006, 0.015, 0.018, 0.005], [0.012, 0.031, 0.031, 0.006],
+    [0.025, 0.045, 0.039, 0.0035], [0.042, 0.051, 0.046, 0.001],
+    [0.053, 0.0545, 0.049, 0], [0.067, 0.058, 0.052, 0],
+  ];
+  const profile = new T.CatmullRomCurve3(rows.map(([y, x, z]) => new T.Vector3(x, y, z)), false, 'catmullrom', 0.32);
+  const offset = new T.CatmullRomCurve3(rows.map(([y, , , z]) => new T.Vector3(z, y, 0)), false, 'catmullrom', 0.32);
+  const positions = new Float32Array(9 * 37 * 3);
+  const bell = (x, c, w) => Math.exp(-(((x - c) / w) ** 2));
+  for (let j = 0; j < 9; j++) {
+    const t = (j + 1) / 10, point = profile.getPoint(t), cz = offset.getPoint(t).x;
+    for (let i = 0; i < 37; i++) {
+      const a = (i < 18 ? i + 54 : i - 18) / 72 * (2 * Math.PI);
+      const x = Math.fround(point.x * Math.sin(a)), y = Math.fround(point.y);
+      const z = Math.fround(cz + point.z * Math.cos(a));
+      const ax = Math.abs(x), front = T.MathUtils.smoothstep(z, 0.001, 0.031);
+      const cheek = bell(y, 0.062, 0.017) * bell(ax, 0.039, 0.017);
+      const jaw = bell(y, 0.028, 0.015) * bell(ax, 0.038, 0.017);
+      const brow = bell(y, 0.088, 0.008) * bell(ax, 0.026, 0.020);
+      const orbit = bell(y, 0.077, 0.013) * bell(ax, 0.026, 0.016);
+      const dorsum = 0.0087 * bell(x, 0, 0.008) * bell(y, 0.066, 0.021);
+      const tip = 0.0150 * bell(x, 0, 0.0086) * bell(y, 0.0525, 0.0083);
+      const ala = 0.0064 * bell(ax, 0.0072, 0.0060) * bell(y, 0.0493, 0.0053);
+      const philtrum = 0.0020 * bell(ax, 0.0036, 0.0028) * bell(y, 0.0395, 0.0060);
+      const at = 3 * (37 * j + i);
+      positions[at] = x + Math.sign(x) * front * (0.0017 * cheek + 0.0012 * jaw);
+      positions[at + 1] = y;
+      positions[at + 2] = z + front * (0.0066 * cheek + 0.0051 * brow + 0.0024 * jaw - 0.0046 * orbit +
+        dorsum + tip + ala + philtrum + 0.0040 * bell(y, 0.017, 0.011) * bell(x, 0, 0.015));
+    }
   }
+  function triangle(x, y, i, j, k) {
+    const ax = positions[i], ay = positions[i + 1];
+    const bx = positions[j] - ax, by = positions[j + 1] - ay;
+    const cx = positions[k] - ax, cy = positions[k + 1] - ay;
+    const area = bx * cy - by * cx;
+    if (area <= 1e-12) return -Infinity;
+    const u = ((x - ax) * cy - (y - ay) * cx) / area;
+    const v = (bx * (y - ay) - by * (x - ax)) / area;
+    if (u < -0.00001 || v < -0.00001 || u + v > 1.00001) return -Infinity;
+    return positions[i + 2] * (1 - u - v) + positions[j + 2] * u + positions[k + 2] * v;
+  }
+  return (x, y) => {
+    const stride = 37 * 3;
+    let row = 0;
+    while (row < 7 && y > positions[(row + 1) * stride + 1]) row++;
+    // Preserve the old angular traversal order at the shared centre edge.
+    for (let i = 0; i < 36; i++) {
+      const a = row * stride + (i + 18) % 36 * 3;
+      const b = a + 3;
+      const z = Math.max(triangle(x, y, a, b, a + stride), triangle(x, y, b, b + stride, a + stride));
+      if (Number.isFinite(z)) return z;
+    }
+    return -Infinity;
+  };
+}
+
+// Re-seat the original lip sculpt and all five expressions as one rigidly
+// translated surface in world space, cancelling the new carrier scale.
+export function seatSippyMouth(parent, field, incisor, headScale = 1) {
+  const make = (color, roughness) => new T.MeshStandardMaterial({ color, roughness });
+  const mouth = new T.MeshPhysicalMaterial({ color: '#5a2b25', roughness: 0.56, specularIntensity: 0.37 });
+  const enamel = make('#f5e7d6', 0.39), lip = make('#be7c63', 0.58);
+  const depth = originalLipSupport(), origin = depth(0, 0.032);
+  const sx = 1.103448275862069 / headScale, sy = 1.2152009186969581 / headScale, sz = 1.2894854274872642 / headScale;
+  const xM = field.xM, yM = field.yM + 0.0022;
+  const zM = Math.max(incisor[2] + 0.0054 / headScale, field.front(xM, yM)) + 0.00105;
+  // Bring the continuous face under the old oral surface through the full
+  // expression envelope. The surrounding cheeks retain their anatomical fit.
+  field.mouthDepth = (x, y, z) => {
+    const xx = (x - xM) / sx, yy = (y - yM) / sy + 0.032;
+    const { smoothstep, lerp } = T.MathUtils;
+    const edge = Math.abs(xx);
+    const lipTop = lerp(0.0408, 0.0425, smoothstep(edge, 0.009, 0.022));
+    const t = (1 - smoothstep(edge, 0.026, 0.039)) *
+      smoothstep(yy, 0.011, 0.016) * (1 - smoothstep(yy, lipTop, lipTop + 0.006));
+    const source = t ? depth(xx, Math.min(yy, lipTop)) : -Infinity;
+    if (!Number.isFinite(source)) return z;
+    const contour = zM + (source - origin - 0.00076) * sz;
+    // Carry the original neutral vermilion into the skin without extending
+    // the fixed skin forward to the wider surprise and laugh endpoints.
+    const outward = smoothstep(yy, 0.023, 0.027) * (1 - smoothstep(yy, 0.035, 0.040));
+    return lerp(z, contour, t * (contour > z ? outward : 1));
+  };
   const pieces = [];
   function sew(layer, material) {
     const cols = 32,
@@ -46,8 +122,8 @@ export function seatSippyMouth(parent, field, incisor) {
             const edgeWeight = top ? 1 - t : t;
             z = -0.00010 + 0.00065 * edgeWeight + (0.00115 - 0.00025 * focus) * Math.sin(t * Math.PI) * fade;
           }
-          const hx = field.xM + x * scale, hy = field.yM + (y - 0.032) * scale;
-          v.push(hx, hy, depth(hx, hy) + z * scale);
+          const support = depth(x, y);
+          v.push(x, y, (Number.isFinite(support) ? support : 0.032) + z);
         }
       return new T.Float32BufferAttribute(v, 3);
     }
@@ -73,6 +149,11 @@ export function seatSippyMouth(parent, field, incisor) {
       posed.dispose();
       return normals;
     });
+    for (const a of [g.attributes.position, ...g.morphAttributes.position])
+      for (let i = 0; i < a.count; i++)
+        a.setXYZ(i, xM + a.getX(i) * sx, yM + (a.getY(i) - 0.032) * sy, zM + (a.getZ(i) - origin) * sz);
+    const normals = new T.Matrix3().set(1 / sx, 0, 0, 0, 1 / sy, 0, 0, 0, 1 / sz);
+    for (const a of [g.attributes.normal, ...g.morphAttributes.normal]) a.applyNormalMatrix(normals);
     const m = new T.Mesh(g, material);
     const names = { opening: 'Mouth cavity', teeth: 'Teeth', upper: 'Upper lip', lower: 'Lower lip' };
     m.name = names[layer];

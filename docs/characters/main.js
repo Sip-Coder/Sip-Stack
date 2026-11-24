@@ -139,12 +139,16 @@ export function mountCharacters(host, initialHero = 'sippy', rememberHero) {
     if (pending.has(i)) return pending.get(i);
     const name = names[i], existing = cast[i];
     if (existing && (!existing.rig.groom || existing.rig.groom.tier === actualTier)) return Promise.resolve();
-    const job = (existing ? Promise.resolve() : loadAvatarBuilder(name)).then(async build => {
-      let tier, attach;
-      do {
+    // Start the selected groom's transfer while the actor module graph loads.
+    let tier = actualTier;
+    const job = Promise.all([
+      existing ? undefined : loadAvatarBuilder(name),
+      loadAvatarGroom(name, tier),
+    ]).then(async ([build, attach]) => {
+      while (tier !== actualTier) {
         tier = actualTier;
         attach = await loadAvatarGroom(name, tier);
-      } while (tier !== actualTier);
+      }
       if (existing) {
         const { rig } = existing;
         attach(rig.groom.head, rig.groom);

@@ -101,7 +101,7 @@ export async function snapshotDiagramModel(rig, tier, inspect, interior) {
     inspect?.(landmarks);
     registerParts(parts);
     let disposed = false;
-    let faceParts;
+    const optional = new Map();
     const model = {
       name,
       parts,
@@ -109,22 +109,25 @@ export async function snapshotDiagramModel(rig, tier, inspect, interior) {
       dispose() {
         if (disposed) return;
         disposed = true;
-        resources.dispose(faceParts ? [...parts, ...faceParts] : parts);
+        resources.dispose([...parts, ...Array.from(optional.values()).flat()]);
       },
     };
     if (name !== 'hummin') {
-      model.headFrame = rig.head.matrixWorld.clone();
-      model.loadFaceAnatomy = async (signal) => {
+      model.headFrame = rig.headAssembly.matrixWorld.clone();
+      const loadFace = (method) => async (signal) => {
         signal?.throwIfAborted();
         if (disposed) throw new Error('Axon model is disposed');
-        if (faceParts) return faceParts;
-        const { loadHeadMuscleParts } = await import('./diagram-face-anatomy.js');
-        const loaded = await loadHeadMuscleParts(name, model.headFrame, signal);
+        if (optional.has(method)) return optional.get(method);
+        const anatomy = await import('./diagram-face-anatomy.js');
+        const loaded = await anatomy[method](name, model.headFrame, signal);
         if (disposed) throw new Error('Axon model is disposed');
-        if (faceParts) return faceParts;
+        if (optional.has(method)) return optional.get(method);
         registerParts(loaded);
-        return (faceParts = loaded);
+        optional.set(method, loaded);
+        return loaded;
       };
+      model.loadFaceAnatomy = loadFace('loadHeadMuscleParts');
+      model.loadFaceFat = loadFace('loadFaceFatParts');
     }
     return model;
   } catch (error) {

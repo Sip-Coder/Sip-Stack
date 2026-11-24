@@ -141,6 +141,25 @@ export function loadFaceMuscleAtlas(name, signal) {
     'BodyParts3D v3 · DBCLS' + credit);
 }
 
+export function loadFaceFatAtlas(name, signal) {
+  if (!['sippy', 'roma'].includes(name)) throw new Error('Unknown human face fat');
+  return loadAtlas('face-fat-' + name, name + '-face-fat.json', null, signal, undefined, (buffer) => {
+    const pads = JSON.parse(new TextDecoder().decode(buffer));
+    return new Map(pads.map(({ name, positions, indices }) => {
+      if (!name || !positions.length || positions.length % 3 || !indices.length || indices.length % 3 ||
+          !positions.every(Number.isFinite) ||
+          indices.some(i => !Number.isInteger(i) || i < 0 || i >= positions.length / 3))
+        throw new Error('Invalid facial fat surface ' + name);
+      const geometry = new BufferGeometry();
+      geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+      geometry.setIndex(indices);
+      geometry.computeVertexNormals();
+      geometry.computeBoundingBox();
+      return [name, geometry];
+    }));
+  });
+}
+
 export function loadFemaleMuscles(signal) {
   return loadAtlas('female', femaleMuscleFile, 76, signal, 'Andreassen et al. · Visible Human Female');
 }
@@ -179,7 +198,7 @@ export async function loadCharacterMuscles(name, tier, signal, upperOnly = false
   return atlas;
 }
 
-function loadAtlas(slot, file, count, signal, sourceAtlas) {
+function loadAtlas(slot, file, count, signal, sourceAtlas, parse = parseAtlas) {
   signal?.throwIfAborted();
   const cached = sources.get(slot);
   if (cached?.file === file && (!cached.signal || cached.signal === signal)) return cached.pending;
@@ -189,7 +208,7 @@ function loadAtlas(slot, file, count, signal, sourceAtlas) {
   entry.pending = readAsset(url, signal)
     .then((buffer) => {
       signal?.throwIfAborted();
-      return parseAtlas(buffer, file, sourceAtlas);
+      return parse(buffer, file, sourceAtlas);
     })
     .then((parts) => {
       if (count !== null ? parts.size !== count : !parts.size)

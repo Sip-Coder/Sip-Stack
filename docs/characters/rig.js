@@ -3,6 +3,8 @@
 import * as T from 'three';
 import { createSourceRig } from './source-rig.js';
 
+export const heroHeadScale = { sippy: 1.16, roma: 1.31 };
+
 export function createActor(name, height) {
   const root = new T.Group();
   root.name = name;
@@ -26,7 +28,20 @@ export function createActor(name, height) {
   }
   const hips = joint('hips', root, 0, 0.52);
   const chest = joint('chest', hips, 0, 0.12);
-  joint('head', chest, 0, 0.203);
+  const head = joint('head', chest, 0, 0.203);
+  if (anatomy) {
+    const scale = heroHeadScale[name];
+    const assembly = new T.Group();
+    assembly.name = 'head assembly';
+    assembly.userData.dynamicPose = true;
+    // Keep the cervical atlas fixed when enlarging the head. The original
+    // joint still binds the torso skin, collar and cervical vertebrae.
+    assembly.position.fromArray(anatomy.donor.spine.C1).sub(anatomy.original.head)
+      .multiplyScalar((1 - scale) / anatomy.height);
+    assembly.scale.setScalar(scale);
+    head.add(assembly);
+    rig.headAssembly = assembly;
+  }
   for (const side of ['L', 'R']) {
     const sign = side === 'L' ? 1 : -1;
     const arm = joint('upperArm' + side, chest, sign * 0.117, 0.145);

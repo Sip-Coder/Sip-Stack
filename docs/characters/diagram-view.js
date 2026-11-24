@@ -258,10 +258,11 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     if (!layer) return;
     const state = layerState(id);
     const overlay = fitMode.endsWith('overlay');
+    const faceOverlay = fitMode === 'face-overlay';
     const visible = fitMode === 'off' ? state.visible : id === 'skin' ||
       (overlay && ['muscles', 'breast', 'gluteal-fat', 'hip-fat'].includes(id)) ||
-      (fitMode === 'face-overlay' && id === 'skeleton');
-    const opacity = fitMode === 'off' ? state.opacity : 1;
+      (faceOverlay && (id === 'skeleton' || id === 'face-fat'));
+    const opacity = fitMode === 'off' ? state.opacity : faceOverlay && id === 'face-fat' ? 0.65 : 1;
     layer.group.visible = visible && opacity > 0;
     for (const mesh of layer.group.children) {
       const source = mesh.userData.finish,

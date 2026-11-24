@@ -1,5 +1,5 @@
 // Compare native neutral head dimensions and the protected body surfaces.
-// THREE_ROOT=/path/to/unpacked/three node tools/check-face-dimensions.mjs BEFORE AFTER
+// THREE_ROOT=/path/to/unpacked/three node tools/check-face-dimensions.mjs BEFORE AFTER [PREVIOUS_REVIEW]
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -7,7 +7,7 @@ import { registerHooks } from 'node:module';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-const [before, after = '.'] = process.argv.slice(2);
+const [before, after = '.', previousReview] = process.argv.slice(2);
 if (!before) throw new Error('Supply a baseline checkout');
 if (process.env.THREE_ROOT) {
   const root = resolve(process.env.THREE_ROOT);
@@ -27,7 +27,7 @@ const roundIn = value => +(value / inch).toFixed(3);
 const bodySkin = /^(?:Subcutaneous torso and neck|(?:Left|Right) (?:arm skin|leg skin|foot skin|hand))$/;
 const headwear = /earring|headband|headphone band|headphone cushion|headphone cup/i;
 
-function extent(parts) {
+function bounds(parts) {
   const bounds = new Box3();
   for (const part of parts) {
     const vertices = part.mesh.geometry.attributes.position;
@@ -37,8 +37,13 @@ function extent(parts) {
       bounds.expandByPoint(point);
     }
   }
-  assert.ok(!bounds.isEmpty(), 'Expected a populated head surface');
-  const [width, height, depth] = bounds.getSize(new Vector3()).toArray().map(roundIn);
+  assert.ok(!bounds.isEmpty() && [...bounds.min.toArray(), ...bounds.max.toArray()].every(Number.isFinite),
+    'Expected populated, finite surface dimensions');
+  return bounds;
+}
+
+function extent(parts) {
+  const [width, height, depth] = bounds(parts).getSize(new Vector3()).toArray().map(roundIn);
   return { width, height, depth };
 }
 
@@ -144,6 +149,10 @@ async function inspect(checkout, name, tier) {
       (part.layer === 'clothes' && !headwear.test(part.name) && part !== hood));
     const complexionParts = [...shell, ...ears, ...select('skin', part =>
       part.name === 'Face to neck join' || bodySkin.test(part.name))];
+    const render = bounds(model.parts.filter(part => part.layer === 'skin' || part.layer === 'clothes'));
+    const floor = render.min.y;
+    const top = render.max.y;
+    const chin = bounds(shell).min.y;
     return {
       skinIn: extent(shell), outerIn: extent([...shell, ...ears]), boneIn: extent([...cranium, ...jaw]),
       cranium: fingerprint(cranium[0]), craniumMatrix: cranium[0].sourceMatrix.clone(),
@@ -153,6 +162,10 @@ async function inspect(checkout, name, tier) {
       complexion: [...new Set(complexionParts.flatMap(({ mesh }) =>
         [].concat(mesh.material).map(({ color }) => color.getHexString())))],
       body: new Map(protectedSurfaces.map(part => [part.id, fingerprint(part)])),
+      headProportions: {
+        crownToChinIn: roundIn(top - chin), overallHeightIn: roundIn(top - floor),
+        crownToChinRatio: +((top - chin) / (top - floor)).toFixed(5),
+      },
     };
   } finally {
     model.dispose();
@@ -160,25 +173,50 @@ async function inspect(checkout, name, tier) {
 }
 
 const revision = checkout => execFileSync('git', ['-C', checkout, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+const { heroHeadScale = {} } = await import(pathToFileURL(resolve(after, 'docs/characters/rig.js')));
+const { sourceLandmarks } = await import(pathToFileURL(resolve(after, 'docs/characters/source-landmarks.js')));
+
+function checkScale(move, expected, message) {
+  const scale = new Vector3().setFromMatrixScale(move);
+  for (const value of scale) assert.ok(Math.abs(value - expected) < 1e-6, message);
+  assert.ok(Math.abs(move.determinant() - expected ** 3) < 1e-6, message);
+}
+
 const rows = [];
 for (const hero of ['sippy', 'roma']) for (const tier of ['mobile', 'high']) {
+  const headScale = heroHeadScale[hero] ?? 1;
+  assert.ok(headScale >= 1 && headScale <= 1.35, 'Authorized uniform head scale');
   const prior = await inspect(before, hero, tier);
   const current = await inspect(after, hero, tier);
+  const reviewed = previousReview && await inspect(previousReview, hero, tier);
   assert.equal(current.cranium, prior.cranium, hero + ' cranium geometry');
   assert.equal(current.jaw, prior.jaw, hero + ' mandible geometry');
-  assert.deepEqual(current.craniumMatrix.elements, prior.craniumMatrix.elements, hero + ' cranium pose and scale');
   assert.deepEqual(current.body, prior.body, hero + ' protected skin and clothing');
   assert.equal(current.complexion.length, 1, hero + ' common face, ear, neck and body base tone');
+  const headMove = new Matrix4().multiplyMatrices(current.craniumMatrix, prior.craniumMatrix.clone().invert());
+  checkScale(headMove, headScale, hero + ' cranium uniform scale');
+  const c1 = new Vector3().fromArray(sourceLandmarks[hero].spine.C1);
+  const pivotDrift = c1.clone().applyMatrix4(prior.craniumMatrix).distanceTo(c1.applyMatrix4(current.craniumMatrix));
+  assert.ok(pivotDrift < 1e-7, hero + ' atlas pivot preserved');
+  const headRotation = new Quaternion().setFromRotationMatrix(headMove.clone().scale(new Vector3().setScalar(1 / headScale)));
+  assert.ok(headRotation.angleTo(new Quaternion()) < 1e-7, hero + ' no extra skull rotation');
   const move = new Matrix4().multiplyMatrices(current.jawMatrix, prior.jawMatrix.clone().invert());
-  const scale = new Vector3().setFromMatrixScale(move);
-  for (const value of scale) assert.ok(Math.abs(value - 1) < 1e-6, hero + ' mandible scale');
-  assert.ok(Math.abs(move.determinant() - 1) < 1e-6, hero + ' mandible rigid transform');
-  const rotation = new Quaternion().setFromRotationMatrix(move).normalize();
+  checkScale(move, headScale, hero + ' mandible matches head scale');
+  const rotation = new Quaternion().setFromRotationMatrix(move.scale(new Vector3().setScalar(1 / headScale))).normalize();
+  if (reviewed) {
+    assert.deepEqual(current.body, reviewed.body, hero + ' protected skin and clothing since initial PR');
+    const expectedJaw = new Matrix4().multiplyMatrices(headMove, reviewed.jawMatrix);
+    for (const [i, value] of expectedJaw.elements.entries())
+      assert.ok(Math.abs(value - current.jawMatrix.elements[i]) < 1e-7, hero + ' previous jaw hinge pose preserved');
+  }
   const foldedHoodPoseChangeDegrees = hero === 'sippy' ? verifyFold(prior.hood, current.hood) : undefined;
   if (current.mouth)
     assert.ok(current.mouth.every(({ occluded }) => occluded === 0), hero + ' mouth clear of clothing in seven views');
   rows.push({
     hero, tier,
+    headScale,
+    atlasPivotDriftIn: +(pivotDrift / inch).toFixed(8),
+    proportions: { before: prior.headProportions, ...(reviewed && { initialPR: reviewed.headProportions }), after: current.headProportions },
     skinIn: { before: prior.skinIn, after: current.skinIn },
     withEarsIn: { before: prior.outerIn, after: current.outerIn },
     skullIn: { before: prior.boneIn, after: current.boneIn },
@@ -189,4 +227,5 @@ for (const hero of ['sippy', 'roma']) for (const tier of ['mobile', 'high']) {
     protectedSurfaces: current.body.size,
   });
 }
-console.log(JSON.stringify({ baseline: revision(before), candidate: revision(after), rows }, null, 2));
+console.log(JSON.stringify({ baseline: revision(before), candidate: revision(after),
+  ...(previousReview && { initialPR: revision(previousReview) }), rows }, null, 2));

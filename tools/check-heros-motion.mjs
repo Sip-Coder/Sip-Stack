@@ -165,7 +165,23 @@ async function measure(name, tier) {
   }
   reset();
   const standing = fullBounds(rig.root);
-  check(Math.abs((standing.max - standing.min) / height - 1) < 0.02, 'standing height');
+  const standingHeightM = standing.max - standing.min;
+  let sourceHeadHeightM = standingHeightM;
+  const assembly = rig.headAssembly;
+  if (assembly) {
+    // Keep the original stature tolerance while measuring the approved
+    // head-only change independently of the body and its motion.
+    const offset = assembly.position.clone(), scale = assembly.scale.x;
+    assembly.position.set(0, 0, 0);
+    assembly.scale.setScalar(1);
+    rig.root.updateMatrixWorld(true);
+    const natural = fullBounds(rig.root);
+    sourceHeadHeightM = natural.max - natural.min;
+    assembly.position.copy(offset);
+    assembly.scale.setScalar(scale);
+    rig.root.updateMatrixWorld(true);
+  }
+  check(Math.abs(sourceHeadHeightM / height - 1) < 0.02, 'standing height at source head scale');
   // Monitor the thresholds from the #16 locomotion trials against the actual
   // visible shoe geometry after the tier switch and production batching.
   const treads = ctrl.contacts.map((c) => sole(c.ankle));
@@ -406,9 +422,11 @@ async function measure(name, tier) {
       w.previous = current;
     }
   }
+  const guideScale = rig.headAssembly?.scale.x ?? 1;
   for (const w of witness)
     check(
-      w.max > 0.0005 && w.max < 0.15 && w.tail < 0.0015 && w.step < 0.06,
+      w.max / guideScale > 0.0005 && w.max / guideScale < 0.15 &&
+      w.tail / guideScale < 0.0015 && w.step / guideScale < 0.06,
       'visible guide motion, per-tick travel or settling: ' + w.node.name,
     );
   const props = {};
@@ -431,7 +449,8 @@ async function measure(name, tier) {
   return {
     name,
     tier,
-    standingHeightM: standing.max - standing.min,
+    standingHeightM,
+    sourceHeadHeightM,
     gait,
     turns,
     jump: { apexM: apex, land, air },

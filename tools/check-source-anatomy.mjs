@@ -33,7 +33,8 @@ const { buildDiagramModel } = await import('../docs/characters/diagram-parts.js'
 const { snapshotDiagramModel } = await import('../docs/characters/diagram-model.js');
 const { buildDisplayBatches } = await import('../docs/characters/diagram-view.js');
 const { createSourceRig } = await import('../docs/characters/source-rig.js');
-const { createActor } = await import('../docs/characters/rig.js');
+const { createActor, heroHeadScale } = await import('../docs/characters/rig.js');
+const { cranialAtlasMuscle } = await import('../docs/characters/diagram-source-pose.js');
 const { createController, FIXED_DT } = await import('../docs/characters/motion.js');
 const { setModelDetail } = await import('../docs/characters/model-tier.js');
 const { names, heights } = await import('../docs/characters/ui.js');
@@ -112,6 +113,7 @@ const trials = [];
 for (const name of ['sippy', 'roma']) {
   const sex = name === 'sippy' ? 'male' : 'female';
   const scale = heights[names.indexOf(name)] / createSourceRig(name).height;
+  const headScale = heroHeadScale[name];
   for (const tier of ['mobile', 'high']) {
     for (const pose of ['neutral', 'walk']) {
       const skeleton = 'skeleton-' + sex + '-' + tier + '.glb';
@@ -151,7 +153,8 @@ for (const name of ['sippy', 'roma']) {
             assert(original && !seen.has(id), 'Unexpected or duplicate source mesh ' + id);
             seen.add(id);
             pendingFile.delete(node);
-            verifyOneScale(sourceMatrix, scale, id);
+            const cranial = /^SKULL_/.test(node) || (part.layer === 'muscles' && cranialAtlasMuscle(node));
+            verifyOneScale(sourceMatrix, scale * (cranial ? headScale : 1), id);
             const originalGeometry = original.geometry;
             const pos = originalGeometry.attributes.position;
             const live = part.mesh.geometry.attributes.position;
@@ -192,7 +195,7 @@ for (const name of ['sippy', 'roma']) {
         assert(rows.length === (name === 'sippy' ? 503 : 219), 'Wrong verified anatomy census ' + name + '/' + tier);
         assert(name === 'sippy' ? !exempt.length : exempt.length > 0, 'Missing Roma exception census');
         trials.push({
-          name, tier, pose, scale, anatomyMeshes: rows.length, excludedAdaptedMuscles: exempt,
+          name, tier, pose, scale, headScale, anatomyMeshes: rows.length, excludedAdaptedMuscles: exempt,
           separatelyAddedRepairs: [...new Set(added)], ...(pose === 'neutral' ? { parts: rows } : {}),
           maxSourceResidualInches: Math.max(...rows.map((it) => it.maxSourceResidualInches)),
           maxDrawnResidualInches: Math.max(...rows.map((it) => it.maxDrawnResidualInches)),
@@ -206,7 +209,7 @@ for (const name of ['sippy', 'roma']) {
   }
 }
 await writeFile(destination, JSON.stringify({
-  method: 'Independent GLTFLoader canonical positions vs production Axon vertex arrays and final draw slices. All indices verified in order. Each transform has one positive shared uniform scale, perpendicular columns and positive determinant.',
+  method: 'Independent GLTFLoader canonical positions vs production Axon vertex arrays and final draw slices. All indices verified in order. Each transform has perpendicular columns and a positive determinant, with one body scale and one uniform cranial multiplier.',
   maxAllowedResidualInches: epsilon,
   sourceFiles, trials,
 }, null, 2) + '\n');

@@ -72,6 +72,20 @@ function sectionRadius(row, turn) {
   return lerp(row[3 + left], row[3 + right], index - left);
 }
 
+export function decodeExteriorStations(deltas) {
+  const stations = [deltas[0]];
+  for (const row of deltas.slice(1)) {
+    const previous = stations.at(-1);
+    let radiusDelta = 0;
+    stations.push(row.map((value, column) => {
+      if (column < 3) return previous[column] + value;
+      radiusDelta += value;
+      return previous[column] + radiusDelta;
+    }));
+  }
+  return stations;
+}
+
 export function attachExteriorProfile(rig, data) {
   // Distances are recorded in units of 1/10000 of standing height.
   const profiles = Object.fromEntries(Object.entries(data).map(([key, rows]) => [

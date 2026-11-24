@@ -11,7 +11,7 @@
         "indicesSha256": "b89d3afbe6de19d144a3c19c2e8b19227150a749e80b060f3419ded9ba85a073",
         "vertices": 3626,
         "triangles": 7410,
-        "maxEdgeResidualInches": 8.19554398099279e-15
+        "maxEdgeResidualInches": 1.463246081606421e-14
       },
       {
         "node": "SKULL_MANDIBLE",
@@ -19,22 +19,24 @@
         "indicesSha256": "c89db016beade3bef5c1582a5628d377aa7a90d6f65ebaf86350218c8705fe2c",
         "vertices": 436,
         "triangles": 868,
-        "maxEdgeResidualInches": 1.857656635691699e-14
+        "maxEdgeResidualInches": 1.8303381557550563e-14
       }
     ],
     "skullDimensionsInches": [
-      5.347854,
-      8.593981,
-      7.96442
+      6.199754,
+      9.963611,
+      9.23313
     ],
+    "headScale": 1.16,
+    "atlasDisplacementInches": 9.010958264807554e-15,
     "jawClosureDegrees": -1.008405719430249,
     "hingeDisplacementInches": {
-      "L": 5.791335363263999e-9,
-      "R": 6.654872017184271e-9
+      "L": 6.717953758413661e-9,
+      "R": 7.719654686846228e-9
     },
     "centralIncisorVerticalGapInches": {
-      "open": 0.068023,
-      "closed": 0.01354
+      "open": 0.078907,
+      "closed": 0.015706
     }
   },
   {
@@ -49,7 +51,7 @@
         "indicesSha256": "22b3207b5780b81f25360c9f824dd5e5b57d2d6e3e7690a6716b1e9775a217b2",
         "vertices": 15461,
         "triangles": 31164,
-        "maxEdgeResidualInches": 8.639469279963232e-15
+        "maxEdgeResidualInches": 1.4495868416380997e-14
       },
       {
         "node": "SKULL_MANDIBLE",
@@ -57,22 +59,24 @@
         "indicesSha256": "16c6befc19025d5e8eabecb8bce4093f567f2d8a93a1403a3d901a38a88237df",
         "vertices": 1823,
         "triangles": 3642,
-        "maxEdgeResidualInches": 1.8457048007194177e-14
+        "maxEdgeResidualInches": 2.264019024749258e-14
       }
     ],
     "skullDimensionsInches": [
-      5.347854,
-      8.593981,
-      7.96442
+      6.203511,
+      9.969018,
+      9.238727
     ],
+    "headScale": 1.16,
+    "atlasDisplacementInches": 9.010958264807554e-15,
     "jawClosureDegrees": -1.008405719430249,
     "hingeDisplacementInches": {
-      "L": 5.791335363263999e-9,
-      "R": 6.654872017184271e-9
+      "L": 6.717953758413661e-9,
+      "R": 7.719654686846228e-9
     },
     "centralIncisorVerticalGapInches": {
-      "open": 0.068023,
-      "closed": 0.01354
+      "open": 0.078907,
+      "closed": 0.015706
     }
   },
   {
@@ -87,6 +91,76 @@
     }
   },
   {
+    "hero": "sippy",
+    "facialFatPads": [
+      {
+        "name": "Left malar fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Left buccal fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Left under-eye fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Left nasolabial fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Left submandibular fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Left temporal fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Right malar fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Right buccal fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Right under-eye fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Right nasolabial fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Right submandibular fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Right temporal fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Perioral fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Chin fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Submental fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Nasal tip soft tissue",
+        "triangles": 224
+      }
+    ],
+    "headScale": 1.16
+  },
+  {
     "hero": "roma",
     "tier": "mobile",
     "file": "skeleton-female-mobile.glb",
@@ -98,7 +172,7 @@
         "indicesSha256": "a3b790a04cf58aa20f78c9d8b6184103eeaf1ed7ee3522074ef729ad29063149",
         "vertices": 4077,
         "triangles": 8212,
-        "maxEdgeResidualInches": 8.315062330715601e-15
+        "maxEdgeResidualInches": 1.2293315971489185e-14
       },
       {
         "node": "SKULL_MANDIBLE",
@@ -106,22 +180,24 @@
         "indicesSha256": "6049bd2ad38bf84f301a2230d4266f96b241f509f6d1beb148e47142413cc12a",
         "vertices": 368,
         "triangles": 746,
-        "maxEdgeResidualInches": 1.8439973957233777e-14
+        "maxEdgeResidualInches": 2.158159914994768e-14
       }
     ],
     "skullDimensionsInches": [
-      5.633921,
-      7.716121,
-      7.730359
+      7.373608,
+      10.108271,
+      10.117479
     ],
+    "headScale": 1.31,
+    "atlasDisplacementInches": 8.877455206462468e-15,
     "jawClosureDegrees": -13.97444062324078,
     "hingeDisplacementInches": {
-      "L": 1.3619166219109884e-7,
-      "R": 8.862862329788821e-8
+      "L": 1.7841106523144553e-7,
+      "R": 1.1610348565009248e-7
     },
     "centralIncisorVerticalGapInches": {
-      "open": 0.793264,
-      "closed": 0.013992
+      "open": 1.039176,
+      "closed": 0.01833
     }
   },
   {
@@ -136,7 +212,7 @@
         "indicesSha256": "9aba15bae28739e6fe667d97b2678d7e91a3f7a4e90422592124fa217f48b688",
         "vertices": 16971,
         "triangles": 34012,
-        "maxEdgeResidualInches": 8.605321180042429e-15
+        "maxEdgeResidualInches": 1.2907981770063645e-14
       },
       {
         "node": "SKULL_MANDIBLE",
@@ -144,22 +220,24 @@
         "indicesSha256": "649b0a566b5e13cd496ecfd0251d316ec7fa485a74c22b947c459c47598f07f1",
         "vertices": 1531,
         "triangles": 3100,
-        "maxEdgeResidualInches": 1.8038733783164338e-14
+        "maxEdgeResidualInches": 3.131380762737662e-14
       }
     ],
     "skullDimensionsInches": [
-      5.633921,
-      7.716121,
-      7.730359
+      7.380436,
+      10.108119,
+      10.12677
     ],
+    "headScale": 1.31,
+    "atlasDisplacementInches": 8.877455206462468e-15,
     "jawClosureDegrees": -13.97444062324078,
     "hingeDisplacementInches": {
-      "L": 1.3619166219109884e-7,
-      "R": 8.862862329788821e-8
+      "L": 1.7841106523144553e-7,
+      "R": 1.1610348565009248e-7
     },
     "centralIncisorVerticalGapInches": {
-      "open": 0.793264,
-      "closed": 0.013992
+      "open": 1.039176,
+      "closed": 0.01833
     }
   },
   {
@@ -170,5 +248,75 @@
     "sha256": "7745615e8ee8ddbdc6d238f6d920072a7d7e43bafe04e410016abe0b626bae2a",
     "bytes": 3893400,
     "placement": "regional landmark adaptation"
+  },
+  {
+    "hero": "roma",
+    "facialFatPads": [
+      {
+        "name": "Left malar fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Left buccal fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Left under-eye fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Left nasolabial fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Left submandibular fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Left temporal fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Right malar fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Right buccal fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Right under-eye fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Right nasolabial fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Right submandibular fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Right temporal fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Perioral fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Chin fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Submental fat pad",
+        "triangles": 224
+      },
+      {
+        "name": "Nasal tip soft tissue",
+        "triangles": 224
+      }
+    ],
+    "headScale": 1.31
   }
 ]

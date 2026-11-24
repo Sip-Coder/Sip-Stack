@@ -9,6 +9,7 @@ const layers = [
   { key: 'breast', human: 'Breast tissue and fat pad', only: 'roma' },
   { key: 'gluteal-fat', human: 'Gluteal fat', only: 'roma' },
   { key: 'hip-fat', human: 'Hip and thigh fat', only: 'roma' },
+  { key: 'face-fat', human: 'Facial fat', humanOnly: true, optIn: true },
   { key: 'skin', human: 'Skin & hair', robot: 'Shell & visor' },
   { key: 'clothes', human: 'Clothes & accessories', robot: 'Clothes & accessories' },
 ];
@@ -38,8 +39,8 @@ export function mountStudy(section, stage, chooseHero) {
     </div><aside class="ax-settings" aria-label="Diagram settings">
       <h4>Layers</h4><div class="ax-layers">${layers
         .map(
-          (l) => `<div class="ax-layer" data-layer="${l.key}"${l.only ? ' hidden' : ''}>
-        <label><input data-show type="checkbox" checked> <b data-layer-name>${l.human}</b></label>
+          (l) => `<div class="ax-layer" data-layer="${l.key}"${l.only || l.humanOnly ? ' hidden' : ''}>
+        <label><input data-show type="checkbox"${l.optIn ? '' : ' checked'}> <b data-layer-name>${l.human}</b></label>
         <button data-isolate type="button" aria-pressed="false">Isolate</button>
         <label class="ax-opacity">Opacity <input data-opacity type="range" min="0" max="100" value="100"></label></div>`,
         )
@@ -69,6 +70,7 @@ export function mountStudy(section, stage, chooseHero) {
     '[data-axon-layout], [data-explode], .ax-layers input, .ax-layers button, [data-ghost], [data-part]',
   );
   const rows = layers.map((l) => get('[data-layer="' + l.key + '"]'));
+  const fatRow = get('[data-layer="face-fat"]'), showFat = fatRow.querySelector('[data-show]');
   let hero,
     tier,
     key,
@@ -79,7 +81,7 @@ export function mountStudy(section, stage, chooseHero) {
     loading,
     previewPaint,
     generation = 0;
-  let fitRequest, fitResult, faceView, outerSelection;
+  let fitRequest, fitResult, faceView, outerSelection, fatRequest;
   let ghostOpen = false;
   const restoreLayers = new Set();
   function applyGhost(enabled) {
@@ -127,7 +129,7 @@ export function mountStudy(section, stage, chooseHero) {
         fitOutput.dataset.skinFitState = 'ready';
       } else if (fitPicker.value !== 'off' && fitOutput.dataset.skinFitState !== 'error') {
         refreshSkinFit();
-      }
+      } else if (fitPicker.value === 'off') refreshFaceFat();
     },
     onError: showError,
   });
@@ -162,7 +164,8 @@ export function mountStudy(section, stage, chooseHero) {
     const table = document.createElement('table');
     table.className = 'ax-fit-regions';
     const header = table.createTHead().insertRow();
-    for (const text of ['Region', 'Muscle', 'Support']) {
+    const columns = ['Muscle', 'Support', ...(regions[0]?.bone ? ['Bone'] : [])];
+    for (const text of ['Region', ...columns]) {
       const th = document.createElement('th');
       th.scope = 'col';
       th.textContent = text;
@@ -175,7 +178,7 @@ export function mountStudy(section, stage, chooseHero) {
       name.textContent = region.label;
       name.scope = 'row';
       row.append(name);
-      for (const metric of ['muscle', 'support']) row.insertCell().textContent = gapText(region[metric]);
+      for (const metric of columns) row.insertCell().textContent = gapText(region[metric.toLowerCase()]);
     }
     return table;
   }
@@ -186,10 +189,13 @@ export function mountStudy(section, stage, chooseHero) {
     switchFaceView(next?.model);
     fitOutput.hidden = false;
     fitOutput.dataset.skinFitState = 'rendering';
-    const entries = [
+    const labels = [
       'Muscle gap · Mean ' + data.muscle.meanIn.toFixed(3) + ' in · Max ' + data.muscle.maxIn.toFixed(3) + ' in',
       'Nearest support · Mean ' + data.support.meanIn.toFixed(3) + ' in · Max ' + data.support.maxIn.toFixed(3) + ' in',
-    ].map((text) => {
+    ];
+    if (face && data.bone)
+      labels.push('Bone gap · Mean ' + data.bone.meanIn.toFixed(3) + ' in · Max ' + data.bone.maxIn.toFixed(3) + ' in');
+    const entries = labels.map((text) => {
       const line = document.createElement('p');
       line.textContent = text;
       return line;
@@ -208,7 +214,7 @@ export function mountStudy(section, stage, chooseHero) {
     const method = document.createElement('p');
     if (face) {
       summary.textContent = 'Region gaps · mean / max in';
-      method.textContent = 'Unsigned distances to the nearest neutral muscle triangles. Support includes skull and upper neck bones. The means are area-weighted. Areas with sparse muscle coverage may show larger values.';
+      method.textContent = 'Unsigned distances to the nearest neutral muscle and skull triangles. Support also includes facial fat pads and upper neck bones. The means are area-weighted. Areas with sparse muscle coverage may show larger muscle gaps.';
       detail.append(summary, faceRegionTable(data.regions), method);
     } else {
       method.textContent = 'Nearest triangles in the neutral pose, with an area-weighted mean and largest sampled gap. Support includes bone, muscle and Roma’s soft-tissue pads. This map covers the body. Gaps are unsigned.';
@@ -226,8 +232,10 @@ export function mountStudy(section, stage, chooseHero) {
     const mode = fitPicker.value;
     if (mode === 'off') {
       resetSkinFit();
+      refreshFaceFat();
       return;
     }
+    cancelFaceFat();
     if (!active || hero === 'hummin' || !model || model.partial || section.dataset.ready !== key) return;
     const face = mode.startsWith('face-');
     if (fitRequest && fitRequest.face !== face) {
@@ -268,6 +276,43 @@ export function mountStudy(section, stage, chooseHero) {
         await recovery?.recover('Axon skin fit', error, error.assetURL ? [error.assetURL] : []).catch(() => {});
     } finally {
       if (fitRequest === request) fitRequest = undefined;
+    }
+  }
+  function cancelFaceFat() {
+    fatRequest?.abort();
+    fatRequest = undefined;
+    fatRow.removeAttribute('aria-busy');
+  }
+  async function refreshFaceFat() {
+    if (!showFat.checked || !active || fitPicker.value !== 'off') {
+      cancelFaceFat();
+      return;
+    }
+    if (!model?.loadFaceFat || model.partial || fatRequest || model.parts.some(p => p.layer === 'face-fat')) return;
+    const seen = model, request = new AbortController();
+    fatRequest = request;
+    fatRow.setAttribute('aria-busy', 'true');
+    try {
+      const fat = await seen.loadFaceFat(request.signal);
+      if (request.signal.aborted || model !== seen || !active) return;
+      const selected = seen.parts[Number.parseInt(partPicker.value, 10)];
+      model = { ...seen, parts: [...seen.parts, ...fat] };
+      records = model.parts.map(partRecord);
+      fillParts();
+      view.setModel(model, tier);
+      view.select(selected);
+      inspect(selected);
+    } catch (error) {
+      if (request.signal.aborted || model !== seen || !active) return;
+      const recovery = await import('../assets/sip-recover.js').catch(() => null);
+      if (request.signal.aborted || model !== seen || !active) return;
+      if (await recovery?.recover('Axon facial fat', error, error.assetURL ? [error.assetURL] : []).catch(() => {})) return;
+      showFat.checked = false;
+      if (isolated === 'face-fat') isolated = null;
+      updateLayers();
+      status.textContent = 'Facial fat could not load.';
+    } finally {
+      if (fatRequest === request) cancelFaceFat();
     }
   }
   async function showError(error) {
@@ -319,7 +364,7 @@ export function mountStudy(section, stage, chooseHero) {
     const dimensions = document.createElement('p');
     dimensions.textContent = size + ' in (W × H × D)';
     measure.append(heading, details, dimensions);
-    if (hero !== 'hummin' && (info.layer === 'skeleton' || info.layer === 'muscles')) {
+    if (hero !== 'hummin' && ['skeleton', 'muscles', 'face-fat'].includes(info.layer)) {
       const source = document.createElement('p');
       source.textContent = part.source;
       measure.append(source);
@@ -345,7 +390,7 @@ export function mountStudy(section, stage, chooseHero) {
   function fillParts() {
     partPicker.replaceChildren(new Option('Select a part', ''));
     for (const layer of layers) {
-      if (layer.only && layer.only !== hero) continue;
+      if ((layer.only && layer.only !== hero) || (layer.humanOnly && hero === 'hummin')) continue;
       const group = document.createElement('optgroup');
       group.label = layerName(layer.key);
       group.dataset.key = layer.key;
@@ -414,6 +459,7 @@ export function mountStudy(section, stage, chooseHero) {
     tier = quality;
     if (changed) {
       generation++;
+      cancelFaceFat();
       resetSkinFit(true);
       view.setModel(null, tier);
       model?.dispose();
@@ -430,7 +476,7 @@ export function mountStudy(section, stage, chooseHero) {
       view.setLayout(human ? get('[data-axon-layout]').value : 'side');
       rows.forEach((row, i) => {
         const layer = layers[i];
-        row.hidden = !!layer.only && layer.only !== hero;
+        row.hidden = (!!layer.only && layer.only !== hero) || (layer.humanOnly && !human);
         if (row.hidden && isolated === layer.key) isolated = null;
         const label = row.hidden ? layer.human : layerName(layer.key);
         row.querySelector('[data-layer-name]').textContent = label;
@@ -445,6 +491,7 @@ export function mountStudy(section, stage, chooseHero) {
     view.setVisible(active);
     if (!active) {
       loading?.abort();
+      cancelFaceFat();
       resetSkinFit();
       generation++;
       cancelAnimationFrame(padFrame);
@@ -456,12 +503,14 @@ export function mountStudy(section, stage, chooseHero) {
         status.textContent = 'Preparing ' + labels[names.indexOf(hero)] + '…';
         load(++generation, hero, tier);
       } else if (fitPicker.value !== 'off') refreshSkinFit();
+      else refreshFaceFat();
       startPad();
     }
   }
   open.addEventListener('click', () => {
     open.hidden = true;
     if (active) {
+      cancelFaceFat();
       resetSkinFit(true);
       view.setModel(null, tier);
       model?.dispose();
@@ -486,11 +535,13 @@ export function mountStudy(section, stage, chooseHero) {
       isolated = isolated === name ? null : name;
       if (isolated) row.querySelector('[data-show]').checked = true;
       updateLayers();
+      if (name === 'face-fat') refreshFaceFat();
     };
     row.querySelector('[data-show]').onchange = () => {
       if (ghostOpen) restoreLayers.delete(row.dataset.layer);
       if (!row.querySelector('[data-show]').checked && isolated === row.dataset.layer) isolated = null;
       updateLayers();
+      if (row.dataset.layer === 'face-fat') refreshFaceFat();
     };
     row.querySelector('[data-opacity]').oninput = updateLayers;
   }

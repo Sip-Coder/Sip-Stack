@@ -161,7 +161,7 @@ function panel(parent, mat, outline) {
 // The iris remains embedded as the gaze shifts behind its anatomical lids.
 export function buildSippy(rig, attachGroom) {
   attachExteriorProfile(rig, sippyExterior);
-  const skin = surface('#b38965', 0.62);
+  const skin = surface('#b16446', 0.62);
   const white = surface('#f5e5c5', 0.64);
   const suit = surface('#39393c', 0.76),
     trousers = surface('#f1e1c0', 0.79),
@@ -236,7 +236,7 @@ export function buildSippy(rig, attachGroom) {
   });
   const { pack, drawcord } = explorer;
   for (const node of [pack, drawcord, ...tails]) node.userData.dynamicPose = true;
-  const groom = attachGroom?.(rig.head);
+  const groom = attachGroom?.(rig.headAssembly);
   rig.groom = groom;
   rig.secondary ??= {};
   fitOpenings(tailoring)();

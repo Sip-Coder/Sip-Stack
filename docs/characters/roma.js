@@ -14,7 +14,7 @@ import { addRomaFat } from './roma-soft-tissue.js';
 
 const tau = 2 * Math.PI;
 const c = {
-  skin: '#bb8663',
+  skin: '#bd6a45',
   cream: '#eee1cd',
   white: '#fff2da',
   mustard: '#c19543',
@@ -546,7 +546,7 @@ export function buildRoma(rig, attachGroom) {
   const bag = fieldKit(rig, forms);
   bag.rotation.x = 0.035;
   forms.finish();
-  const groom = attachGroom?.(rig.head);
+  const groom = attachGroom?.(rig.headAssembly);
   rig.groom = groom;
   addExteriorShell(rig, c.skin);
   buildExplorerHands(rig, c.skin, handProfiles);

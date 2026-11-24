@@ -1,5 +1,5 @@
-// The source values remain in metres. The whole actor owns a single scale;
-// each matrix below carries an entire source part into a rotating joint frame.
+// The source values remain in metres. Each matrix carries an entire source
+// part into its rotating joint or uniformly scaled head frame.
 import { Matrix4, Quaternion, Vector3 } from 'three';
 import { faceLandmarks } from './source-face-landmarks.js';
 
@@ -24,6 +24,10 @@ function sourceSide(name, fallback) {
   if (/(^|_)left(_|$)/i.test(name)) return 'L';
   if (/(^|_)right(_|$)/i.test(name)) return 'R';
   return fallback >= 0 ? 'L' : 'R';
+}
+
+export function cranialAtlasMuscle(name) {
+  return /_(?:(?:superior|inferior|medial|lateral)_rectus|(?:superior|inferior)_oblique|levator_palpebrae_superioris|(?:levator|tensor)_veli_palatini|genioglossus)$|^uvular_muscle$/.test(name.toLowerCase());
 }
 
 export function donorMuscleLabel(name, geometry) {
@@ -149,6 +153,8 @@ export function sourcePose(rig) {
   const chest = inUprightFrame(rig, 'chest', empty, trunk, atlas.shoulderMid);
   const hips = inUprightFrame(rig, 'hips', empty, pelvis, atlas.pelvisMid);
   const head = bindFor(rig, 'head', atlas.head, empty);
+  const cranium = rig.headAssembly.matrixWorld.clone().multiply(restPose.head);
+  const cranialMuscle = bindFor(rig, 'headAssembly', atlas.head, empty);
   const jaw = faceLandmarks[rig.name].jaw;
   const jawPivot = vector(...jaw.pivot).multiplyScalar(height).add(original.head);
   const closedJaw = new Matrix4().makeTranslation(jawPivot)
@@ -158,8 +164,9 @@ export function sourcePose(rig) {
   function bone(name) {
     const joint = boneJoint(name);
     if (name === 'SKULL_MANDIBLE') {
-      return { joint, matrix: matrices.head.clone().multiply(closedJaw) };
+      return { joint, matrix: cranium.clone().multiply(closedJaw) };
     }
+    if (joint === 'head') return { joint, matrix: cranium };
     const level = /^VERTEBRA_([CL])([1-9])$/.exec(name);
     if (level) {
       const [, region, index] = level;
@@ -216,6 +223,8 @@ export function sourcePose(rig) {
     if (/_leg|FJ14(?:33|39)M?$/i.test(id) || max < 0.62) return use('shin');
     if (/coccygeus|anal_sphincter|lumbar/.test(id)) return { joint: 'hips', matrix: hips };
     if (/rectus_abdominis|external_oblique|iliocostalis_lumborum/.test(id)) return { joint: 'chest', matrix: chest };
+    if (cranialAtlasMuscle(id))
+      return { joint: 'head', matrix: cranialMuscle };
     if (/capitis|sternocleidomastoid|stylohyoid|^left_rectus|^right_rectus/.test(id) || center.y > 1.49)
       return { joint: 'head', matrix: head };
     return { joint: 'chest', matrix: chest };

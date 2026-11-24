@@ -19,9 +19,10 @@ export function faceStudyParts(model, added = []) {
     (/^SKULL_/.test(part.scanNode ?? part.sourceNode ?? '') || cervical.test(part.scanNode ?? '') ||
      /^(?:Atlas|Axis|Cervical vertebra [1-4])$/i.test(part.name)));
   const muscle = model.parts.filter((part) => part.layer === 'muscles' && part.joint === 'head');
+  const fat = [...new Set([...model.parts, ...added].filter((part) => part.layer === 'face-fat'))];
   const skin = model.parts.filter((part) => part.layer === 'skin' &&
     (faceSurface.test(part.name) || part.name === 'Subcutaneous torso and neck'));
-  return { skull, muscle: [...muscle, ...added], skin };
+  return { skull, muscle: [...muscle, ...added.filter(part => part.layer === 'muscles')], fat, skin };
 }
 
 export function faceStudyFocus(skull) {
@@ -33,7 +34,7 @@ export function faceStudyFocus(skull) {
   target.y -= 1.05 * 0.0254;
   target.z += 0.55 * 0.0254;
   // Frame both editions against the same cranium, independent of the skin fit.
-  return { target: target.toArray(), height: 13.25 * 0.0254 };
+  return { target: target.toArray(), height: Math.max(13.25 * 0.0254, 1.53 * (box.max.y - box.min.y)) };
 }
 
 export function fitFingerprint(geometry) {
@@ -78,14 +79,15 @@ function measuredParts(model, input) {
 export async function loadFaceFit(model, data, signal) {
   if (!data.face) throw new Error('Face fit measurements are unavailable');
   const distances = measuredParts(model, data.face.parts);
-  const added = await model.loadFaceAnatomy?.(signal) ?? [];
+  const added = (await Promise.all([model.loadFaceAnatomy?.(signal), model.loadFaceFat?.(signal)]))
+    .flatMap(parts => parts ?? []);
   signal.throwIfAborted();
-  const { skull, muscle, skin } = faceStudyParts(model, added);
+  const { skull, muscle, fat, skin } = faceStudyParts(model, added);
   return {
     distances,
     model: {
       name: model.name, faceFocus: data.face.focus,
-      parts: [...skull, ...muscle, ...skin.filter((part) => distances.has(part.id))],
+      parts: [...skull, ...muscle, ...fat, ...skin.filter((part) => distances.has(part.id))],
     },
   };
 }
