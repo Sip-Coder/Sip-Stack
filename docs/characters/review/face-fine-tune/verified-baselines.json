@@ -1,0 +1,92 @@
+{
+  "Sippy Mobile cold": {
+    "receipt": "docs/characters/review/body-hands-edges/skin-fit/after-sippy-mobile.json",
+    "recordedRevision": "7b9df6857eabf0ee695e2a999c9497d370f82402",
+    "checkedAgainst": "94deb9d6efd4a38eb270ff344ea036992393c2dc",
+    "matches": true,
+    "verifiedFiles": 35,
+    "changedFiles": [],
+    "samples": 3
+  },
+  "Sippy High cold": {
+    "receipt": "docs/characters/review/body-hands-edges/skin-fit/after-sippy-high.json",
+    "recordedRevision": "7b9df6857eabf0ee695e2a999c9497d370f82402",
+    "checkedAgainst": "94deb9d6efd4a38eb270ff344ea036992393c2dc",
+    "matches": true,
+    "verifiedFiles": 35,
+    "changedFiles": [],
+    "samples": 1
+  },
+  "Roma Mobile cold": {
+    "receipt": "docs/characters/review/body-hands-edges/skin-fit/after-roma-mobile.json",
+    "recordedRevision": "7b9df6857eabf0ee695e2a999c9497d370f82402",
+    "checkedAgainst": "94deb9d6efd4a38eb270ff344ea036992393c2dc",
+    "matches": true,
+    "verifiedFiles": 33,
+    "changedFiles": [],
+    "samples": 3
+  },
+  "Roma High cold": {
+    "receipt": "docs/characters/review/body-hands-edges/skin-fit/after-roma-high.json",
+    "recordedRevision": "7b9df6857eabf0ee695e2a999c9497d370f82402",
+    "checkedAgainst": "94deb9d6efd4a38eb270ff344ea036992393c2dc",
+    "matches": true,
+    "verifiedFiles": 33,
+    "changedFiles": [],
+    "samples": 1
+  },
+  "Village Mobile cold": {
+    "receipt": "docs/characters/review/body-hands-edges/cold-candidate.json",
+    "recordedRevision": "a34b0060bc81dc40a0d3a2c5a5bf53ed2c7e2d74",
+    "checkedAgainst": "94deb9d6efd4a38eb270ff344ea036992393c2dc",
+    "matches": true,
+    "verifiedFiles": 61,
+    "changedFiles": [],
+    "samples": 5
+  },
+  "Village High cold": {
+    "receipt": "docs/characters/review/body-hands-edges/high-candidate.json",
+    "recordedRevision": "a34b0060bc81dc40a0d3a2c5a5bf53ed2c7e2d74",
+    "checkedAgainst": "94deb9d6efd4a38eb270ff344ea036992393c2dc",
+    "matches": true,
+    "verifiedFiles": 61,
+    "changedFiles": [],
+    "samples": 1
+  },
+  "Sippy Mobile motion": {
+    "receipt": "docs/characters/review/body-hands-edges/skin-fit/after-sippy-frame.json",
+    "recordedRevision": "7b9df6857eabf0ee695e2a999c9497d370f82402",
+    "checkedAgainst": "94deb9d6efd4a38eb270ff344ea036992393c2dc",
+    "matches": true,
+    "verifiedFiles": 36,
+    "changedFiles": [],
+    "samples": 3
+  },
+  "Roma Mobile motion": {
+    "receipt": "docs/characters/review/body-hands-edges/skin-fit/after-roma-frame.json",
+    "recordedRevision": "7b9df6857eabf0ee695e2a999c9497d370f82402",
+    "checkedAgainst": "94deb9d6efd4a38eb270ff344ea036992393c2dc",
+    "matches": true,
+    "verifiedFiles": 34,
+    "changedFiles": [],
+    "samples": 3
+  },
+  "Village Mobile motion": {
+    "receipt": "docs/characters/review/body-hands-edges/frame-main.json",
+    "recordedRevision": "e8c6ed6c932b841eb702d4a6ea5bf8ca14bdfd73",
+    "checkedAgainst": "94deb9d6efd4a38eb270ff344ea036992393c2dc",
+    "matches": true,
+    "verifiedFiles": 61,
+    "changedFiles": [],
+    "samples": 3
+  },
+  "Open Axon and body modes": {
+    "receipt": "docs/characters/review/body-hands-edges/skin-fit/after-axon.json",
+    "recordedRevision": "7b9df6857eabf0ee695e2a999c9497d370f82402",
+    "checkedAgainst": "94deb9d6efd4a38eb270ff344ea036992393c2dc",
+    "matches": true,
+    "verifiedFiles": 78,
+    "changedFiles": [],
+    "samples": 4
+  }
+}

@@ -1,0 +1,492 @@
+{
+  "revision": "94deb9d6efd4a38eb270ff344ea036992393c2dc",
+  "hero": "sippy",
+  "tier": "high",
+  "viewport": [
+    800,
+    680
+  ],
+  "deviceScaleFactor": 1,
+  "cpu": 1,
+  "network": "local unthrottled after assets and motion are warm",
+  "framesPerVisit": 20,
+  "notes": "Heros walks forward using W. Village orbits with Right. Reduced motion disabled. Visible stage only.",
+  "rows": [
+    {
+      "graphics": {
+        "rapport": 1,
+        "displayDpr": 1,
+        "colorType": 1016,
+        "cssSize": [
+          716,
+          447
+        ],
+        "canvasSize": [
+          716,
+          447
+        ],
+        "sceneSize": [
+          716,
+          447
+        ],
+        "requestedSamples": 0,
+        "activeSamples": 0,
+        "shadowMapWidth": 2048,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "frames": [
+        {
+          "now": 22660.3,
+          "ms": 9.200000000186265,
+          "draws": 172
+        },
+        {
+          "now": 24160.3,
+          "ms": 11.700000000186265,
+          "draws": 172
+        },
+        {
+          "now": 25343.5,
+          "ms": 7.400000000372529,
+          "draws": 172
+        },
+        {
+          "now": 26560.1,
+          "ms": 9.700000000186265,
+          "draws": 172
+        },
+        {
+          "now": 27743.5,
+          "ms": 8.900000000372529,
+          "draws": 172
+        },
+        {
+          "now": 28876.8,
+          "ms": 7.599999999627471,
+          "draws": 172
+        },
+        {
+          "now": 29960,
+          "ms": 6.2999999998137355,
+          "draws": 172
+        },
+        {
+          "now": 31076.6,
+          "ms": 6.199999999254942,
+          "draws": 172
+        },
+        {
+          "now": 32360,
+          "ms": 7.2999999998137355,
+          "draws": 172
+        },
+        {
+          "now": 33543.2,
+          "ms": 7.7999999998137355,
+          "draws": 172
+        },
+        {
+          "now": 34743.1,
+          "ms": 7.099999999627471,
+          "draws": 172
+        },
+        {
+          "now": 35876.5,
+          "ms": 6.5,
+          "draws": 172
+        },
+        {
+          "now": 36943.1,
+          "ms": 5.3999999994412065,
+          "draws": 172
+        },
+        {
+          "now": 39176.4,
+          "ms": 7.7999999998137355,
+          "draws": 172
+        },
+        {
+          "now": 39292.9,
+          "ms": 6.400000000372529,
+          "draws": 172
+        },
+        {
+          "now": 40459.6,
+          "ms": 7.300000000745058,
+          "draws": 172
+        },
+        {
+          "now": 41742.9,
+          "ms": 7.900000000372529,
+          "draws": 172
+        },
+        {
+          "now": 42942.8,
+          "ms": 5.8999999994412065,
+          "draws": 172
+        },
+        {
+          "now": 44259.5,
+          "ms": 8.799999999813735,
+          "draws": 172
+        },
+        {
+          "now": 45576.1,
+          "ms": 56.39999999944121,
+          "draws": 172
+        }
+      ],
+      "count": 20,
+      "intervalMedianMs": 1183.4000000000015,
+      "intervalP95Ms": 1573.3300000000004,
+      "callbackMedianMs": 7.5,
+      "callbackP95Ms": 13.935000000149012,
+      "drawsMean": 172,
+      "fps": 0.8291222649874759,
+      "route": "village",
+      "visit": 1
+    },
+    {
+      "graphics": {
+        "rapport": 1,
+        "displayDpr": 1,
+        "colorType": 1016,
+        "cssSize": [
+          716,
+          447
+        ],
+        "canvasSize": [
+          716,
+          447
+        ],
+        "sceneSize": [
+          716,
+          447
+        ],
+        "requestedSamples": 0,
+        "activeSamples": 0,
+        "shadowMapWidth": 2048,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "frames": [
+        {
+          "now": 24322.8,
+          "ms": 10.100000000558794,
+          "draws": 175
+        },
+        {
+          "now": 25872.7,
+          "ms": 19.799999999813735,
+          "draws": 175
+        },
+        {
+          "now": 27356,
+          "ms": 10.799999999813735,
+          "draws": 175
+        },
+        {
+          "now": 28839.3,
+          "ms": 7.099999999627471,
+          "draws": 175
+        },
+        {
+          "now": 30305.9,
+          "ms": 12.599999999627471,
+          "draws": 175
+        },
+        {
+          "now": 32022.5,
+          "ms": 11.700000000186265,
+          "draws": 175
+        },
+        {
+          "now": 33922.4,
+          "ms": 15.599999999627471,
+          "draws": 175
+        },
+        {
+          "now": 43255.4,
+          "ms": 16.899999999441206,
+          "draws": 175
+        },
+        {
+          "now": 47071.9,
+          "ms": 5.7999999998137355,
+          "draws": 175
+        },
+        {
+          "now": 48655.1,
+          "ms": 6,
+          "draws": 175
+        },
+        {
+          "now": 50121.7,
+          "ms": 10.600000000558794,
+          "draws": 175
+        },
+        {
+          "now": 51605.1,
+          "ms": 7.900000000372529,
+          "draws": 175
+        },
+        {
+          "now": 53171.7,
+          "ms": 7.400000000372529,
+          "draws": 175
+        },
+        {
+          "now": 54854.9,
+          "ms": 10.099999999627471,
+          "draws": 175
+        },
+        {
+          "now": 57321.5,
+          "ms": 7.2999999998137355,
+          "draws": 175
+        },
+        {
+          "now": 59771.4,
+          "ms": 22.5,
+          "draws": 175
+        },
+        {
+          "now": 63454.6,
+          "ms": 6.2999999998137355,
+          "draws": 175
+        },
+        {
+          "now": 66071.2,
+          "ms": 31.299999999813735,
+          "draws": 175
+        },
+        {
+          "now": 69037.6,
+          "ms": 8.400000000372529,
+          "draws": 175
+        },
+        {
+          "now": 70487.6,
+          "ms": 5.8999999994412065,
+          "draws": 175
+        }
+      ],
+      "count": 20,
+      "intervalMedianMs": 1683.2000000000044,
+      "intervalP95Ms": 4368.15,
+      "callbackMedianMs": 10.100000000093132,
+      "callbackP95Ms": 22.939999999990686,
+      "drawsMean": 175,
+      "fps": 0.4115689876269365,
+      "route": "village",
+      "visit": 2
+    },
+    {
+      "graphics": {
+        "rapport": 1,
+        "displayDpr": 1,
+        "colorType": 1016,
+        "cssSize": [
+          716,
+          447
+        ],
+        "canvasSize": [
+          716,
+          447
+        ],
+        "sceneSize": [
+          716,
+          447
+        ],
+        "requestedSamples": 0,
+        "activeSamples": 0,
+        "shadowMapWidth": 2048,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "frames": [
+        {
+          "now": 22694.9,
+          "ms": 8.5,
+          "draws": 205
+        },
+        {
+          "now": 24111.5,
+          "ms": 8.399999999441206,
+          "draws": 205
+        },
+        {
+          "now": 25678.1,
+          "ms": 7.199999999254942,
+          "draws": 205
+        },
+        {
+          "now": 27044.7,
+          "ms": 6.7999999998137355,
+          "draws": 205
+        },
+        {
+          "now": 28678,
+          "ms": 6.3999999994412065,
+          "draws": 205
+        },
+        {
+          "now": 30161.3,
+          "ms": 8.799999999813735,
+          "draws": 205
+        },
+        {
+          "now": 31861.2,
+          "ms": 8,
+          "draws": 205
+        },
+        {
+          "now": 33461.1,
+          "ms": 8.5,
+          "draws": 205
+        },
+        {
+          "now": 35044.4,
+          "ms": 8.900000000372529,
+          "draws": 205
+        },
+        {
+          "now": 36594.3,
+          "ms": 10.899999999441206,
+          "draws": 205
+        },
+        {
+          "now": 39760.9,
+          "ms": 6.7000000001862645,
+          "draws": 205
+        },
+        {
+          "now": 39977.6,
+          "ms": 12.299999999813735,
+          "draws": 205
+        },
+        {
+          "now": 43027.4,
+          "ms": 6.7999999998137355,
+          "draws": 205
+        },
+        {
+          "now": 43060.8,
+          "ms": 9.799999999813735,
+          "draws": 205
+        },
+        {
+          "now": 44677.4,
+          "ms": 6.2000000001862645,
+          "draws": 205
+        },
+        {
+          "now": 46260.6,
+          "ms": 16.600000000558794,
+          "draws": 207
+        },
+        {
+          "now": 48060.6,
+          "ms": 5.7000000001862645,
+          "draws": 205
+        },
+        {
+          "now": 49693.8,
+          "ms": 8.899999999441206,
+          "draws": 205
+        },
+        {
+          "now": 51443.7,
+          "ms": 8.200000000186265,
+          "draws": 205
+        },
+        {
+          "now": 53077,
+          "ms": 7.5,
+          "draws": 205
+        }
+      ],
+      "count": 20,
+      "intervalMedianMs": 1599.8999999999978,
+      "intervalP95Ms": 3061.4800000000023,
+      "callbackMedianMs": 8.299999999813735,
+      "callbackP95Ms": 12.514999999850989,
+      "drawsMean": 205.1,
+      "fps": 0.6253682266861079,
+      "route": "village",
+      "visit": 3
+    }
+  ],
+  "browser": "155.0.8059.79",
+  "summary": {
+    "village": {
+      "intervalMedianMs": 1599.8999999999978,
+      "intervalP95Ms": 3061.4800000000023,
+      "callbackMedianMs": 8.299999999813735,
+      "callbackP95Ms": 13.935000000149012,
+      "drawsMean": 175,
+      "fps": 0.6253682266861079
+    }
+  },
+  "sourceSha256": {
+    "/": "86bddd4109dd52f9840f07f954c616e41c619c5aae36472cfc0ab2d2fe985a81",
+    "/__three/build/three.module.js": "ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb",
+    "/__three/examples/jsm/controls/OrbitControls.js": "80efaadea4f8a636a65fb0bd08bfef62f3d93a0bb94e2e7500f23176c5c07f4e",
+    "/__three/examples/jsm/geometries/RoundedBoxGeometry.js": "d20aeaf7077c459a8d952d215738d7b44fba028440bb862d84b622a34f0c80bb",
+    "/__three/examples/jsm/objects/Sky.js": "eacd17d5debec3b909d1208304d70024a59c38c58b6533fcd4711f8a6a0b63bc",
+    "/__three/examples/jsm/postprocessing/EffectComposer.js": "d234e578618fa816955ebdc059c049c577e203e650e33cf22bde3f232c29e669",
+    "/__three/examples/jsm/postprocessing/MaskPass.js": "328cf7db0da5d9be83ffe39d54b01d5ac1fddf108cc98182ddbb056f5c8b537f",
+    "/__three/examples/jsm/postprocessing/OutputPass.js": "32f879d2179087676631c799857a885586b3cdd13b9731bd3b13f06428bd58b7",
+    "/__three/examples/jsm/postprocessing/Pass.js": "b3c6128340eaa37e40a6a2f1b738e894c855239417d50959759b34a2b5e89f92",
+    "/__three/examples/jsm/postprocessing/RenderPass.js": "6c9b8a539ea16e898f65e4760f14937ef9ea94043bd9842c141e0301f41903e8",
+    "/__three/examples/jsm/postprocessing/SMAAPass.js": "f3508e3e17f40c1358921b5c7eb3ab60460d97b06fdadf6b0d40b52d3842c44a",
+    "/__three/examples/jsm/postprocessing/ShaderPass.js": "3b28a1ee27e0eb96c0eab137a1f442ccf127a926904eced2d51e125ec44af781",
+    "/__three/examples/jsm/postprocessing/UnrealBloomPass.js": "3bd23a1097af75c7002d0ffc21a6c14f45c4dd701dbaf737030dfc61fb7c64d9",
+    "/__three/examples/jsm/shaders/CopyShader.js": "4e3346db194db56a596cd074e9bdb39fb5eb52040c333e0d29dc4eb1324d3b1d",
+    "/__three/examples/jsm/shaders/LuminosityHighPassShader.js": "9f4866f9abb2d96fd83eec46ba4bf2165b22155a7a37ff425c0f60eba18007cb",
+    "/__three/examples/jsm/shaders/OutputShader.js": "4944cecd49c0d4d1520a4d927bde8a590fd43f041ee913252b9451855a01d0f0",
+    "/__three/examples/jsm/shaders/SMAAShader.js": "3c7e942a25cb09dd431e395e6e91904715a834b2a6e62ec0b9b77c2f8655c369",
+    "/__three/examples/jsm/utils/BufferGeometryUtils.js": "c25b7930e570e9ec56173cd3b866ec8d2e10016630db3937efb439daf1cedbf6",
+    "/assets/sip-app.js": "c80d5bcfad97e9dfba3d0ebc4d80309b5937998fa6f8a28ff2e95b13eeba2193",
+    "/assets/sip-craft-loader.js": "3b7f8db1f51b27e2351ea48219daf0d5d72a1a7c873eb89bd0e4f6d9fddc234d",
+    "/assets/sip-craft.css": "eeb67ad10516467e9ab144f7a3db1fbfa993603150a6aabd43cf788156dfa3b9",
+    "/assets/sip-creek-loader.js": "090402e74371c773b597f8a15ce4a634b51e8fcdd4c8f442165edcae96a8a511",
+    "/assets/sip-creek.css": "b422928d95e275f5215a73f84d5620ad2adbe1feff845d7f1197dc22ca075488",
+    "/assets/sip-stack.css": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
+    "/assets/sip-village-content.js": "42af565577b636d3d114d151c0e31ef128abe0a45cfd9ea4ac7782f3a85a6620",
+    "/assets/sip-village.js": "3e28582dcb75905764b2132ebaf41d0fcf6d404d742abad515849214a8c4cc06",
+    "/assets/sip-warm.js": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
+    "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+    "/life/appearance.js": "9dc5cc174301e6216710fb087763311f5a4ec751dd94a0c5c4dbd23b3f87a61e",
+    "/life/birds.js": "4dbc31815279e0c342de95086f880a17f7db5153e6032963fe434dfc6536dda8",
+    "/life/cloth.js": "7436d556b5d6da13d150e7f193d8d63120203fbc5d1005c8511bb890455acd48",
+    "/life/crowd.js": "425b71bd3b7a563ccc7be71a7c9165775300c4603bbe6767ba9d753e1a39fcf0",
+    "/life/deformation.js": "c72fd32c51aa8b96c26100df7a6602e9cb084246dc52fe9dd64cce816dc1ef36",
+    "/life/feet.js": "5e059f9da3bed30df1471e62b84ed005f7f34c26534a52deb31b42facf03cefe",
+    "/life/forms.js": "7d5ddf9d8ebe0f5ee247c389c54c5a28d956c5b4ffd2f4805c9c94707b659f97",
+    "/life/harbor.js": "43ac2209a8ba2ac5f0f1a5d9fba6e529adb9a1803fdd9bf086fb09078b2a249e",
+    "/life/junctions.js": "07776e569de4c966c9337932d8c807f7e13eb0c72d2c646b1f8433d62a46704c",
+    "/life/nav-overlay.js": "60ef7eaa7d99b7ff2d616583e9a43284aa7f06873c9d0fb49be84fce995e54aa",
+    "/life/nav.js": "50485a59907d31aff728f5498dec8800cff1baa8210075e82154ebf2f12ffe02",
+    "/life/people.js": "0b3ecb1897bcfedf0fcad1ab65b40f32fb07bdb42bc2c694136677baa23c200a",
+    "/life/physics.js": "4812921279d8a05f3096d65f6cc4b030d90d63d46526429eef5217096e43cb3c",
+    "/life/rig.js": "94e180455ee4961669f9ad09e026da4804dd865c6112100f3b0bbc8ad4e3926f",
+    "/life/rigid-instances.js": "7f70187b049c3c69d938c5552de4630fd2faf70d3fb44408caf8757a1fbd4a72",
+    "/life/scale.js": "3ab33de447b9afe7d1bcaf1eaa66c4ecc9b3ad7a0cf1f2c78da26cf3dbf4b5a3",
+    "/life/scene-people.js": "9c2e4ee9d545dfb258963a5566e7d53d4307a2bb88ef4200498be373197636d7",
+    "/life/stair-feet.js": "486ae47e1eefe4cca5d846bc9fdd95fc995ca540efefd0283f2450e739a87e18",
+    "/life/stair-walk.js": "df2c3e8176c0a73592dda5a2089bb7a47fd82c7913a97ede8e901ae9b9f9aa70",
+    "/life/stairs.js": "e773378963af0f6f40b11141382b30c7a93ffa0a0dce7d2ae3c54131c2a4f9ec",
+    "/life/static-batches.js": "ba67baf656cee42b0098d7a60e66f16baf8ad83619888819bcc7fae626f2ad0c",
+    "/life/tasks.js": "061e8aa03478c9f493e3dac0b34bf5640a8f502fd7bdec6dedc1a76344637241",
+    "/life/village.js": "4c31c72bb6033ccc225a415a7274ca037314c5fccb6c0b2ef3cd40850a00aca6",
+    "/life/wildlife.js": "3913a10bb7aef79d3959008c41b202dc76b3411f9f1d6b58612c3a5b5839d0ed",
+    "/village/camera.js": "41feeb4f5bc372cc6088ef2d3688262b5098669bd00f6d33e472636b4776926a",
+    "/village/canvas.js": "7755e6f87193b5d3f18be7c6930566739290c2e50baf192d7d12716323630a22",
+    "/village/controls.css": "84e49c11a7161050ca459b9db348e8c001d8b1ca7f31a1c1f7b62f2ef3ee8c59",
+    "/village/depth-light.js": "a66fc70c9b243b6249671e6951c013639cae1bda89031fd84a25753827723a4d",
+    "/village/harbor.js": "e66f722009e3987344775057964ab206433e08109e36c9a36425c9a49c176469",
+    "/village/landscape.js": "e0d6dca2be52eb6e29b17a3e30ecb96fead75fb3db17b1e96fed975b1f7b43e0",
+    "/village/light.js": "76c93d0e5b944976fcb283873fbc5d854c2e7f6632bf0540c4efed808b005477",
+    "/village/renderer.js": "f8d9874e50f9c52ffcda9b96e3537ea95bcf77f45fd5fb8620e13c6110c0273f",
+    "/village/surfaces.js": "5ba98bff331997f3fa7922ea95d64c6f141fa3c27b1c135e2f6870de89427ba0"
+  }
+}

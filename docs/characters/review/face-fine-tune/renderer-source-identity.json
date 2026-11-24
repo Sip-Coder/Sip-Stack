@@ -1,0 +1,32 @@
+[
+  {
+    "path": "assets/sip-warm.js",
+    "baselineSHA256": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
+    "revisedSHA256": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf"
+  },
+  {
+    "path": "assets/sip-recover.js",
+    "baselineSHA256": "26346fc5033f2a52334d603b02d5f1992ff840106f61727a6e9d21b2f5074192",
+    "revisedSHA256": "26346fc5033f2a52334d603b02d5f1992ff840106f61727a6e9d21b2f5074192"
+  },
+  {
+    "path": "characters/stage.js",
+    "baselineSHA256": "641718e455aacc22f4e02423c48bc7a48ead56efb7ee6a534ccb2530e6a768c2",
+    "revisedSHA256": "641718e455aacc22f4e02423c48bc7a48ead56efb7ee6a534ccb2530e6a768c2"
+  },
+  {
+    "path": "characters/main.js",
+    "baselineSHA256": "bf9946cdca21a4ca6dc694df38915fa0dfa1bea6bbb363de14d92cbcd9505fd9",
+    "revisedSHA256": "bf9946cdca21a4ca6dc694df38915fa0dfa1bea6bbb363de14d92cbcd9505fd9"
+  },
+  {
+    "path": "characters/route.js",
+    "baselineSHA256": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+    "revisedSHA256": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f"
+  },
+  {
+    "path": "assets/sip-stack.css",
+    "baselineSHA256": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
+    "revisedSHA256": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5"
+  }
+]

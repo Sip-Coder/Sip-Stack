@@ -1,0 +1,1044 @@
+{
+  "revision": "7783002881bb19c5f16ba4cb35187dc37e2caa48",
+  "cpuMultiplier": 4,
+  "network": {
+    "offline": false,
+    "latency": 60,
+    "downloadThroughput": 1125000.0,
+    "uploadThroughput": 187500.0,
+    "connectionType": "cellular4g"
+  },
+  "rows": [
+    {
+      "hero": "sippy",
+      "tier": "mobile",
+      "layout": {
+        "viewport": {
+          "width": 412,
+          "height": 915
+        },
+        "device_scale_factor": 2.6,
+        "is_mobile": true,
+        "has_touch": true
+      },
+      "drawStates": {
+        "open": {
+          "blit": 1,
+          "dims": [
+            382,
+            293
+          ],
+          "fitValue": "off",
+          "fingerprint": 2000480182,
+          "draws": 38,
+          "triangles": 381318,
+          "fit": null,
+          "elapsedMs": 44813.09999999963,
+          "blitMs": 44784.39999999944,
+          "requests": 21,
+          "modules": 16,
+          "transferBytes": 1594634,
+          "resources": [
+            {
+              "path": "/characters/assets/skeleton-male-mobile.glb",
+              "wire": 412059,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/bp3d-muscles-mobile-meshopt.glb",
+              "wire": 693339,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/bp3d-missing-muscles-mobile-meshopt.glb",
+              "wire": 283235,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/zanatomy-lats-rectus-mobile-meshopt.glb",
+              "wire": 150919,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/axon-view.js",
+              "wire": 8137,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-parts.js",
+              "wire": 392,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-view.js",
+              "wire": 9929,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-explode.js",
+              "wire": 1570,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/axon-view.css",
+              "wire": 1608,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-studio.js",
+              "wire": 4239,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-model.js",
+              "wire": 2230,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-snapshot.js",
+              "wire": 3416,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-outer-parts.js",
+              "wire": 2496,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-source-anatomy.js",
+              "wire": 1723,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-fabricator.js",
+              "wire": 1630,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-muscle-names.js",
+              "wire": 620,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-scan-repairs.js",
+              "wire": 3750,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-scan-source.js",
+              "wire": 4129,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-source-pose.js",
+              "wire": 4410,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-source-tissue.js",
+              "wire": 2984,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/source-face-landmarks.js",
+              "wire": 1819,
+              "complete": true,
+              "status": 200
+            }
+          ]
+        },
+        "face-heatmap": {
+          "blit": 2,
+          "dims": [
+            382,
+            293
+          ],
+          "fitValue": "face-heatmap",
+          "fingerprint": -1174344978,
+          "draws": 4,
+          "triangles": 18742,
+          "fit": {
+            "name": "sippy",
+            "tier": "mobile",
+            "colorLimitIn": 1.5,
+            "samples": 13300,
+            "mode": "face-heatmap"
+          },
+          "elapsedMs": 14407.599999999627,
+          "blitMs": 14393.799999999814,
+          "requests": 4,
+          "modules": 2,
+          "transferBytes": 3696980,
+          "resources": [
+            {
+              "path": "/characters/diagram-skin-fit.js",
+              "wire": 2369,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/skin-wrap-gap-sippy-mobile.json",
+              "wire": 38199,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-face-anatomy.js",
+              "wire": 844,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/sippy-face-bp3d-meshopt.glb",
+              "wire": 3655568,
+              "complete": true,
+              "status": 200
+            }
+          ]
+        },
+        "face-overlay": {
+          "blit": 3,
+          "dims": [
+            382,
+            293
+          ],
+          "fitValue": "face-overlay",
+          "fingerprint": 1900895368,
+          "draws": 7,
+          "triangles": 712718,
+          "fit": {
+            "name": "sippy",
+            "tier": "mobile",
+            "colorLimitIn": 1.5,
+            "samples": 13300,
+            "mode": "face-overlay"
+          },
+          "elapsedMs": 13126.400000000373,
+          "blitMs": 13109,
+          "requests": 0,
+          "modules": 0,
+          "transferBytes": 0,
+          "resources": []
+        }
+      },
+      "glError": 0,
+      "floorFaceAssets": [],
+      "defaultAxonFaceAssets": [],
+      "consoleErrors": []
+    },
+    {
+      "hero": "roma",
+      "tier": "mobile",
+      "layout": {
+        "viewport": {
+          "width": 412,
+          "height": 915
+        },
+        "device_scale_factor": 2.6,
+        "is_mobile": true,
+        "has_touch": true
+      },
+      "drawStates": {
+        "open": {
+          "blit": 2,
+          "dims": [
+            382,
+            293
+          ],
+          "fitValue": "off",
+          "fingerprint": 776132891,
+          "draws": 37,
+          "triangles": 1633346,
+          "fit": null,
+          "elapsedMs": 66684.09999999963,
+          "blitMs": 66537.5,
+          "requests": 21,
+          "modules": 16,
+          "transferBytes": 9233732,
+          "resources": [
+            {
+              "path": "/characters/assets/skeleton-female-mobile.glb",
+              "wire": 418107,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/roma-adapted-bp3d-mobile-meshopt.glb",
+              "wire": 1418040,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/roma-adapted-zanatomy-mobile-meshopt.glb",
+              "wire": 270079,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/axon-view.js",
+              "wire": 8137,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-parts.js",
+              "wire": 392,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-view.js",
+              "wire": 9929,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-explode.js",
+              "wire": 1570,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/axon-view.css",
+              "wire": 1608,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-studio.js",
+              "wire": 4239,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-model.js",
+              "wire": 2230,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-snapshot.js",
+              "wire": 3416,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-outer-parts.js",
+              "wire": 2496,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-source-anatomy.js",
+              "wire": 1723,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-fabricator.js",
+              "wire": 1630,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-muscle-names.js",
+              "wire": 620,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-scan-repairs.js",
+              "wire": 3750,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-scan-source.js",
+              "wire": 4129,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-source-pose.js",
+              "wire": 4410,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-source-tissue.js",
+              "wire": 2984,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/source-face-landmarks.js",
+              "wire": 1819,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/vhf-muscles-source-meshopt.glb",
+              "wire": 7072424,
+              "complete": true,
+              "status": 200
+            }
+          ]
+        },
+        "face-heatmap": {
+          "blit": 3,
+          "dims": [
+            382,
+            293
+          ],
+          "fitValue": "face-heatmap",
+          "fingerprint": 1548757063,
+          "draws": 4,
+          "triangles": 19352,
+          "fit": {
+            "name": "roma",
+            "tier": "mobile",
+            "colorLimitIn": 1.5,
+            "samples": 13314,
+            "mode": "face-heatmap"
+          },
+          "elapsedMs": 21693.700000000186,
+          "blitMs": 21666.700000000186,
+          "requests": 4,
+          "modules": 2,
+          "transferBytes": 3935542,
+          "resources": [
+            {
+              "path": "/characters/diagram-skin-fit.js",
+              "wire": 2369,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/skin-wrap-gap-roma-mobile.json",
+              "wire": 38753,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-face-anatomy.js",
+              "wire": 844,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/roma-face-bp3d-meshopt.glb",
+              "wire": 3893576,
+              "complete": true,
+              "status": 200
+            }
+          ]
+        },
+        "face-overlay": {
+          "blit": 4,
+          "dims": [
+            382,
+            293
+          ],
+          "fitValue": "face-overlay",
+          "fingerprint": -242393807,
+          "draws": 7,
+          "triangles": 714044,
+          "fit": {
+            "name": "roma",
+            "tier": "mobile",
+            "colorLimitIn": 1.5,
+            "samples": 13314,
+            "mode": "face-overlay"
+          },
+          "elapsedMs": 15317.599999999627,
+          "blitMs": 15290.900000000373,
+          "requests": 0,
+          "modules": 0,
+          "transferBytes": 0,
+          "resources": []
+        }
+      },
+      "glError": 0,
+      "floorFaceAssets": [],
+      "defaultAxonFaceAssets": [],
+      "consoleErrors": []
+    },
+    {
+      "hero": "sippy",
+      "tier": "high",
+      "layout": {
+        "viewport": {
+          "width": 800,
+          "height": 680
+        },
+        "device_scale_factor": 1
+      },
+      "drawStates": {
+        "open": {
+          "blit": 1,
+          "dims": [
+            525,
+            500
+          ],
+          "fitValue": "off",
+          "fingerprint": 1306944897,
+          "draws": 38,
+          "triangles": 844234,
+          "fit": null,
+          "elapsedMs": 22137.299999999814,
+          "blitMs": 22064.400000000373,
+          "requests": 21,
+          "modules": 16,
+          "transferBytes": 3110572,
+          "resources": [
+            {
+              "path": "/characters/assets/skeleton-male-high.glb",
+              "wire": 1053068,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/bp3d-muscles-high-meshopt.glb",
+              "wire": 1307084,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/bp3d-missing-muscles-high-meshopt.glb",
+              "wire": 447803,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/zanatomy-lats-rectus-high-meshopt.glb",
+              "wire": 247535,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/axon-view.js",
+              "wire": 8137,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-parts.js",
+              "wire": 392,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-view.js",
+              "wire": 9929,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-explode.js",
+              "wire": 1570,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/axon-view.css",
+              "wire": 1608,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-studio.js",
+              "wire": 4239,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-model.js",
+              "wire": 2230,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-snapshot.js",
+              "wire": 3416,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-outer-parts.js",
+              "wire": 2496,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-source-anatomy.js",
+              "wire": 1723,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-fabricator.js",
+              "wire": 1630,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-muscle-names.js",
+              "wire": 620,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-scan-repairs.js",
+              "wire": 3750,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-scan-source.js",
+              "wire": 4129,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-source-pose.js",
+              "wire": 4410,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-source-tissue.js",
+              "wire": 2984,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/source-face-landmarks.js",
+              "wire": 1819,
+              "complete": true,
+              "status": 200
+            }
+          ]
+        },
+        "face-heatmap": {
+          "blit": 2,
+          "dims": [
+            525,
+            632
+          ],
+          "fitValue": "face-heatmap",
+          "fingerprint": 1987837222,
+          "draws": 4,
+          "triangles": 18742,
+          "fit": {
+            "name": "sippy",
+            "tier": "high",
+            "colorLimitIn": 1.5,
+            "samples": 15974,
+            "mode": "face-heatmap"
+          },
+          "elapsedMs": 16507.200000000186,
+          "blitMs": 16489.200000000186,
+          "requests": 4,
+          "modules": 2,
+          "transferBytes": 3700546,
+          "resources": [
+            {
+              "path": "/characters/diagram-skin-fit.js",
+              "wire": 2369,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/skin-wrap-gap-sippy-high.json",
+              "wire": 41765,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-face-anatomy.js",
+              "wire": 844,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/sippy-face-bp3d-meshopt.glb",
+              "wire": 3655568,
+              "complete": true,
+              "status": 200
+            }
+          ]
+        },
+        "face-overlay": {
+          "blit": 3,
+          "dims": [
+            525,
+            609
+          ],
+          "fitValue": "face-overlay",
+          "fingerprint": 461235300,
+          "draws": 7,
+          "triangles": 778564,
+          "fit": {
+            "name": "sippy",
+            "tier": "high",
+            "colorLimitIn": 1.5,
+            "samples": 15974,
+            "mode": "face-overlay"
+          },
+          "elapsedMs": 9877.700000000186,
+          "blitMs": 9823.900000000373,
+          "requests": 0,
+          "modules": 0,
+          "transferBytes": 0,
+          "resources": []
+        }
+      },
+      "glError": 0,
+      "floorFaceAssets": [],
+      "defaultAxonFaceAssets": [],
+      "consoleErrors": []
+    },
+    {
+      "hero": "roma",
+      "tier": "high",
+      "layout": {
+        "viewport": {
+          "width": 800,
+          "height": 680
+        },
+        "device_scale_factor": 1
+      },
+      "drawStates": {
+        "open": {
+          "blit": 2,
+          "dims": [
+            525,
+            749
+          ],
+          "fitValue": "off",
+          "fingerprint": -1480182317,
+          "draws": 37,
+          "triangles": 2039494,
+          "fit": null,
+          "elapsedMs": 40822.09999999963,
+          "blitMs": 40742.59999999963,
+          "requests": 21,
+          "modules": 16,
+          "transferBytes": 11151285,
+          "resources": [
+            {
+              "path": "/characters/assets/skeleton-female-high.glb",
+              "wire": 1050284,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/roma-adapted-bp3d-high-meshopt.glb",
+              "wire": 2534080,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/roma-adapted-zanatomy-high-meshopt.glb",
+              "wire": 439415,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/axon-view.js",
+              "wire": 8137,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-parts.js",
+              "wire": 392,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-view.js",
+              "wire": 9929,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-explode.js",
+              "wire": 1570,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/axon-view.css",
+              "wire": 1608,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-studio.js",
+              "wire": 4239,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-model.js",
+              "wire": 2230,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-snapshot.js",
+              "wire": 3416,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-outer-parts.js",
+              "wire": 2496,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-source-anatomy.js",
+              "wire": 1723,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-fabricator.js",
+              "wire": 1630,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-muscle-names.js",
+              "wire": 620,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-scan-repairs.js",
+              "wire": 3750,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-scan-source.js",
+              "wire": 4129,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-source-pose.js",
+              "wire": 4410,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-source-tissue.js",
+              "wire": 2984,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/source-face-landmarks.js",
+              "wire": 1819,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/vhf-muscles-source-meshopt.glb",
+              "wire": 7072424,
+              "complete": true,
+              "status": 200
+            }
+          ]
+        },
+        "face-heatmap": {
+          "blit": 3,
+          "dims": [
+            525,
+            881
+          ],
+          "fitValue": "face-heatmap",
+          "fingerprint": 911083786,
+          "draws": 4,
+          "triangles": 19352,
+          "fit": {
+            "name": "roma",
+            "tier": "high",
+            "colorLimitIn": 1.5,
+            "samples": 16028,
+            "mode": "face-heatmap"
+          },
+          "elapsedMs": 18119.799999999814,
+          "blitMs": 18051.200000000186,
+          "requests": 4,
+          "modules": 2,
+          "transferBytes": 3939154,
+          "resources": [
+            {
+              "path": "/characters/diagram-skin-fit.js",
+              "wire": 2369,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/skin-wrap-gap-roma-high.json",
+              "wire": 42365,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/diagram-face-anatomy.js",
+              "wire": 844,
+              "complete": true,
+              "status": 200
+            },
+            {
+              "path": "/characters/assets/roma-face-bp3d-meshopt.glb",
+              "wire": 3893576,
+              "complete": true,
+              "status": 200
+            }
+          ]
+        },
+        "face-overlay": {
+          "blit": 4,
+          "dims": [
+            525,
+            858
+          ],
+          "fitValue": "face-overlay",
+          "fingerprint": -965285736,
+          "draws": 7,
+          "triangles": 781872,
+          "fit": {
+            "name": "roma",
+            "tier": "high",
+            "colorLimitIn": 1.5,
+            "samples": 16028,
+            "mode": "face-overlay"
+          },
+          "elapsedMs": 9342,
+          "blitMs": 9273.900000000373,
+          "requests": 0,
+          "modules": 0,
+          "transferBytes": 0,
+          "resources": []
+        }
+      },
+      "glError": 0,
+      "floorFaceAssets": [],
+      "defaultAxonFaceAssets": [],
+      "consoleErrors": []
+    }
+  ],
+  "browser": "155.0.8059.79",
+  "sourceSha256": {
+    "/": "86bddd4109dd52f9840f07f954c616e41c619c5aae36472cfc0ab2d2fe985a81",
+    "/__three/build/three.module.js": "ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb",
+    "/__three/examples/jsm/libs/meshopt_decoder.module.js": "01f48524f4bac6141eaba07e94cc36e7ee56f311796fa6117c159842941b0468",
+    "/assets/sip-app.js": "c80d5bcfad97e9dfba3d0ebc4d80309b5937998fa6f8a28ff2e95b13eeba2193",
+    "/assets/sip-stack.css": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
+    "/assets/sip-warm.js": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
+    "/characters/assets/bp3d-missing-muscles-high-meshopt.glb": "3973c7e17087f3742ca2ee1664786106ec1b3d954e800d3e24a3f80080919d93",
+    "/characters/assets/bp3d-missing-muscles-mobile-meshopt.glb": "7e1313aaba287cdf90ed0d97d1cdb3955d92f18b781ea6ea839c2bc1af8fac59",
+    "/characters/assets/bp3d-muscles-high-meshopt.glb": "4a2d4840c04053271dd191834986543bd9f3a441630e1b4b1564309049cded8e",
+    "/characters/assets/bp3d-muscles-mobile-meshopt.glb": "d36ce0b8138d204f4f52896b5f0dd71f1b348ade89e1fe6e52cd58d71c9d925a",
+    "/characters/assets/hair/roma-high.glb.gz": "30812d08eb721886afac226abdcbef92246172b5577f80ed9f2b5e34083aeac6",
+    "/characters/assets/hair/roma-mobile.glb.gz": "18f63026ed5251593c20e7c183f84672e6d4b315d24b1513a2bace6a1310d554",
+    "/characters/assets/hair/sippy-high.glb.gz": "e0df98ae9f372cf3a55eed61e97b20ee796b2a43754bdf8b7dca59ad26d7efa5",
+    "/characters/assets/hair/sippy-mobile.glb.gz": "309c62556c73c2fe4a20b39c4247dd57ea5175ab2743362ca28ffcfbf3dd6868",
+    "/characters/assets/roma-adapted-bp3d-high-meshopt.glb": "f1cbfc866dcf5acf7e37556184a24a3bb19908689294afd32a5f267f0e37a2f2",
+    "/characters/assets/roma-adapted-bp3d-mobile-meshopt.glb": "c5bcf5d3a11e8b09fe0e68f19210ea7bbacd20bd213b22bab73fd33bf5306dbd",
+    "/characters/assets/roma-adapted-zanatomy-high-meshopt.glb": "e20d621318c2a955e9e35e2c3051849ce8ffd8d93eb365fa89dc074b3d988009",
+    "/characters/assets/roma-adapted-zanatomy-mobile-meshopt.glb": "1c07a6067ebf5116d61c1963dbe16c18c138e7d5cbab630c1235a8382316cbe2",
+    "/characters/assets/roma-face-bp3d-meshopt.glb": "7745615e8ee8ddbdc6d238f6d920072a7d7e43bafe04e410016abe0b626bae2a",
+    "/characters/assets/sippy-face-bp3d-meshopt.glb": "f9bd2df0e82469840c5d8f5f338fd973ba1aa1f6608b31f493e082fa8ab007f4",
+    "/characters/assets/skeleton-female-high.glb": "ede7162eea26e78d9c4b608ad6b9eaf89fdf2de464b8042d9d43637fed3072f6",
+    "/characters/assets/skeleton-female-mobile.glb": "05587c4a9c096909d55de20f5b8bdb7c81eaea5b9c6aac29b526628271553bde",
+    "/characters/assets/skeleton-male-high.glb": "268f599a01248b45ebb4ba0e2461d43f941f9ccd13cdab712dd06c437ffdb002",
+    "/characters/assets/skeleton-male-mobile.glb": "f8c021ca66b42b788d78817c43b30dc5941c876861462b6a6dea5d9ce4cc21d8",
+    "/characters/assets/skin-wrap-gap-roma-high.json": "f6b6aa37f75b159a0ce61210b3e54ed2a2de33a87166747d7a2a762ac3582216",
+    "/characters/assets/skin-wrap-gap-roma-mobile.json": "9cdc8a1de320aeec64c6e057cf0ca0b0c92d58a1b131761d875fee90e30b1e76",
+    "/characters/assets/skin-wrap-gap-sippy-high.json": "796b00a4591651d882c84ff9d4ce0fb1c308a78280c7268d5d217955492ac588",
+    "/characters/assets/skin-wrap-gap-sippy-mobile.json": "fade71110e60de4380e69ff5defe4ad2c24f96524d1ee42b4c808dd798dee6b5",
+    "/characters/assets/vhf-muscles-source-meshopt.glb": "d8501c5bfbed471419e9c905d057c609204f8fdd619654b92eaebcab945d8c9a",
+    "/characters/assets/zanatomy-lats-rectus-high-meshopt.glb": "9a90c6e8b8e27a22b5e1417c3d07cd72ba6dfec34719a03640ca8ddfacaeec9e",
+    "/characters/assets/zanatomy-lats-rectus-mobile-meshopt.glb": "5415abf6a24b3ad14cf150bb1208089050895b4a9d5a7353930785ecee749e94",
+    "/characters/avatar-builder.js": "7ea387b09b7a0564952641e0179a9c0a5cd562b230c17089eb7c27e04253e3fd",
+    "/characters/axon-view.css": "ba2b4d1051ba5ff5316c730e6e77c53662a98764194d514544223363f60b679a",
+    "/characters/axon-view.js": "699b83ef5d98e3c011e14ac07c1d08e9632b37b42fe3bfe441909162a1670c75",
+    "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
+    "/characters/diagram-explode.js": "e5ff06d8b13c318e445686416623c914516fd5314419272208e5fdda3d1aa264",
+    "/characters/diagram-fabricator.js": "88a00546828c8d1a243e89b40101cd1c2d3ea4a635b11913c62cb21d6c0c4532",
+    "/characters/diagram-face-anatomy.js": "0cf0eb16ef7c0c2a3504a56b265c8f60dbd66ae8d6ce8e047aadb0d8303bf9fa",
+    "/characters/diagram-model.js": "3c42123254f0de820a9adc2aea7618b2f4ee907c13871cdebc03bf95e2fabfb6",
+    "/characters/diagram-muscle-names.js": "9f85c9b6894bc702cdd6ad3b104405f251d13411c7cadba4928b580286925836",
+    "/characters/diagram-outer-parts.js": "32dc824f4780568b2d1a29f4397282250363d771a19b08620ded8ab2083acae3",
+    "/characters/diagram-parts.js": "03149cb407ea59aee8fe5b0c8bb509a5ac8a0bb2be163d3fa1bedee0bab3bdfe",
+    "/characters/diagram-scan-repairs.js": "06d57b70cb7727e1efc32f763334709e561cb0708901e974601a48d1340f75a9",
+    "/characters/diagram-scan-source.js": "be43c7a6b29183065854b45407912972c53c3a6f16948d8d4414950e05e74a95",
+    "/characters/diagram-skin-fit.js": "1efc7667d154f75cf7bd50b1900883ab8e06ceaaf0c6e296a9063a1a77768895",
+    "/characters/diagram-snapshot.js": "af3d0c61432db2e768f59b4e8d9d90631e40d82f0b95ef598d194b6e0fd3c1de",
+    "/characters/diagram-source-anatomy.js": "f8a01a57ec55d1a62effd303c38bad53d8fd92a1f1ffbdd2e375888dabd04936",
+    "/characters/diagram-source-pose.js": "adde5a3daf7cb0a73d0f6d0cb52ff13a4ff7e0a023589f3127f81da9e2c603ef",
+    "/characters/diagram-source-tissue.js": "c4ae75708c25524b97d7b6600ba6a3bbab93c9b930b3068cefc8f8ccaee80b3a",
+    "/characters/diagram-studio.js": "bde1a8de416f083c79796056e7520f63301649aed1a871515ad73f9e4c70d3bb",
+    "/characters/diagram-view.js": "f31bbef4bcb55605e86d26ebff4f3bdcccd696f4009412002853ec2f7355282b",
+    "/characters/explorer-face.js": "c9de7747b1435b8bec981845a0b0d82acb76a1263dc4759693bbdbb9f9325d49",
+    "/characters/hair-groom.js": "0d0cb991ee10e1e74a8b4fb4706602bae7d5de3f9e518531b4c5ef30a8230058",
+    "/characters/human-exterior.js": "b8fa8dfbda14dce230be70820116c2eb83934b42fc99628ac6911b05f1161a40",
+    "/characters/human-hands.js": "ee0186dd3cfd7e4b1150fb6c38d912fde4a5bbf53e273881c2ba46cfda7ef12a",
+    "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
+    "/characters/main.js": "bf9946cdca21a4ca6dc694df38915fa0dfa1bea6bbb363de14d92cbcd9505fd9",
+    "/characters/model-tier.js": "207729977342a37c22fc2eaab114a8a75c4f3b7b7523901a0a34361fcc804c5a",
+    "/characters/motion.js": "f40273499b0f20cc5820bdfdc9ab9b9265be6af7c246d8f6bb5cdf676dff3917",
+    "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
+    "/characters/rig.js": "3e8373a52c7e6a5b2049b4da5b6fbc0a9c13fa0291f6b84b6f6f38252edea20c",
+    "/characters/roma-exterior-data.js": "e3e27de59fe91a0965c9d1d207d84a8ebfeac44df212c8853856dae07190eb7d",
+    "/characters/roma-face-shell.js": "61ae043f29b04a54a217c001ed189f2fe80ff069c1346c815c4d80af2ccb269d",
+    "/characters/roma-forms.js": "0ba6f7f2bcad6d622c36b7fac1157e54755cf2ccb2c26a7e995d50b0e59fc87a",
+    "/characters/roma-hand-data.js": "c8c75b1414c14c4599fbac56236fde1a51b60863a60dba14428c33ac207d01bf",
+    "/characters/roma-soft-tissue.js": "a1979c07550bbb85222f328bf794da64977d8956b7db01ca68dd25908cbd7d3f",
+    "/characters/roma.js": "791879dc02832a7775e03a51d782388f3d4be36579ecd4bbd0441d01feeac0de",
+    "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+    "/characters/secondary.js": "80ed341ab1b5bdc86164c46e3585f724c919c6fcb5a90a3b59f2a681bf47e24d",
+    "/characters/sippy-explorer.js": "42e0153206cadcb56d3999ec002273fa064702c979f6d364eca1730d241bd390",
+    "/characters/sippy-expression.js": "653dba3d406d2b63706f9b490ebfa875d208088baa20874b3658beaaba00a005",
+    "/characters/sippy-exterior-data.js": "dab153f496b86676d9648f0991647f3c33ef4d7d2d2cb0abc767632b9973f283",
+    "/characters/sippy-face-shell.js": "dbad6a60af7899144395052177ab12ab6302ffc258cd1396003b90c8068699ed",
+    "/characters/sippy-hand-data.js": "720241932f86ed390e5f707dea0b0a5bd907bc15873edeb6b7b9482f334eeee2",
+    "/characters/sippy-hips.js": "dde1e1080e348fdf994266e99515ef4af91c110333905746925f59d1ec894eb9",
+    "/characters/sippy-skin.js": "a8a5282940d89b8e02f5d4ce65d76251aff1d707921769cca85874983ff1418f",
+    "/characters/sippy-tailoring.js": "d624d7dd5f21cd39fe86a41dc22e4b9c9e4f97cb3b1dfe77fad984e4db95de84",
+    "/characters/sippy.js": "a5c9aed7bed6e5b40fa5ee7f4feac516dee2601517b9423a037f5116e806ec0a",
+    "/characters/source-asset-files.js": "72807e24212cffe795c732b5340c2782f5102c2a27754bd2a4d8da1f4c1b7d4b",
+    "/characters/source-face-landmarks.js": "95dd1b18daa90214d2d0d5b5901a5b277fb614909435d4464fe6290ac36e46e5",
+    "/characters/source-landmarks.js": "f52aa6aa192045f70d2df2fa576fabbb6374fa52d754c970451cf298bf4cb393",
+    "/characters/source-rig.js": "2797b1f579607a7fbc09336dff23a0f3bee52ec7a1f41eafb91066ef0862aaf3",
+    "/characters/stage.js": "641718e455aacc22f4e02423c48bc7a48ead56efb7ee6a534ccb2530e6a768c2",
+    "/characters/ui.js": "145b3db0740fcfd83535c2250edc0e52dcda7843c41ed62b2a394d5df934a7cd"
+  }
+}
