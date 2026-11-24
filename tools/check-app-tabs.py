@@ -84,14 +84,18 @@ OUTLINE_CHART = '#chart-05.active .mermaid-wrap svg'
 def browser_context(browser, device, packages):
     context = browser.new_context(reduced_motion='reduce', **device)
     for prefix, package in packages.items():
-        def local_script(route, root=package, base=prefix):
-            relative = urlsplit(route.request.url.removeprefix(base)).path
-            route.fulfill(path=root / relative, content_type='text/javascript',
-                          headers={'Access-Control-Allow-Origin': '*'})
-        context.route(prefix + '**', local_script)
+        context.route(prefix + '**', local_scripts(prefix, package))
     context.route('https://fonts.googleapis.com/**', lambda route: route.fulfill(body='', content_type='text/css'))
     context.add_init_script(PROBE)
     return context
+
+
+def local_scripts(prefix, package):
+    def fulfill(route):
+        relative = urlsplit(route.request.url.removeprefix(prefix)).path
+        route.fulfill(path=package / relative, content_type='text/javascript',
+                      headers={'Access-Control-Allow-Origin': '*'})
+    return fulfill
 
 
 def packages_from_env():
@@ -118,15 +122,17 @@ def show_tab(page, view, target=None):
     assert tab.get_attribute('aria-selected') == 'true', view
     assert page.locator('section.view.active').count() == 1, view
     assert page.locator(f'#{view}.active').count() == 1, view
-    content = {
+    if view == 'village' and target is None:
+        canvas = page.locator(VILLAGE)
+        canvas.evaluate("c => c.scrollIntoView({block:'center',behavior:'instant'})")
+        canvas.wait_for(state='visible')
+        page.wait_for_function('(selector) => appChecks.painted(document.querySelector(selector))', arg=VILLAGE)
+        return
+    default_content = {
         'world': '#world .card[data-id="01"] svg.scene',
         'outline': '#outline .active .mermaid-wrap svg',
-        'village': VILLAGE,
     }
-    page.locator(target or content[view]).first.wait_for(state='visible')
-    if view == 'village' and target is None:
-        page.locator(VILLAGE).evaluate("c => c.scrollIntoView({block:'center',behavior:'instant'})")
-        page.wait_for_function('(selector) => appChecks.painted(document.querySelector(selector))', arg=VILLAGE)
+    page.locator(target or default_content[view]).first.wait_for(state='visible')
 
 
 def visit(page, url):
