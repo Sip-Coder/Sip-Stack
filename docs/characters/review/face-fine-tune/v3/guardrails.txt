@@ -1,0 +1,38 @@
+Renderer checks on a6e8d51eb83834a80746390e8bde16d9ed61a9e1
+
+Heros fixed-step cap, fractional carry, resume, budget HUD and Auto/High/slow-mode policy passed.
+mobile all three cast buttons drew distinct actors; differing colour samples [621, 686, 713]
+Opaque native strand materials {"tier": "mobile", "hero": "sippy", "uniqueDraws": 4}
+Opaque native strand materials {"tier": "mobile", "hero": "roma", "uniqueDraws": 12}
+mobile context restored and native floor repainted with GL_NO_ERROR
+high all three cast buttons drew distinct actors; differing colour samples [635, 685, 725]
+Opaque native strand materials {"tier": "high", "hero": "sippy", "uniqueDraws": 4}
+Opaque native strand materials {"tier": "high", "hero": "roma", "uniqueDraws": 12}
+high context restored and native floor repainted with GL_NO_ERROR
+The injected Mobile warm-up rejection returned to the preserved target and repainted.
+Offscreen floor made zero presents; re-entry resumed with live pixels.
+5 four-tab cycles {"tier": "mobile", "contexts": 2, "clears": 0, "black": 0, "frames": 158, "byTab": {"heros": 96, "village": 62}}
+5 four-tab cycles {"tier": "high", "contexts": 2, "clears": 0, "black": 0, "frames": 149, "byTab": {"heros": 87, "village": 62}}
+No browser JavaScript or GL invalid-operation errors.
+
+Study views with sippy selected
+Axon View High before loss [0, 0, 0, 0, 0]
+Visible Axon View retained its pixels during context loss and rewarmed to the same image.
+Axon View High after restore [0, 0, 0, 0, 0]
+Character Ref High before loss [0, 0, 0, 0, 0]
+Character Ref retained High portrait pixels during context loss.
+Character Ref High after restore [0, 0, 0, 0, 0]
+Character Ref Mobile repaint [0, 0, 0, 0, 0]
+Axon View Mobile repaint [0, 0, 0, 0, 0]
+Both studies restored Sippy with GL_NO_ERROR.
+
+Study views with roma selected
+Axon View High before loss [0, 0, 0, 0, 0]
+Visible Axon View retained its pixels during context loss and rewarmed to the same image.
+Axon View High after restore [0, 0, 0, 0, 0]
+Character Ref High before loss [0, 0, 0, 0, 0]
+Character Ref retained High portrait pixels during context loss.
+Character Ref High after restore [0, 0, 0, 0, 0]
+Character Ref Mobile repaint [0, 0, 0, 0, 0]
+Axon View Mobile repaint [0, 0, 0, 0, 0]
+Both studies restored Roma with GL_NO_ERROR.

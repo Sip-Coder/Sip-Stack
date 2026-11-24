@@ -15,7 +15,7 @@ The default stage captures use the live idle simulator after its HUD begins samp
 
 | Item | Verdict | Evidence |
 | --- | --- | --- |
-| 1 · Eyes, lids and lashes | Partly. Globe size is 87.5% of main and lids and lashes read from the front. Some socket edges are hard and the iris is still narrow in profile. | [Matched views](design-eyes.png) |
+| 1 · Eyes, lids and lashes | Partly. The eye build targets 87.5% of the main globe diameter and the visible spans measure about 86.2%. Lids and lashes read from the front. Some socket edges are hard and the iris is still narrow in profile. | [Matched views](design-eyes.png) |
 | 2 · Lips and expression | Partly. Sippy’s prior contour and smile are restored and Roma has a fuller lip with lipstick. The underside of Sippy’s mouth still reads sharply in profile. | [Matched views](design-lips.png) |
 | 3 · Olive complexion | Partly. Both use a shared sheet-derived tone on face, ears, neck and hands. The matched light shows residual color and shading differences in the profile and neck. | [Matched views](design-complexion.png) |
 | 4 · Eyebrows | Partly. The brows gain an arch and taper. Their height and thickness still vary from the sheets. | [Matched views](design-eyebrows.png) |

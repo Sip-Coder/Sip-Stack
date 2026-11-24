@@ -1,0 +1,113 @@
+{
+  "revision": "a6e8d51eb83834a80746390e8bde16d9ed61a9e1",
+  "assets": [
+    {
+      "hero": "sippy",
+      "tier": "mobile",
+      "wireBytes": 62417,
+      "glbBytes": 98580,
+      "vertices": 6066,
+      "triangles": 8578,
+      "skinnedTriangles": 864,
+      "rigJoints": 6,
+      "sha256": "309c62556c73c2fe4a20b39c4247dd57ea5175ab2743362ca28ffcfbf3dd6868"
+    },
+    {
+      "hero": "sippy",
+      "tier": "high",
+      "wireBytes": 99801,
+      "glbBytes": 164888,
+      "vertices": 11004,
+      "triangles": 15848,
+      "skinnedTriangles": 1320,
+      "rigJoints": 6,
+      "sha256": "e0df98ae9f372cf3a55eed61e97b20ee796b2a43754bdf8b7dca59ad26d7efa5"
+    },
+    {
+      "hero": "roma",
+      "tier": "mobile",
+      "wireBytes": 79167,
+      "glbBytes": 154056,
+      "vertices": 7992,
+      "triangles": 10422,
+      "skinnedTriangles": 2416,
+      "rigJoints": 24,
+      "sha256": "18f63026ed5251593c20e7c183f84672e6d4b315d24b1513a2bace6a1310d554"
+    },
+    {
+      "hero": "roma",
+      "tier": "high",
+      "wireBytes": 112276,
+      "glbBytes": 217240,
+      "vertices": 12444,
+      "triangles": 16764,
+      "skinnedTriangles": 4048,
+      "rigJoints": 24,
+      "sha256": "30812d08eb721886afac226abdcbef92246172b5577f80ed9f2b5e34083aeac6"
+    }
+  ],
+  "demandLoading": {
+    "files": {
+      "/characters/assets/hair/sippy-mobile.glb.gz": 1,
+      "/characters/assets/hair/roma-mobile.glb.gz": 1
+    },
+    "lateSelectionStayedHidden": true,
+    "keptPreviousFrame": true,
+    "extraHumminFiles": 0,
+    "liveContexts": 1
+  },
+  "recovery": [
+    {
+      "hero": "sippy",
+      "documents": 2,
+      "assetRequestTypes": [
+        "fetch",
+        "fetch",
+        "fetch"
+      ],
+      "paintedSelectedHero": true
+    },
+    {
+      "hero": "roma",
+      "documents": 2,
+      "assetRequestTypes": [
+        "fetch",
+        "fetch",
+        "fetch"
+      ],
+      "paintedSelectedHero": true
+    }
+  ],
+  "reducedMotion": [
+    {
+      "hero": "sippy",
+      "walking": {
+        "bones": 3,
+        "maxAngularChangeDegrees": 13.725732629807501,
+        "speed": 1.129999999999729,
+        "reduced": false
+      },
+      "reducedMotionWalking": {
+        "bones": 3,
+        "maxAngularChangeDegrees": 0,
+        "speed": 1.129999999999729,
+        "reduced": true
+      }
+    },
+    {
+      "hero": "roma",
+      "walking": {
+        "bones": 4,
+        "maxAngularChangeDegrees": 17.864576806478762,
+        "speed": 1.129999999999729,
+        "reduced": false
+      },
+      "reducedMotionWalking": {
+        "bones": 4,
+        "maxAngularChangeDegrees": 2.4148365394514667e-06,
+        "speed": 1.129999999999729,
+        "reduced": true
+      }
+    }
+  ]
+}

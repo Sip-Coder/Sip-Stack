@@ -1,0 +1,30 @@
+[
+  {
+    "hero": "sippy",
+    "tier": "mobile",
+    "beforeBytes": 62417,
+    "afterBytes": 62417,
+    "decodedSha256": "b4a09705b0e27ba244561c234b3e11f0f78f167543aa5603df29dd8f58836f48"
+  },
+  {
+    "hero": "sippy",
+    "tier": "high",
+    "beforeBytes": 104313,
+    "afterBytes": 99801,
+    "decodedSha256": "2908382b6675c739abf2cf6d44a3d40505ac45dd4c130c3552d5ba2a83c3b19c"
+  },
+  {
+    "hero": "roma",
+    "tier": "mobile",
+    "beforeBytes": 79167,
+    "afterBytes": 79167,
+    "decodedSha256": "09e9f1f7222e2d117172ad41e3e9f20b2af2658133ca4fb64cccad6e55b6ab15"
+  },
+  {
+    "hero": "roma",
+    "tier": "high",
+    "beforeBytes": 117284,
+    "afterBytes": 112276,
+    "decodedSha256": "16412118efa3c54deeb321f8ed3db8d4d0a187646fb11231538a377c63cc88ea"
+  }
+]

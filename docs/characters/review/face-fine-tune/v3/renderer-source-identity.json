@@ -1,0 +1,42 @@
+[
+  {
+    "path": "assets/sip-warm.js",
+    "mainSHA256": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
+    "v3SHA256": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf"
+  },
+  {
+    "path": "assets/sip-recover.js",
+    "mainSHA256": "26346fc5033f2a52334d603b02d5f1992ff840106f61727a6e9d21b2f5074192",
+    "v3SHA256": "26346fc5033f2a52334d603b02d5f1992ff840106f61727a6e9d21b2f5074192"
+  },
+  {
+    "path": "characters/stage.js",
+    "mainSHA256": "641718e455aacc22f4e02423c48bc7a48ead56efb7ee6a534ccb2530e6a768c2",
+    "v3SHA256": "641718e455aacc22f4e02423c48bc7a48ead56efb7ee6a534ccb2530e6a768c2"
+  },
+  {
+    "path": "characters/route.js",
+    "mainSHA256": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+    "v3SHA256": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f"
+  },
+  {
+    "path": "assets/sip-stack.css",
+    "mainSHA256": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
+    "v3SHA256": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5"
+  },
+  {
+    "path": "characters/assets/SKELETON-LICENSE.md",
+    "initialPRSHA256": "6210327cd3fe4e56622df73531ef90360c97f045a175c2d71062d6d71a33e1cf",
+    "v3SHA256": "6210327cd3fe4e56622df73531ef90360c97f045a175c2d71062d6d71a33e1cf"
+  },
+  {
+    "path": "characters/assets/MUSCLE-SKIN-LICENSE.md",
+    "initialPRSHA256": "78a5b99b1eb83eaaf887949c3abfb7c3ffa522324bbb950463e14f592a93edc2",
+    "v3SHA256": "78a5b99b1eb83eaaf887949c3abfb7c3ffa522324bbb950463e14f592a93edc2"
+  },
+  {
+    "component": "main.js live sampler and scheduler",
+    "mainSHA256": "b52bedaf503b0ed00e9061bb94150a70d047f5746534339d0416c3e7e256c31c",
+    "v3SHA256": "b52bedaf503b0ed00e9061bb94150a70d047f5746534339d0416c3e7e256c31c"
+  }
+]

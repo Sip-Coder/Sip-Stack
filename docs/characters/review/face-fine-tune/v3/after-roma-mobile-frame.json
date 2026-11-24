@@ -1,0 +1,616 @@
+{
+  "revision": "50320962a38146335a9579eca5aca6cf16131a13",
+  "hero": "roma",
+  "tier": "mobile",
+  "viewport": [
+    412,
+    915
+  ],
+  "deviceScaleFactor": 2.6,
+  "cpu": 1,
+  "network": "local unthrottled after assets and motion are warm",
+  "framesPerVisit": 30,
+  "notes": "Heros walks forward using W. Village orbits with Right. Reduced motion disabled. Visible stage only.",
+  "rows": [
+    {
+      "graphics": {
+        "rapport": 1.5,
+        "displayDpr": 2.5999999046325684,
+        "colorType": 1016,
+        "cssSize": [
+          382,
+          522
+        ],
+        "canvasSize": [
+          573,
+          783
+        ],
+        "sceneSize": [
+          573,
+          783
+        ],
+        "requestedSamples": 2,
+        "activeSamples": 4,
+        "shadowMapWidth": 512,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "frames": [
+        {
+          "now": 4992.6,
+          "ms": 9.199999999254942,
+          "draws": 75
+        },
+        {
+          "now": 5242.5,
+          "ms": 7.199999999254942,
+          "draws": 56
+        },
+        {
+          "now": 5592.6,
+          "ms": 6.300000000745058,
+          "draws": 56
+        },
+        {
+          "now": 5875.8,
+          "ms": 2.800000000745058,
+          "draws": 56
+        },
+        {
+          "now": 6275.8,
+          "ms": 3.899999998509884,
+          "draws": 56
+        },
+        {
+          "now": 6609.1,
+          "ms": 3.199999999254942,
+          "draws": 56
+        },
+        {
+          "now": 6875.8,
+          "ms": 3.800000000745058,
+          "draws": 56
+        },
+        {
+          "now": 7175.8,
+          "ms": 5.600000001490116,
+          "draws": 56
+        },
+        {
+          "now": 7475.8,
+          "ms": 8.5,
+          "draws": 75
+        },
+        {
+          "now": 7775.8,
+          "ms": 2.800000000745058,
+          "draws": 56
+        },
+        {
+          "now": 8059.1,
+          "ms": 2.2999999970197678,
+          "draws": 56
+        },
+        {
+          "now": 8292.4,
+          "ms": 2.800000000745058,
+          "draws": 56
+        },
+        {
+          "now": 8542.4,
+          "ms": 2.300000000745058,
+          "draws": 56
+        },
+        {
+          "now": 8792.4,
+          "ms": 2.599999997764826,
+          "draws": 56
+        },
+        {
+          "now": 9059,
+          "ms": 2.599999997764826,
+          "draws": 56
+        },
+        {
+          "now": 9309,
+          "ms": 2.699999999254942,
+          "draws": 56
+        },
+        {
+          "now": 9592.4,
+          "ms": 2.699999999254942,
+          "draws": 75
+        },
+        {
+          "now": 9842.3,
+          "ms": 2.2999999970197678,
+          "draws": 56
+        },
+        {
+          "now": 10375.7,
+          "ms": 2.2999999970197678,
+          "draws": 56
+        },
+        {
+          "now": 10675.7,
+          "ms": 2.399999998509884,
+          "draws": 56
+        },
+        {
+          "now": 10942.3,
+          "ms": 2,
+          "draws": 56
+        },
+        {
+          "now": 11175.6,
+          "ms": 1.8999999985098839,
+          "draws": 56
+        },
+        {
+          "now": 11475.6,
+          "ms": 2.600000001490116,
+          "draws": 56
+        },
+        {
+          "now": 11709,
+          "ms": 2.300000000745058,
+          "draws": 56
+        },
+        {
+          "now": 11758.9,
+          "ms": 2.2000000029802322,
+          "draws": 75
+        },
+        {
+          "now": 11942.3,
+          "ms": 2.399999998509884,
+          "draws": 56
+        },
+        {
+          "now": 12192.2,
+          "ms": 2.399999998509884,
+          "draws": 56
+        },
+        {
+          "now": 12425.5,
+          "ms": 2.100000001490116,
+          "draws": 56
+        },
+        {
+          "now": 12675.5,
+          "ms": 2.5,
+          "draws": 56
+        },
+        {
+          "now": 12942.2,
+          "ms": 1.800000000745058,
+          "draws": 56
+        }
+      ],
+      "count": 30,
+      "intervalMedianMs": 266.60000000000036,
+      "intervalP95Ms": 380.04000000000013,
+      "callbackMedianMs": 2.599999997764826,
+      "callbackP95Ms": 7.914999999664724,
+      "drawsMean": 58.53333333333333,
+      "fps": 3.647982288417027,
+      "route": "heros",
+      "visit": 1
+    },
+    {
+      "graphics": {
+        "rapport": 1.5,
+        "displayDpr": 2.5999999046325684,
+        "colorType": 1016,
+        "cssSize": [
+          382,
+          522
+        ],
+        "canvasSize": [
+          573,
+          783
+        ],
+        "sceneSize": [
+          573,
+          783
+        ],
+        "requestedSamples": 2,
+        "activeSamples": 4,
+        "shadowMapWidth": 512,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "frames": [
+        {
+          "now": 5033.7,
+          "ms": 4.199999999254942,
+          "draws": 56
+        },
+        {
+          "now": 5467.1,
+          "ms": 4.699999999254942,
+          "draws": 56
+        },
+        {
+          "now": 5833.7,
+          "ms": 3,
+          "draws": 56
+        },
+        {
+          "now": 6200.4,
+          "ms": 2.600000001490116,
+          "draws": 56
+        },
+        {
+          "now": 6500.3,
+          "ms": 3.599999997764826,
+          "draws": 56
+        },
+        {
+          "now": 6800.4,
+          "ms": 2.599999997764826,
+          "draws": 56
+        },
+        {
+          "now": 7067,
+          "ms": 3.300000000745058,
+          "draws": 56
+        },
+        {
+          "now": 7400.3,
+          "ms": 4.899999998509884,
+          "draws": 75
+        },
+        {
+          "now": 7683.6,
+          "ms": 3.800000000745058,
+          "draws": 56
+        },
+        {
+          "now": 7967,
+          "ms": 2.699999999254942,
+          "draws": 56
+        },
+        {
+          "now": 8233.6,
+          "ms": 2.599999997764826,
+          "draws": 56
+        },
+        {
+          "now": 8500.2,
+          "ms": 2.600000001490116,
+          "draws": 56
+        },
+        {
+          "now": 8766.9,
+          "ms": 2.5,
+          "draws": 56
+        },
+        {
+          "now": 9033.6,
+          "ms": 2.399999998509884,
+          "draws": 56
+        },
+        {
+          "now": 9316.9,
+          "ms": 2.699999999254942,
+          "draws": 56
+        },
+        {
+          "now": 9616.9,
+          "ms": 2.300000000745058,
+          "draws": 75
+        },
+        {
+          "now": 9883.5,
+          "ms": 3.199999999254942,
+          "draws": 56
+        },
+        {
+          "now": 10133.5,
+          "ms": 2.899999998509884,
+          "draws": 56
+        },
+        {
+          "now": 10400.1,
+          "ms": 3,
+          "draws": 56
+        },
+        {
+          "now": 10666.8,
+          "ms": 3.5,
+          "draws": 56
+        },
+        {
+          "now": 11016.8,
+          "ms": 2,
+          "draws": 56
+        },
+        {
+          "now": 11283.5,
+          "ms": 2.699999999254942,
+          "draws": 56
+        },
+        {
+          "now": 11516.8,
+          "ms": 2.399999998509884,
+          "draws": 56
+        },
+        {
+          "now": 11783.5,
+          "ms": 2.800000000745058,
+          "draws": 75
+        },
+        {
+          "now": 12033.5,
+          "ms": 2.099999997764826,
+          "draws": 56
+        },
+        {
+          "now": 12266.7,
+          "ms": 2,
+          "draws": 56
+        },
+        {
+          "now": 12516.8,
+          "ms": 1.9000000022351742,
+          "draws": 56
+        },
+        {
+          "now": 12733.4,
+          "ms": 2,
+          "draws": 56
+        },
+        {
+          "now": 13000,
+          "ms": 2,
+          "draws": 56
+        },
+        {
+          "now": 13316.8,
+          "ms": 3,
+          "draws": 56
+        }
+      ],
+      "count": 30,
+      "intervalMedianMs": 266.7000000000007,
+      "intervalP95Ms": 366.6599999999997,
+      "callbackMedianMs": 2.699999999254942,
+      "callbackP95Ms": 4.474999999254942,
+      "drawsMean": 57.9,
+      "fps": 3.5011046588837518,
+      "route": "heros",
+      "visit": 2
+    },
+    {
+      "graphics": {
+        "rapport": 1.5,
+        "displayDpr": 2.5999999046325684,
+        "colorType": 1016,
+        "cssSize": [
+          382,
+          522
+        ],
+        "canvasSize": [
+          573,
+          783
+        ],
+        "sceneSize": [
+          573,
+          783
+        ],
+        "requestedSamples": 2,
+        "activeSamples": 4,
+        "shadowMapWidth": 512,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "frames": [
+        {
+          "now": 4822.8,
+          "ms": 5.399999998509884,
+          "draws": 75
+        },
+        {
+          "now": 5072.8,
+          "ms": 4.5,
+          "draws": 56
+        },
+        {
+          "now": 5372.8,
+          "ms": 5.100000001490116,
+          "draws": 56
+        },
+        {
+          "now": 5756.1,
+          "ms": 3.5,
+          "draws": 56
+        },
+        {
+          "now": 6006.1,
+          "ms": 2.600000001490116,
+          "draws": 56
+        },
+        {
+          "now": 6256,
+          "ms": 2.699999999254942,
+          "draws": 56
+        },
+        {
+          "now": 6589.4,
+          "ms": 2.5,
+          "draws": 56
+        },
+        {
+          "now": 6856,
+          "ms": 3,
+          "draws": 56
+        },
+        {
+          "now": 7122.7,
+          "ms": 2.899999998509884,
+          "draws": 75
+        },
+        {
+          "now": 7422.7,
+          "ms": 2.699999999254942,
+          "draws": 56
+        },
+        {
+          "now": 7706,
+          "ms": 2.5,
+          "draws": 56
+        },
+        {
+          "now": 7989.3,
+          "ms": 2.600000001490116,
+          "draws": 56
+        },
+        {
+          "now": 8255.9,
+          "ms": 2.899999998509884,
+          "draws": 56
+        },
+        {
+          "now": 8522.6,
+          "ms": 2.399999998509884,
+          "draws": 56
+        },
+        {
+          "now": 8756,
+          "ms": 2.800000000745058,
+          "draws": 56
+        },
+        {
+          "now": 9055.9,
+          "ms": 2.899999998509884,
+          "draws": 56
+        },
+        {
+          "now": 9389.3,
+          "ms": 3.100000001490116,
+          "draws": 75
+        },
+        {
+          "now": 9656,
+          "ms": 2.300000000745058,
+          "draws": 56
+        },
+        {
+          "now": 9939.3,
+          "ms": 2.600000001490116,
+          "draws": 56
+        },
+        {
+          "now": 10239.3,
+          "ms": 2.300000000745058,
+          "draws": 56
+        },
+        {
+          "now": 10539.2,
+          "ms": 2.199999999254942,
+          "draws": 56
+        },
+        {
+          "now": 10789.2,
+          "ms": 2,
+          "draws": 56
+        },
+        {
+          "now": 11072.6,
+          "ms": 3.399999998509884,
+          "draws": 56
+        },
+        {
+          "now": 11389.2,
+          "ms": 2.7000000029802322,
+          "draws": 56
+        },
+        {
+          "now": 11789.2,
+          "ms": 3.699999999254942,
+          "draws": 75
+        },
+        {
+          "now": 12389.1,
+          "ms": 2.100000001490116,
+          "draws": 56
+        },
+        {
+          "now": 12405.8,
+          "ms": 1.6000000014901161,
+          "draws": 56
+        },
+        {
+          "now": 12805.8,
+          "ms": 2.600000001490116,
+          "draws": 56
+        },
+        {
+          "now": 12822.5,
+          "ms": 1.8999999985098839,
+          "draws": 56
+        },
+        {
+          "now": 13072.5,
+          "ms": 2.300000000745058,
+          "draws": 56
+        }
+      ],
+      "count": 30,
+      "intervalMedianMs": 283.3000000000002,
+      "intervalP95Ms": 400.0,
+      "callbackMedianMs": 2.650000000372529,
+      "callbackP95Ms": 4.830000000819564,
+      "drawsMean": 58.53333333333333,
+      "fps": 3.515279343491278,
+      "route": "heros",
+      "visit": 3
+    }
+  ],
+  "browser": "155.0.8059.79",
+  "summary": {
+    "heros": {
+      "intervalMedianMs": 266.7000000000007,
+      "intervalP95Ms": 380.04000000000013,
+      "callbackMedianMs": 2.650000000372529,
+      "callbackP95Ms": 4.830000000819564,
+      "drawsMean": 58.53333333333333,
+      "fps": 3.515279343491278
+    }
+  },
+  "sourceSha256": {
+    "/": "86bddd4109dd52f9840f07f954c616e41c619c5aae36472cfc0ab2d2fe985a81",
+    "/__three/build/three.module.js": "ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb",
+    "/__three/examples/jsm/libs/meshopt_decoder.module.js": "01f48524f4bac6141eaba07e94cc36e7ee56f311796fa6117c159842941b0468",
+    "/assets/sip-app.js": "c80d5bcfad97e9dfba3d0ebc4d80309b5937998fa6f8a28ff2e95b13eeba2193",
+    "/assets/sip-stack.css": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
+    "/assets/sip-warm.js": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
+    "/characters/assets/hair/roma-mobile.glb.gz": "18f63026ed5251593c20e7c183f84672e6d4b315d24b1513a2bace6a1310d554",
+    "/characters/avatar-builder.js": "7ea387b09b7a0564952641e0179a9c0a5cd562b230c17089eb7c27e04253e3fd",
+    "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
+    "/characters/explorer-face.js": "e10e458e9d49fe2a2b6658edec862b15290b178de1ed1c1329f7653e37ca4afe",
+    "/characters/hair-groom.js": "37ff6dc5cb22df167077b9feb1d79a4645fc518bb7e998880c36e513fb59ef41",
+    "/characters/hair-motion.js": "599536538bb81e1cc7af7c857735a678544df26471dee928c85082b9abd642d2",
+    "/characters/human-exterior.js": "ee907eae50f278e277c65b43cc853ea5885847ccf01cece9342a5287e56f5eb8",
+    "/characters/human-hands.js": "ee0186dd3cfd7e4b1150fb6c38d912fde4a5bbf53e273881c2ba46cfda7ef12a",
+    "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
+    "/characters/main.js": "56c2e5a6e1c45d8ef9daa66a70470bc500ed7bfa6136d78b08d83c3dc8eebe54",
+    "/characters/model-tier.js": "207729977342a37c22fc2eaab114a8a75c4f3b7b7523901a0a34361fcc804c5a",
+    "/characters/motion.js": "f40273499b0f20cc5820bdfdc9ab9b9265be6af7c246d8f6bb5cdf676dff3917",
+    "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
+    "/characters/review-controls.js": "39f770e7b184ae0da4ad4986b9901405c0d6d23126488278cbc571033dbdf267",
+    "/characters/rig.js": "3a99d92391091baf1f707a8fbb58c28e449ab8fa9761073544c6f4eb696b2b03",
+    "/characters/roma-exterior-data.js": "e3e27de59fe91a0965c9d1d207d84a8ebfeac44df212c8853856dae07190eb7d",
+    "/characters/roma-face-shell.js": "0dd98ac0c415061500f1cd1cbfa7c2fed4b1a1b56c64d8035bff940c5fcf84fd",
+    "/characters/roma-forms.js": "0ba6f7f2bcad6d622c36b7fac1157e54755cf2ccb2c26a7e995d50b0e59fc87a",
+    "/characters/roma-hand-data.js": "c8c75b1414c14c4599fbac56236fde1a51b60863a60dba14428c33ac207d01bf",
+    "/characters/roma-secondary.js": "44d96d1facd00e79a1e4097868a8a733b4243f864f870d9b6522caad8a7edddd",
+    "/characters/roma-soft-tissue.js": "a1979c07550bbb85222f328bf794da64977d8956b7db01ca68dd25908cbd7d3f",
+    "/characters/roma.js": "6be71a79c7b3afa5e02d37a3bb4c94e780b0ec23353ed0142d35aaad6f9a05de",
+    "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+    "/characters/secondary.js": "80ed341ab1b5bdc86164c46e3585f724c919c6fcb5a90a3b59f2a681bf47e24d",
+    "/characters/source-asset-files.js": "72807e24212cffe795c732b5340c2782f5102c2a27754bd2a4d8da1f4c1b7d4b",
+    "/characters/source-landmarks.js": "f52aa6aa192045f70d2df2fa576fabbb6374fa52d754c970451cf298bf4cb393",
+    "/characters/source-rig.js": "2797b1f579607a7fbc09336dff23a0f3bee52ec7a1f41eafb91066ef0862aaf3",
+    "/characters/stage.js": "641718e455aacc22f4e02423c48bc7a48ead56efb7ee6a534ccb2530e6a768c2",
+    "/characters/ui.js": "145b3db0740fcfd83535c2250edc0e52dcda7843c41ed62b2a394d5df934a7cd"
+  }
+}

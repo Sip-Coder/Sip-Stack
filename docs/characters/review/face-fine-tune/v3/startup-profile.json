@@ -1,0 +1,50 @@
+{
+  "v2": [
+    {
+      "interactiveMs": 6474.599999997765,
+      "presentedMs": 4175.099999997765,
+      "resources": 38,
+      "modules": 33,
+      "bytes": 477872,
+      "requestMs": {
+        "explorer-face.js": 1266.6,
+        "sippy-mobile.glb.gz": 1772.9
+      }
+    },
+    {
+      "interactiveMs": 10691,
+      "presentedMs": 6251.29999999702,
+      "resources": 38,
+      "modules": 33,
+      "bytes": 477872,
+      "requestMs": {
+        "explorer-face.js": 1973.2,
+        "sippy-mobile.glb.gz": 2863.2
+      }
+    }
+  ],
+  "v2-overlap": [
+    {
+      "interactiveMs": 6364.39999999851,
+      "presentedMs": 4020.199999999255,
+      "resources": 38,
+      "modules": 33,
+      "bytes": 477889,
+      "requestMs": {
+        "explorer-face.js": 1477.7,
+        "sippy-mobile.glb.gz": 1383.7
+      }
+    },
+    {
+      "interactiveMs": 6678.70000000298,
+      "presentedMs": 4446.70000000298,
+      "resources": 38,
+      "modules": 33,
+      "bytes": 477889,
+      "requestMs": {
+        "explorer-face.js": 1706.9,
+        "sippy-mobile.glb.gz": 1611.7
+      }
+    }
+  ]
+}

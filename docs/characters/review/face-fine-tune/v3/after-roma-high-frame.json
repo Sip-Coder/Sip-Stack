@@ -1,0 +1,467 @@
+{
+  "revision": "a6e8d51eb83834a80746390e8bde16d9ed61a9e1",
+  "hero": "roma",
+  "tier": "high",
+  "viewport": [
+    800,
+    680
+  ],
+  "deviceScaleFactor": 1,
+  "cpu": 1,
+  "network": "local unthrottled after assets and motion are warm",
+  "framesPerVisit": 20,
+  "notes": "Heros walks forward using W. Village orbits with Right. Reduced motion disabled. Visible stage only.",
+  "rows": [
+    {
+      "graphics": {
+        "rapport": 1,
+        "displayDpr": 1,
+        "colorType": 1016,
+        "cssSize": [
+          497,
+          449
+        ],
+        "canvasSize": [
+          497,
+          449
+        ],
+        "sceneSize": [
+          497,
+          449
+        ],
+        "requestedSamples": 2,
+        "activeSamples": 4,
+        "shadowMapWidth": 1024,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "frames": [
+        {
+          "now": 5363.9,
+          "ms": 3,
+          "draws": 56
+        },
+        {
+          "now": 5630.5,
+          "ms": 3.699999999254942,
+          "draws": 56
+        },
+        {
+          "now": 5913.8,
+          "ms": 3.2000000029802322,
+          "draws": 75
+        },
+        {
+          "now": 6163.8,
+          "ms": 3,
+          "draws": 56
+        },
+        {
+          "now": 6363.8,
+          "ms": 2.699999999254942,
+          "draws": 56
+        },
+        {
+          "now": 6547.1,
+          "ms": 2.7999999970197678,
+          "draws": 56
+        },
+        {
+          "now": 6747.1,
+          "ms": 3.300000000745058,
+          "draws": 75
+        },
+        {
+          "now": 6947.1,
+          "ms": 5.599999997764826,
+          "draws": 56
+        },
+        {
+          "now": 7163.8,
+          "ms": 3.900000002235174,
+          "draws": 56
+        },
+        {
+          "now": 7363.7,
+          "ms": 2.400000002235174,
+          "draws": 56
+        },
+        {
+          "now": 7563.7,
+          "ms": 4,
+          "draws": 75
+        },
+        {
+          "now": 7780.4,
+          "ms": 16.599999997764826,
+          "draws": 56
+        },
+        {
+          "now": 7980.4,
+          "ms": 2.5,
+          "draws": 56
+        },
+        {
+          "now": 8247,
+          "ms": 2.2999999970197678,
+          "draws": 56
+        },
+        {
+          "now": 8447,
+          "ms": 2.899999998509884,
+          "draws": 75
+        },
+        {
+          "now": 8663.7,
+          "ms": 2.7999999970197678,
+          "draws": 56
+        },
+        {
+          "now": 8863.7,
+          "ms": 2.199999999254942,
+          "draws": 56
+        },
+        {
+          "now": 9113.7,
+          "ms": 2.699999999254942,
+          "draws": 56
+        },
+        {
+          "now": 9297,
+          "ms": 2.599999997764826,
+          "draws": 75
+        },
+        {
+          "now": 9630.3,
+          "ms": 2.2999999970197678,
+          "draws": 56
+        }
+      ],
+      "count": 20,
+      "intervalMedianMs": 200.0,
+      "intervalP95Ms": 288.30000000000007,
+      "callbackMedianMs": 2.849999997764826,
+      "callbackP95Ms": 6.149999997764826,
+      "drawsMean": 60.75,
+      "fps": 4.4534033377086075,
+      "route": "heros",
+      "visit": 1
+    },
+    {
+      "graphics": {
+        "rapport": 1,
+        "displayDpr": 1,
+        "colorType": 1016,
+        "cssSize": [
+          497,
+          449
+        ],
+        "canvasSize": [
+          497,
+          449
+        ],
+        "sceneSize": [
+          497,
+          449
+        ],
+        "requestedSamples": 2,
+        "activeSamples": 4,
+        "shadowMapWidth": 1024,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "frames": [
+        {
+          "now": 4746.3,
+          "ms": 3,
+          "draws": 56
+        },
+        {
+          "now": 5013,
+          "ms": 3.7999999970197678,
+          "draws": 75
+        },
+        {
+          "now": 5229.6,
+          "ms": 4,
+          "draws": 56
+        },
+        {
+          "now": 5413,
+          "ms": 2.899999998509884,
+          "draws": 56
+        },
+        {
+          "now": 5679.7,
+          "ms": 3.699999999254942,
+          "draws": 56
+        },
+        {
+          "now": 5913,
+          "ms": 3.600000001490116,
+          "draws": 75
+        },
+        {
+          "now": 6279.6,
+          "ms": 2.400000002235174,
+          "draws": 56
+        },
+        {
+          "now": 6513,
+          "ms": 2.899999998509884,
+          "draws": 56
+        },
+        {
+          "now": 6563,
+          "ms": 2.899999998509884,
+          "draws": 56
+        },
+        {
+          "now": 6713,
+          "ms": 3.099999997764826,
+          "draws": 75
+        },
+        {
+          "now": 6896.3,
+          "ms": 2.199999999254942,
+          "draws": 56
+        },
+        {
+          "now": 7046.3,
+          "ms": 2.199999999254942,
+          "draws": 56
+        },
+        {
+          "now": 7262.9,
+          "ms": 2.900000002235174,
+          "draws": 56
+        },
+        {
+          "now": 7562.9,
+          "ms": 3.199999999254942,
+          "draws": 75
+        },
+        {
+          "now": 7796.2,
+          "ms": 2.5,
+          "draws": 56
+        },
+        {
+          "now": 7862.9,
+          "ms": 1.7999999970197678,
+          "draws": 56
+        },
+        {
+          "now": 7912.9,
+          "ms": 2,
+          "draws": 56
+        },
+        {
+          "now": 8112.9,
+          "ms": 3.599999997764826,
+          "draws": 75
+        },
+        {
+          "now": 8262.9,
+          "ms": 4.199999999254942,
+          "draws": 56
+        },
+        {
+          "now": 8496.2,
+          "ms": 3.2000000029802322,
+          "draws": 56
+        }
+      ],
+      "count": 20,
+      "intervalMedianMs": 216.59999999999945,
+      "intervalP95Ms": 306.66,
+      "callbackMedianMs": 2.950000001117587,
+      "callbackP95Ms": 4.009999999962747,
+      "drawsMean": 60.75,
+      "fps": 5.066801781380836,
+      "route": "heros",
+      "visit": 2
+    },
+    {
+      "graphics": {
+        "rapport": 1,
+        "displayDpr": 1,
+        "colorType": 1016,
+        "cssSize": [
+          497,
+          449
+        ],
+        "canvasSize": [
+          497,
+          449
+        ],
+        "sceneSize": [
+          497,
+          449
+        ],
+        "requestedSamples": 2,
+        "activeSamples": 4,
+        "shadowMapWidth": 1024,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "frames": [
+        {
+          "now": 4868.7,
+          "ms": 3.7000000029802322,
+          "draws": 56
+        },
+        {
+          "now": 5051.9,
+          "ms": 2.7999999970197678,
+          "draws": 56
+        },
+        {
+          "now": 5235.3,
+          "ms": 3,
+          "draws": 75
+        },
+        {
+          "now": 5418.6,
+          "ms": 2.600000001490116,
+          "draws": 56
+        },
+        {
+          "now": 5602,
+          "ms": 5.199999999254942,
+          "draws": 56
+        },
+        {
+          "now": 5818.6,
+          "ms": 6.899999998509884,
+          "draws": 56
+        },
+        {
+          "now": 5985.2,
+          "ms": 3.899999998509884,
+          "draws": 75
+        },
+        {
+          "now": 6185.3,
+          "ms": 3.5,
+          "draws": 56
+        },
+        {
+          "now": 6335.2,
+          "ms": 2.599999997764826,
+          "draws": 56
+        },
+        {
+          "now": 6585.2,
+          "ms": 2.399999998509884,
+          "draws": 56
+        },
+        {
+          "now": 6785.3,
+          "ms": 2.5,
+          "draws": 75
+        },
+        {
+          "now": 7001.9,
+          "ms": 2.400000002235174,
+          "draws": 56
+        },
+        {
+          "now": 7185.2,
+          "ms": 2.300000000745058,
+          "draws": 56
+        },
+        {
+          "now": 7351.8,
+          "ms": 2.199999999254942,
+          "draws": 56
+        },
+        {
+          "now": 7535.2,
+          "ms": 2.899999998509884,
+          "draws": 75
+        },
+        {
+          "now": 7718.5,
+          "ms": 2.600000001490116,
+          "draws": 56
+        },
+        {
+          "now": 7901.8,
+          "ms": 2.900000002235174,
+          "draws": 56
+        },
+        {
+          "now": 8085.2,
+          "ms": 2.699999999254942,
+          "draws": 56
+        },
+        {
+          "now": 8235.2,
+          "ms": 4.199999999254942,
+          "draws": 75
+        },
+        {
+          "now": 8418.5,
+          "ms": 2.5,
+          "draws": 56
+        }
+      ],
+      "count": 20,
+      "intervalMedianMs": 183.30000000000018,
+      "intervalP95Ms": 219.94000000000034,
+      "callbackMedianMs": 2.749999998137355,
+      "callbackP95Ms": 5.284999999217689,
+      "drawsMean": 60.75,
+      "fps": 5.352414220519465,
+      "route": "heros",
+      "visit": 3
+    }
+  ],
+  "browser": "155.0.8059.79",
+  "summary": {
+    "heros": {
+      "intervalMedianMs": 200.0,
+      "intervalP95Ms": 288.30000000000007,
+      "callbackMedianMs": 2.849999997764826,
+      "callbackP95Ms": 5.284999999217689,
+      "drawsMean": 60.75,
+      "fps": 5.066801781380836
+    }
+  },
+  "sourceSha256": {
+    "/": "86bddd4109dd52f9840f07f954c616e41c619c5aae36472cfc0ab2d2fe985a81",
+    "/__three/build/three.module.js": "ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb",
+    "/__three/examples/jsm/libs/meshopt_decoder.module.js": "01f48524f4bac6141eaba07e94cc36e7ee56f311796fa6117c159842941b0468",
+    "/assets/sip-app.js": "c80d5bcfad97e9dfba3d0ebc4d80309b5937998fa6f8a28ff2e95b13eeba2193",
+    "/assets/sip-stack.css": "4dd013ddcf4633784a64f3d18c6951c2bea26a8d570c1739e178d39183b845e5",
+    "/assets/sip-warm.js": "9181a34d8713f3a82598680ab598b80be012d9c9a9c08300cc24d502f4cdafbf",
+    "/characters/assets/hair/roma-high.glb.gz": "30812d08eb721886afac226abdcbef92246172b5577f80ed9f2b5e34083aeac6",
+    "/characters/assets/hair/roma-mobile.glb.gz": "18f63026ed5251593c20e7c183f84672e6d4b315d24b1513a2bace6a1310d554",
+    "/characters/avatar-builder.js": "7ea387b09b7a0564952641e0179a9c0a5cd562b230c17089eb7c27e04253e3fd",
+    "/characters/characters.css": "18cfd545d53d891e7a58803bb91192f838c3bbeb2d52f4e8d59e38dd3bc07b5b",
+    "/characters/explorer-face.js": "e10e458e9d49fe2a2b6658edec862b15290b178de1ed1c1329f7653e37ca4afe",
+    "/characters/hair-groom.js": "37ff6dc5cb22df167077b9feb1d79a4645fc518bb7e998880c36e513fb59ef41",
+    "/characters/hair-motion.js": "599536538bb81e1cc7af7c857735a678544df26471dee928c85082b9abd642d2",
+    "/characters/human-exterior.js": "ee907eae50f278e277c65b43cc853ea5885847ccf01cece9342a5287e56f5eb8",
+    "/characters/human-hands.js": "ee0186dd3cfd7e4b1150fb6c38d912fde4a5bbf53e273881c2ba46cfda7ef12a",
+    "/characters/input.js": "1a361b0ca8cf9faeabaf4ffa84f6dbed8c5f0b7484342653f318259204b23aa0",
+    "/characters/main.js": "0e09b4b7da5de6c6ed3fcdc13d061e6b7afa0f8affa33983eb8c6c189112789e",
+    "/characters/model-tier.js": "207729977342a37c22fc2eaab114a8a75c4f3b7b7523901a0a34361fcc804c5a",
+    "/characters/motion.js": "f40273499b0f20cc5820bdfdc9ab9b9265be6af7c246d8f6bb5cdf676dff3917",
+    "/characters/render-batches.js": "ffb727d01d3eeab81e4bf6806092f44b5f37861723344e3e23cea5ceb5359d59",
+    "/characters/review-controls.js": "39f770e7b184ae0da4ad4986b9901405c0d6d23126488278cbc571033dbdf267",
+    "/characters/rig.js": "3a99d92391091baf1f707a8fbb58c28e449ab8fa9761073544c6f4eb696b2b03",
+    "/characters/roma-exterior-data.js": "e3e27de59fe91a0965c9d1d207d84a8ebfeac44df212c8853856dae07190eb7d",
+    "/characters/roma-face-shell.js": "0dd98ac0c415061500f1cd1cbfa7c2fed4b1a1b56c64d8035bff940c5fcf84fd",
+    "/characters/roma-forms.js": "0ba6f7f2bcad6d622c36b7fac1157e54755cf2ccb2c26a7e995d50b0e59fc87a",
+    "/characters/roma-hand-data.js": "c8c75b1414c14c4599fbac56236fde1a51b60863a60dba14428c33ac207d01bf",
+    "/characters/roma-secondary.js": "44d96d1facd00e79a1e4097868a8a733b4243f864f870d9b6522caad8a7edddd",
+    "/characters/roma-soft-tissue.js": "a1979c07550bbb85222f328bf794da64977d8956b7db01ca68dd25908cbd7d3f",
+    "/characters/roma.js": "6be71a79c7b3afa5e02d37a3bb4c94e780b0ec23353ed0142d35aaad6f9a05de",
+    "/characters/route.js": "38d78858c8a6eb408b69dc7fe4b1b53d79c541430d1b8bd4e95f5262d127ce5f",
+    "/characters/secondary.js": "80ed341ab1b5bdc86164c46e3585f724c919c6fcb5a90a3b59f2a681bf47e24d",
+    "/characters/source-asset-files.js": "72807e24212cffe795c732b5340c2782f5102c2a27754bd2a4d8da1f4c1b7d4b",
+    "/characters/source-landmarks.js": "f52aa6aa192045f70d2df2fa576fabbb6374fa52d754c970451cf298bf4cb393",
+    "/characters/source-rig.js": "2797b1f579607a7fbc09336dff23a0f3bee52ec7a1f41eafb91066ef0862aaf3",
+    "/characters/stage.js": "641718e455aacc22f4e02423c48bc7a48ead56efb7ee6a534ccb2530e6a768c2",
+    "/characters/ui.js": "145b3db0740fcfd83535c2250edc0e52dcda7843c41ed62b2a394d5df934a7cd"
+  }
+}

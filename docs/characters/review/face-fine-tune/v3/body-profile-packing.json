@@ -1,0 +1,55 @@
+{
+  "regions": {
+    "torso": {
+      "stations": 39,
+      "coordinateIntegers": 1209
+    },
+    "armL": {
+      "stations": 30,
+      "coordinateIntegers": 930
+    },
+    "legL": {
+      "stations": 29,
+      "coordinateIntegers": 899
+    },
+    "footL": {
+      "stations": 11,
+      "coordinateIntegers": 341
+    },
+    "armR": {
+      "stations": 30,
+      "coordinateIntegers": 930
+    },
+    "legR": {
+      "stations": 29,
+      "coordinateIntegers": 899
+    },
+    "footR": {
+      "stations": 11,
+      "coordinateIntegers": 341
+    }
+  },
+  "decodedSHA256": "38d81b3b35cd74dd300b2d57450ecdca3330a0f8e533f722003f8bfd1a34a4a1",
+  "gzippedBytes": {
+    "before": {
+      "sippy-exterior-data.js": 9507,
+      "human-exterior.js": 4068
+    },
+    "after": {
+      "sippy-exterior-data.js": 6583,
+      "human-exterior.js": 4192
+    }
+  },
+  "protectedSurfaceHashes": [
+    {
+      "tier": "mobile",
+      "surfaced": 56,
+      "sha256": "9feb8f0da9dfcb65157e3bda3ef20b41b6131364f3d9a1b9e26a1ba98e194fed"
+    },
+    {
+      "tier": "high",
+      "surfaced": 56,
+      "sha256": "a5ae49a04268c5e87e6f3d3a42f1c2b0206e79c16a329432205bb3330782995e"
+    }
+  ]
+}
