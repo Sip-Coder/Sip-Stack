@@ -17,7 +17,7 @@ Home: Sip Studios › Ai Edu · Through-line: Somm Support water accessibility
 
 ## GitHub Pages views
 
-`docs/index.html` is the Pages home, with four views.
+`docs/index.html` is the Pages home, with five views.
 
 - **World** (default): a 3×3 isometric paper card grid, *Nine ways water becomes wine*. Each card is a dense animated SVG scene with numbered pins, a toolbar of scene toggles, and a shared Day / Golden light. Five making styles stay separate. Deep link a pin with `#world/05/red`. Click a card's Outline link (or press Enter on it) to open its chart.
 
@@ -27,7 +27,9 @@ Home: Sip Studios › Ai Edu · Through-line: Somm Support water accessibility
 
 - **Heros** opens a third-person test floor with Sippy, Roma and Hummin in their explorer outfits. Walk, run, turn, jump, roll or play an emote with a keyboard, gamepad or touch controls. Open `#heros` to play or `?debug=heros#heros` to inspect the rig. The previous `#characters` link redirects to the floor. [Films and model turnarounds](characters-review/) · [Character guardrails](tools/heros-checks.md#body-layer-order)
 
-Use the four tabs to change views. Each Outline chart has an **Open in World** button that goes back to its card. You can link to a view directly with `#world/02`, `#outline/05`, `#village/auger` or `#heros`. Files: `docs/index.html`, `docs/assets/sip-stack.css`, `docs/assets/sip-app.js`, `docs/assets/sip-world.js`.
+- **Bots** opens a studio view of Hummin, a robot learning companion modeled in Blender. Open `#bots` to orbit him or play the turnaround, blink, and smile. [Design comparisons and build steps](characters-review/bots/)
+
+Each Outline chart has an **Open in World** button that goes back to its card. You can link to a view directly with `#world/02`, `#outline/05`, `#village/auger`, `#heros` or `#bots`.
 
 ## Lanes
 

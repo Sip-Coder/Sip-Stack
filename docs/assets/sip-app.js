@@ -3,6 +3,7 @@ const all = selector => document.querySelectorAll(selector);
 const seg = document.querySelector('.seg');
 const chartStatus = document.querySelector('#chart-status');
 let charts, village, villagePromise, dioramaLoad;
+let bots, botsPromise, titleBeforeBots;
 let lastOutline = '01';
 let navigation = 0;
 
@@ -13,6 +14,13 @@ function setMode(mode) {
     button.setAttribute('aria-selected', String(button.dataset.mode === mode));
   }
   if (mode !== 'village') village?.hide();
+  if (mode !== 'bots') {
+    bots?.hide();
+    if (titleBeforeBots !== undefined) {
+      document.title = titleBeforeBots;
+      titleBeforeBots = undefined;
+    }
+  }
   if (chartStatus) chartStatus.hidden = true;
 }
 
@@ -26,7 +34,7 @@ async function loadFailed(label, error, resources, status) {
   if (status) status.textContent = `${label} could not load. Refresh to try again.`;
 }
 
-function villageStyle(path) {
+function loadStyle(path) {
   const href = new URL(path, import.meta.url).href;
   const existing = Array.from(document.querySelectorAll('link[rel=stylesheet]')).find(link => link.href === href);
   if (existing?.sheet) return Promise.resolve();
@@ -47,8 +55,8 @@ function villageStyle(path) {
 
 function prepareDioramas() {
   dioramaLoad ??= Promise.all([
-    villageStyle('./sip-craft.css').then(() => import('./sip-craft-loader.js')),
-    villageStyle('./sip-creek.css').then(() => import('./sip-creek-loader.js')),
+    loadStyle('./sip-craft.css').then(() => import('./sip-craft-loader.js')),
+    loadStyle('./sip-creek.css').then(() => import('./sip-creek-loader.js')),
   ]).catch(error => {
     dioramaLoad = undefined;
     if (document.body.dataset.mode === 'village') {
@@ -63,7 +71,7 @@ function prepareDioramas() {
 async function showVillage(pin, visit) {
   setMode('village');
   document.title = 'Village · Sip-Stack · wine-coast diorama';
-  const ready = villagePromise ??= Promise.all([import('./sip-village.js'), villageStyle('../village/controls.css')]);
+  const ready = villagePromise ??= Promise.all([import('./sip-village.js'), loadStyle('../village/controls.css')]);
   prepareDioramas();
   try {
     const [scene] = await ready;
@@ -77,6 +85,27 @@ async function showVillage(pin, visit) {
     if (visit === navigation) {
       await loadFailed('Village', error, ['./assets/sip-village.js', './village/controls.css'],
         document.querySelector('.vl-loading'));
+    }
+  }
+}
+
+async function showBots(visit) {
+  setMode('bots');
+  titleBeforeBots ??= document.title;
+  document.title = 'Bots · Sip-Stack';
+  const panel = document.querySelector('#bots');
+  try {
+    const [scene] = await (botsPromise ??= Promise.all([
+      import('../bots/viewer.js'), loadStyle('../bots/viewer.css'),
+    ]));
+    if (visit !== navigation) return;
+    bots ??= scene.mountBots(panel);
+    await bots.show();
+  } catch (error) {
+    botsPromise = undefined;
+    if (visit === navigation) {
+      await loadFailed('Bots', error, ['./bots/viewer.js', './bots/viewer.css', './bots/hummin.glb'],
+        panel?.querySelector('.bots-status') || chartStatus);
     }
   }
 }
@@ -106,6 +135,7 @@ function route() {
     setMode('heros');
     return;
   }
+  if (hash === 'bots') return showBots(visit);
   const place = hash.match(/^village(?:\/([a-z-]+))?$/);
   if (place) return showVillage(place[1], visit);
   const chart = hash.match(/^(?:outline|chart)[-/](0[1-9])(?:\/[a-z0-9-]+)?$/);
