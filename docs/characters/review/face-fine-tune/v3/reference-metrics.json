@@ -1,0 +1,833 @@
+{
+  "sippy/front": {
+    "referenceSha256": "b71240a6b09af25ae48b0657749e13f7912cfb19adbcfb863551fa1f8a41431e",
+    "nativeSha256": "e60ba8ec0c635682e0debf7049f038a7f6731f4e66cfcff9cb6b260163cac2b5",
+    "referenceCrop": [
+      326,
+      494,
+      474,
+      696
+    ],
+    "anchorIds": [
+      "irR",
+      "irL",
+      "etR",
+      "etL"
+    ],
+    "camera": {
+      "nativeYawDeg": 0,
+      "nativePitchDeg": 0,
+      "fullFrameEquivalentFocalMm": 85,
+      "rasterRollDeg": -2.145,
+      "rasterScale": 0.387074,
+      "rasterShiftPx": [
+        297.1133,
+        472.685
+      ],
+      "matrix": [
+        [
+          0.38680308,
+          -0.01448995
+        ],
+        [
+          0.01448995,
+          0.38680308
+        ]
+      ]
+    },
+    "landmarkErrorSheetPx": {
+      "bpL": 3.575,
+      "bpR": 4.35,
+      "btL": 3.646,
+      "btR": 5.363,
+      "c": 20.326,
+      "cpL": 9.277,
+      "cpR": 8.53,
+      "ebL": 6.375,
+      "ebR": 8.422,
+      "eiL": 7.147,
+      "eiR": 7.994,
+      "eoL": 6.773,
+      "eoR": 3.078,
+      "etL": 3.312,
+      "etR": 3.659,
+      "h": 12.253,
+      "irL": 3.728,
+      "irR": 4.684,
+      "jL": 15.047,
+      "jR": 18.911,
+      "ll": 11.036,
+      "mcL": 10.488,
+      "mcR": 7.927,
+      "n": 3.143,
+      "nwL": 3.949,
+      "nwR": 3.904
+    },
+    "landmarkErrorIn": {
+      "bpL": 0.2567,
+      "bpR": 0.3124,
+      "btL": 0.2618,
+      "btR": 0.3852,
+      "c": 1.4598,
+      "cpL": 0.6663,
+      "cpR": 0.6126,
+      "ebL": 0.4578,
+      "ebR": 0.6049,
+      "eiL": 0.5133,
+      "eiR": 0.5741,
+      "eoL": 0.4864,
+      "eoR": 0.2211,
+      "etL": 0.2379,
+      "etR": 0.2628,
+      "h": 0.88,
+      "irL": 0.2677,
+      "irR": 0.3364,
+      "jL": 1.0806,
+      "jR": 1.3582,
+      "ll": 0.7926,
+      "mcL": 0.7532,
+      "mcR": 0.5693,
+      "n": 0.2257,
+      "nwL": 0.2836,
+      "nwR": 0.2804
+    },
+    "normalizerIds": [
+      "irR",
+      "irL"
+    ],
+    "normalizerPx": 39.051,
+    "heldOutRmsSheetPx": 9.5278,
+    "heldOutRmsNativePx": 24.615,
+    "heldOutRmsProjectedIn": 0.6843,
+    "heldOutRmsNormalized": 0.243983,
+    "heldOutLandmarks": [
+      "bpL",
+      "bpR",
+      "btL",
+      "btR",
+      "c",
+      "cpL",
+      "cpR",
+      "ebL",
+      "ebR",
+      "eiL",
+      "eiR",
+      "eoL",
+      "eoR",
+      "h",
+      "jL",
+      "jR",
+      "ll",
+      "mcL",
+      "mcR",
+      "n",
+      "nwL",
+      "nwR"
+    ],
+    "nativeRenderPx": [
+      516,
+      558
+    ],
+    "focusedPlaneApertureIn": 15.511811,
+    "silhouetteIoU": {
+      "head with groom": 0.78487
+    },
+    "unrelitComplexion": {
+      "forehead": {
+        "reference": "#dd9573",
+        "native": "#e6a780",
+        "deltaE00": 5.281
+      },
+      "cheek": {
+        "reference": "#e49360",
+        "native": "#e0966d",
+        "deltaE00": 2.606
+      },
+      "neck": {
+        "reference": "#be734c",
+        "native": "#e39e76",
+        "deltaE00": 12.916
+      }
+    },
+    "onionPng": "onion-sippy-front.png",
+    "onionSha256": "51a7a1203411c22e455c2974a987c21ab46e3db98196dd23b038a925b6b44267",
+    "landmarkPng": "landmarks-sippy-front.png",
+    "landmarkPngSha256": "6529b0175afea792fe7d754f04af45d0a8af091f8c3c85758620318ec1bb7902"
+  },
+  "sippy/three-quarter": {
+    "referenceSha256": "b71240a6b09af25ae48b0657749e13f7912cfb19adbcfb863551fa1f8a41431e",
+    "nativeSha256": "13acabc089083fb9aa38e490e627dfd05b0404c7ec0fc4acd0e7dcdc75d02468",
+    "referenceCrop": [
+      476,
+      494,
+      622,
+      696
+    ],
+    "anchorIds": [
+      "irR",
+      "irL",
+      "etR"
+    ],
+    "camera": {
+      "nativeYawDeg": -42,
+      "nativePitchDeg": -2,
+      "fullFrameEquivalentFocalMm": 90,
+      "rasterRollDeg": 8.492,
+      "rasterScale": 0.354691,
+      "rasterShiftPx": [
+        477.3709,
+        462.2831
+      ],
+      "matrix": [
+        [
+          0.35080269,
+          0.05237471
+        ],
+        [
+          -0.05237471,
+          0.35080269
+        ]
+      ]
+    },
+    "landmarkErrorSheetPx": {
+      "bpL": 14.001,
+      "bpR": 5.446,
+      "btL": 11.144,
+      "btR": 8.813,
+      "c": 24.068,
+      "cpL": 15.115,
+      "cpR": 13.029,
+      "ebR": 9.151,
+      "eiL": 7.312,
+      "eiR": 5.002,
+      "eoL": 6.536,
+      "eoR": 6.589,
+      "etR": 1.455,
+      "h": 14.611,
+      "irL": 2.729,
+      "irR": 4.137,
+      "jR": 24.272,
+      "ll": 15.987,
+      "mcL": 10.747,
+      "mcR": 12.43,
+      "n": 12.194,
+      "nwL": 12.515,
+      "nwR": 13.508
+    },
+    "landmarkErrorIn": {
+      "bpL": 1.0973,
+      "bpR": 0.4268,
+      "btL": 0.8734,
+      "btR": 0.6907,
+      "c": 1.8863,
+      "cpL": 1.1846,
+      "cpR": 1.0211,
+      "ebR": 0.7172,
+      "eiL": 0.5731,
+      "eiR": 0.392,
+      "eoL": 0.5123,
+      "eoR": 0.5164,
+      "etR": 0.114,
+      "h": 1.1451,
+      "irL": 0.2139,
+      "irR": 0.3242,
+      "jR": 1.9023,
+      "ll": 1.253,
+      "mcL": 0.8423,
+      "mcR": 0.9742,
+      "n": 0.9557,
+      "nwL": 0.9809,
+      "nwR": 1.0587
+    },
+    "normalizerIds": [
+      "irR",
+      "irL"
+    ],
+    "normalizerPx": 31.016,
+    "heldOutRmsSheetPx": 13.1708,
+    "heldOutRmsNativePx": 37.133,
+    "heldOutRmsProjectedIn": 1.0323,
+    "heldOutRmsNormalized": 0.424642,
+    "heldOutLandmarks": [
+      "bpL",
+      "bpR",
+      "btL",
+      "btR",
+      "c",
+      "cpL",
+      "cpR",
+      "ebR",
+      "eiL",
+      "eiR",
+      "eoL",
+      "eoR",
+      "h",
+      "jR",
+      "ll",
+      "mcL",
+      "mcR",
+      "n",
+      "nwL",
+      "nwR"
+    ],
+    "nativeRenderPx": [
+      516,
+      558
+    ],
+    "focusedPlaneApertureIn": 15.511811,
+    "silhouetteIoU": {
+      "head with groom": 0.72464
+    },
+    "unrelitComplexion": {
+      "forehead": {
+        "reference": "#eaa47b",
+        "native": "#de9a77",
+        "deltaE00": 3.307
+      },
+      "cheek": {
+        "reference": "#d1794d",
+        "native": "#ca754c",
+        "deltaE00": 1.792
+      },
+      "neck": {
+        "reference": "#b76e47",
+        "native": "#cf7c53",
+        "deltaE00": 6.144
+      }
+    },
+    "onionPng": "onion-sippy-three-quarter.png",
+    "onionSha256": "c0755df135e0e1479b272afcf11a22aebb5927de1f950296d51563427819c9db",
+    "landmarkPng": "landmarks-sippy-three-quarter.png",
+    "landmarkPngSha256": "c965b83289c3cf151d89156fa647e350fd623d148c7887cd89c87dd150094887"
+  },
+  "sippy/profile": {
+    "referenceSha256": "b71240a6b09af25ae48b0657749e13f7912cfb19adbcfb863551fa1f8a41431e",
+    "nativeSha256": "793d91676559b86619ea33d98ca76992de74c2fdcf8eaa012575a15ac2ab46f9",
+    "referenceCrop": [
+      623,
+      494,
+      766,
+      696
+    ],
+    "anchorIds": [
+      "irR",
+      "etR",
+      "ebR"
+    ],
+    "camera": {
+      "nativeYawDeg": -90,
+      "nativePitchDeg": 0,
+      "fullFrameEquivalentFocalMm": 105,
+      "rasterRollDeg": -0.367,
+      "rasterScale": 0.24415,
+      "rasterShiftPx": [
+        649.0899,
+        502.3928
+      ],
+      "matrix": [
+        [
+          0.24414539,
+          -0.001563
+        ],
+        [
+          0.001563,
+          0.24414539
+        ]
+      ]
+    },
+    "landmarkErrorSheetPx": {
+      "bpR": 5.891,
+      "btR": 5.073,
+      "c": 10.91,
+      "cpR": 11.558,
+      "ebR": 5.148,
+      "eiR": 8.629,
+      "eoR": 3.498,
+      "etR": 5.865,
+      "h": 6.885,
+      "irR": 2.888,
+      "jR": 9.412,
+      "ll": 15.135,
+      "mcR": 7.907,
+      "n": 15.157,
+      "nwR": 10.271
+    },
+    "landmarkErrorIn": {
+      "bpR": 0.6707,
+      "btR": 0.5776,
+      "c": 1.2422,
+      "cpR": 1.316,
+      "ebR": 0.5862,
+      "eiR": 0.9825,
+      "eoR": 0.3983,
+      "etR": 0.6678,
+      "h": 0.7839,
+      "irR": 0.3288,
+      "jR": 1.0716,
+      "ll": 1.7233,
+      "mcR": 0.9003,
+      "n": 1.7258,
+      "nwR": 1.1695
+    },
+    "normalizerIds": [
+      "irR",
+      "etR"
+    ],
+    "normalizerPx": 42.012,
+    "heldOutRmsSheetPx": 9.8427,
+    "heldOutRmsNativePx": 40.3143,
+    "heldOutRmsProjectedIn": 1.1207,
+    "heldOutRmsNormalized": 0.234285,
+    "heldOutLandmarks": [
+      "bpR",
+      "btR",
+      "c",
+      "cpR",
+      "eiR",
+      "eoR",
+      "h",
+      "jR",
+      "ll",
+      "mcR",
+      "n",
+      "nwR"
+    ],
+    "nativeRenderPx": [
+      516,
+      558
+    ],
+    "focusedPlaneApertureIn": 15.511811,
+    "silhouetteIoU": {
+      "head with groom": 0.48378
+    },
+    "unrelitComplexion": {
+      "forehead": {
+        "reference": "#f6cdb7",
+        "native": "#d18a68",
+        "deltaE00": 17.616
+      },
+      "cheek": {
+        "reference": "#d58152",
+        "native": "#9b4c30",
+        "deltaE00": 20.629
+      },
+      "neck": {
+        "reference": "#f6aa73",
+        "native": "#bb6743",
+        "deltaE00": 20.401
+      }
+    },
+    "onionPng": "onion-sippy-profile.png",
+    "onionSha256": "054497d8b25f9709eed0889fcd859d486653a073915ee8c149533fcf6d4f5a7f",
+    "landmarkPng": "landmarks-sippy-profile.png",
+    "landmarkPngSha256": "8fc3f216c5618ddc126227f71c4cecd8fa9537b665f80ddcae232c86e013e29d"
+  },
+  "roma/front": {
+    "referenceSha256": "56d77436d58217024e5567206a87e37270b2c571df58a51d3c984f620e68ae05",
+    "nativeSha256": "95941d2c5218428d657d64a68a5ddcdef18ff48a709590394400980fbf3888ed",
+    "referenceCrop": [
+      374,
+      433,
+      520,
+      577
+    ],
+    "anchorIds": [
+      "irR",
+      "irL",
+      "etL"
+    ],
+    "camera": {
+      "nativeYawDeg": 0,
+      "nativePitchDeg": 0,
+      "fullFrameEquivalentFocalMm": 85,
+      "rasterRollDeg": -3.617,
+      "rasterScale": 0.250483,
+      "rasterShiftPx": [
+        382.0445,
+        419.2985
+      ],
+      "matrix": [
+        [
+          0.24998397,
+          -0.01580331
+        ],
+        [
+          0.01580331,
+          0.24998397
+        ]
+      ]
+    },
+    "landmarkErrorSheetPx": {
+      "bpL": 5.399,
+      "bpR": 7.655,
+      "btL": 1.115,
+      "btR": 6.659,
+      "c": 7.854,
+      "cpL": 6.077,
+      "cpR": 4.515,
+      "ebL": 9.833,
+      "ebR": 4.495,
+      "eiL": 4.549,
+      "eiR": 6.389,
+      "eoL": 1.847,
+      "eoR": 3.038,
+      "etL": 0.355,
+      "h": 4.905,
+      "irL": 0.552,
+      "irR": 0.205,
+      "jL": 3.057,
+      "jR": 4.579,
+      "ll": 6.987,
+      "mcL": 6.088,
+      "mcR": 5.603,
+      "n": 1.443,
+      "nwL": 2.058,
+      "nwR": 2.441
+    },
+    "landmarkErrorIn": {
+      "bpL": 0.5992,
+      "bpR": 0.8496,
+      "btL": 0.1237,
+      "btR": 0.739,
+      "c": 0.8716,
+      "cpL": 0.6744,
+      "cpR": 0.5011,
+      "ebL": 1.0913,
+      "ebR": 0.4989,
+      "eiL": 0.5049,
+      "eiR": 0.7091,
+      "eoL": 0.205,
+      "eoR": 0.3372,
+      "etL": 0.0394,
+      "h": 0.5444,
+      "irL": 0.0613,
+      "irR": 0.0228,
+      "jL": 0.3393,
+      "jR": 0.5082,
+      "ll": 0.7754,
+      "mcL": 0.6757,
+      "mcR": 0.6218,
+      "n": 0.1601,
+      "nwL": 0.2284,
+      "nwR": 0.2709
+    },
+    "normalizerIds": [
+      "irR",
+      "irL"
+    ],
+    "normalizerPx": 33.061,
+    "heldOutRmsSheetPx": 5.3398,
+    "heldOutRmsNativePx": 21.3181,
+    "heldOutRmsProjectedIn": 0.5926,
+    "heldOutRmsNormalized": 0.161517,
+    "heldOutLandmarks": [
+      "bpL",
+      "bpR",
+      "btL",
+      "btR",
+      "c",
+      "cpL",
+      "cpR",
+      "ebL",
+      "ebR",
+      "eiL",
+      "eiR",
+      "eoL",
+      "eoR",
+      "h",
+      "jL",
+      "jR",
+      "ll",
+      "mcL",
+      "mcR",
+      "n",
+      "nwL",
+      "nwR"
+    ],
+    "nativeRenderPx": [
+      516,
+      558
+    ],
+    "focusedPlaneApertureIn": 15.511811,
+    "silhouetteIoU": {
+      "head with groom": 0.6631
+    },
+    "unrelitComplexion": {
+      "forehead": {
+        "reference": "#e29467",
+        "native": "#df9566",
+        "deltaE00": 1.235
+      },
+      "cheek": {
+        "reference": "#cd703b",
+        "native": "#ae6343",
+        "deltaE00": 8.648
+      },
+      "neck": {
+        "reference": "#a7572e",
+        "native": "#e19665",
+        "deltaE00": 21.038
+      }
+    },
+    "onionPng": "onion-roma-front.png",
+    "onionSha256": "01801e19f9d5aa7ed2453f1fdef65be89c5bef5b117e3fbb52af2c5284c74e76",
+    "landmarkPng": "landmarks-roma-front.png",
+    "landmarkPngSha256": "349b7bdaeaf95f66615866750f4b310c1abd034060356fbea44d451918dc3803"
+  },
+  "roma/three-quarter": {
+    "referenceSha256": "56d77436d58217024e5567206a87e37270b2c571df58a51d3c984f620e68ae05",
+    "nativeSha256": "1b25814cdc5e850fc81841a925afdc73b9c31e16a671f58a564de24441640f16",
+    "referenceCrop": [
+      518,
+      433,
+      672,
+      577
+    ],
+    "anchorIds": [
+      "irR",
+      "irL",
+      "eoR"
+    ],
+    "camera": {
+      "nativeYawDeg": -42,
+      "nativePitchDeg": -14,
+      "fullFrameEquivalentFocalMm": 85,
+      "rasterRollDeg": -31.73,
+      "rasterScale": 0.289242,
+      "rasterShiftPx": [
+        477.3796,
+        470.0676
+      ],
+      "matrix": [
+        [
+          0.24601132,
+          -0.15211657
+        ],
+        [
+          0.15211657,
+          0.24601132
+        ]
+      ]
+    },
+    "landmarkErrorSheetPx": {
+      "bpL": 10.418,
+      "bpR": 5.826,
+      "btL": 14.041,
+      "btR": 17.671,
+      "c": 9.291,
+      "cpL": 5.592,
+      "cpR": 4.376,
+      "eiL": 2.05,
+      "eiR": 3.467,
+      "eoL": 5.983,
+      "eoR": 1.332,
+      "h": 17.135,
+      "irL": 0.703,
+      "irR": 2.028,
+      "jR": 20.721,
+      "ll": 5.674,
+      "mcL": 4.395,
+      "mcR": 10.862,
+      "n": 3.076,
+      "nwL": 2.529,
+      "nwR": 2.13
+    },
+    "landmarkErrorIn": {
+      "bpL": 1.0013,
+      "bpR": 0.5599,
+      "btL": 1.3495,
+      "btR": 1.6984,
+      "c": 0.893,
+      "cpL": 0.5374,
+      "cpR": 0.4206,
+      "eiL": 0.197,
+      "eiR": 0.3332,
+      "eoL": 0.575,
+      "eoR": 0.128,
+      "h": 1.6468,
+      "irL": 0.0676,
+      "irR": 0.1949,
+      "jR": 1.9915,
+      "ll": 0.5453,
+      "mcL": 0.4224,
+      "mcR": 1.0439,
+      "n": 0.2956,
+      "nwL": 0.2431,
+      "nwR": 0.2047
+    },
+    "normalizerIds": [
+      "irR",
+      "irL"
+    ],
+    "normalizerPx": 29.411,
+    "heldOutRmsSheetPx": 9.87,
+    "heldOutRmsNativePx": 34.1237,
+    "heldOutRmsProjectedIn": 0.9486,
+    "heldOutRmsNormalized": 0.33559,
+    "heldOutLandmarks": [
+      "bpL",
+      "bpR",
+      "btL",
+      "btR",
+      "c",
+      "cpL",
+      "cpR",
+      "eiL",
+      "eiR",
+      "eoL",
+      "h",
+      "jR",
+      "ll",
+      "mcL",
+      "mcR",
+      "n",
+      "nwL",
+      "nwR"
+    ],
+    "nativeRenderPx": [
+      516,
+      558
+    ],
+    "focusedPlaneApertureIn": 15.511811,
+    "silhouetteIoU": {
+      "head with groom": 0.68379
+    },
+    "unrelitComplexion": {
+      "forehead": {
+        "reference": "#efa378",
+        "native": "#d18052",
+        "deltaE00": 9.893
+      },
+      "cheek": {
+        "reference": "#cf703f",
+        "native": "#e7a475",
+        "deltaE00": 14.406
+      },
+      "neck": {
+        "reference": "#8e431d",
+        "native": "#b05d36",
+        "deltaE00": 10.228
+      }
+    },
+    "onionPng": "onion-roma-three-quarter.png",
+    "onionSha256": "8162a97c3a615e4b3a1c61b582bf8d594d0c0e43048f3a01b8d21cb6f722c832",
+    "landmarkPng": "landmarks-roma-three-quarter.png",
+    "landmarkPngSha256": "93d96a0d4f31d64bde79497af812f34b1866f61020af8c0a346818a9cb1cee9e"
+  },
+  "roma/profile": {
+    "referenceSha256": "56d77436d58217024e5567206a87e37270b2c571df58a51d3c984f620e68ae05",
+    "nativeSha256": "80a7bf6cafa05eefcbde62f202fc2ccc7c576f63630f697e1886faf3ae76473c",
+    "referenceCrop": [
+      667,
+      433,
+      781,
+      577
+    ],
+    "anchorIds": [
+      "irL",
+      "eoL",
+      "h"
+    ],
+    "camera": {
+      "nativeYawDeg": 90,
+      "nativePitchDeg": 0,
+      "fullFrameEquivalentFocalMm": 105,
+      "rasterRollDeg": 32.775,
+      "rasterScale": 0.319461,
+      "rasterShiftPx": [
+        714.6398,
+        382.209
+      ],
+      "matrix": [
+        [
+          0.26860512,
+          0.17293615
+        ],
+        [
+          -0.17293615,
+          0.26860512
+        ]
+      ]
+    },
+    "landmarkErrorSheetPx": {
+      "bpL": 9.895,
+      "btL": 11.598,
+      "c": 23.273,
+      "cpL": 8.999,
+      "eiL": 10.275,
+      "eoL": 0.24,
+      "h": 0.055,
+      "irL": 0.245,
+      "jL": 26.206,
+      "ll": 11.562,
+      "mcL": 7.539,
+      "n": 4.629,
+      "nwL": 6.101
+    },
+    "landmarkErrorIn": {
+      "bpL": 0.861,
+      "btL": 1.0092,
+      "c": 2.0252,
+      "cpL": 0.7831,
+      "eiL": 0.8941,
+      "eoL": 0.0209,
+      "h": 0.0048,
+      "irL": 0.0213,
+      "jL": 2.2804,
+      "ll": 1.0061,
+      "mcL": 0.656,
+      "n": 0.4028,
+      "nwL": 0.5309
+    },
+    "normalizerIds": [
+      "irL",
+      "h"
+    ],
+    "normalizerPx": 30.871,
+    "heldOutRmsSheetPx": 13.7715,
+    "heldOutRmsNativePx": 43.1084,
+    "heldOutRmsProjectedIn": 1.1984,
+    "heldOutRmsNormalized": 0.446102,
+    "heldOutLandmarks": [
+      "bpL",
+      "btL",
+      "c",
+      "cpL",
+      "eiL",
+      "jL",
+      "ll",
+      "mcL",
+      "n",
+      "nwL"
+    ],
+    "nativeRenderPx": [
+      516,
+      558
+    ],
+    "focusedPlaneApertureIn": 15.511811,
+    "silhouetteIoU": {
+      "head with groom": 0.7194
+    },
+    "unrelitComplexion": {
+      "forehead": {
+        "reference": "#f4c2a6",
+        "native": "#db8e60",
+        "deltaE00": 14.047
+      },
+      "cheek": {
+        "reference": "#d37745",
+        "native": "#d58153",
+        "deltaE00": 2.87
+      },
+      "neck": {
+        "reference": "#c67345",
+        "native": "#e19a6f",
+        "deltaE00": 11.331
+      }
+    },
+    "onionPng": "onion-roma-profile.png",
+    "onionSha256": "25c1e92d5ac14d4fb206fc9b3f6e5ade7b1638c75474b27748c689f121d0991e",
+    "landmarkPng": "landmarks-roma-profile.png",
+    "landmarkPngSha256": "baf911e4106b037a8718425c46e5d1f30732f5803cefb2a6658b1692bed0c661"
+  }
+}

@@ -1,0 +1,489 @@
+{
+  "baseline": "94deb9d6efd4a38eb270ff344ea036992393c2dc",
+  "candidate": "a6e8d51eb83834a80746390e8bde16d9ed61a9e1",
+  "initialPR": "1009294a39a6cbff01a85525f32db7167aa3f8a1",
+  "rows": [
+    {
+      "hero": "sippy",
+      "tier": "mobile",
+      "headScale": 1.16,
+      "atlasPivotDriftIn": 0,
+      "proportions": {
+        "before": {
+          "crownToChinIn": 10.865,
+          "overallHeightIn": 71.5,
+          "crownToChinRatio": 0.15195
+        },
+        "initialPR": {
+          "crownToChinIn": 9.75,
+          "overallHeightIn": 70.968,
+          "crownToChinRatio": 0.13738
+        },
+        "after": {
+          "crownToChinIn": 11.2,
+          "overallHeightIn": 72.047,
+          "crownToChinRatio": 0.15546
+        }
+      },
+      "skinIn": {
+        "before": {
+          "width": 8.97,
+          "height": 10.389,
+          "depth": 11.19
+        },
+        "after": {
+          "width": 6.843,
+          "height": 10.509,
+          "depth": 9.405
+        }
+      },
+      "withEarsIn": {
+        "before": {
+          "width": 10.331,
+          "height": 10.389,
+          "depth": 11.19
+        },
+        "after": {
+          "width": 7.928,
+          "height": 10.509,
+          "depth": 9.405
+        }
+      },
+      "skullIn": {
+        "before": {
+          "width": 5.345,
+          "height": 8.634,
+          "depth": 7.96
+        },
+        "after": {
+          "width": 6.2,
+          "height": 9.964,
+          "depth": 9.233
+        }
+      },
+      "mandiblePoseChangeDegrees": 1.008,
+      "foldedHoodPoseChangeDegrees": 24.064,
+      "mouthClearance": {
+        "before": [
+          {
+            "yaw": 0,
+            "pitch": 0,
+            "samples": 25696,
+            "occluded": 406,
+            "overlapping": {
+              "Folded hood": 406
+            }
+          },
+          {
+            "yaw": -40,
+            "pitch": 0,
+            "samples": 20805,
+            "occluded": 594,
+            "overlapping": {
+              "Folded hood": 594
+            }
+          },
+          {
+            "yaw": 40,
+            "pitch": 0,
+            "samples": 20557,
+            "occluded": 262,
+            "overlapping": {
+              "Folded hood": 262
+            }
+          },
+          {
+            "yaw": 90,
+            "pitch": 0,
+            "samples": 4804,
+            "occluded": 0,
+            "overlapping": {}
+          },
+          {
+            "yaw": -90,
+            "pitch": 0,
+            "samples": 4804,
+            "occluded": 553,
+            "overlapping": {
+              "Folded hood": 553
+            }
+          },
+          {
+            "yaw": 0,
+            "pitch": 16,
+            "samples": 27528,
+            "occluded": 361,
+            "overlapping": {
+              "Folded hood": 361
+            }
+          },
+          {
+            "yaw": 0,
+            "pitch": -14,
+            "samples": 25456,
+            "occluded": 424,
+            "overlapping": {
+              "Folded hood": 424
+            }
+          }
+        ],
+        "after": [
+          {
+            "yaw": 0,
+            "pitch": 0,
+            "samples": 25696,
+            "occluded": 0,
+            "overlapping": {}
+          },
+          {
+            "yaw": -40,
+            "pitch": 0,
+            "samples": 18987,
+            "occluded": 0,
+            "overlapping": {}
+          },
+          {
+            "yaw": 40,
+            "pitch": 0,
+            "samples": 19160,
+            "occluded": 0,
+            "overlapping": {}
+          },
+          {
+            "yaw": 90,
+            "pitch": 0,
+            "samples": 4102,
+            "occluded": 0,
+            "overlapping": {}
+          },
+          {
+            "yaw": -90,
+            "pitch": 0,
+            "samples": 4102,
+            "occluded": 0,
+            "overlapping": {}
+          },
+          {
+            "yaw": 0,
+            "pitch": 16,
+            "samples": 27528,
+            "occluded": 0,
+            "overlapping": {}
+          },
+          {
+            "yaw": 0,
+            "pitch": -14,
+            "samples": 25456,
+            "occluded": 0,
+            "overlapping": {}
+          }
+        ]
+      },
+      "baseComplexion": "#b16446",
+      "protectedSurfaces": 56
+    },
+    {
+      "hero": "sippy",
+      "tier": "high",
+      "headScale": 1.16,
+      "atlasPivotDriftIn": 0,
+      "proportions": {
+        "before": {
+          "crownToChinIn": 10.863,
+          "overallHeightIn": 71.499,
+          "crownToChinRatio": 0.15194
+        },
+        "initialPR": {
+          "crownToChinIn": 9.751,
+          "overallHeightIn": 70.969,
+          "crownToChinRatio": 0.1374
+        },
+        "after": {
+          "crownToChinIn": 11.201,
+          "overallHeightIn": 72.049,
+          "crownToChinRatio": 0.15547
+        }
+      },
+      "skinIn": {
+        "before": {
+          "width": 8.97,
+          "height": 10.389,
+          "depth": 11.19
+        },
+        "after": {
+          "width": 6.843,
+          "height": 10.509,
+          "depth": 9.405
+        }
+      },
+      "withEarsIn": {
+        "before": {
+          "width": 10.331,
+          "height": 10.389,
+          "depth": 11.19
+        },
+        "after": {
+          "width": 7.928,
+          "height": 10.509,
+          "depth": 9.405
+        }
+      },
+      "skullIn": {
+        "before": {
+          "width": 5.348,
+          "height": 8.638,
+          "depth": 7.964
+        },
+        "after": {
+          "width": 6.204,
+          "height": 9.969,
+          "depth": 9.239
+        }
+      },
+      "mandiblePoseChangeDegrees": 1.008,
+      "foldedHoodPoseChangeDegrees": 24.064,
+      "mouthClearance": {
+        "before": [
+          {
+            "yaw": 0,
+            "pitch": 0,
+            "samples": 25696,
+            "occluded": 432,
+            "overlapping": {
+              "Folded hood": 432
+            }
+          },
+          {
+            "yaw": -40,
+            "pitch": 0,
+            "samples": 20805,
+            "occluded": 619,
+            "overlapping": {
+              "Folded hood": 619
+            }
+          },
+          {
+            "yaw": 40,
+            "pitch": 0,
+            "samples": 20557,
+            "occluded": 259,
+            "overlapping": {
+              "Folded hood": 259
+            }
+          },
+          {
+            "yaw": 90,
+            "pitch": 0,
+            "samples": 4804,
+            "occluded": 0,
+            "overlapping": {}
+          },
+          {
+            "yaw": -90,
+            "pitch": 0,
+            "samples": 4804,
+            "occluded": 562,
+            "overlapping": {
+              "Folded hood": 562
+            }
+          },
+          {
+            "yaw": 0,
+            "pitch": 16,
+            "samples": 27528,
+            "occluded": 384,
+            "overlapping": {
+              "Folded hood": 384
+            }
+          },
+          {
+            "yaw": 0,
+            "pitch": -14,
+            "samples": 25456,
+            "occluded": 449,
+            "overlapping": {
+              "Folded hood": 449
+            }
+          }
+        ],
+        "after": [
+          {
+            "yaw": 0,
+            "pitch": 0,
+            "samples": 25696,
+            "occluded": 0,
+            "overlapping": {}
+          },
+          {
+            "yaw": -40,
+            "pitch": 0,
+            "samples": 18987,
+            "occluded": 0,
+            "overlapping": {}
+          },
+          {
+            "yaw": 40,
+            "pitch": 0,
+            "samples": 19160,
+            "occluded": 0,
+            "overlapping": {}
+          },
+          {
+            "yaw": 90,
+            "pitch": 0,
+            "samples": 4102,
+            "occluded": 0,
+            "overlapping": {}
+          },
+          {
+            "yaw": -90,
+            "pitch": 0,
+            "samples": 4102,
+            "occluded": 0,
+            "overlapping": {}
+          },
+          {
+            "yaw": 0,
+            "pitch": 16,
+            "samples": 27528,
+            "occluded": 0,
+            "overlapping": {}
+          },
+          {
+            "yaw": 0,
+            "pitch": -14,
+            "samples": 25456,
+            "occluded": 0,
+            "overlapping": {}
+          }
+        ]
+      },
+      "baseComplexion": "#b16446",
+      "protectedSurfaces": 56
+    },
+    {
+      "hero": "roma",
+      "tier": "mobile",
+      "headScale": 1.31,
+      "atlasPivotDriftIn": 0,
+      "proportions": {
+        "before": {
+          "crownToChinIn": 10.472,
+          "overallHeightIn": 67.593,
+          "crownToChinRatio": 0.15493
+        },
+        "initialPR": {
+          "crownToChinIn": 8.732,
+          "overallHeightIn": 66.906,
+          "crownToChinRatio": 0.13051
+        },
+        "after": {
+          "crownToChinIn": 11.303,
+          "overallHeightIn": 69.072,
+          "crownToChinRatio": 0.16364
+        }
+      },
+      "skinIn": {
+        "before": {
+          "width": 9.286,
+          "height": 9.981,
+          "depth": 10.347
+        },
+        "after": {
+          "width": 7.978,
+          "height": 10.649,
+          "depth": 10.588
+        }
+      },
+      "withEarsIn": {
+        "before": {
+          "width": 10.002,
+          "height": 9.981,
+          "depth": 10.347
+        },
+        "after": {
+          "width": 8.726,
+          "height": 10.649,
+          "depth": 10.588
+        }
+      },
+      "skullIn": {
+        "before": {
+          "width": 5.629,
+          "height": 8.312,
+          "depth": 7.584
+        },
+        "after": {
+          "width": 7.374,
+          "height": 10.108,
+          "depth": 10.117
+        }
+      },
+      "mandiblePoseChangeDegrees": 13.974,
+      "baseComplexion": "#bd6a45",
+      "protectedSurfaces": 53
+    },
+    {
+      "hero": "roma",
+      "tier": "high",
+      "headScale": 1.31,
+      "atlasPivotDriftIn": 0,
+      "proportions": {
+        "before": {
+          "crownToChinIn": 10.472,
+          "overallHeightIn": 67.593,
+          "crownToChinRatio": 0.15493
+        },
+        "initialPR": {
+          "crownToChinIn": 8.732,
+          "overallHeightIn": 66.906,
+          "crownToChinRatio": 0.13052
+        },
+        "after": {
+          "crownToChinIn": 11.303,
+          "overallHeightIn": 69.073,
+          "crownToChinRatio": 0.16364
+        }
+      },
+      "skinIn": {
+        "before": {
+          "width": 9.286,
+          "height": 9.981,
+          "depth": 10.347
+        },
+        "after": {
+          "width": 7.978,
+          "height": 10.649,
+          "depth": 10.588
+        }
+      },
+      "withEarsIn": {
+        "before": {
+          "width": 10.002,
+          "height": 9.981,
+          "depth": 10.347
+        },
+        "after": {
+          "width": 8.726,
+          "height": 10.649,
+          "depth": 10.588
+        }
+      },
+      "skullIn": {
+        "before": {
+          "width": 5.634,
+          "height": 8.327,
+          "depth": 7.591
+        },
+        "after": {
+          "width": 7.38,
+          "height": 10.108,
+          "depth": 10.127
+        }
+      },
+      "mandiblePoseChangeDegrees": 13.974,
+      "baseComplexion": "#bd6a45",
+      "protectedSurfaces": 53
+    }
+  ]
+}

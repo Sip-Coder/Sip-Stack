@@ -1,0 +1,129 @@
+{
+  "reference": "94deb9d",
+  "scale": 1.16,
+  "maximumPositionErrorIn": 3.858206278924597e-7,
+  "allTriangleIndicesIdentical": true,
+  "allMaterialTypesAndBasePigmentsMatched": true,
+  "results": [
+    {
+      "part": "Mouth cavity",
+      "pose": "neutral",
+      "maxPositionErrorInAfterTranslation": 2.583106984584101e-7
+    },
+    {
+      "part": "Mouth cavity",
+      "pose": "smile",
+      "maxPositionErrorInAfterTranslation": 3.2992456464511307e-7
+    },
+    {
+      "part": "Mouth cavity",
+      "pose": "focus",
+      "maxPositionErrorInAfterTranslation": 3.858206278924597e-7
+    },
+    {
+      "part": "Mouth cavity",
+      "pose": "surprised",
+      "maxPositionErrorInAfterTranslation": 3.7312091930435254e-7
+    },
+    {
+      "part": "Mouth cavity",
+      "pose": "smirk right",
+      "maxPositionErrorInAfterTranslation": 3.3448433834169915e-7
+    },
+    {
+      "part": "Mouth cavity",
+      "pose": "smirk left",
+      "maxPositionErrorInAfterTranslation": 3.252215170134536e-7
+    },
+    {
+      "part": "Teeth",
+      "pose": "neutral",
+      "maxPositionErrorInAfterTranslation": 3.5702847071071715e-7
+    },
+    {
+      "part": "Teeth",
+      "pose": "smile",
+      "maxPositionErrorInAfterTranslation": 3.574043007520009e-7
+    },
+    {
+      "part": "Teeth",
+      "pose": "focus",
+      "maxPositionErrorInAfterTranslation": 3.8146008650201067e-7
+    },
+    {
+      "part": "Teeth",
+      "pose": "surprised",
+      "maxPositionErrorInAfterTranslation": 3.8522501392680485e-7
+    },
+    {
+      "part": "Teeth",
+      "pose": "smirk right",
+      "maxPositionErrorInAfterTranslation": 3.6755355366983403e-7
+    },
+    {
+      "part": "Teeth",
+      "pose": "smirk left",
+      "maxPositionErrorInAfterTranslation": 3.6755355366983403e-7
+    },
+    {
+      "part": "Upper lip",
+      "pose": "neutral",
+      "maxPositionErrorInAfterTranslation": 3.845853400429217e-7
+    },
+    {
+      "part": "Upper lip",
+      "pose": "smile",
+      "maxPositionErrorInAfterTranslation": 3.8375010553165377e-7
+    },
+    {
+      "part": "Upper lip",
+      "pose": "focus",
+      "maxPositionErrorInAfterTranslation": 3.6921115707822844e-7
+    },
+    {
+      "part": "Upper lip",
+      "pose": "surprised",
+      "maxPositionErrorInAfterTranslation": 3.833177539682839e-7
+    },
+    {
+      "part": "Upper lip",
+      "pose": "smirk right",
+      "maxPositionErrorInAfterTranslation": 3.7819403516780294e-7
+    },
+    {
+      "part": "Upper lip",
+      "pose": "smirk left",
+      "maxPositionErrorInAfterTranslation": 3.6772628276525174e-7
+    },
+    {
+      "part": "Lower lip",
+      "pose": "neutral",
+      "maxPositionErrorInAfterTranslation": 3.468895091000902e-7
+    },
+    {
+      "part": "Lower lip",
+      "pose": "smile",
+      "maxPositionErrorInAfterTranslation": 2.3806389313517022e-7
+    },
+    {
+      "part": "Lower lip",
+      "pose": "focus",
+      "maxPositionErrorInAfterTranslation": 3.54217351599091e-7
+    },
+    {
+      "part": "Lower lip",
+      "pose": "surprised",
+      "maxPositionErrorInAfterTranslation": 2.3706656460469637e-7
+    },
+    {
+      "part": "Lower lip",
+      "pose": "smirk right",
+      "maxPositionErrorInAfterTranslation": 2.4777716990087927e-7
+    },
+    {
+      "part": "Lower lip",
+      "pose": "smirk left",
+      "maxPositionErrorInAfterTranslation": 2.414736392092364e-7
+    }
+  ]
+}

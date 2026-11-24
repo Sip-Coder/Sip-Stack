@@ -1,5 +1,7 @@
 # Heros face fine-tune
 
+This page records the initial PR #28 review at `1009294`. The current pass adds modest head scaling, facial fat and original-sheet comparisons. [Revision v3 evidence](v3/README.md)
+
 The comparison starts at `94deb9d`, the PR #27 merge. Both faces use the original BoneHub skull at standing scale. The mandibles rotate about their paired CT condyles. The face shell takes its radial sections from the closed skulls and registered BodyParts3D meshes, with separate modelling for the eyelids, nostrils, lips and ears. Axon loads the 35 facial muscles for the selected hero when a face study is opened. [Skull and muscle proof](anatomy.md) · [Regional gap measurements](face-measurements.md)
 
 | High bare face, width × height × depth in inches | Before | Revised |

@@ -1,0 +1,77 @@
+{
+  "runtime": "a6e8d51eb83834a80746390e8bde16d9ed61a9e1",
+  "runs": [
+    {
+      "hero": "sippy",
+      "tier": "mobile",
+      "viewportCss": {
+        "width": 412,
+        "height": 915
+      },
+      "displayDpr": 2.6,
+      "optionalRequests": [
+        "sippy-face-fat.json",
+        "sippy-face-bp3d-meshopt.glb"
+      ],
+      "namedPads": [
+        "Left malar fat pad",
+        "Left buccal fat pad",
+        "Left under-eye fat pad",
+        "Left nasolabial fat pad",
+        "Left submandibular fat pad",
+        "Left temporal fat pad",
+        "Right malar fat pad",
+        "Right buccal fat pad",
+        "Right under-eye fat pad",
+        "Right nasolabial fat pad",
+        "Right submandibular fat pad",
+        "Right temporal fat pad",
+        "Perioral fat pad",
+        "Chin fat pad",
+        "Submental fat pad",
+        "Nasal tip soft tissue"
+      ],
+      "restoredDigest": "ec3bb6ab2f2b60819fa0e66684a29f94b7048516278cb56b550ab8bf7f7ab226",
+      "isolationDigest": "a0e202f17c5e5b0fd3d780356ad15c5a8af723d20357fdaec43d39016adf787f",
+      "overlayDigest": "fb7d6f361a791cab0a07f5836d4f9481d4e914b08f1c9d9de355b6d314d95f35",
+      "heatmapDigest": "7f6881f9eb5656f9f282a578f969d19a83fc4ca4538641568540eaf9d788f2d1",
+      "consoleErrorCount": 0
+    },
+    {
+      "hero": "roma",
+      "tier": "high",
+      "viewportCss": {
+        "width": 1440,
+        "height": 960
+      },
+      "displayDpr": 1,
+      "optionalRequests": [
+        "roma-face-fat.json",
+        "roma-face-bp3d-meshopt.glb"
+      ],
+      "namedPads": [
+        "Left malar fat pad",
+        "Left buccal fat pad",
+        "Left under-eye fat pad",
+        "Left nasolabial fat pad",
+        "Left submandibular fat pad",
+        "Left temporal fat pad",
+        "Right malar fat pad",
+        "Right buccal fat pad",
+        "Right under-eye fat pad",
+        "Right nasolabial fat pad",
+        "Right submandibular fat pad",
+        "Right temporal fat pad",
+        "Perioral fat pad",
+        "Chin fat pad",
+        "Submental fat pad",
+        "Nasal tip soft tissue"
+      ],
+      "restoredDigest": "01a7178e1dee272e20e2087fb014cbfe908a51c8af25792d60bcced48e8bb624",
+      "isolationDigest": "3de1bf83b446a355ea6a8df5ea7a6823ba23e274fc713db41ffe614aa48bff30",
+      "overlayDigest": "41d3b35e60494425420a56e2e9f1d3fc1024dc782b34af3f9cdf01a20172b92e",
+      "heatmapDigest": "ed534d06725c8a1eec435cf827c59f36d3e3e8cfe17acfaac6f923b5e2feebb5",
+      "consoleErrorCount": 0
+    }
+  ]
+}

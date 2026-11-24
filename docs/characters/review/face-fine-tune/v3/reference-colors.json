@@ -1,0 +1,92 @@
+{
+  "sippy": {
+    "file": "characters-review/reference-sheets/4-sippy-sheet.png",
+    "sha256": "b71240a6b09af25ae48b0657749e13f7912cfb19adbcfb863551fa1f8a41431e",
+    "rasterPx": [
+      1536,
+      1024
+    ],
+    "samples": {
+      "forehead": {
+        "medianSrgb": "#dd9573",
+        "sourceCrop": [
+          396,
+          546,
+          403,
+          553
+        ]
+      },
+      "mid-cheek outside blush": {
+        "medianSrgb": "#e49360",
+        "sourceCrop": [
+          428,
+          615,
+          435,
+          622
+        ]
+      },
+      "neck": {
+        "medianSrgb": "#be734c",
+        "sourceCrop": [
+          411,
+          670,
+          418,
+          677
+        ]
+      }
+    },
+    "frontPanelVerticalPx": {
+      "crown": 34.0,
+      "chin": 91.0,
+      "floor": 401.0
+    },
+    "crownToChinOverStature": 0.1553,
+    "md5": "25dc5dbf8742dbc41be5df7b001ec39f",
+    "heroSkinMaterialSrgb": "#b16446"
+  },
+  "roma": {
+    "file": "characters-review/reference-sheets/3-roma-sheet.png",
+    "sha256": "56d77436d58217024e5567206a87e37270b2c571df58a51d3c984f620e68ae05",
+    "rasterPx": [
+      1536,
+      1024
+    ],
+    "samples": {
+      "forehead": {
+        "medianSrgb": "#e29467",
+        "sourceCrop": [
+          445,
+          455,
+          452,
+          462
+        ]
+      },
+      "mid-cheek outside blush": {
+        "medianSrgb": "#cd703b",
+        "sourceCrop": [
+          467,
+          518,
+          474,
+          525
+        ]
+      },
+      "neck": {
+        "medianSrgb": "#a7572e",
+        "sourceCrop": [
+          445,
+          549,
+          452,
+          556
+        ]
+      }
+    },
+    "frontPanelVerticalPx": {
+      "crown": 38.0,
+      "chin": 90.0,
+      "floor": 357.0
+    },
+    "crownToChinOverStature": 0.163,
+    "md5": "0f575a0cae50b0b793f167bba594cadf",
+    "heroSkinMaterialSrgb": "#bd6a45"
+  }
+}
