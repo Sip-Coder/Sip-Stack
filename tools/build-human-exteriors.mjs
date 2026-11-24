@@ -1,7 +1,5 @@
-// Sample the shipped, neutral, per-joint anatomy at offline loft stations.
-// Only the derived skin envelope is written. Source bytes and placements are
-// read through the same decoder and rigid hierarchy the browser uses.
-import { createHash } from 'node:crypto';
+// Cut the shipped bone, muscle and fat triangles in the common bind pose.
+// Write only the offset skin sections. Source geometry and poses are read-only.
 import { readFile, writeFile } from 'node:fs/promises';
 import { registerHooks } from 'node:module';
 import { resolve } from 'node:path';
@@ -19,8 +17,8 @@ const { Vector3 } = await import('three');
 const { createActor } = await import('../docs/characters/rig.js');
 const { prepareSourceAnatomy } = await import('../docs/characters/diagram-source-anatomy.js');
 const { exteriorStationLines, exteriorRegions } = await import('../docs/characters/human-exterior.js');
-const { romaSoftTissue } = await import('../docs/characters/roma-soft-tissue.js');
-const { femaleSilhouette } = await import('../docs/characters/roma-silhouette-reference.js');
+const { addRomaFat } = await import('../docs/characters/roma-soft-tissue.js');
+const { heights, names } = await import('../docs/characters/ui.js');
 
 const savedFetch = globalThis.fetch;
 globalThis.fetch = async (input, options) => {
@@ -29,176 +27,275 @@ globalThis.fetch = async (input, options) => {
   return savedFetch(input, options);
 };
 
-const columns = 24;
-const directions = Array.from({ length: columns }, (_, i) => [
-  Math.sin(i * 2 * Math.PI / columns), Math.cos(i * 2 * Math.PI / columns),
-]);
-const { min, max, cos, PI } = Math;
-const points = new Vector3();
+const columns = 28;
+const directions = Array.from({ length: columns }, (_, i) => {
+  const angle = i * 2 * Math.PI / columns;
+  return [Math.sin(angle), Math.cos(angle)];
+});
+const inch = 0.0254;
+const { exp, abs, min, max } = Math;
+const clamp = (v, lo, hi) => max(lo, min(hi, v));
+const near = (y, joint, width) => exp(-(((y - joint.y) / width) ** 2));
+const wrap = i => (i + columns) % columns;
+const regionFor = new Map(Object.entries(exteriorRegions).flatMap(([region, names]) => names.map(name => [name, region])));
+const chestSheet = /pectoralis|latissimus|subscapularis|supraspinatus|infraspinatus|teres_|trapezius/i;
+const pelvicVolume = /gluteus|obturator|tensor_fasciae|psoas|iliacus|semitendinosus|semimembranosus|biceps_femoris|adductor_magnus/i;
 
-function donorSpan(y) {
-  const upper = femaleSilhouette.findIndex((p) => p[0] >= y);
-  if (upper < 0) return femaleSilhouette.at(-1).slice(1);
-  if (upper === 0) return femaleSilhouette[0].slice(1);
-  const a = femaleSilhouette[upper - 1], b = femaleSilhouette[upper];
-  const t = (y - a[0]) / (b[0] - a[0]);
-  return [1, 2].map((i) => a[i] + t * (b[i] - a[i]));
-}
-
-async function checkSilhouette(filename) {
-  const raw = await readFile(filename);
-  const sha = createHash('sha256').update(raw).digest('hex');
-  if (sha !== 'b7dc8b3e5bae070f22f2619b10194b012a6f3cf930836d251828d5893e69594c') {
-    throw Error('Expected HuBMAP skin-female v1.5 GLB');
-  }
-  const { Box3 } = await import('three');
-  const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
-  const gltf = await new GLTFLoader().parseAsync(raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.byteLength), '');
-  gltf.scene.updateMatrixWorld(true);
-  let mesh;
-  gltf.scene.traverse((o) => { if (o.isMesh) mesh = o; });
-  const box = new Box3().setFromObject(mesh), height = box.max.y - box.min.y;
-  const center = (box.min.x + box.max.x) / 2, vertices = mesh.geometry.attributes.position;
-  for (const [y, width, depth] of femaleSilhouette) {
-    let minX = Infinity, minZ = Infinity, maxX = -Infinity, maxZ = -Infinity;
-    for (let i = 0; i < vertices.count; i++) {
-      const { x, y: v, z } = points.fromBufferAttribute(vertices, i).applyMatrix4(mesh.matrixWorld);
-      if (Math.abs((v - box.min.y) / height - y) > 0.006 || Math.abs(x - center) > height * 0.106) continue;
-      minX = min(minX, x); maxX = max(maxX, x);
-      minZ = min(minZ, z); maxZ = max(maxZ, z);
-    }
-    if (Math.abs((maxX - minX) / height - width) > 0.00051 ||
-        Math.abs((maxZ - minZ) / height - depth) > 0.00051) {
-      throw Error('Unexpected HuBMAP torso span near normalized height ' + y);
-    }
-  }
-}
-
-function gatherParts(rig, parts, stations) {
-  const result = Object.fromEntries(Object.entries(stations).map(([key, rows]) => [key,
-    rows.map((point, index) => ({
-      point, profile: Array(columns).fill(-Infinity),
-      width: 0.72 * max(point.y - (rows[index - 1]?.y ?? point.y), (rows[index + 1]?.y ?? point.y) - point.y),
-    })),
-  ]));
+function regionsFor(rig, part) {
   const { joints } = rig.anatomy;
-  const sideTorso = (p) => Math.abs(p.x - joints.chest.x) < (p.y < joints.chest.y ? 0.091 : 0.080);
-  function add(region, point) {
-    const rows = result[region];
-    if (!rows) return;
-    for (const row of rows) {
-      if (Math.abs(row.point.y - point.y) > row.width) continue;
-      const x = point.x - row.point.x, z = point.z - row.point.z;
-      for (let i = 0; i < columns; i++) {
-        const [dx, dz] = directions[i], v = dx * x + dz * z;
-        if (v > row.profile[i]) row.profile[i] = v;
-      }
-    }
+  const joint = part.joint ?? (part.name.includes('costal cartilage') ? 'chest' :
+    'forearm' + (part.name.startsWith('Left ') ? 'L' : 'R'));
+  const region = regionFor.get(joint);
+  const side = joint.at(-1);
+  const label = part.scanNode ?? part.muscleNode ?? part.mesh.name;
+  const routes = new Map();
+  if (region) routes.set(region, () => true);
+  if (joint.startsWith('hand')) routes.set('arm' + side, () => true);
+  if (joint.startsWith('foot')) routes.set('leg' + side, () => true);
+  if (joint.startsWith('shin')) {
+    routes.set('foot' + side, (x, y) => y <= joints['foot' + side].y + 0.008);
   }
+  if (region?.startsWith('arm')) {
+    const shoulder = joints['upperArm' + side];
+    const medial = (x, y) => y >= shoulder.y - 0.072 &&
+      (x - joints.chest.x) * (side === 'L' ? 1 : -1) < abs(shoulder.x - joints.chest.x) * 0.82;
+    // Thorax sheets cross the armpit and attach to the arm on both rigs.
+    // Wrap them with the torso over the attachment, avoiding a duplicate
+    // medial arm envelope where it would sweep across the anterior chest.
+    if (chestSheet.test(label)) routes.set('torso', () => true);
+    else routes.set('torso', medial);
+    routes.set(region, (x, y, z) => !medial(x, y) && (!chestSheet.test(label) ||
+      (y >= shoulder.y - 0.055 && abs(z - shoulder.z) < 0.036)));
+  }
+  if (pelvicVolume.test(label) || /fat/.test(part.layer) && region?.startsWith('leg')) {
+    routes.set('torso', (x, y) => y >= joints.hips.y - 0.05);
+  }
+  if (joint === 'head' && !/^SKULL_/.test(label)) {
+    routes.set('torso', (x, y) => y < joints.head.y - 0.017);
+  }
+  return [...routes];
+}
+
+function collectSections(rig, parts) {
+  const sections = Object.fromEntries(Object.entries(exteriorStationLines(rig)).map(([key, rows]) => [
+    key, rows.map(center => ({ center, cuts: [] })),
+  ]));
+  const vertex = new Vector3();
+  const surfaces = [];
   for (const part of parts) {
-    const p = part.mesh.geometry.attributes.position;
-    const side = part.joint?.at(-1), name = part.scanNode ?? part.muscleNode ?? '';
-    const sheet = /pectoralis|latissimus|subscapularis|supraspinatus|infraspinatus|teres_|trapezius/i.test(name);
-    const upperLeg = /gluteus|obturator|tensor_fasciae|psoas|iliacus/i.test(name);
-    const region = Object.keys(exteriorRegions).find((r) => exteriorRegions[r].includes(part.joint));
-    for (let i = 0; i < p.count; i++) {
-      points.fromBufferAttribute(p, i).applyMatrix4(part.sourceMatrix ?? part.mesh.matrixWorld);
-      if (sheet && region?.startsWith('arm') && sideTorso(points)) add('torso', points);
-      else if (upperLeg && points.y >= joints.hips.y - 0.045) add('torso', points);
-      else add(region, points);
-      // The last skin section meets the authored hand, using the donor wrist
-      // breadth. Far fingers and tendons continue in their own joint frame.
-      if (part.joint?.startsWith('hand')) add('arm' + side, points);
-      if (part.joint?.startsWith('foot')) add('leg' + side, points);
-      if (part.joint === 'head' && points.y < joints.head.y - 0.017 && !/^SKULL_/.test(name)) add('torso', points);
+    const routes = regionsFor(rig, part);
+    if (!routes.length) continue;
+    const g = part.mesh.geometry, input = g.attributes.position, index = g.index.array;
+    const xyz = new Float32Array(input.count * 3);
+    for (let i = 0; i < input.count; i++) {
+      vertex.fromBufferAttribute(input, i).applyMatrix4(part.sourceMatrix ?? part.mesh.matrixWorld).toArray(xyz, i * 3);
     }
-  }
-  if (rig.name === 'roma')
-    for (const { key, vertices } of romaSoftTissue(rig))
-      for (let row = 0; row <= 24; row++) for (let col = 0; col < 48; col++) {
-        const p = vertices(PI * row / 24, 2 * PI * col / 48, points);
-        if (key.startsWith('thigh')) add('leg' + key.at(-1), p);
-        if (p.y >= joints.hips.y - 0.05) add('torso', p);
-      }
-  return result;
-}
-
-function skinRadius(rig, region, rows, j, i) {
-  const row = rows[j];
-  const [x, z] = directions[i];
-  let minimum = 0.012;
-  if (region === 'torso') {
-    const progress = j / (rows.length - 1);
-    minimum = progress > 0.74 ? 0.020 : progress < 0.15 ? 0.042 : 0.049;
-    // The outer soft-tissue volumes use individual pads. These bounds allow
-    // their front and rear relief to stay inside the separate smooth shell.
-    if (rig.name === 'roma') {
-      const front = max(0, z);
-      const back = max(0, -z);
-      const hip = Math.exp(-(((row.point.y - rig.anatomy.joints.hips.y - 0.005) / 0.09) ** 2));
-      const bust = Math.exp(-(((row.point.y - rig.anatomy.joints.chest.y - 0.077) / 0.057) ** 2));
-      minimum = max(minimum, hip * (0.099 * Math.abs(x) + 0.072 * back),
-        bust * (0.072 * Math.abs(x) + 0.082 * front));
-      const hips = rig.anatomy.joints.hips.y;
-      if (row.point.y >= hips + 0.025 && row.point.y <= 0.841) {
-        const [width, depth] = donorSpan(0.53 + (row.point.y - hips - 0.025) * 0.94);
-        // Reduce the donor's adipose bulk at the abdomen for the active
-        // character. The exact bone/muscle envelope still sets the floor.
-        const waist = Math.exp(-(((row.point.y - hips - 0.122) / 0.046) ** 2));
-        minimum = max(minimum, Math.hypot(x * width * (0.43 - 0.052 * waist),
-          z * depth * (0.45 - 0.067 * waist)));
-      }
-    }
-  } else if (region.startsWith('leg')) minimum = 0.016;
-  const waist = rig.name === 'roma' && region === 'torso'
-    ? Math.exp(-(((row.point.y - rig.anatomy.joints.hips.y - 0.111) / 0.039) ** 2)) : 0;
-  const offset = region === 'torso' ? 0.0075 - 0.0045 * waist : region.startsWith('foot') ? 0.004 : 0.0050;
-  const exact = row.profile[i];
-  const previous = rows[max(0, j - 1)].profile[i];
-  const next = rows[min(rows.length - 1, j + 1)].profile[i];
-  // A smoothed support polygon with a guaranteed outward margin. Neighbouring
-  // samples carry narrow ridges through the station interval without spikes.
-  const current = max(exact, minimum);
-  const lifted = max(minimum, current * 0.60 + 0.20 * (max(minimum, previous) + max(minimum, next)));
-  return max(current, lifted) + offset;
-}
-
-function rebuild(rig, raw) {
-  const profile = {};
-  for (const [region, rows] of Object.entries(raw)) {
-    profile[region] = rows.map((r, j) => {
-      const support = directions.map((_, i) => skinRadius(rig, region, rows, j, i));
-      const radius = directions.map((_, i) => {
-        let length = Infinity;
-        for (let k = 0; k < columns; k++) {
-          const projected = cos((k - i) * 2 * PI / columns);
-          if (projected > .00001) length = min(length, support[k] / projected);
+    const bone = part.layer === 'skeleton';
+    surfaces.push({ xyz, routes, bone });
+    const stations = routes.flatMap(([key, within]) => sections[key].map(row => ({ row, within })));
+    for (let i = 0; i < index.length; i += 3) {
+      const a = index[i] * 3, b = index[i + 1] * 3, c = index[i + 2] * 3;
+      const low = min(xyz[a + 1], xyz[b + 1], xyz[c + 1]);
+      const high = max(xyz[a + 1], xyz[b + 1], xyz[c + 1]);
+      for (const { row, within } of stations) {
+        const y = row.center.y;
+        if (y < low || y >= high) continue;
+        const points = [];
+        function cross(u, v) {
+          const p = xyz[u + 1], q = xyz[v + 1];
+          if ((p <= y) === (q <= y)) return;
+          const f = (y - p) / (q - p);
+          points.push(xyz[u] + f * (xyz[v] - xyz[u]), xyz[u + 2] + f * (xyz[v + 2] - xyz[u + 2]));
         }
-        return length * 1.015;
-      });
-      return [r.point.y, r.point.x, r.point.z, ...radius].map((v) => Math.round(v * 10000));
-    });
+        cross(a, b);
+        cross(b, c);
+        cross(c, a);
+        if (within((points[0] + points[2]) / 2, y, (points[1] + points[3]) / 2)) row.cuts.push([...points, bone]);
+      }
+    }
   }
-  return profile;
+  return { sections, surfaces };
+}
+
+function thicknessIn(rig, region, y, angle, bone) {
+  const { joints } = rig.anatomy;
+  const [x, z] = directions[angle];
+  if (region === 'torso') {
+    const abdomen = near(y, { y: joints.hips.y + 0.068 }, 0.074) * (0.43 + 0.57 * max(0, z));
+    const glute = near(y, joints.hips, 0.047) * max(0, -z);
+    const shoulder = max(near(y, joints.upperArmL, 0.033), near(y, joints.upperArmR, 0.033));
+    const neck = near(y, joints.head, 0.044);
+    return clamp(0.132 + 0.15 * abdomen + 0.19 * glute - 0.047 * shoulder - 0.039 * neck - (bone ? 0.061 : 0),
+      0.0625, 0.375);
+  }
+  const side = region.at(-1);
+  if (region.startsWith('arm')) {
+    const hinge = max(near(y, joints['forearm' + side], 0.022), near(y, joints['hand' + side], 0.034));
+    return max(0.0625, 0.127 - 0.052 * hinge - (bone ? 0.026 : 0));
+  }
+  if (region.startsWith('leg')) {
+    const knee = near(y, joints['shin' + side], 0.032);
+    const ankle = near(y, joints['foot' + side], 0.032);
+    const hip = near(y, joints['thigh' + side], 0.074);
+    return clamp(0.166 + 0.095 * hip - 0.081 * max(knee, ankle) - (bone ? 0.048 + 0.022 * abs(x) : 0),
+      0.0625, 0.375);
+  }
+  return bone ? 0.073 : 0.107;
+}
+
+function sectionCenter(center, cuts) {
+  if (!cuts.length) return center;
+  let left = Infinity, rear = Infinity, right = -Infinity, front = -Infinity;
+  for (const [ax, az, bx, bz] of cuts) {
+    left = min(left, ax, bx); right = max(right, ax, bx);
+    rear = min(rear, az, bz); front = max(front, az, bz);
+  }
+  return new Vector3((left + right) * 0.5, center.y, (rear + front) * 0.5);
+}
+
+function contacts(rig, region, { center, cuts }, scale) {
+  return directions.map(([dx, dz], i) => {
+    let far = -Infinity, offset = 0;
+    for (const [ax, az, bx, bz, bone] of cuts) {
+      const x = ax - center.x, z = az - center.z;
+      const ex = bx - ax, ez = bz - az;
+      const denom = dx * ez - dz * ex;
+      if (abs(denom) < 1e-12) continue;
+      const u = (x * dz - z * dx) / denom;
+      if (u < 0 || u > 1) continue;
+      const r = (x * ez - z * ex) / denom;
+      if (r <= far || r <= 0) continue;
+      far = r;
+      offset = thicknessIn(rig, region, center.y, i, bone);
+    }
+    return { radius: Number.isFinite(far) ? far + offset * scale : NaN, offset };
+  });
+}
+
+function circularBridge(radius, i) {
+  const left = radius.findIndex((_, o) => o && Number.isFinite(radius[wrap(i - o)]));
+  const right = radius.findIndex((_, o) => o && Number.isFinite(radius[wrap(i + o)]));
+  return left === -1 ? NaN : (radius[wrap(i - left)] * right + radius[wrap(i + right)] * left) / (left + right);
+}
+
+function sealSections(rows) {
+  const measured = rows.map(row => row.map(({ radius }) => radius));
+  const filled = measured.map(row => row.map((r, i) => Number.isFinite(r) ? r : circularBridge(row, i)));
+  const bridged = filled.map((row, j) => row.map((r, i) => {
+    if (Number.isFinite(r)) return r;
+    let below = j - 1, above = j + 1;
+    while (below >= 0 && !Number.isFinite(filled[below][i])) below--;
+    while (above < rows.length && !Number.isFinite(filled[above][i])) above++;
+    if (below < 0 && above >= rows.length) throw new Error('No anatomical surface in this region');
+    if (above >= rows.length) return filled[below][i];
+    if (below < 0) return filled[above][i];
+    return (filled[below][i] * (above - j) + filled[above][i] * (j - below)) / (above - below);
+  }));
+  const closed = bridged.map((row, j) => row.map((r, i) => {
+    // Locally close narrow clefts between atlas parts. The measured outer
+    // contacts remain intact, so this leaves muscle bellies and bony ridges.
+    const left = row[wrap(i - 1)], right = row[wrap(i + 1)];
+    const below = bridged[max(0, j - 1)][i], above = bridged[min(rows.length - 1, j + 1)][i];
+    return max(r, min(left, right), min(below, above));
+  }));
+  return closed.map((row, j) => row.map((r, i) =>
+    0.60 * r + 0.10 * (row[wrap(i - 1)] + row[wrap(i + 1)] + closed[max(0, j - 1)][i] + closed[min(rows.length - 1, j + 1)][i])));
+}
+
+function containSamples(rig, geometry, surfaces, scale) {
+  for (const { xyz, routes, bone } of surfaces) {
+    for (const [region, within] of routes) {
+      const { rows, radii } = geometry[region];
+      const lo = rows[0].center.y, hi = rows.at(-1).center.y;
+      for (let k = 0; k < xyz.length; k += 3) {
+        const x = xyz[k], y = xyz[k + 1], z = xyz[k + 2];
+        if (y < lo || y > hi || !within(x, y, z)) continue;
+        let j = 1;
+        while (y > rows[j].center.y) j++;
+        const a = rows[j - 1].center, b = rows[j].center;
+        const along = (y - a.y) / (b.y - a.y);
+        const dx = x - a.x - (b.x - a.x) * along;
+        const dz = z - a.z - (b.z - a.z) * along;
+        const turn = (Math.atan2(dx, dz) / (2 * Math.PI) * columns + columns) % columns;
+        const i = Math.floor(turn), next = wrap(i + 1), across = turn - i;
+        const weights = [(1 - along) * (1 - across), (1 - along) * across, along * (1 - across), along * across];
+        const lower = radii[j - 1], upper = radii[j];
+        const radius = lower[i] * weights[0] + lower[next] * weights[1] + upper[i] * weights[2] + upper[next] * weights[3];
+        const r = Math.hypot(dx, dz);
+        // Include the thin face clearance and the chord lost between two
+        // polar samples. Lift only the four nearby controls when needed.
+        const required = r + thicknessIn(rig, region, y, i, bone) * scale + r * 0.005 + 0.0001;
+        if (required <= radius) continue;
+        const lift = (required - radius) / weights.reduce((sum, w) => sum + w * w, 0);
+        lower[i] += lift * weights[0];
+        lower[next] += lift * weights[1];
+        upper[i] += lift * weights[2];
+        upper[next] += lift * weights[3];
+      }
+    }
+  }
+}
+
+function smoothClearance(geometry) {
+  for (const part of Object.values(geometry)) {
+    const { radii } = part;
+    part.radii = radii.map((row, j) => row.map((r, i) => {
+      const across = (row[wrap(i - 1)] + row[wrap(i + 1)]) * 0.5;
+      const along = (radii[max(0, j - 1)][i] + radii[min(radii.length - 1, j + 1)][i]) * 0.5;
+      return 0.45 * r + 0.35 * across + 0.20 * along;
+    }));
+  }
+}
+
+function buildProfiles(rig, shapes, height) {
+  const { sections, surfaces } = collectSections(rig, shapes);
+  const geometry = Object.fromEntries(Object.entries(sections).map(([region, rows]) => {
+    for (const row of rows) row.center = sectionCenter(row.center, row.cuts);
+    // A stable axis avoids repeated centering across disconnected sections,
+    // particularly the thin ends of a wrist or heel polygon.
+    const centers = rows.map(({ center }) => center);
+    for (const [j, row] of rows.entries()) {
+      row.center = centers[j].clone().multiplyScalar(0.375)
+        .addScaledVector(centers[max(0, j - 1)], 0.25).addScaledVector(centers[min(rows.length - 1, j + 1)], 0.25)
+        .addScaledVector(centers[max(0, j - 2)], 0.0625).addScaledVector(centers[min(rows.length - 1, j + 2)], 0.0625);
+      row.center.y = centers[j].y;
+    }
+    const measured = rows.map(row => contacts(rig, region, row, inch / height));
+    const radii = sealSections(measured);
+    const count = measured.flat().filter(({ offset }) => offset > 0).length;
+    console.log(rig.name, region, count + '/' + rows.length * columns, 'direct source contacts');
+    return [region, { rows, radii }];
+  }));
+  for (let pass = 0; pass < 4; pass++) {
+    containSamples(rig, geometry, surfaces, inch / height);
+    if (pass < 3) smoothClearance(geometry);
+  }
+  return Object.fromEntries(Object.entries(geometry).map(([region, { rows, radii }]) =>
+    [region, rows.map(({ center }, j) => [center.y, center.x, center.z, ...radii[j]].map(v => Math.round(v * 10000)))]));
 }
 
 const selected = process.argv[2];
-if (process.env.HUBMAP_FEMALE_SKIN) await checkSilhouette(process.env.HUBMAP_FEMALE_SKIN);
 for (const name of selected ? [selected] : ['sippy', 'roma']) {
+  if (!['sippy', 'roma'].includes(name)) throw new Error('Expected sippy or roma');
   const rig = createActor(name, 1);
-  const stations = exteriorStationLines(rig);
   const parts = [];
   for (const tier of ['high', 'mobile']) {
-    const place = await prepareSourceAnatomy(name, tier, undefined, { repairs: false });
+    const place = await prepareSourceAnatomy(name, tier);
     place(rig, parts);
   }
-  if (!parts.length) throw Error('No anatomy to sample for ' + name);
-  const profile = rebuild(rig, gatherParts(rig, parts, stations));
+  if (name === 'roma') {
+    addRomaFat(rig);
+    rig.root.updateMatrixWorld(true);
+    rig.root.traverse(mesh => {
+      if (!mesh.userData.anatomicalFat) return;
+      parts.push({ mesh, sourceMatrix: mesh.matrixWorld, joint: mesh.parent.name, layer: 'fat' });
+    });
+  }
+  const profile = buildProfiles(rig, parts, heights[names.indexOf(name)]);
   const source = '// Generated by tools/build-human-exteriors.mjs. Distances are in 1/10000 of standing height.\n'
     + 'export const ' + name + 'Exterior = {\n'
     + Object.entries(profile).map(([key, rows]) => '  ' + key + ': [\n'
-      + rows.map((r) => '    ' + JSON.stringify(r) + ',\n').join('') + '  ],\n').join('')
+      + rows.map(r => '    ' + JSON.stringify(r) + ',\n').join('') + '  ],\n').join('')
     + '};\n';
   await writeFile(new URL('../docs/characters/' + name + '-exterior-data.js', import.meta.url), source);
-  console.log(name + ' includes ' + parts.length + ' source surfaces, ' + Object.values(profile).flat().length + ' stations');
 }

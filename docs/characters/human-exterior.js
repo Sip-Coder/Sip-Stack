@@ -1,12 +1,9 @@
-// The skin is an original radial loft over sampled sections of the rigid
-// donor anatomy. All distances here are in standing-height units. The source
-// anatomy never runs through the dress patterns or the skinning matrices.
+// The skin loft uses sections cut directly through the posed source anatomy.
+// Only the original offset skin is attached to the clothing and skinning rig.
 import * as T from 'three';
 
 const tau = Math.PI * 2;
 const { lerp, smoothstep, clamp } = T.MathUtils;
-const columns = 24;
-const radians = (i) => i * tau / columns;
 
 export const exteriorRegions = {
   torso: ['hips', 'chest', 'neck', 'spine'],
@@ -34,9 +31,9 @@ export function exteriorStationLines(rig) {
   const shoulderLine = at(joints.upperArmL, joints.upperArmR, 0.5);
   const lowerRibs = at(pelvis, ribCage, 0.82);
   lines.torso = [
-    ...sample(crotch, lowerRibs, 9),
-    ...sample(lowerRibs, shoulderLine, 9),
-    ...sample(shoulderLine, jaw, 8),
+    ...sample(crotch, lowerRibs, 13),
+    ...sample(lowerRibs, shoulderLine, 14),
+    ...sample(shoulderLine, jaw, 11),
     jaw,
   ];
   for (const side of ['L', 'R']) {
@@ -44,12 +41,12 @@ export function exteriorStationLines(rig) {
     const femur = joints['thigh' + side], knee = joints['shin' + side], ankle = joints['foot' + side];
     const sleeveHead = at(shoulder, elbow, -0.17);
     const thighTop = at(femur, knee, -0.10);
-    lines['arm' + side] = [...sample(wrist, elbow, 10), ...sample(elbow, sleeveHead, 13), sleeveHead];
-    lines['leg' + side] = [...sample(ankle, knee, 12), ...sample(knee, thighTop, 12), thighTop];
+    lines['arm' + side] = [...sample(wrist, elbow, 13), ...sample(elbow, sleeveHead, 16), sleeveHead];
+    lines['leg' + side] = [...sample(ankle, knee, 14), ...sample(knee, thighTop, 14), thighTop];
     const sole = ankle.clone();
     // The articulated feet's CT surfaces set the true width, toe box and heel.
     sole.y = 0.0005;
-    lines['foot' + side] = [...sample(sole, ankle, 9), ankle.clone().add(new T.Vector3(0, 0.008, 0))];
+    lines['foot' + side] = [...sample(sole, ankle, 10), ankle.clone().add(new T.Vector3(0, 0.008, 0))];
   }
   return lines;
 }
@@ -64,13 +61,15 @@ function calculateSection(rows, y) {
 
 export function sampleExterior(profile, y, angle) {
   const { a, b, v } = calculateSection(profile, y);
-  const index = ((angle / tau * columns) % columns + columns) % columns;
-  const left = Math.floor(index), right = (left + 1) % columns;
-  const radius = lerp(
-    lerp(a[3 + left], a[3 + right], index - left),
-    lerp(b[3 + left], b[3 + right], index - left), v,
-  );
+  const radius = lerp(sectionRadius(a, angle / tau), sectionRadius(b, angle / tau), v);
   return [lerp(a[1], b[1], v), lerp(a[2], b[2], v), radius];
+}
+
+function sectionRadius(row, turn) {
+  const columns = row.length - 3;
+  const index = ((turn * columns) % columns + columns) % columns;
+  const left = Math.floor(index), right = (left + 1) % columns;
+  return lerp(row[3 + left], row[3 + right], index - left);
 }
 
 export function attachExteriorProfile(rig, data) {
@@ -81,17 +80,70 @@ export function attachExteriorProfile(rig, data) {
   rig.exterior = profiles;
 }
 
-export function coverExterior(rig, region, point, clearance, center) {
-  const y = point[1];
-  const rows = rig.exterior[region];
-  if (y < rows[0][0] || y > rows.at(-1)[0]) return point;
-  const { a, b, v } = calculateSection(rows, y);
-  const x0 = lerp(a[1], b[1], v), z0 = lerp(a[2], b[2], v);
-  const dx = point[0] - (center?.[0] ?? x0), dz = point[2] - (center?.[1] ?? z0);
-  const angle = Math.atan2(dx, dz);
-  const [, , radius] = sampleExterior(rows, y, angle);
-  const width = Math.max(radius + clearance, Math.hypot(dx, dz));
-  return [x0 + width * Math.sin(angle), y, z0 + width * Math.cos(angle)];
+// Pattern coordinates choose a height and angle on the skin. Cloth adds
+// ease over the adjacent skin samples it spans between fabric vertices.
+function fabricSection(profile, y, angle) {
+  const [x, z, direct] = sampleExterior(profile, y, angle);
+  const dx = Math.sin(angle), dz = Math.cos(angle);
+  const turn = Math.PI / (profile[0].length - 3);
+  let radius = direct;
+  for (const [dy, da] of [[-0.007, 0], [0.007, 0], [0, -turn], [0, turn]]) {
+    const [cx, cz, skin] = sampleExterior(profile, y + dy, angle + da);
+    radius = Math.max(radius, (cx - x) * dx + (cz - z) * dz + skin * Math.cos(da));
+  }
+  return [x, z, radius];
+}
+
+export function exteriorPoint(rig, region, y, angle, ease) {
+  const [x, z, skinRadius] = fabricSection(rig.exterior[region], y, angle);
+  const radius = skinRadius + ease;
+  return [x + radius * Math.sin(angle), y, z + radius * Math.cos(angle)];
+}
+
+// At the fly, the two thigh shells pass through the torso section. Cut the
+// shared waistband around their outermost intersection, then let it fall
+// back onto the torso just above the thigh caps.
+export function hipExteriorPoint(rig, y, angle, ease) {
+  const [x, z, torso] = fabricSection(rig.exterior.torso, y, angle);
+  const dx = Math.sin(angle), dz = Math.cos(angle);
+  let radius = torso;
+  for (const key of ['legL', 'legR']) {
+    const profile = rig.exterior[key];
+    const end = profile.at(-1)[0];
+    if (y > end + 0.014 || y < profile[0][0]) continue;
+    const columns = profile[0].length - 3;
+    const [cx, cz] = sampleExterior(profile, y, 0);
+    let hit = torso;
+    let across = 0, along = 0;
+    for (let i = 0; i <= columns; i++) {
+      const a = i * tau / columns;
+      const r = sampleExterior(profile, y, a)[2];
+      const px = cx - x + r * Math.sin(a), pz = cz - z + r * Math.cos(a);
+      const nextAcross = px * dz - pz * dx, nextAlong = px * dx + pz * dz;
+      if (i && (across <= 0) !== (nextAcross <= 0))
+        hit = Math.max(hit, lerp(along, nextAlong, across / (across - nextAcross)));
+      across = nextAcross;
+      along = nextAlong;
+    }
+    radius = Math.max(radius, lerp(torso, hit, 1 - smoothstep(y, end, end + 0.014)));
+  }
+  return [x + (radius + ease) * dx, y, z + (radius + ease) * dz];
+}
+
+export function exteriorSkinWeights(rig, region, y) {
+  const { joints } = rig.anatomy;
+  if (region === 'torso') {
+    if (y >= joints.chest.y + 0.085)
+      return ['head', 'chest', smoothstep(y, joints.head.y - 0.022, joints.head.y + 0.012)];
+    return ['chest', 'hips', smoothstep(y, joints.hips.y - 0.025, joints.chest.y + 0.026)];
+  }
+  const side = region.at(-1);
+  if (region.startsWith('foot')) return ['foot' + side, 'foot' + side, 1];
+  const arm = region.startsWith('arm');
+  const upper = (arm ? 'upperArm' : 'thigh') + side;
+  const lower = (arm ? 'forearm' : 'shin') + side;
+  const pivot = joints[lower].y;
+  return [upper, lower, smoothstep(y, pivot - 0.021, pivot + 0.021)];
 }
 
 export function addExteriorShell(rig, tone) {
@@ -101,30 +153,19 @@ export function addExteriorShell(rig, tone) {
   const { joints } = rig.anatomy;
   const make = (key, rows, sides) => {
     const xyz = [], uv = [], indices = [], skin = [], weight = [];
+    const binding = rows.map(([y]) => {
+      const [upper, lower, fraction] = exteriorSkinWeights(rig, key, y);
+      return [segments.indexOf(rig[upper]), segments.indexOf(rig[lower]), fraction];
+    });
     const knee = joints['shin' + key.at(-1)]?.y;
     const kneeRow = knee !== undefined && key.startsWith('leg')
       ? rows.reduce((i, r, j) => Math.abs(r[0] - knee) < Math.abs(rows[i][0] - knee) ? j : i, 0)
       : -1;
     function put(x, y, z, u, j) {
-      let upper = 'chest', lower = 'hips', fraction;
-      if (key === 'torso') {
-        if (y >= joints.chest.y + 0.085) {
-          upper = 'head'; lower = 'chest';
-          fraction = smoothstep(y, joints.head.y - 0.022, joints.head.y + 0.012);
-        } else {
-          fraction = smoothstep(y, joints.hips.y - 0.025, joints.chest.y + 0.026);
-        }
-      } else {
-        const side = key.at(-1);
-        const arm = key.startsWith('arm'), foot = key.startsWith('foot');
-        upper = foot ? 'foot' + side : (arm ? 'upperArm' : 'thigh') + side;
-        lower = foot ? upper : (arm ? 'forearm' : 'shin') + side;
-        const pivot = joints[lower].y;
-        fraction = foot ? 1 : smoothstep(y, pivot - 0.021, pivot + 0.021);
-      }
+      const [upper, lower, fraction] = binding[j];
       xyz.push(x, y, z);
       uv.push(u, j / (rows.length - 1));
-      skin.push(segments.indexOf(rig[upper]), segments.indexOf(rig[lower]), 0, 0);
+      skin.push(upper, lower, 0, 0);
       weight.push(fraction, 1 - fraction, 0, 0);
       return xyz.length / 3 - 1;
     }
@@ -132,7 +173,7 @@ export function addExteriorShell(rig, tone) {
       const [y, x, z] = row;
       for (let i = 0; i < sides; i++) {
         const a = tau * i / sides;
-        const [, , radius] = sampleExterior(rows, y, a);
+        const radius = sectionRadius(row, i / sides);
         put(x + radius * Math.sin(a), y, z + radius * Math.cos(a), i / sides, j);
       }
     }
@@ -166,17 +207,15 @@ export function addExteriorShell(rig, tone) {
   const skeleton = new T.Skeleton(segments);
   const knees = {};
   for (const [key, rows] of Object.entries(rig.exterior)) {
-    const high = make(key, rows, columns);
-    const mobile = make(key, rows, columns);
-    const skin = new T.SkinnedMesh(high.g, material);
+    const wrap = make(key, rows, rows[0].length - 3);
+    const skin = new T.SkinnedMesh(wrap.g, material);
     skin.name = names[key];
     skin.userData.anatomicalSkin = names[key];
-    skin.userData.mobileGeometry = mobile.g;
     skin.frustumCulled = false;
     rig.root.add(skin);
     skin.bind(skeleton);
     anatomy.push(skin);
-    if (high.knees.length) knees[key.at(-1)] = { mesh: skin, vertices: { high: high.knees, mobile: mobile.knees } };
+    if (wrap.knees.length) knees[key.at(-1)] = { mesh: skin, vertices: { high: wrap.knees, mobile: wrap.knees } };
   }
   return { meshes: anatomy, knees };
 }
@@ -261,7 +300,8 @@ export function torsoStation(rig, y, oldHip, oldShoulder) {
 
 export function sneakerRoom(rig, side, pattern) {
   const foot = rig.exterior['foot' + side], joint = rig.anatomy.joints['foot' + side];
-  const width = Math.max(...foot.map((r) => r[9] + Math.abs(r[1] - joint.x)), ...foot.map((r) => r[21] + Math.abs(r[1] - joint.x)));
+  const width = Math.max(...foot.flatMap(([y, x]) =>
+    [-Math.PI / 2, Math.PI / 2].map(angle => sampleExterior(foot, y, angle)[2] + Math.abs(x - joint.x))));
   const toe = Math.max(...foot.map((r) => r[3] + r[2] - joint.z));
   return {
     x: Math.max(pattern.x, (width + 0.004) / pattern.halfWidth),
@@ -270,20 +310,13 @@ export function sneakerRoom(rig, side, pattern) {
   };
 }
 
-export function explorerTorso(rig, point, clearance, oldHip, oldShoulder, zCenter = 0) {
-  const chest = rig.anatomy.joints.chest;
-  const y = torsoStation(rig, point[1], oldHip, oldShoulder);
-  const z = point[2] - zCenter;
-  const width = rig.anatomy.thoraxBounds.getSize(new T.Vector3()).x;
-  const ease = clamp(width / (rig.name === 'sippy' ? 0.196 : 0.183), 0.79, 1.05);
-  return coverExterior(rig, 'torso', [chest.x + point[0] * ease, y, chest.z + z],
-    clearance, [chest.x, chest.z]);
+export function explorerTorso(rig, [x, station, z], ease, oldHip, oldShoulder) {
+  const y = torsoStation(rig, station, oldHip, oldShoulder);
+  return exteriorPoint(rig, 'torso', y, Math.atan2(x, z), ease);
 }
 
-export function explorerLimb(rig, side, leg, point, clearance, oldUpper, oldLower) {
-  const key = (leg ? 'thigh' : 'upperArm') + side;
-  const pivot = rig.anatomy.joints[key];
-  const c = limbStation(rig, side, leg, point[1], oldUpper, oldLower).add(pivot);
-  const original = [c.x + point[0], c.y, c.z + point[2]];
-  return coverExterior(rig, (leg ? 'leg' : 'arm') + side, original, clearance, [c.x, c.z]);
+export function explorerLimb(rig, side, leg, [x, station, z], ease, oldUpper, oldLower) {
+  const pivot = rig.anatomy.joints[(leg ? 'thigh' : 'upperArm') + side];
+  const y = limbStation(rig, side, leg, station, oldUpper, oldLower).y + pivot.y;
+  return exteriorPoint(rig, (leg ? 'leg' : 'arm') + side, y, Math.atan2(x, z), ease);
 }

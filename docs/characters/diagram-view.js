@@ -122,7 +122,7 @@ export function buildDisplayBatches(parts, start = 0) {
       const first = start;
       start += hi - lo + 1;
       const indexCount = sourceLast - sourceFirst;
-      const span = { position, number, lo: first, hi: start - 1, indexStart, indexCount };
+      const span = { position, number, lo: first, hi: start - 1, indexStart, indexCount, sourceLo: lo };
       indexStart += indexCount;
       return span;
     });
@@ -232,6 +232,7 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     yaw = isoYaw,
     pitch = isoPitch,
     mag = 1;
+  let fitMode = 'off', heatMaterial, ordinaryGhost = false;
   let sequence = 0,
     lastPainted = -1,
     warmed = -1,
@@ -255,11 +256,15 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
   function syncLayer(id) {
     const layer = layers.get(id);
     if (!layer) return;
-    const { visible, opacity } = layerState(id);
+    const state = layerState(id);
+    const visible = fitMode === 'off' ? state.visible : id === 'skin' ||
+      (fitMode === 'overlay' && ['muscles', 'breast', 'gluteal-fat', 'hip-fat'].includes(id));
+    const opacity = fitMode === 'off' ? state.opacity : 1;
     layer.group.visible = visible && opacity > 0;
     for (const mesh of layer.group.children) {
       const source = mesh.userData.finish,
         m = mesh.material;
+      if (m === heatMaterial) continue;
       m.opacity = source.opacity * opacity;
       const shell = stats.studio && ghost.value && id === 'skin';
       const translucent = !!(shell || source.transparent || opacity < 1);
@@ -286,11 +291,13 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
   function releaseDrawResources() {
     for (const mesh of meshes) {
       mesh.geometry.dispose();
-      mesh.material.dispose();
+      mesh.userData.studyMaterial.dispose();
     }
+    heatMaterial?.dispose();
   }
   function clearMeshes() {
     releaseDrawResources();
+    heatMaterial = undefined;
     for (const layer of layers.values()) scene.remove(layer.group);
     meshes = [];
     layers.clear();
@@ -349,9 +356,11 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
       for (const b of buildDisplayBatches(model.parts, first)) {
         const { geometry } = b;
         const tissue = human ? { shade: studioModule.shadeTissue, layer: b.layer, ghost } : null;
-        const mesh = new T.Mesh(geometry, studyMaterial(b.finish, chosen, hovered, tissue));
+        const finish = studyMaterial(b.finish, chosen, hovered, tissue);
+        const mesh = new T.Mesh(geometry, finish);
         mesh.renderOrder = b.renderOrder;
         mesh.userData.finish = b.finish;
+        mesh.userData.studyMaterial = finish;
         if (b.layer !== 'skeleton') mesh.userData.sourceSpans = b.spans;
         meshes.push(mesh);
         const layer = layers.get(b.layer);
@@ -369,7 +378,8 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
 
   function fitCamera(aspect) {
     const axial = offsets && layout === 'axial';
-    const amount = axial ? explode : 0;
+    const spread = fitMode === 'off' ? explode : 0;
+    const amount = axial ? spread : 0;
     if (amount !== lastDisplacement) {
       for (const [id, layer] of layers) {
         if (id === 'skeleton') continue;
@@ -392,7 +402,7 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
       maxD = -Infinity;
     for (const layer of layers.values()) {
       if (axial) shift.set(0, 0, 0);
-      else shift.copy(axis).multiplyScalar((layer.index - (layers.size - 1) / 2) * spacing * explode);
+      else shift.copy(axis).multiplyScalar((layer.index - (layers.size - 1) / 2) * spacing * spread);
       layer.group.position.copy(shift);
       if (!layer.group.visible || layer.box.isEmpty()) continue;
       const { min, max } = layer.box;
@@ -593,10 +603,39 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     changed();
   }
   function setGhost(enabled) {
-    if (!!ghost.value === !!enabled) return;
-    ghost.value = Number(!!enabled);
-    stats.ghost = stats.studio && !!enabled;
+    if (ordinaryGhost === !!enabled) return;
+    ordinaryGhost = !!enabled;
+    if (fitMode !== 'off') return;
+    ghost.value = Number(ordinaryGhost);
+    stats.ghost = stats.studio && ordinaryGhost;
     syncLayer('skin');
+    changed();
+  }
+  function setSkinFit(mode, fitModule, distances) {
+    if (mode === fitMode) return;
+    const skin = layers.get('skin');
+    if (mode !== 'off' && (!skin || model.partial || !stats.studio)) return;
+    if (mode === 'heatmap' && !heatMaterial) {
+      heatMaterial = fitModule.createHeatMaterial();
+      for (const mesh of skin.group.children) {
+        const gaps = new Float32Array(mesh.geometry.attributes.position.count).fill(-1);
+        for (const { number, lo, hi, sourceLo } of mesh.userData.sourceSpans) {
+          const value = distances.get(model.parts[number].id);
+          if (!value) continue;
+          for (let i = 0; i <= hi - lo; i++)
+            gaps[lo + i] = fitModule.fitLimitIn * value.charCodeAt(sourceLo + i) / 255;
+        }
+        mesh.geometry.setAttribute('axonSkinGap', new T.BufferAttribute(gaps, 1));
+      }
+    }
+    fitMode = mode;
+    stats.skinFit = mode;
+    ghost.value = Number(mode === 'overlay' || (mode === 'off' && ordinaryGhost));
+    stats.ghost = stats.studio && !!ghost.value;
+    for (const mesh of skin?.group.children ?? [])
+      mesh.material = mode === 'heatmap' ? heatMaterial : mesh.userData.studyMaterial;
+    for (const id of layers.keys()) syncLayer(id);
+    sequence++;
     changed();
   }
   function select(part) {
@@ -806,6 +845,7 @@ export function createDiagramView(stage, canvas, { layerOrder = [], onSelect, on
     setLayout,
     setLayer,
     setGhost,
+    setSkinFit,
     select,
     pick,
     project,

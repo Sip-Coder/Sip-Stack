@@ -104,22 +104,20 @@ export function romaForms(rig) {
   // Rows in joint space are [height, half width, half depth, centre Z, centre X,
   // optional colour, primary joint, secondary joint, secondary weight].
   function loft(parent, rows, color, opts = {}) {
-    const { columns = 22, from = 0, to = tau, profile, skinned = false, metal = false, transform } = opts;
+    const { columns = 22, from = 0, to = tau, profile, skinned = false, metal = false, transform, bind } = opts;
     patch(skinned ? skin : batch(parent, metal), columns, rows.length - 1, (u, v) => {
       const j = Math.round(v * (rows.length - 1)),
         r = rows[j],
         a = from + u * (to - from);
       const corr = profile?.(a, j, r) ?? 0;
-      return [
+      const draft = [
         (r[4] ?? 0) + (r[1] + corr) * Math.sin(a),
         r[0],
         (r[3] ?? 0) + (r[2] + corr) * Math.cos(a),
-        r[5] ?? color,
-        r[6],
-        r[7],
-        r[8],
       ];
-    }, transform);
+      const point = transform?.(draft, r[6]) ?? draft;
+      return [...point, r[5] ?? color, ...(bind?.(point) ?? r.slice(6, 9))];
+    }, transform ? null : undefined);
   }
   function oval(parent, color, x, y, z, rx, ry, rz, ax = 0, ay = 0, az = 0, metal = false, segments = 16) {
     q.setFromEuler(rot.set(ax, ay, az));

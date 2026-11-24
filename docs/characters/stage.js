@@ -258,8 +258,17 @@ export function createStage(el) {
   scene.background = new T.Color('#c4d3d0');
   scene.fog = new T.FogExp2(scene.background, 0.035);
   const camera = new T.PerspectiveCamera(34, 1, 0.035, 80);
+  const gl = renderer.getContext();
+  const samples = Math.min(2, renderer.capabilities.maxSamples);
+  // Float color buffers are not multisample-renderable on every mobile GPU.
+  const hdr =
+    renderer.extensions.has('EXT_color_buffer_float') &&
+    (!samples || gl.getInternalformatParameter(gl.RENDERBUFFER, gl.RGBA16F, gl.SAMPLES)?.[0] >= samples);
   const target = new T.WebGLRenderTarget(1, 1, {
-    type: renderer.extensions.has('EXT_color_buffer_float') ? T.HalfFloatType : T.UnsignedByteType,
+    type: hdr ? T.HalfFloatType : T.UnsignedByteType,
+    samples,
+    // The presentation pass samples resolved color only.
+    resolveDepthBuffer: false,
   });
   // A single offscreen beauty target keeps the previous frame on the canvas
   // until a complete replacement is ready. Present with Three's usual ACES
@@ -324,7 +333,7 @@ export function createStage(el) {
     const info = gl.getExtension('WEBGL_debug_renderer_info');
     const gpu = info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : '';
     // Heros has two mesh budgets. Village's Mobile and Medium GPU classes
-    // both use the lighter artwork and single-sample render target here.
+    // both use the lighter artwork and smaller pixel budget here.
     if (
       /swiftshader|llvmpipe|mali|adreno|powervr|apple gpu|intel|iris|radeon.*graphics/i.test(gpu) ||
       (matchMedia('(pointer: coarse)').matches && devicePixelRatio >= 2) ||
@@ -337,16 +346,11 @@ export function createStage(el) {
   function quality(q) {
     if (q === tier) return;
     tier = q;
-    renderScale = q === 'high' ? 1.25 : 1;
+    renderScale = q === 'high' ? 1.25 : 1.5;
     fitWidth = 0;
     key.shadow.mapSize.setScalar(q === 'high' ? 1024 : 512);
     key.shadow.map?.dispose();
     key.shadow.map = null;
-    const samples = Math.min(q === 'high' ? 2 : 0, renderer.capabilities.maxSamples);
-    if (target.samples !== samples) {
-      target.dispose();
-      target.samples = samples;
-    }
     invalidateShadow();
   }
   function fit() {
